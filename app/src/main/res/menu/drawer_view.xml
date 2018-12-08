@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/stats"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/ic_menu_dashboard"
+            android:title="@string/dashboard"/>
+        <item
+            android:id="@+id/nav_collections"
+            android:icon="@drawable/ic_menu_collection"
+            android:title="@string/collections" />
+    </group>
+    <group
+        android:id="@+id/bank"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_repayment"
+            android:icon="@drawable/ic_menu_repayment"
+            android:title="@string/repayment" />
+        <item
+            android:id="@+id/nav_loans"
+            android:icon="@drawable/ic_menu_wallet"
+            android:title="@string/loan" />
+        <item
+            android:id="@+id/nav_savings"
+            android:icon="@drawable/ic_menu_wallet"
+            android:title="@string/savings" />
+    </group>
+    <group
+        android:id="@+id/customers"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_customers"
+            android:icon="@drawable/ic_menu_customers"
+            android:title="@string/customers" />
+        <item
+            android:id="@+id/nav_branches"
+            android:icon="@drawable/ic_menu_branches"
+            android:title="@string/branches" />
+    </group>
+    <group
+        android:id="@+id/access"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_menu_settings"
+            android:title="@string/settings" />
+        <item
+            android:id="@+id/nav_signout"
+            android:icon="@drawable/ic_menu_sign_out"
+            android:title="@string/sign_out" />
+    </group>
+</menu>
