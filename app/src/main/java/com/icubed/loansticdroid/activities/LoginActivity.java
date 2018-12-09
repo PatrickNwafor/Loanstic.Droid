@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,6 +25,10 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailTextView;
     private EditText passwordTextView;
     private Button loginBtn;
+    private ProgressBar loginProgressBar;
+    private TextView errorTextView;
+
+    private Account account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +38,10 @@ public class LoginActivity extends AppCompatActivity {
         emailTextView = findViewById(R.id.emailTextView);
         passwordTextView = findViewById(R.id.passwordTextView);
         loginBtn = findViewById(R.id.loginAcctBtn);
+        loginProgressBar = findViewById(R.id.loginProgressBar);
+        errorTextView = findViewById(R.id.errorTextView);
+
+        account = new Account();
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,11 +54,16 @@ public class LoginActivity extends AppCompatActivity {
     /**************Singing In to Account***************/
     private void loginToAccount(){
 
-        Account account = new Account();
+        errorTextView.setVisibility(View.GONE);
+        errorTextView.setText("");
+
         String email = emailTextView.getText().toString();
         String password = passwordTextView.getText().toString();
 
-        if(!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password) && account.isValidEmail(email)) {
+        if(isFormProperlyFilled(email,password)) {
+
+            loginProgressBar.setVisibility(View.VISIBLE);
+            loginBtn.setEnabled(false);
 
             Task<AuthResult> resultTask = account.signIntoAccount(email, password);
 
@@ -64,13 +79,77 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                     }else{
 
-                        Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        loginProgressBar.setVisibility(View.GONE);
+                        loginBtn.setEnabled(true);
 
+                        //Determine the type of login error message
+                        loginError(task.getException().getMessage());
                     }
                 }
             });
 
         }
+
+    }
+
+    /****************To put out error message incase of a failed Login***************/
+    private void loginError(String message){
+
+        if(message.toLowerCase().contains("identifier".toLowerCase())){
+
+            errorTextView.setVisibility(View.VISIBLE);
+            errorTextView.setText("Account does not exist");
+
+        }else if(message.toLowerCase().contains("password".toLowerCase())){
+
+            errorTextView.setVisibility(View.VISIBLE);
+            errorTextView.setText("Invalid Password");
+
+        }else if(message.toLowerCase().contains("network".toLowerCase())){
+
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
+        }else {
+
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
+    /************Checks if form is filled properly**************/
+    private Boolean isFormProperlyFilled(String email, String password){
+
+        if(TextUtils.isEmpty(email) && TextUtils.isEmpty(password)){
+
+            emailTextView.setError("Field is required");
+            emailTextView.requestFocus();
+            passwordTextView.setError("Field is required");
+            return false;
+
+        }else if(TextUtils.isEmpty(email)){
+
+            emailTextView.setError("Field is required");
+            emailTextView.requestFocus();
+            return false;
+
+        }else if(TextUtils.isEmpty(password)){
+
+            passwordTextView.setError("Field is required");
+            passwordTextView.requestFocus();
+            return false;
+
+        }
+
+        if(!account.isValidEmail(email)){
+
+            emailTextView.setError("Invalid Email format");
+            emailTextView.requestFocus();
+            return false;
+
+        }
+
+        return true;
 
     }
 }

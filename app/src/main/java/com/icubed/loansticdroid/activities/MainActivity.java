@@ -66,14 +66,14 @@ public class MainActivity extends AppCompatActivity {
 
                     //Replacing the frame layout with our dashboard fragment
                     DashboardFragment dashboardFragment = new DashboardFragment();
-                    startFragment(dashboardFragment);
+                    startFragment(dashboardFragment, R.anim.enter_from_right, R.anim.exit_to_left);
                 }else{
                     //change switch image to dashboard
                     viewSwitch.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_dashboard, 0,0,0);
 
                     //Replacing our frame layout with our map fragment
                     MapFragment mapFragment = new MapFragment();
-                    startFragment(mapFragment);
+                    startFragment(mapFragment, R.anim.enter_from_left, R.anim.exit_to_right);
                 }
             }
         });
@@ -162,6 +162,14 @@ public class MainActivity extends AppCompatActivity {
     /************Instantiate fragment transactions**********/
     private void startFragment(Fragment fragment){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, fragment);
+        transaction.commit();
+    }
+
+    /***************Instantiate fragment transactions with animations*************/
+    private void startFragment(Fragment fragment, int enter, int exit) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(enter,exit);
         transaction.replace(R.id.content_frame, fragment);
         transaction.commit();
     }
