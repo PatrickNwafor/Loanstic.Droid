@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1009523580735",
+    "firebase_url": "https://loanstic.firebaseio.com",
+    "project_id": "loanstic",
+    "storage_bucket": "loanstic.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009523580735:android:141ac6eaa1443d46",
+        "android_client_info": {
+          "package_name": "com.icubed.loansticdroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1009523580735-ql1s40s41akgevimfaprb3fmqisls752.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.icubed.loansticdroid",
+            "certificate_hash": "82578dd813e36141ec1b58ea81a3ab36a30e2e8e"
+          }
+        },
+        {
+          "client_id": "1009523580735-j5a51earr13gl5b1vk6a0uvln25plqra.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsVGFxQbJzln2jfKKP1NbrDNq2p-9SA9M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1009523580735-j5a51earr13gl5b1vk6a0uvln25plqra.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
