@@ -12,10 +12,10 @@ import com.icubed.loansticdroid.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CustomersFragment extends Fragment {
+public class BorrowersFragment extends Fragment {
 
 
-    public CustomersFragment() {
+    public BorrowersFragment() {
         // Required empty public constructor
     }
 
@@ -23,7 +23,7 @@ public class CustomersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_customers, container, false);
+        return inflater.inflate(R.layout.fragment_borrowers, container, false);
     }
 
 }

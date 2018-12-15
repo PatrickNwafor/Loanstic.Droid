@@ -9,18 +9,24 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
 import com.icubed.loansticdroid.fragments.BranchesFragment;
 import com.icubed.loansticdroid.fragments.CollectionsFragment;
-import com.icubed.loansticdroid.fragments.CustomersFragment;
+import com.icubed.loansticdroid.fragments.BorrowersFragment;
 import com.icubed.loansticdroid.fragments.DashboardFragment;
 import com.icubed.loansticdroid.fragments.LoansFragment;
 import com.icubed.loansticdroid.fragments.MapFragment;
@@ -28,6 +34,9 @@ import com.icubed.loansticdroid.fragments.RepaymentFragment;
 import com.icubed.loansticdroid.fragments.SavingsFragment;
 import com.icubed.loansticdroid.fragments.SettingsFragment;
 import com.icubed.loansticdroid.models.Account;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
 
     //Navigation Drawer Layout
     private DrawerLayout mDrawerLayout;
+    private LinearLayout dragView;
+    private RecyclerView slideUpRecyclerView;
+    private SlideUpPanelRecyclerAdapter slideUpPanelRecyclerAdapter;
+
+    private List<String> collectionList;
 
     //Navigation drawer menu btn
     private ImageView menuBtn;
@@ -52,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
         viewSwitch = findViewById(R.id.viewSwitch);
 
         viewSwitch.setChecked(false);
+
+        dragView = findViewById(R.id.dragView);
+        setSlideUpPanelMaxHeight();
 
         //Replacing our frame layout with our map fragment
         MapFragment mapFragment = new MapFragment();
@@ -103,6 +120,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Recycler View for slide up panel
+        collectionList = new ArrayList<>();
+        slideUpRecyclerView = findViewById(R.id.list);
+
+        slideUpRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(collectionList);
+        slideUpRecyclerView.setAdapter(slideUpPanelRecyclerAdapter);
+
+        collectionList.add(0,"Collection 1");
+        collectionList.add(1,"Collection 2");
+        collectionList.add(2,"Collection 3");
+        collectionList.add(3,"Collection 4");
+        collectionList.add(4,"Collection 5");
+        collectionList.add(5,"Collection 6");
+        collectionList.add(6,"Collection 7");
+        collectionList.add(7,"Collection 8");
+
+        for(String collection : collectionList){
+            slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+        }
+
     }
 
     /**********Item selected on Navigation Drawer Actions*******/
@@ -135,8 +173,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.nav_customers:
-                CustomersFragment customersFragment = new CustomersFragment();
-                startFragment(customersFragment);
+                BorrowersFragment borrowersFragment = new BorrowersFragment();
+                startFragment(borrowersFragment);
                 return true;
 
             case R.id.nav_branches:
@@ -157,6 +195,19 @@ public class MainActivity extends AppCompatActivity {
                 return false;
         }
 
+    }
+
+    private void setSlideUpPanelMaxHeight(){
+        //Setting Slide Panel Maximum height
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int height = dm.heightPixels;
+
+        ViewGroup.LayoutParams params = dragView.getLayoutParams();
+        // Changes the height and width to the specified *pixels*
+        params.height = height/2;
+
+        dragView.setLayoutParams(params);
     }
 
     /************Instantiate fragment transactions**********/

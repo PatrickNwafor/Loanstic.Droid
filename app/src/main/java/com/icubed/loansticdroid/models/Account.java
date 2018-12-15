@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Account {
 
@@ -13,7 +14,6 @@ public class Account {
     public Account() {
         auth = FirebaseAuth.getInstance();
     }
-
 
     /*********To check if email format is correct**********/
     public boolean isValidEmail(CharSequence email) {
@@ -35,7 +35,6 @@ public class Account {
         }
     }
 
-
     /***************Creating a new Account***************/
     public Task<AuthResult> createNewAccount(String email, String password){
         return auth.createUserWithEmailAndPassword(email, password);
@@ -44,6 +43,11 @@ public class Account {
     /************Signing in into an already existing account***************/
     public Task<AuthResult> signIntoAccount(String email, String password){
         return auth.signInWithEmailAndPassword(email, password);
+    }
+
+    /***************Get User****************/
+    public FirebaseUser getCurrentUser(){
+        return auth.getCurrentUser();
     }
 
     /****************Get Current User Id****************/

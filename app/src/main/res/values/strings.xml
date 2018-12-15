@@ -3,7 +3,7 @@
     <string name="sign_out">Sign out</string>
     <string name="settings">Settings</string>
     <string name="branches">Branches</string>
-    <string name="customers">Customers</string>
+    <string name="borrowers">Borrowers</string>
     <string name="savings">Savings</string>
     <string name="loan">Loan</string>
     <string name="repayment">Repayment</string>
