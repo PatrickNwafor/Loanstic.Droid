@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
+import com.icubed.loansticdroid.cloudqueries.CollectionQueries;
 import com.icubed.loansticdroid.fragments.BranchesFragment;
 import com.icubed.loansticdroid.fragments.CollectionsFragment;
 import com.icubed.loansticdroid.fragments.BorrowersFragment;
@@ -33,7 +34,10 @@ import com.icubed.loansticdroid.fragments.MapFragment;
 import com.icubed.loansticdroid.fragments.RepaymentFragment;
 import com.icubed.loansticdroid.fragments.SavingsFragment;
 import com.icubed.loansticdroid.fragments.SettingsFragment;
+import com.icubed.loansticdroid.localdatabase.CollectionTableQueries;
 import com.icubed.loansticdroid.models.Account;
+
+import junit.framework.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,19 +132,18 @@ public class MainActivity extends AppCompatActivity {
         slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(collectionList);
         slideUpRecyclerView.setAdapter(slideUpPanelRecyclerAdapter);
 
-        collectionList.add(0,"Collection 1");
-        collectionList.add(1,"Collection 2");
-        collectionList.add(2,"Collection 3");
-        collectionList.add(3,"Collection 4");
-        collectionList.add(4,"Collection 5");
-        collectionList.add(5,"Collection 6");
-        collectionList.add(6,"Collection 7");
-        collectionList.add(7,"Collection 8");
+        collectionList.add(0,"CollectionTable 1");
+        collectionList.add(1,"CollectionTable 2");
+        collectionList.add(2,"CollectionTable 3");
+        collectionList.add(3,"CollectionTable 4");
+        collectionList.add(4,"CollectionTable 5");
+        collectionList.add(5,"CollectionTable 6");
+        collectionList.add(6,"CollectionTable 7");
+        collectionList.add(7,"CollectionTable 8");
 
         for(String collection : collectionList){
             slideUpPanelRecyclerAdapter.notifyDataSetChanged();
         }
-
     }
 
     /**********Item selected on Navigation Drawer Actions*******/

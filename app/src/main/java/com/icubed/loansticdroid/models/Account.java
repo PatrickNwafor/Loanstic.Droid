@@ -4,7 +4,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Account {
 
@@ -22,6 +21,16 @@ public class Account {
         } else {
             return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
         }
+    }
+
+    public Task<Void> resetPassword(String email){
+
+        return auth.sendPasswordResetEmail(email);
+
+    }
+
+    public Task<Void> verifyEmail(){
+        return getCurrentUser().sendEmailVerification();
     }
 
     /************To check if user is already logged in**************/

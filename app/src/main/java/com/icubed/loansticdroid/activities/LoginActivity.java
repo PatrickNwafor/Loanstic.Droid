@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private EditText emailTextView;
     private EditText passwordTextView;
+    private TextView forgetPasswordView;
     private Button loginBtn;
     private ProgressBar loginProgressBar;
     private TextView errorTextView;
@@ -35,13 +36,24 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        emailTextView = findViewById(R.id.emailTextView);
+        emailTextView = findViewById(R.id.emailView);
         passwordTextView = findViewById(R.id.passwordTextView);
         loginBtn = findViewById(R.id.loginAcctBtn);
         loginProgressBar = findViewById(R.id.loginProgressBar);
         errorTextView = findViewById(R.id.errorTextView);
+        forgetPasswordView = findViewById(R.id.forgetPasswordText);
 
         account = new Account();
+
+        forgetPasswordView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent forgetPasswordIntent = new Intent(getApplicationContext(), ResetPasswordActivity.class);
+                startActivity(forgetPasswordIntent);
+
+            }
+        });
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
