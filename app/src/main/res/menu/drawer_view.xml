@@ -34,7 +34,7 @@
         <item
             android:id="@+id/nav_customers"
             android:icon="@drawable/ic_menu_customers"
-            android:title="@string/customers" />
+            android:title="@string/borrowers" />
         <item
             android:id="@+id/nav_branches"
             android:icon="@drawable/ic_menu_branches"

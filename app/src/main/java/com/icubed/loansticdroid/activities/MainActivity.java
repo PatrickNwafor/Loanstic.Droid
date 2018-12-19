@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.*;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -29,10 +28,6 @@ import com.icubed.loansticdroid.fragments.RepaymentFragment;
 import com.icubed.loansticdroid.fragments.SavingsFragment;
 import com.icubed.loansticdroid.fragments.SettingsFragment;
 import com.icubed.loansticdroid.models.Account;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener.*;
-
-import static com.sothree.slidinguppanel.SlidingUpPanelLayout.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,10 +41,6 @@ public class MainActivity extends AppCompatActivity {
     //Navigation drawer menu btn
     private ImageView menuBtn;
     private Switch viewSwitch;
-    private SlidingUpPanelLayout slidingLayout;
-    private Button btnShow;
-    private Button btnHide;
-    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
         account = new Account();
         menuBtn = findViewById(R.id.menu_btn);
         viewSwitch = findViewById(R.id.viewSwitch);
-
-
 
         viewSwitch.setChecked(false);
 
@@ -89,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         //Navigation Drawer
         mDrawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -116,9 +104,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-
-
 
     /**********Item selected on Navigation Drawer Actions*******/
     private boolean navActions(MenuItem item) {

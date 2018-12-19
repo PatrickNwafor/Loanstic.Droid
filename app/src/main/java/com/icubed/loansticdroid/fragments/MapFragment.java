@@ -141,7 +141,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
         // Updates the location and zoom of the MapView
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(43.1, -87.9), 10);
-        mGoogleMap.animateCamera(cameraUpdate);
+        mGoogleMap.moveCamera(cameraUpdate);
+
     }
 
     /************Requesting Location Permission**********/

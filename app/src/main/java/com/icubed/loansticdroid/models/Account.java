@@ -14,7 +14,6 @@ public class Account {
         auth = FirebaseAuth.getInstance();
     }
 
-
     /*********To check if email format is correct**********/
     public boolean isValidEmail(CharSequence email) {
         if (email == null) {
@@ -22,6 +21,16 @@ public class Account {
         } else {
             return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
         }
+    }
+
+    /********************Reset Account Password*****************/
+    public Task<Void> resetPassword(String email){
+        return auth.sendPasswordResetEmail(email);
+    }
+
+    /*********************To verify email address*******************/
+    public Task<Void> verifyEmail(){
+        return getCurrentUser().sendEmailVerification();
     }
 
     /************To check if user is already logged in**************/
@@ -35,7 +44,6 @@ public class Account {
         }
     }
 
-
     /***************Creating a new Account***************/
     public Task<AuthResult> createNewAccount(String email, String password){
         return auth.createUserWithEmailAndPassword(email, password);
@@ -44,6 +52,11 @@ public class Account {
     /************Signing in into an already existing account***************/
     public Task<AuthResult> signIntoAccount(String email, String password){
         return auth.signInWithEmailAndPassword(email, password);
+    }
+
+    /***************Get User****************/
+    public FirebaseUser getCurrentUser(){
+        return auth.getCurrentUser();
     }
 
     /****************Get Current User Id****************/
