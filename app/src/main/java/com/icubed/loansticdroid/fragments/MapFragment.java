@@ -12,6 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.*;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import static com.sothree.slidinguppanel.SlidingUpPanelLayout.*;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,6 +32,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
     MapView mMapView;
     GoogleMap mGoogleMap;
+    private SlidingUpPanelLayout slidingLayout;
+    private ImageView btnShow;
+    private ImageView btnHide;
+
 
     private static final String TAG = "MapFragment";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -46,16 +53,86 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_map, container, false);
+        btnShow = (ImageView) v.findViewById(R.id.btn_show);
+        btnHide = (ImageView) v.findViewById(R.id.btn_hide);
 
         mMapView = v.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
 
         getLocationPermission();
+        //set layout slide listener
+        slidingLayout = (SlidingUpPanelLayout)v.findViewById(R.id.sliding_layout);
+
+        //some "demo" event
+        slidingLayout.setPanelSlideListener(onSlideListener());
+
+        btnHide.setOnClickListener(onHideListener());
+        btnShow.setOnClickListener(onShowListener());
+
 
         return v;
     }
+    /**
+     * Request show sliding layout when clicked
+     * @return
+     */
+    private View.OnClickListener onShowListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //show sliding layout in bottom of screen (not expand it)
+                slidingLayout.setPanelState(PanelState.COLLAPSED);
+                btnShow.setVisibility(View.GONE);
+            }
+        };
+    }
 
+    /**
+     * Hide sliding layout when click button
+     * @return
+     */
+    private View.OnClickListener onHideListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //hide sliding layout
+                slidingLayout.setPanelState(PanelState.HIDDEN);
+                btnShow.setVisibility(View.VISIBLE);
+            }
+        };
+    }
+
+    private PanelSlideListener onSlideListener() {
+        return new PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View view, float v) {
+
+            }
+
+
+
+            @Override
+            public void onPanelCollapsed(View view) {
+
+            }
+
+            @Override
+            public void onPanelExpanded(View view) {
+
+            }
+
+            @Override
+            public void onPanelAnchored(View view) {
+
+            }
+
+            @Override
+            public void onPanelHidden(View view) {
+
+            }
+        };
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;

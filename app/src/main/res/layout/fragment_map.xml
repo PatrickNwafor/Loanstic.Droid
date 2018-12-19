@@ -1,23 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    sothree:umanoDragView="@+id/dragView"
+    android:id="@+id/sliding_layout"
+    sothree:umanoOverlay="true"
+    android:gravity="bottom"
+    sothree:umanoPanelHeight="79dp"
+    sothree:umanoParalaxOffset="10dp"
+    sothree:umanoShadowHeight="4dp"
+    android:fitsSystemWindows="true"
     tools:context=".fragments.MapFragment">
+
+    <!-- MAIN CONTENT -->
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/headerbackground">
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/searchEditText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|center"
-        android:layout_marginTop="30dp"
+        android:elevation="4dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/searchtextstyle"
+        android:foreground="?attr/selectableItemBackground"
+        android:drawablePadding="40dp"
+        android:drawableLeft="@drawable/ic_fiber_manual_record_black_24dp"
+        android:hint="Search Due Collections?"
         android:ems="10"
-        android:hint="Next Due Collection?"
         android:imeOptions="actionSearch"
         android:inputType="text" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+
+        <ImageView
+            android:id="@+id/btn_show"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="15dp"
+            android:elevation="10dp"
+            android:background="@drawable/circle_background"
+            android:padding="10dp"
+            android:src="@drawable/ic_expand_less_black_24dp"
+            android:visibility="invisible" />
+    </RelativeLayout>
 </FrameLayout>
+
+    <!-- SLIDING LAYOUT PARENT-->
+    <LinearLayout
+        android:id="@+id/dragView"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:clickable="true"
+        android:focusable="false"
+
+
+        android:orientation="vertical">
+        <!-- SLIDING LAYOUT BUTTON-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/btn_hide"
+                android:layout_width="64dp"
+                android:layout_height="30dp"
+                android:padding="10dp"
+                android:background="@drawable/half_circle"
+                android:src="@drawable/ic_expand_more_black_24dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:background="@drawable/slide_up_baclground"
+            android:orientation="vertical"></LinearLayout>
+
+    </LinearLayout>
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>
