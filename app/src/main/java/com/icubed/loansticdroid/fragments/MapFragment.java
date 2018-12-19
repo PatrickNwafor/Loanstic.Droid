@@ -34,6 +34,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     GoogleMap mGoogleMap;
     private SlidingUpPanelLayout slidingLayout;
     private ImageView btnShow;
+    TextView slideUp;
     private ImageView btnHide;
 
 
@@ -54,20 +55,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         btnShow = (ImageView) v.findViewById(R.id.btn_show);
-        btnHide = (ImageView) v.findViewById(R.id.btn_hide);
+        slideUp =  v.findViewById(R.id.slideUp);
+        //btnHide = (ImageView) v.findViewById(R.id.btn_hide);
 
         mMapView = v.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
 
         getLocationPermission();
-        //set layout slide listener
+        //setting layout slide listener
         slidingLayout = (SlidingUpPanelLayout)v.findViewById(R.id.sliding_layout);
 
-        //some "demo" event
+        //event
         slidingLayout.setPanelSlideListener(onSlideListener());
 
-        btnHide.setOnClickListener(onHideListener());
+      //  btnHide.setOnClickListener(onHideListener());
         btnShow.setOnClickListener(onShowListener());
 
 
@@ -82,8 +84,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             @Override
             public void onClick(View v) {
                 //show sliding layout in bottom of screen (not expand it)
-                slidingLayout.setPanelState(PanelState.COLLAPSED);
-                btnShow.setVisibility(View.GONE);
+                slidingLayout.setPanelState(PanelState.EXPANDED);
+               // btnShow.setVisibility(View.GONE);
             }
         };
     }
@@ -92,21 +94,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
      * Hide sliding layout when click button
      * @return
      */
-    private View.OnClickListener onHideListener() {
+   /* private View.OnClickListener onHideListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //hide sliding layout
-                slidingLayout.setPanelState(PanelState.HIDDEN);
-                btnShow.setVisibility(View.VISIBLE);
+                slidingLayout.setPanelState(PanelState.COLLAPSED);
+               // btnShow.setVisibility(View.VISIBLE);
             }
         };
-    }
+    }*/
 
     private PanelSlideListener onSlideListener() {
         return new PanelSlideListener() {
             @Override
             public void onPanelSlide(View view, float v) {
+                slideUp.setVisibility(View.GONE);
+                btnShow.setVisibility(View.GONE);
 
             }
 
@@ -115,10 +119,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             @Override
             public void onPanelCollapsed(View view) {
 
+
             }
 
             @Override
             public void onPanelExpanded(View view) {
+
 
             }
 

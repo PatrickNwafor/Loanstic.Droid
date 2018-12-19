@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -27,6 +29,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginBtn;
     private ProgressBar loginProgressBar;
     private TextView errorTextView;
+    Animation frombottom,frombottom1,frombottom2;
+     TextView forgotPasswordTextView;
 
     private Account account;
 
@@ -40,6 +44,8 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn = findViewById(R.id.loginAcctBtn);
         loginProgressBar = findViewById(R.id.loginProgressBar);
         errorTextView = findViewById(R.id.errorTextView);
+       // forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
+
 
         account = new Account();
 
@@ -49,6 +55,14 @@ public class LoginActivity extends AppCompatActivity {
                 loginToAccount();
             }
         });
+        frombottom = AnimationUtils.loadAnimation( this,R.anim.frombottom);
+        frombottom1 = AnimationUtils.loadAnimation( this,R.anim.frombottom1);
+        frombottom2 = AnimationUtils.loadAnimation( this,R.anim.frombottom2);
+
+        emailTextView.setAnimation(frombottom);
+        passwordTextView.setAnimation(frombottom);
+        loginBtn.setAnimation(frombottom1);
+       // forgotPasswordTextView.setAnimation(frombottom1);
     }
 
     /**************Singing In to Account***************/

@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -20,11 +22,11 @@ import android.widget.Toast;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.fragments.BranchesFragment;
 import com.icubed.loansticdroid.fragments.CollectionsFragment;
-import com.icubed.loansticdroid.fragments.CustomersFragment;
+import com.icubed.loansticdroid.fragments.BorrowersFragment;
 import com.icubed.loansticdroid.fragments.DashboardFragment;
 import com.icubed.loansticdroid.fragments.LoansFragment;
 import com.icubed.loansticdroid.fragments.MapFragment;
-import com.icubed.loansticdroid.fragments.RepaymentFragment;
+import com.icubed.loansticdroid.fragments.PaymentFragment;
 import com.icubed.loansticdroid.fragments.SavingsFragment;
 import com.icubed.loansticdroid.fragments.SettingsFragment;
 import com.icubed.loansticdroid.models.Account;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private Account account;
+    Animation bounce;
 
     //Navigation Drawer Layout
     private DrawerLayout mDrawerLayout;
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         account = new Account();
         menuBtn = findViewById(R.id.menu_btn);
         viewSwitch = findViewById(R.id.viewSwitch);
+        bounce = AnimationUtils.loadAnimation( this,R.anim.bounce);
 
         viewSwitch.setChecked(false);
 
@@ -120,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.nav_repayment:
-                RepaymentFragment repaymentFragment = new RepaymentFragment();
-                startFragment(repaymentFragment);
+                PaymentFragment paymentFragment = new PaymentFragment();
+                startFragment(paymentFragment);
                 return true;
 
             case R.id.nav_loans:
@@ -135,8 +139,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.nav_customers:
-                CustomersFragment customersFragment = new CustomersFragment();
-                startFragment(customersFragment);
+                BorrowersFragment borrowersFragment = new BorrowersFragment();
+                startFragment(borrowersFragment);
                 return true;
 
             case R.id.nav_branches:
