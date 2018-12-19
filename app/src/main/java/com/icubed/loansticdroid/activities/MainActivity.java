@@ -55,8 +55,6 @@ public class MainActivity extends AppCompatActivity {
     //Navigation Drawer Layout
     private DrawerLayout mDrawerLayout;
 
-    //Navigation drawer menu btn
-    private ImageView menuBtn;
     private Switch viewSwitch;
 
     @Override
@@ -65,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         account = new Account();
-        menuBtn = findViewById(R.id.menu_btn);
+        ImageView menuBtn = findViewById(R.id.menu_btn);
         viewSwitch = findViewById(R.id.viewSwitch);
 
         viewSwitch.setChecked(false);
