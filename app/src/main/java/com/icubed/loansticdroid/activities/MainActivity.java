@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Navigation Drawer Layout
     private DrawerLayout mDrawerLayout;
+    
 
     private Switch viewSwitch;
 
