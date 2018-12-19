@@ -22,24 +22,28 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
-import com.icubed.loansticdroid.cloudqueries.CollectionQueries;
+import com.icubed.loansticdroid.models.CollectionQueries;
 import com.icubed.loansticdroid.fragments.BranchesFragment;
 import com.icubed.loansticdroid.fragments.CollectionsFragment;
 import com.icubed.loansticdroid.fragments.BorrowersFragment;
 import com.icubed.loansticdroid.fragments.DashboardFragment;
 import com.icubed.loansticdroid.fragments.LoansFragment;
 import com.icubed.loansticdroid.fragments.MapFragment;
-import com.icubed.loansticdroid.fragments.RepaymentFragment;
+import com.icubed.loansticdroid.fragments.PaymentFragment;
 import com.icubed.loansticdroid.fragments.SavingsFragment;
 import com.icubed.loansticdroid.fragments.SettingsFragment;
-import com.icubed.loansticdroid.localdatabase.CollectionTableQueries;
+import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.models.Account;
+import com.icubed.loansticdroid.models.Payment;
 
-import junit.framework.Test;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,11 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
     //Navigation Drawer Layout
     private DrawerLayout mDrawerLayout;
-    private LinearLayout dragView;
-    private RecyclerView slideUpRecyclerView;
-    private SlideUpPanelRecyclerAdapter slideUpPanelRecyclerAdapter;
-
-    private List<String> collectionList;
 
     //Navigation drawer menu btn
     private ImageView menuBtn;
@@ -71,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
         viewSwitch.setChecked(false);
 
-        dragView = findViewById(R.id.dragView);
-        setSlideUpPanelMaxHeight();
 
         //Replacing our frame layout with our map fragment
         MapFragment mapFragment = new MapFragment();
@@ -124,26 +121,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Recycler View for slide up panel
-        collectionList = new ArrayList<>();
-        slideUpRecyclerView = findViewById(R.id.list);
-
-        slideUpRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(collectionList);
-        slideUpRecyclerView.setAdapter(slideUpPanelRecyclerAdapter);
-
-        collectionList.add(0,"CollectionTable 1");
-        collectionList.add(1,"CollectionTable 2");
-        collectionList.add(2,"CollectionTable 3");
-        collectionList.add(3,"CollectionTable 4");
-        collectionList.add(4,"CollectionTable 5");
-        collectionList.add(5,"CollectionTable 6");
-        collectionList.add(6,"CollectionTable 7");
-        collectionList.add(7,"CollectionTable 8");
-
-        for(String collection : collectionList){
-            slideUpPanelRecyclerAdapter.notifyDataSetChanged();
-        }
     }
 
     /**********Item selected on Navigation Drawer Actions*******/
@@ -161,8 +138,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.nav_repayment:
-                RepaymentFragment repaymentFragment = new RepaymentFragment();
-                startFragment(repaymentFragment);
+                PaymentFragment paymentFragment = new PaymentFragment();
+                startFragment(paymentFragment);
                 return true;
 
             case R.id.nav_loans:
@@ -198,19 +175,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
         }
 
-    }
-
-    private void setSlideUpPanelMaxHeight(){
-        //Setting Slide Panel Maximum height
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int height = dm.heightPixels;
-
-        ViewGroup.LayoutParams params = dragView.getLayoutParams();
-        // Changes the height and width to the specified *pixels*
-        params.height = height/2;
-
-        dragView.setLayoutParams(params);
     }
 
     /************Instantiate fragment transactions**********/
@@ -250,4 +214,10 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+    }
+
 }

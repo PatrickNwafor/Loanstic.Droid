@@ -8,55 +8,12 @@
     android:fitsSystemWindows="true"
     tools:context=".activities.MainActivity">
 
-    <com.sothree.slidinguppanel.SlidingUpPanelLayout
-        xmlns:sothree="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/sliding_layout"
+    <FrameLayout
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
-        sothree:umanoPanelHeight="40dp"
-        sothree:umanoShadowHeight="4dp"
-        sothree:umanoParallaxOffset="100dp"
-        sothree:umanoDragView="@+id/dragView"
-        sothree:umanoOverlay="true"
-        sothree:umanoScrollableView="@+id/list">
+        android:layout_height="match_parent">
 
-        <!-- MAIN CONTENT -->
-        <FrameLayout
-            android:id="@+id/content_frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </FrameLayout>
-
-        <!-- SLIDING LAYOUT -->
-        <LinearLayout
-            android:id="@+id/dragView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#ffffff"
-            android:clickable="true"
-            android:focusable="true"
-            android:orientation="vertical"
-            android:visibility="visible">
-
-            <android.support.v7.widget.AppCompatImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_keyboard_arrow_up" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </android.support.v7.widget.RecyclerView>
-        </LinearLayout>
-
-
-    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+    </FrameLayout>
 
     <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
 

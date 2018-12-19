@@ -12,13 +12,7 @@ public class CollectionTable {
     @Unique
     private String collectionId;
 
-    private String borrowersId;
-
-    private String loanOfficerId;
-
     private String loanId;
-
-    private String loanDate;
 
     private int collectionNumber;
 
@@ -30,16 +24,12 @@ public class CollectionTable {
 
     private Boolean isDueCollected;
 
-    @Generated(hash = 1806556757)
-    public CollectionTable(String collectionId, String borrowersId,
-            String loanOfficerId, String loanId, String loanDate,
-            int collectionNumber, Double collectionDueAmount,
-            String collectionDueDate, Date timestamp, Boolean isDueCollected) {
+    @Generated(hash = 1224056681)
+    public CollectionTable(String collectionId, String loanId, int collectionNumber,
+            Double collectionDueAmount, String collectionDueDate, Date timestamp,
+            Boolean isDueCollected) {
         this.collectionId = collectionId;
-        this.borrowersId = borrowersId;
-        this.loanOfficerId = loanOfficerId;
         this.loanId = loanId;
-        this.loanDate = loanDate;
         this.collectionNumber = collectionNumber;
         this.collectionDueAmount = collectionDueAmount;
         this.collectionDueDate = collectionDueDate;
@@ -59,36 +49,12 @@ public class CollectionTable {
         this.collectionId = collectionId;
     }
 
-    public String getBorrowersId() {
-        return this.borrowersId;
-    }
-
-    public void setBorrowersId(String borrowersId) {
-        this.borrowersId = borrowersId;
-    }
-
-    public String getLoanOfficerId() {
-        return this.loanOfficerId;
-    }
-
-    public void setLoanOfficerId(String loanOfficerId) {
-        this.loanOfficerId = loanOfficerId;
-    }
-
     public String getLoanId() {
         return this.loanId;
     }
 
     public void setLoanId(String loanId) {
         this.loanId = loanId;
-    }
-
-    public String getLoanDate() {
-        return this.loanDate;
-    }
-
-    public void setLoanDate(String loanDate) {
-        this.loanDate = loanDate;
     }
 
     public int getCollectionNumber() {
@@ -133,6 +99,6 @@ public class CollectionTable {
 
     @Override
     public String toString() {
-        return "CollectionTable{" + "collectionId='" + collectionId + '\'' + ", borrowersId='" + borrowersId + '\'' + ", loanOfficerId='" + loanOfficerId + '\'' + ", loanId='" + loanId + '\'' + ", loanDate='" + loanDate + '\'' + ", collectionNumber=" + collectionNumber + ", collectionDueAmount=" + collectionDueAmount + ", collectionDueDate='" + collectionDueDate + '\'' + ", timestamp=" + timestamp + ", isDueCollected=" + isDueCollected + '}';
+        return "CollectionTable{" + "collectionId='" + collectionId + '\'' + ", loanId='" + loanId + '\'' + ", collectionNumber=" + collectionNumber + ", collectionDueAmount=" + collectionDueAmount + ", collectionDueDate='" + collectionDueDate + '\'' + ", timestamp=" + timestamp + ", isDueCollected=" + isDueCollected + '}';
     }
 }

@@ -23,12 +23,12 @@ public class Account {
         }
     }
 
+    /********************Reset Account Password*****************/
     public Task<Void> resetPassword(String email){
-
         return auth.sendPasswordResetEmail(email);
-
     }
 
+    /*********************To verify email address*******************/
     public Task<Void> verifyEmail(){
         return getCurrentUser().sendEmailVerification();
     }

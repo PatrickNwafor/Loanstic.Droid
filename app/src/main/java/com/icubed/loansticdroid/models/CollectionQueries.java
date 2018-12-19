@@ -1,4 +1,4 @@
-package com.icubed.loansticdroid.cloudqueries;
+package com.icubed.loansticdroid.models;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -22,17 +22,13 @@ public class CollectionQueries {
     }
 
     /*****************Set CollectionTable Details****************/
-    public Task<DocumentReference> sendCollectionsDetails(String borrowersId, String loanOfficerId,
-                                                          String loanId, String loanDate, int collectionNumber,
+    public Task<DocumentReference> sendCollectionsDetails(String loanId, int collectionNumber,
                                                           double collectionDueAmount, String collectionDueDate){
 
         Date timestamp = new Date();
 
         Map<String, Object> collectionMap = new HashMap<>();
-        collectionMap.put("borrowersId", borrowersId);
-        collectionMap.put("loanOfficerId", loanOfficerId);
         collectionMap.put("loanId", loanId);
-        collectionMap.put("loanDate", loanDate);
         collectionMap.put("collectionNumber", collectionNumber);
         collectionMap.put("collectionDueAmount", collectionDueAmount);
         collectionMap.put("collectionDueDate", collectionDueDate);
