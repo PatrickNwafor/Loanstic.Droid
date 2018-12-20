@@ -31,9 +31,13 @@
             tools:layout_editor_absoluteY="271dp" />
 
         <EditText
-            android:id="@+id/emailView"
+            android:id="@+id/emailTextView"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_mail_outline_black_24dp"
+            android:drawablePadding="10dp"
+            android:drawableTint="@android:color/darker_gray"
             android:ems="10"
             android:hint="Email"
             android:inputType="textEmailAddress" />
@@ -42,16 +46,24 @@
             android:id="@+id/passwordTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
+            android:drawableTint="@android:color/darker_gray"
+            android:drawablePadding="10dp"
             android:ems="10"
             android:hint="Password"
             android:inputType="textPassword" />
 
         <Button
+            android:background="@drawable/button_background"
             android:id="@+id/loginAcctBtn"
+            android:layout_marginTop="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimary"
+
+
             android:text="Log in"
+            android:clickable="true"
+
             android:textColor="@android:color/white" />
     </LinearLayout>
 
@@ -61,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="84dp"
         android:text="LOGO"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
@@ -91,7 +103,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
-        android:id="@+id/forgetPasswordText"
+        android:id="@+id/forgotPasswordTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -100,6 +112,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
+        android:clickable="true"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <ProgressBar

@@ -5,6 +5,8 @@
     android:background="@color/colorPrimaryDark"
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
     android:orientation="vertical"
     android:gravity="center|bottom">
 
@@ -12,6 +14,8 @@
         android:id="@+id/nav_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:clickable="true"
         android:src="@drawable/download" />
 
     <TextView

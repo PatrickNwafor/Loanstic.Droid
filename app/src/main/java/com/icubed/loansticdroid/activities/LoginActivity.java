@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -24,10 +26,11 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private EditText emailTextView;
     private EditText passwordTextView;
-    private TextView forgetPasswordView;
     private Button loginBtn;
     private ProgressBar loginProgressBar;
     private TextView errorTextView;
+    Animation frombottom,frombottom1,frombottom2;
+     TextView forgotPasswordTextView;
 
     private Account account;
 
@@ -36,24 +39,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        emailTextView = findViewById(R.id.emailView);
+        emailTextView = findViewById(R.id.emailTextView);
         passwordTextView = findViewById(R.id.passwordTextView);
         loginBtn = findViewById(R.id.loginAcctBtn);
         loginProgressBar = findViewById(R.id.loginProgressBar);
         errorTextView = findViewById(R.id.errorTextView);
-        forgetPasswordView = findViewById(R.id.forgetPasswordText);
+        forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
+
 
         account = new Account();
-
-        forgetPasswordView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent forgetPasswordIntent = new Intent(getApplicationContext(), ResetPasswordActivity.class);
-                startActivity(forgetPasswordIntent);
-
-            }
-        });
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +55,14 @@ public class LoginActivity extends AppCompatActivity {
                 loginToAccount();
             }
         });
+        frombottom = AnimationUtils.loadAnimation( this,R.anim.frombottom);
+        frombottom1 = AnimationUtils.loadAnimation( this,R.anim.frombottom1);
+        frombottom2 = AnimationUtils.loadAnimation( this,R.anim.frombottom2);
+
+        emailTextView.setAnimation(frombottom);
+        passwordTextView.setAnimation(frombottom);
+        loginBtn.setAnimation(frombottom1);
+       forgotPasswordTextView.setAnimation(frombottom1);
     }
 
     /**************Singing In to Account***************/

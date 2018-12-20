@@ -9,25 +9,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
-import com.icubed.loansticdroid.models.CollectionQueries;
 import com.icubed.loansticdroid.fragments.BranchesFragment;
 import com.icubed.loansticdroid.fragments.CollectionsFragment;
 import com.icubed.loansticdroid.fragments.BorrowersFragment;
@@ -37,20 +29,14 @@ import com.icubed.loansticdroid.fragments.MapFragment;
 import com.icubed.loansticdroid.fragments.PaymentFragment;
 import com.icubed.loansticdroid.fragments.SavingsFragment;
 import com.icubed.loansticdroid.fragments.SettingsFragment;
-import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.models.Account;
-import com.icubed.loansticdroid.models.Payment;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
     private Account account;
+
 
     //Navigation Drawer Layout
     private DrawerLayout mDrawerLayout;
@@ -67,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         viewSwitch = findViewById(R.id.viewSwitch);
 
         viewSwitch.setChecked(false);
-
 
         //Replacing our frame layout with our map fragment
         MapFragment mapFragment = new MapFragment();
@@ -212,10 +197,4 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
-    }
-
 }
