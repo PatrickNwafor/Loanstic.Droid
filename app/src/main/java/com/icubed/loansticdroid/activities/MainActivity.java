@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Navigation Drawer Layout
     private DrawerLayout mDrawerLayout;
+    private NavigationView navigationView;
     private Switch viewSwitch;
 
     //Fragments
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Navigation Drawer
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -221,9 +222,6 @@ public class MainActivity extends AppCompatActivity {
 
         //hides slide up panel if already up
         MapFragment fragment = (MapFragment) fm.findFragmentByTag("home");
-        if(fragment != null) {
-            fragment.hidePanel();
-        }
 
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
@@ -235,8 +233,14 @@ public class MainActivity extends AppCompatActivity {
 
             mDrawerLayout.closeDrawers();
 
-        }else if(fragment == null){
+        }else if(fragment != null && fragment.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
 
+            fragment.hidePanel();
+
+        } else if(fragment == null){
+
+            viewSwitch.setVisibility(View.VISIBLE);
+            navigationView.getMenu().getItem(0).setChecked(true);
             startFragment(mapFragment, "home");
 
         }else{

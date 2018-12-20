@@ -2,7 +2,6 @@ package com.icubed.loansticdroid.fragments;
 
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -168,6 +167,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             @Override
             public void onMapClick(LatLng latLng) {
                 hideKeyboardFrom();
+
+                if(slidingLayout.getPanelState() == PanelState.EXPANDED){
+                    slidingLayout.setPanelState(PanelState.COLLAPSED);
+                }
             }
         });
 
@@ -223,6 +226,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     public void hidePanel(){
         if(slidingLayout.getPanelState() == PanelState.EXPANDED)
         slidingLayout.setPanelState(PanelState.COLLAPSED);
+    }
+
+    public PanelState getPanelState(){
+        return slidingLayout.getPanelState();
     }
 
     @Override
