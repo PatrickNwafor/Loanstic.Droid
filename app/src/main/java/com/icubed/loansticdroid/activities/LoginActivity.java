@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn = findViewById(R.id.loginAcctBtn);
         loginProgressBar = findViewById(R.id.loginProgressBar);
         errorTextView = findViewById(R.id.errorTextView);
-       // forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
+        forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
 
 
         account = new Account();
@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         emailTextView.setAnimation(frombottom);
         passwordTextView.setAnimation(frombottom);
         loginBtn.setAnimation(frombottom1);
-       // forgotPasswordTextView.setAnimation(frombottom1);
+       forgotPasswordTextView.setAnimation(frombottom1);
     }
 
     /**************Singing In to Account***************/

@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.*;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import static com.sothree.slidinguppanel.SlidingUpPanelLayout.*;
@@ -36,6 +38,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     private ImageView btnShow;
     TextView slideUp;
     private ImageView btnHide;
+    Animation bounce,bounce1,blink;
+    EditText search;
+
 
 
     private static final String TAG = "MapFragment";
@@ -56,6 +61,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         btnShow = (ImageView) v.findViewById(R.id.btn_show);
         slideUp =  v.findViewById(R.id.slideUp);
+        search =  v.findViewById(R.id.searchEditText);
+
+        bounce = AnimationUtils.loadAnimation( getContext(),R.anim.bounce);
+        blink = AnimationUtils.loadAnimation( getContext(),R.anim.blink);
+        bounce1 = AnimationUtils.loadAnimation( getContext(),R.anim.bounce1);
+        btnShow.setAnimation(blink);
+        slideUp.setAnimation(blink);
+        search.setAnimation(bounce1);
+
+
+
+
+
+
         //btnHide = (ImageView) v.findViewById(R.id.btn_hide);
 
         mMapView = v.findViewById(R.id.mapView);
@@ -85,7 +104,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             public void onClick(View v) {
                 //show sliding layout in bottom of screen (not expand it)
                 slidingLayout.setPanelState(PanelState.EXPANDED);
-               // btnShow.setVisibility(View.GONE);
+
             }
         };
     }
@@ -109,15 +128,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         return new PanelSlideListener() {
             @Override
             public void onPanelSlide(View view, float v) {
-                slideUp.setVisibility(View.GONE);
-                btnShow.setVisibility(View.GONE);
 
+                btnShow.setVisibility(View.GONE);
+                slideUp.setVisibility(View.GONE);
             }
 
 
 
             @Override
             public void onPanelCollapsed(View view) {
+
+
 
 
             }

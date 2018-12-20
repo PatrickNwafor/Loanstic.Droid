@@ -10,7 +10,10 @@
     android:id="@+id/sliding_layout"
     sothree:umanoOverlay="true"
     android:gravity="bottom"
-    sothree:umanoPanelHeight="105dp"
+    android:clickable="true"
+    android:focusable="true"
+
+    sothree:umanoPanelHeight="112dp"
     sothree:umanoParalaxOffset="30dp"
     sothree:umanoShadowHeight="4dp"
 
@@ -22,12 +25,14 @@
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     >
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         />
     <LinearLayout
         android:layout_width="match_parent"
@@ -92,11 +97,13 @@
 </FrameLayout>
 
     <!-- SLIDING LAYOUT PARENT-->
+
     <android.support.v7.widget.CardView
         android:id="@+id/dragView"
         android:layout_width="match_parent"
         android:layout_height="400dp"
         sothree:cardCornerRadius="20dp"
+
 
 
 
@@ -110,12 +117,21 @@
 
 
         <!-- SLIDING LAYOUT BUTTON-->
+<android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
 
-        <include
+    android:scrollbarAlwaysDrawVerticalTrack="true"
+    android:scrollbars="vertical"
+    android:layout_marginTop="10dp"
+    >
+    <include
+
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     layout="@layout/collection_single_layout"/>
 
+</android.support.v4.widget.NestedScrollView>
 
 
 

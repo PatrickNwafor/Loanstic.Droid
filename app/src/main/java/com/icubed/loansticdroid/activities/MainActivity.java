@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private Account account;
-    Animation bounce;
+
 
     //Navigation Drawer Layout
     private DrawerLayout mDrawerLayout;
@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         account = new Account();
         menuBtn = findViewById(R.id.menu_btn);
         viewSwitch = findViewById(R.id.viewSwitch);
-       // bounce = AnimationUtils.loadAnimation( this,R.anim.);
 
         viewSwitch.setChecked(false);
 
