@@ -1,14 +1,18 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,18 +34,23 @@ import com.icubed.loansticdroid.fragments.PaymentFragment;
 import com.icubed.loansticdroid.fragments.SavingsFragment;
 import com.icubed.loansticdroid.fragments.SettingsFragment;
 import com.icubed.loansticdroid.models.Account;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private boolean doubleBackToExitPressedOnce = false;
 
     private Account account;
 
 
     //Navigation Drawer Layout
     private DrawerLayout mDrawerLayout;
-
     private Switch viewSwitch;
+
+    //Fragments
+    MapFragment mapFragment;
+    DashboardFragment dashboardFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +64,9 @@ public class MainActivity extends AppCompatActivity {
         viewSwitch.setChecked(false);
 
         //Replacing our frame layout with our map fragment
-        MapFragment mapFragment = new MapFragment();
-        startFragment(mapFragment);
+        mapFragment = new MapFragment();
+        dashboardFragment = new DashboardFragment();
+        startFragment(mapFragment, "home");
 
         viewSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -66,15 +76,13 @@ public class MainActivity extends AppCompatActivity {
                     viewSwitch.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_map, 0,0,0);
 
                     //Replacing the frame layout with our dashboard fragment
-                    DashboardFragment dashboardFragment = new DashboardFragment();
-                    startFragment(dashboardFragment, R.anim.enter_from_right, R.anim.exit_to_left);
+                    startFragment(dashboardFragment, R.anim.enter_from_right, R.anim.exit_to_left, "home");
                 }else{
                     //change switch image to dashboard
                     viewSwitch.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_dashboard, 0,0,0);
 
                     //Replacing our frame layout with our map fragment
-                    MapFragment mapFragment = new MapFragment();
-                    startFragment(mapFragment, R.anim.enter_from_left, R.anim.exit_to_right);
+                    startFragment(mapFragment, R.anim.enter_from_left, R.anim.exit_to_right, "home");
                 }
             }
         });
@@ -110,44 +118,52 @@ public class MainActivity extends AppCompatActivity {
     private boolean navActions(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.nav_dashboard:
-                DashboardFragment dashboardFragment = new DashboardFragment();
-                startFragment(dashboardFragment);
+            case R.id.nav_home:
+
+                viewSwitch.setVisibility(View.VISIBLE);
+                startFragment(mapFragment, "home");
                 return true;
 
             case R.id.nav_collections:
+                viewSwitch.setVisibility(View.GONE);
                 CollectionsFragment collectionsFragment = new CollectionsFragment();
-                startFragment(collectionsFragment);
+                startFragment(collectionsFragment, "collection");
                 return true;
 
             case R.id.nav_repayment:
+                viewSwitch.setVisibility(View.GONE);
                 PaymentFragment paymentFragment = new PaymentFragment();
-                startFragment(paymentFragment);
+                startFragment(paymentFragment, "payment");
                 return true;
 
             case R.id.nav_loans:
+                viewSwitch.setVisibility(View.GONE);
                 LoansFragment loansFragment = new LoansFragment();
-                startFragment(loansFragment);
+                startFragment(loansFragment, "loan");
                 return true;
 
             case R.id.nav_savings:
+                viewSwitch.setVisibility(View.GONE);
                 SavingsFragment savingsFragment = new SavingsFragment();
-                startFragment(savingsFragment);
+                startFragment(savingsFragment, "savings");
                 return true;
 
             case R.id.nav_customers:
+                viewSwitch.setVisibility(View.GONE);
                 BorrowersFragment borrowersFragment = new BorrowersFragment();
-                startFragment(borrowersFragment);
+                startFragment(borrowersFragment, "borrowers");
                 return true;
 
             case R.id.nav_branches:
+                viewSwitch.setVisibility(View.GONE);
                 BranchesFragment branchesFragment = new BranchesFragment();
-                startFragment(branchesFragment);
+                startFragment(branchesFragment, "branches");
                 return true;
 
             case R.id.nav_settings:
+                viewSwitch.setVisibility(View.GONE);
                 SettingsFragment settingsFragment = new SettingsFragment();
-                startFragment(settingsFragment);
+                startFragment(settingsFragment, "settings");
                 return true;
 
             case R.id.nav_signout:
@@ -161,17 +177,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /************Instantiate fragment transactions**********/
-    private void startFragment(Fragment fragment){
+    private void startFragment(Fragment fragment, String fragmentTag){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, fragment);
+        transaction.replace(R.id.content_frame, fragment, fragmentTag);
         transaction.commit();
     }
 
     /***************Instantiate fragment transactions with animations*************/
-    private void startFragment(Fragment fragment, int enter, int exit) {
+    private void startFragment(Fragment fragment, int enter, int exit, String fragmentTag) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(enter,exit);
-        transaction.replace(R.id.content_frame, fragment);
+        transaction.replace(R.id.content_frame, fragment, fragmentTag);
         transaction.commit();
     }
 
@@ -196,5 +212,45 @@ public class MainActivity extends AppCompatActivity {
             startActivity(loginIntent);
             finish();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        FragmentManager fm = getSupportFragmentManager();
+
+        //hides slide up panel if already up
+        MapFragment fragment = (MapFragment) fm.findFragmentByTag("home");
+        if(fragment != null) {
+            fragment.hidePanel();
+        }
+
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        //Actions to carry out when back button is pressed depending on the state of the app;
+        if(mDrawerLayout.isDrawerOpen(GravityCompat.START)){
+
+            mDrawerLayout.closeDrawers();
+
+        }else if(fragment == null){
+
+            startFragment(mapFragment, "home");
+
+        }else{
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce=false;
+                }
+            }, 2000);
+        }
+
     }
 }

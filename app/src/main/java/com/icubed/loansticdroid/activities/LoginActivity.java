@@ -30,7 +30,6 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar loginProgressBar;
     private TextView errorTextView;
     Animation frombottom,frombottom1,frombottom2;
-     TextView forgotPasswordTextView;
 
     private Account account;
 
@@ -44,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn = findViewById(R.id.loginAcctBtn);
         loginProgressBar = findViewById(R.id.loginProgressBar);
         errorTextView = findViewById(R.id.errorTextView);
-        forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
+        TextView forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
 
 
         account = new Account();
@@ -63,6 +62,14 @@ public class LoginActivity extends AppCompatActivity {
         passwordTextView.setAnimation(frombottom);
         loginBtn.setAnimation(frombottom1);
        forgotPasswordTextView.setAnimation(frombottom1);
+
+       forgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Intent forgetPasswordIntent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+               startActivity(forgetPasswordIntent);
+           }
+       });
     }
 
     /**************Singing In to Account***************/

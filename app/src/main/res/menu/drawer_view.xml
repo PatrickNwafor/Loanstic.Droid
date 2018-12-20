@@ -4,9 +4,10 @@
         android:id="@+id/stats"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_dashboard"
-            android:icon="@drawable/ic_menu_dashboard"
-            android:title="@string/dashboard"/>
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_menu_home"
+            android:title="@string/home"
+            android:checked="true"/>
         <item
             android:id="@+id/nav_collections"
             android:icon="@drawable/ic_menu_collection"

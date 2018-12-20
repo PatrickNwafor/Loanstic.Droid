@@ -17,7 +17,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
 
     List<String> collectionList;
 
-    public SlideUpPanelRecyclerAdapter(List collectionList) {
+    public SlideUpPanelRecyclerAdapter(List<String> collectionList) {
         this.collectionList = collectionList;
     }
 
