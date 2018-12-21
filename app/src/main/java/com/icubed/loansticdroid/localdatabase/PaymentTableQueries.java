@@ -13,7 +13,7 @@ public class PaymentTableQueries {
         paymentTableDao = daoSession.getPaymentTableDao();
     }
 
-    /***************Save Payment to local Storage*********/
+    /***************Save PaymentQueries to local Storage*********/
     public void insertPaymentToStorage(PaymentTable paymentTable){
         paymentTableDao.insert(paymentTable);
     }
@@ -32,7 +32,7 @@ public class PaymentTableQueries {
                 .get(0);
     }
 
-    /********Load all Unconfirmed Payment****************/
+    /********Load all Unconfirmed PaymentQueries****************/
     public List<PaymentTable> loadUnconfimredPayment(){
         return paymentTableDao.queryBuilder()
                 .where(PaymentTableDao.Properties.IsPaid.eq(false))
@@ -40,7 +40,7 @@ public class PaymentTableQueries {
                 .list();
     }
 
-    /********Load all Confirmed Payment****************/
+    /********Load all Confirmed PaymentQueries****************/
     public List<PaymentTable> loadConfimredPayment(){
         return paymentTableDao.queryBuilder()
                 .where(PaymentTableDao.Properties.IsPaid.eq(true))

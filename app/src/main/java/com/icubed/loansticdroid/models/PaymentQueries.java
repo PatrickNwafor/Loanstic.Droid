@@ -16,14 +16,14 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Payment {
+public class PaymentQueries {
 
     private Account account;
     private FirebaseFirestore firebaseFirestore;
     private StorageReference paymentImageStorageRef;
     private StorageReference paymentImageThumbStorageRef;
 
-    public Payment(){
+    public PaymentQueries(){
 
         account = new Account();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -35,7 +35,7 @@ public class Payment {
                 .child("payment_validation_image/thumb");
     }
 
-    /************Upload Payment Validation Image***************/
+    /************Upload PaymentQueries Validation Image***************/
     public UploadTask uploadImage(Bitmap bitmap, String paymentId){
 
         paymentImageStorageRef.child(paymentId+".jpg");
@@ -83,7 +83,7 @@ public class Payment {
                 .add(paymentMap);
     }
 
-    /********************Retrieve Single Payment Details**************/
+    /********************Retrieve Single PaymentQueries Details**************/
     public Task<DocumentSnapshot> retieveSinglePayment(String paymentId){
         return firebaseFirestore.collection("Payment")
                 .document(paymentId)

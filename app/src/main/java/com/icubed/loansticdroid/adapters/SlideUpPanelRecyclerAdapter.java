@@ -1,5 +1,7 @@
 package com.icubed.loansticdroid.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.activities.CollectionDetailsActivity;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
 
 import java.util.List;
@@ -17,9 +20,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPanelRecyclerAdapter.ViewHolder> {
 
     List<DueCollectionDetails> collectionList;
+    Context context;
 
-    public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList) {
+    public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList, Context context) {
         this.collectionList = collectionList;
+        this.context = context;
     }
 
     @NonNull
@@ -43,7 +48,8 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
         holder.detailsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent collectionDetailsIntent = new Intent(context, CollectionDetailsActivity.class);
+                context.startActivity(collectionDetailsIntent);
             }
         });
 

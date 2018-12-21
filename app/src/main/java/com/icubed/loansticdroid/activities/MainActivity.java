@@ -22,15 +22,9 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.fragments.BranchesFragment;
-import com.icubed.loansticdroid.fragments.CollectionsFragment;
-import com.icubed.loansticdroid.fragments.BorrowersFragment;
 import com.icubed.loansticdroid.fragments.DashboardFragment;
-import com.icubed.loansticdroid.fragments.LoansFragment;
 import com.icubed.loansticdroid.fragments.MapFragment;
 import com.icubed.loansticdroid.fragments.PaymentFragment;
-import com.icubed.loansticdroid.fragments.SavingsFragment;
-import com.icubed.loansticdroid.fragments.SettingsFragment;
 import com.icubed.loansticdroid.models.Account;
 import com.icubed.loansticdroid.models.Collection;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -48,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private Switch viewSwitch;
     private ProgressBar mainProgrressBar;
     private FrameLayout contentFrame;
-
-    private Collection collection;
 
     //Fragments
     MapFragment mapFragment;
@@ -124,51 +116,29 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.nav_home:
-
                 viewSwitch.setVisibility(View.VISIBLE);
                 startFragment(mapFragment, "home");
                 return true;
 
             case R.id.nav_collections:
-                viewSwitch.setVisibility(View.GONE);
-                CollectionsFragment collectionsFragment = new CollectionsFragment();
-                startFragment(collectionsFragment, "collection");
                 return true;
 
             case R.id.nav_repayment:
-                viewSwitch.setVisibility(View.GONE);
-                PaymentFragment paymentFragment = new PaymentFragment();
-                startFragment(paymentFragment, "payment");
                 return true;
 
             case R.id.nav_loans:
-                viewSwitch.setVisibility(View.GONE);
-                LoansFragment loansFragment = new LoansFragment();
-                startFragment(loansFragment, "loan");
                 return true;
 
             case R.id.nav_savings:
-                viewSwitch.setVisibility(View.GONE);
-                SavingsFragment savingsFragment = new SavingsFragment();
-                startFragment(savingsFragment, "savings");
                 return true;
 
             case R.id.nav_customers:
-                viewSwitch.setVisibility(View.GONE);
-                BorrowersFragment borrowersFragment = new BorrowersFragment();
-                startFragment(borrowersFragment, "borrowers");
                 return true;
 
             case R.id.nav_branches:
-                viewSwitch.setVisibility(View.GONE);
-                BranchesFragment branchesFragment = new BranchesFragment();
-                startFragment(branchesFragment, "branches");
                 return true;
 
             case R.id.nav_settings:
-                viewSwitch.setVisibility(View.GONE);
-                SettingsFragment settingsFragment = new SettingsFragment();
-                startFragment(settingsFragment, "settings");
                 return true;
 
             case R.id.nav_signout:
@@ -246,12 +216,6 @@ public class MainActivity extends AppCompatActivity {
 
             fragment.hidePanel();
 
-        } else if(fragment == null){
-
-            viewSwitch.setVisibility(View.VISIBLE);
-            navigationView.getMenu().getItem(0).setChecked(true);
-            startFragment(mapFragment, "home");
-
         }else{
             this.doubleBackToExitPressedOnce = true;
             Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
@@ -266,6 +230,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 
 }

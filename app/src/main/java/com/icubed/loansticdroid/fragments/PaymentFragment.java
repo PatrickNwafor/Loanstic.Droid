@@ -10,8 +10,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 //import com.bumptech.glide.Glide;
@@ -19,8 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.localdatabase.PaymentTable;
-import com.icubed.loansticdroid.models.Payment;
+import com.icubed.loansticdroid.models.PaymentQueries;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -29,7 +26,7 @@ import static android.app.Activity.RESULT_OK;
  */
 public class PaymentFragment extends Fragment {
 
-    private Payment payment;
+    private PaymentQueries paymentQueries;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -43,7 +40,7 @@ public class PaymentFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_payment, container, false);
 
-        payment = new Payment();
+        paymentQueries = new PaymentQueries();
 
         return view;
     }
@@ -68,14 +65,14 @@ public class PaymentFragment extends Fragment {
     }
 
     private void uploadPaymentPicture(final Bitmap bitmap, final String paymentId){
-        payment.uploadImage(bitmap, paymentId).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+        paymentQueries.uploadImage(bitmap, paymentId).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if(task.isSuccessful()){
 
                     final String paymentImageUri = task.getResult().getDownloadUrl().toString();
 
-                    payment.uploadImageThumb(bitmap, paymentId)
+                    paymentQueries.uploadImageThumb(bitmap, paymentId)
                             .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -96,7 +93,7 @@ public class PaymentFragment extends Fragment {
     }
 
     private void saveImageUri(String paymentId, final String paymentImageUri, String paymentImageThumbUri){
-        payment.storeUriToFirestore(paymentId, paymentImageUri, paymentImageThumbUri)
+        paymentQueries.storeUriToFirestore(paymentId, paymentImageUri, paymentImageThumbUri)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
