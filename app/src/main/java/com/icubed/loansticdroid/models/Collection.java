@@ -145,10 +145,11 @@ public class Collection {
         if(count == collectionSize){
             if(!isDueCollectionSingle) {
                 getDueCollectionData();
-                count = 0;
             }else{
+                isDueCollectionSingle = false;
                 getSingleDueCollectionData(collectionId);
             }
+            count = 0;
         }
     }
 

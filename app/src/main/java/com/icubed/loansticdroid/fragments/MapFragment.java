@@ -20,7 +20,10 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
+import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
+import com.icubed.loansticdroid.models.Collection;
+import com.icubed.loansticdroid.models.DueCollectionDetails;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import static com.sothree.slidinguppanel.SlidingUpPanelLayout.*;
 
@@ -51,8 +54,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     Animation bounce,bounce1,blink;
     EditText search;
 
-    private List<String> dueCollectionList;
-    private SlideUpPanelRecyclerAdapter slideUpPanelRecyclerAdapter;
+    private Collection collection;
+
+    public List<DueCollectionDetails> dueCollectionList;
+    public SlideUpPanelRecyclerAdapter slideUpPanelRecyclerAdapter;
 
     private static final String TAG = "MapFragment";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -82,25 +87,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         slideUp.setAnimation(blink);
         search.setAnimation(bounce1);
 
+        collection = new Collection(getActivity().getApplication(), getActivity());
+
         dueCollectionList = new ArrayList<>();
         slideUpRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(dueCollectionList);
         slideUpRecyclerView.setAdapter(slideUpPanelRecyclerAdapter);
-
-        dueCollectionList.add("Collection 1");
-        dueCollectionList.add("Collection 2");
-        dueCollectionList.add("Collection 3");
-        dueCollectionList.add("Collection 4");
-        dueCollectionList.add("Collection 5");
-        dueCollectionList.add("Collection 6");
-        dueCollectionList.add("Collection 7");
-        dueCollectionList.add("Collection 8");
-        dueCollectionList.add("Collection 9");
-
-        for(String s : dueCollectionList){
-            slideUpPanelRecyclerAdapter.notifyDataSetChanged();
-        }
-
 
         //btnHide = (ImageView) v.findViewById(R.id.btn_hide);
 
@@ -130,6 +122,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
       //  btnHide.setOnClickListener(onHideListener());
         btnShow.setOnClickListener(onShowListener());
 
+        if(!collection.doesCollectionExistInLocalStorage()){
+            collection.retrieveNewDueCollectionData();
+        }else{
+            collection.getDueCollectionData();
+            collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
+        }
+
 
         return v;
     }
@@ -146,6 +145,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
             }
         };
+    }
+
+    public void hideProgressBar() {
+        ((MainActivity) getActivity()).hideProgressBar();
     }
 
     @Override
