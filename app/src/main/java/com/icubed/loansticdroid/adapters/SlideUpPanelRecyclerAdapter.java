@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.CollectionDetailsActivity;
+import com.icubed.loansticdroid.activities.LoginActivity;
+import com.icubed.loansticdroid.activities.ResetPasswordActivity;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
 
 import java.util.List;
@@ -20,12 +22,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPanelRecyclerAdapter.ViewHolder> {
 
     List<DueCollectionDetails> collectionList;
-    Context context;
+
+
+   Context context;
 
     public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList, Context context) {
         this.collectionList = collectionList;
         this.context = context;
     }
+   /* public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList) {
+        this.collectionList = collectionList;
+    }*/
+
 
     @NonNull
     @Override
@@ -48,8 +56,10 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
         holder.detailsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent collectionDetailsIntent = new Intent(context, CollectionDetailsActivity.class);
-                context.startActivity(collectionDetailsIntent);
+                Intent intent = new Intent(context, CollectionDetailsActivity.class);
+
+                context.startActivity(intent);
+
             }
         });
 

@@ -91,7 +91,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
         dueCollectionList = new ArrayList<>();
         slideUpRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(dueCollectionList, getContext());
+        slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(dueCollectionList,getContext());
         slideUpRecyclerView.setAdapter(slideUpPanelRecyclerAdapter);
 
         //btnHide = (ImageView) v.findViewById(R.id.btn_hide);
