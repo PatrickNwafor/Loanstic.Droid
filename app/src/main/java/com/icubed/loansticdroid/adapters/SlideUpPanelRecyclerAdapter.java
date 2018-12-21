@@ -22,17 +22,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPanelRecyclerAdapter.ViewHolder> {
 
     List<DueCollectionDetails> collectionList;
-
-
-   Context context;
+    Context context;
 
     public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList, Context context) {
         this.collectionList = collectionList;
         this.context = context;
     }
-   /* public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList) {
-        this.collectionList = collectionList;
-    }*/
 
 
     @NonNull
@@ -57,9 +52,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, CollectionDetailsActivity.class);
-
                 context.startActivity(intent);
-
             }
         });
 

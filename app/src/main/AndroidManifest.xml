@@ -33,7 +33,14 @@
         </activity>
         <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.ResetPasswordActivity" />
-        <activity android:name=".activities.CollectionDetailsActivity"></activity>
+        <activity android:name=".activities.CollectionDetailsActivity" />
+        <activity android:name=".activities.CollectionActivity" />
+        <activity android:name=".activities.PaymentActivity" />
+        <activity android:name=".activities.LoanActivity" />
+        <activity android:name=".activities.SavingsActivity" />
+        <activity android:name=".activities.BorrowerActivity" />
+        <activity android:name=".activities.BranchesActivity" />
+        <activity android:name=".activities.SettingsActivity"></activity>
     </application>
 
 </manifest>

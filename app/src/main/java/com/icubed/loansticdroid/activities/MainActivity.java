@@ -24,9 +24,7 @@ import android.widget.Toast;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.fragments.DashboardFragment;
 import com.icubed.loansticdroid.fragments.MapFragment;
-import com.icubed.loansticdroid.fragments.PaymentFragment;
 import com.icubed.loansticdroid.models.Account;
-import com.icubed.loansticdroid.models.Collection;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -121,24 +119,31 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.nav_collections:
+                startAnotherActivity(CollectionActivity.class);
                 return true;
 
-            case R.id.nav_repayment:
+            case R.id.nav_payment:
+                startAnotherActivity(PaymentActivity.class);
                 return true;
 
             case R.id.nav_loans:
+                startAnotherActivity(LoanActivity.class);
                 return true;
 
             case R.id.nav_savings:
+                startAnotherActivity(SavingsActivity.class);
                 return true;
 
-            case R.id.nav_customers:
+            case R.id.nav_borrower:
+                startAnotherActivity(BorrowerActivity.class);
                 return true;
 
             case R.id.nav_branches:
+                startAnotherActivity(BranchesActivity.class);
                 return true;
 
             case R.id.nav_settings:
+                startAnotherActivity(SettingsActivity.class);
                 return true;
 
             case R.id.nav_signout:
@@ -164,6 +169,11 @@ public class MainActivity extends AppCompatActivity {
         transaction.setCustomAnimations(enter,exit);
         transaction.replace(R.id.content_frame, fragment, fragmentTag);
         transaction.commit();
+    }
+
+    private void startAnotherActivity(Class newActivity){
+        Intent newActivityIntent = new Intent(this, newActivity);
+        startActivity(newActivityIntent);
     }
 
     /************Sign Out Of Account***********/

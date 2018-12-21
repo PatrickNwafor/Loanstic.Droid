@@ -17,9 +17,9 @@
         android:id="@+id/bank"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_repayment"
+            android:id="@+id/nav_payment"
             android:icon="@drawable/ic_menu_repayment"
-            android:title="@string/repayment" />
+            android:title="@string/payment" />
         <item
             android:id="@+id/nav_loans"
             android:icon="@drawable/ic_menu_wallet"
@@ -30,10 +30,10 @@
             android:title="@string/savings" />
     </group>
     <group
-        android:id="@+id/customers"
+        android:id="@+id/borrower"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_customers"
+            android:id="@+id/nav_borrower"
             android:icon="@drawable/ic_menu_customers"
             android:title="@string/borrowers" />
         <item
