@@ -20,10 +20,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
-import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
-import com.icubed.loansticdroid.models.Collection;
-import com.icubed.loansticdroid.models.DueCollectionDetails;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import static com.sothree.slidinguppanel.SlidingUpPanelLayout.*;
 
@@ -37,7 +34,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.icubed.loansticdroid.R;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -55,10 +51,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     Animation bounce,bounce1,blink;
     EditText search;
 
-    public List<DueCollectionDetails> dueCollectionList;
-    public List<DueCollectionDetails> dueList;
-    public SlideUpPanelRecyclerAdapter slideUpPanelRecyclerAdapter;
-    private Collection collection;
+    private List<String> dueCollectionList;
+    private SlideUpPanelRecyclerAdapter slideUpPanelRecyclerAdapter;
 
     private static final String TAG = "MapFragment";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -81,8 +75,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         search =  v.findViewById(R.id.searchEditText);
         slideUpRecyclerView = v.findViewById(R.id.collection_list);
 
-        collection = new Collection(getActivity().getApplication(), getActivity());
-
         bounce = AnimationUtils.loadAnimation( getContext(),R.anim.bounce);
         blink = AnimationUtils.loadAnimation( getContext(),R.anim.blink);
         bounce1 = AnimationUtils.loadAnimation( getContext(),R.anim.bounce1);
@@ -91,10 +83,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         search.setAnimation(bounce1);
 
         dueCollectionList = new ArrayList<>();
-        dueList = new ArrayList<>();
         slideUpRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(dueCollectionList);
         slideUpRecyclerView.setAdapter(slideUpPanelRecyclerAdapter);
+
+        dueCollectionList.add("Collection 1");
+        dueCollectionList.add("Collection 2");
+        dueCollectionList.add("Collection 3");
+        dueCollectionList.add("Collection 4");
+        dueCollectionList.add("Collection 5");
+        dueCollectionList.add("Collection 6");
+        dueCollectionList.add("Collection 7");
+        dueCollectionList.add("Collection 8");
+        dueCollectionList.add("Collection 9");
+
+        for(String s : dueCollectionList){
+            slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+        }
 
 
         //btnHide = (ImageView) v.findViewById(R.id.btn_hide);
@@ -125,23 +130,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
       //  btnHide.setOnClickListener(onHideListener());
         btnShow.setOnClickListener(onShowListener());
 
-        //Load Due Collections
-        if(!collection.doesCollectionExistInLocalStorage()){
-            //Loads from cloud
-            collection.retrieveNewDueCollectionData();
-        }else{
-            //Loads locally
-           collection.getDueCollectionData();
-           collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
-        }
 
         return v;
     }
-
-    public void hideProgressBar(){
-        ((MainActivity)getActivity()).hideProgressBar();
-    }
-
     /**
      * Request show sliding layout when clicked
      * @return
@@ -233,9 +224,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     }
 
     public void hidePanel(){
-        if(slidingLayout.getPanelState() == PanelState.EXPANDED) {
-            slidingLayout.setPanelState(PanelState.COLLAPSED);
-        }
+        if(slidingLayout.getPanelState() == PanelState.EXPANDED)
+        slidingLayout.setPanelState(PanelState.COLLAPSED);
     }
 
     public PanelState getPanelState(){
