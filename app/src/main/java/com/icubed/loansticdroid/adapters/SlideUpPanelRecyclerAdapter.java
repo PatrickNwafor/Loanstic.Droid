@@ -40,6 +40,13 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
         holder.setBusiness(collectionList.get(position).getBorrowerJob());
         Log.d("Collections", collectionName);
 
+        holder.detailsTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
 
     @Override
@@ -55,6 +62,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
         private CircleImageView collectionImageView;
         private TextView collectionNameTextView;
         private TextView amountTextView;
+        public TextView detailsTextView;
         private TextView dateTextView;
 
         public ViewHolder(View itemView) {
@@ -67,6 +75,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
 
             collectionNameTextView = mView.findViewById(R.id.collectionNameTextView);
             dateTextView = mView.findViewById(R.id.dateTextView);
+            detailsTextView = mView.findViewById(R.id.detailsTextView);
 
             if(position != 0) {
                 dateTextView.setVisibility(View.GONE);
