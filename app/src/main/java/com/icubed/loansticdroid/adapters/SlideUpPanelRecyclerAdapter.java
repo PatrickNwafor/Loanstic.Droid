@@ -9,15 +9,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.models.DueCollectionDetails;
 
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPanelRecyclerAdapter.ViewHolder> {
 
-    List<String> collectionList;
+    List<DueCollectionDetails> collectionList;
 
-    public SlideUpPanelRecyclerAdapter(List<String> collectionList) {
+    public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList) {
         this.collectionList = collectionList;
     }
 
@@ -33,8 +34,10 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        String collectionName = collectionList.get(position);
+        String collectionName = collectionList.get(position).getBorrowerName();
         holder.setCollectionName(collectionName, position);
+        holder.setCollectionAmount(collectionList.get(position).getDueAmount());
+        holder.setBusiness(collectionList.get(position).getBorrowerJob());
         Log.d("Collections", collectionName);
 
     }
@@ -74,6 +77,16 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
 
             collectionNameTextView.setText(collections);
 
+        }
+
+        public void setCollectionAmount(double collectionAmount){
+            amountTextView = mView.findViewById(R.id.amountTextView);
+            amountTextView.setText(String.valueOf(collectionAmount));
+        }
+
+        public void setBusiness(String borrowerJob) {
+            jobTextView = mView.findViewById(R.id.jobTextView);
+            jobTextView.setText(String.valueOf(borrowerJob));
         }
     }
 

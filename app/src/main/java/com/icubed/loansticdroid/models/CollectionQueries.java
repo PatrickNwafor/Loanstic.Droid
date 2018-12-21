@@ -40,17 +40,15 @@ public class CollectionQueries {
     }
 
     /*****************Retrieve CollectionTable*********************/
-    public Task<QuerySnapshot> retrieveCollection(){
+    public Task<QuerySnapshot> retrieveAllCollection(){
         return firebaseFirestore.collection("Collection").get();
     }
 
-    /*****************Retrieve Due CollectionTable for loan officer*******************/
-    public Task<QuerySnapshot> retrieveDueCollectionsDataForLoanOfficer(){
+    /*****************Retrieve CollectionTable for loan*******************/
+    public Task<QuerySnapshot> retrieveCollectionsDataForALoan(String loanId){
 
         return firebaseFirestore.collection("Collection")
-                .whereEqualTo("loanOfficerId", account.getCurrentUserId())
-                .whereEqualTo("collectionDueDate", dateString(new Date()))
-                .whereEqualTo("isDueCollected", false)
+                .whereEqualTo("loanId", loanId)
                 .get();
 
     }

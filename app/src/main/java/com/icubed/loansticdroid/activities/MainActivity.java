@@ -1,6 +1,5 @@
 package com.icubed.loansticdroid.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,14 +11,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -34,6 +32,7 @@ import com.icubed.loansticdroid.fragments.PaymentFragment;
 import com.icubed.loansticdroid.fragments.SavingsFragment;
 import com.icubed.loansticdroid.fragments.SettingsFragment;
 import com.icubed.loansticdroid.models.Account;
+import com.icubed.loansticdroid.models.Collection;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,11 +42,14 @@ public class MainActivity extends AppCompatActivity {
 
     private Account account;
 
-
     //Navigation Drawer Layout
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
     private Switch viewSwitch;
+    private ProgressBar mainProgrressBar;
+    private FrameLayout contentFrame;
+
+    private Collection collection;
 
     //Fragments
     MapFragment mapFragment;
@@ -61,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         account = new Account();
         ImageView menuBtn = findViewById(R.id.menu_btn);
         viewSwitch = findViewById(R.id.viewSwitch);
+        mainProgrressBar = findViewById(R.id.mainProgressBar);
+        contentFrame = findViewById(R.id.content_frame);
 
         viewSwitch.setChecked(false);
 
@@ -202,6 +206,11 @@ public class MainActivity extends AppCompatActivity {
         Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(loginIntent);
         finish();
+    }
+
+    public void hideProgressBar(){
+        contentFrame.setVisibility(View.VISIBLE);
+        mainProgrressBar.setVisibility(View.GONE);
     }
 
     @Override
