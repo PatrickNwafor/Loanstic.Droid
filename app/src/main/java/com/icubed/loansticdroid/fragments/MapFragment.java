@@ -2,6 +2,7 @@ package com.icubed.loansticdroid.fragments;
 
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -20,6 +21,9 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
+import com.icubed.loansticdroid.activities.CollectionDetailsActivity;
+import com.icubed.loansticdroid.activities.LoginActivity;
+import com.icubed.loansticdroid.activities.ResetPasswordActivity;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import static com.sothree.slidinguppanel.SlidingUpPanelLayout.*;
@@ -46,7 +50,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     private SlidingUpPanelLayout slidingLayout;
     private RecyclerView slideUpRecyclerView;
     private ImageView btnShow;
-    TextView slideUp;
+    TextView slideUp,details;
     private ImageView btnHide;
     Animation bounce,bounce1,blink;
     EditText search;
@@ -72,6 +76,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         btnShow = (ImageView) v.findViewById(R.id.btn_show);
         slideUp =  v.findViewById(R.id.slideUp);
+        details =  v.findViewById(R.id.amountTextView1);
+
         search =  v.findViewById(R.id.searchEditText);
         slideUpRecyclerView = v.findViewById(R.id.collection_list);
 
@@ -127,8 +133,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             }
         });
 
-      //  btnHide.setOnClickListener(onHideListener());
+       //details.setOnClickListener(onHideListener());
         btnShow.setOnClickListener(onShowListener());
+
 
 
         return v;
@@ -137,6 +144,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
      * Request show sliding layout when clicked
      * @return
      */
+   /* private View.OnClickListener onHideListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //show sliding layout in bottom of screen (not expand it)
+                //slidingLayout.setPanelState(PanelState.EXPANDED);
+
+
+            }
+        };
+    }*/
+
     private View.OnClickListener onShowListener() {
         return new View.OnClickListener() {
             @Override
@@ -147,6 +166,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             }
         };
     }
+    /*public void viewDetails(View view) {
+        Intent intent = new Intent(view.getContext(), CollectionDetailsActivity.class);
+        view.getContext().startActivity(intent);}*/
+
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
