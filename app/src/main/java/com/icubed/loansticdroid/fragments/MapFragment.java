@@ -169,7 +169,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mGoogleMap = googleMap;
         mapOnClickListener();
         initMap();
-        getCurrentLocation();
     }
 
     private LocationListener mLocationListener = new LocationListener() {
@@ -221,7 +220,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                mGoogleMap.setMyLocationEnabled(true);
+
+                //Add Maps code here
+                getCurrentLocation();
             }
         }
     }
