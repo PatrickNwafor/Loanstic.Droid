@@ -167,7 +167,7 @@ public class Collection {
     public List<CollectionTable> retrieveCollectionToLocalStorage(){
 
         if(doesCollectionExistInLocalStorage()) {
-            return collectionTableQueries.loadAllDueCollections();
+            return collectionTableQueries.loadAllCollections();
         }
         return null;
     }
