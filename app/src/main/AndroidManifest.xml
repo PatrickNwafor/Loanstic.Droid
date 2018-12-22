@@ -40,7 +40,8 @@
         <activity android:name=".activities.SavingsActivity" />
         <activity android:name=".activities.BorrowerActivity" />
         <activity android:name=".activities.BranchesActivity" />
-        <activity android:name=".activities.SettingsActivity"></activity>
+        <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".activities.AddSingleBorrower"></activity>
     </application>
 
 </manifest>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+
+    tools:context="com.icubed.loansticdroid.activities.AddSingleBorrower">
+    <android.support.v7.widget.CardView
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        app:cardCornerRadius="10dp"
+        android:elevation="4dp"
+        android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:background="@color/whiteEnd"
+
+    android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/first_name"
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_height="52dp"
+            android:hint="First Name"
+            tools:layout_editor_absoluteX="89dp" />
+    <EditText
+        android:id="@+id/middle_and_last_name"
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_height="52dp"
+        android:hint="Middle and Last Name"
+        tools:layout_editor_absoluteX="89dp" />
+
+    <Spinner
+        android:id="@+id/spSex"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+
+        tools:listitem="@android:layout/simple_spinner_item"
+        android:layout_marginTop="5dp" />
+    <Spinner
+        android:id="@+id/input_citizenship"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+
+        tools:listitem="@android:layout/simple_spinner_item"
+        android:layout_marginTop="5dp" />
+
+
+
+</LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+</android.support.v4.widget.NestedScrollView>
