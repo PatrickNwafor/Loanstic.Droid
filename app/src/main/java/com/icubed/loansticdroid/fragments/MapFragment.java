@@ -222,6 +222,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
 
                 //Add Maps code here
+                mGoogleMap.getUiSettings().setCompassEnabled(false);
                 getCurrentLocation();
             }
         }
@@ -280,7 +281,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mGoogleMap.addMarker(new MarkerOptions()
                     .position(gps)
                     .title("Current Position"));
-            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(gps, 12));
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(gps, 10));
         }
 
     }

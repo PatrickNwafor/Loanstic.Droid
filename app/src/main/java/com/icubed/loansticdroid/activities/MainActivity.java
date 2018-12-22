@@ -114,8 +114,6 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.nav_home:
-                viewSwitch.setVisibility(View.VISIBLE);
-                startFragment(mapFragment, "home");
                 return true;
 
             case R.id.nav_collections:
