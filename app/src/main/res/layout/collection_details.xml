@@ -44,7 +44,7 @@
             android:src="@drawable/ic_arrow_back_black_24dp" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/nav_image"
+            android:id="@+id/borrower_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_above="@+id/borrower_username"

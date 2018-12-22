@@ -2,15 +2,18 @@ package com.icubed.loansticdroid.models;
 
 public class DueCollectionDetails {
 
-    private String borrowerName, borrowerJob;
+    private String borrowerName, borrowerJob, dueCollectionDate;
+    private int collectionNumber;
     private double dueAmount;
     private Boolean isDueCollected;
 
     public DueCollectionDetails(){}
 
-    public DueCollectionDetails(String borrowerName, String borrowerJob, double dueAmount, Boolean isDueCollected) {
+    public DueCollectionDetails(String borrowerName, String borrowerJob, String dueCollectionDate, int collectionNumber, double dueAmount, Boolean isDueCollected) {
         this.borrowerName = borrowerName;
         this.borrowerJob = borrowerJob;
+        this.dueCollectionDate = dueCollectionDate;
+        this.collectionNumber = collectionNumber;
         this.dueAmount = dueAmount;
         this.isDueCollected = isDueCollected;
     }
@@ -31,6 +34,22 @@ public class DueCollectionDetails {
         this.borrowerJob = borrowerJob;
     }
 
+    public String getDueCollectionDate() {
+        return dueCollectionDate;
+    }
+
+    public void setDueCollectionDate(String dueCollectionDate) {
+        this.dueCollectionDate = dueCollectionDate;
+    }
+
+    public int getCollectionNumber() {
+        return collectionNumber;
+    }
+
+    public void setCollectionNumber(int collectionNumber) {
+        this.collectionNumber = collectionNumber;
+    }
+
     public double getDueAmount() {
         return dueAmount;
     }
@@ -49,6 +68,6 @@ public class DueCollectionDetails {
 
     @Override
     public String toString() {
-        return "DueCollectionDetails{" + "borrowerName='" + borrowerName + '\'' + ", borrowerJob='" + borrowerJob + '\'' + ", dueAmount=" + dueAmount + ", isDueCollected=" + isDueCollected + '}';
+        return "DueCollectionDetails{" + "borrowerName='" + borrowerName + '\'' + ", borrowerJob='" + borrowerJob + '\'' + ", dueCollectionDate='" + dueCollectionDate + '\'' + ", collectionNumber=" + collectionNumber + ", dueAmount=" + dueAmount + ", isDueCollected=" + isDueCollected + '}';
     }
 }

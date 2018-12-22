@@ -40,7 +40,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
         String collectionName = collectionList.get(position).getBorrowerName();
         holder.setCollectionName(collectionName, position);
@@ -52,6 +52,12 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, CollectionDetailsActivity.class);
+                intent.putExtra("borrowerName", collectionList.get(position).getBorrowerName());
+                intent.putExtra("borrowerJob", collectionList.get(position).getBorrowerJob());
+                intent.putExtra("collectionAmount", collectionList.get(position).getDueAmount());
+                intent.putExtra("isDueCollected", collectionList.get(position).getDueCollected());
+                intent.putExtra("collectionDueDate", collectionList.get(position).getDueCollectionDate());
+                intent.putExtra("collectionNumber", collectionList.get(position).getCollectionNumber());
                 context.startActivity(intent);
             }
         });
