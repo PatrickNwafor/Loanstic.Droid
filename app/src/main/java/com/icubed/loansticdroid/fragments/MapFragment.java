@@ -4,6 +4,9 @@ package com.icubed.loansticdroid.fragments;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -20,11 +23,14 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
 import com.icubed.loansticdroid.models.Collection;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
 import static com.sothree.slidinguppanel.SlidingUpPanelLayout.*;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -42,7 +48,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback{
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     MapView mMapView;
     GoogleMap mGoogleMap;
@@ -51,7 +57,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     private ImageView btnShow;
     TextView slideUp;
     private ImageView btnHide;
-    Animation bounce,bounce1,blink;
+    Animation bounce, bounce1, blink;
     EditText search;
 
     private Collection collection;
@@ -66,6 +72,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
     private Boolean mLocationPermissionGranted = false;
 
+    private LocationManager mLocationManager;
+    public static final int LOCATION_UPDATE_MIN_DISTANCE = 10;
+    public static final int LOCATION_UPDATE_MIN_TIME = 5000;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 200;
+
     public MapFragment() {
         // Required empty public constructor
     }
@@ -76,13 +87,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         btnShow = (ImageView) v.findViewById(R.id.btn_show);
-        slideUp =  v.findViewById(R.id.slideUp);
-        search =  v.findViewById(R.id.searchEditText);
+        slideUp = v.findViewById(R.id.slideUp);
+        search = v.findViewById(R.id.searchEditText);
         slideUpRecyclerView = v.findViewById(R.id.collection_list);
 
-        bounce = AnimationUtils.loadAnimation( getContext(),R.anim.bounce);
-        blink = AnimationUtils.loadAnimation( getContext(),R.anim.blink);
-        bounce1 = AnimationUtils.loadAnimation( getContext(),R.anim.bounce1);
+        bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+        blink = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
+        bounce1 = AnimationUtils.loadAnimation(getContext(), R.anim.bounce1);
         btnShow.setAnimation(blink);
         slideUp.setAnimation(blink);
         search.setAnimation(bounce1);
@@ -101,8 +112,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         mMapView.getMapAsync(this);
 
         getLocationPermission();
+        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         //setting layout slide listener
-        slidingLayout = (SlidingUpPanelLayout)v.findViewById(R.id.sliding_layout);
+        slidingLayout = (SlidingUpPanelLayout) v.findViewById(R.id.sliding_layout);
 
         //event
         slidingLayout.addPanelSlideListener(new PanelSlideListener() {
@@ -119,12 +131,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             }
         });
 
-      //  btnHide.setOnClickListener(onHideListener());
+        //  btnHide.setOnClickListener(onHideListener());
         btnShow.setOnClickListener(onShowListener());
 
-        if(!collection.doesCollectionExistInLocalStorage()){
+        if (!collection.doesCollectionExistInLocalStorage()) {
             collection.retrieveNewDueCollectionData();
-        }else{
+        } else {
             collection.getDueCollectionData();
             collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
         }
@@ -132,6 +144,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
         return v;
     }
+
     /**
      * Request show sliding layout when clicked
      * @return
@@ -154,15 +167,38 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
-        mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(43.1, -87.9)));
         mapOnClickListener();
-
-        // Updates the location and zoom of the MapView
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(43.1, -87.9), 10);
-        mGoogleMap.moveCamera(cameraUpdate);
-
+        initMap();
+        getCurrentLocation();
     }
+
+    private LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            if (location != null) {
+                Log.d(TAG, "getCurrentLocation: Lat: " + location.getLatitude() + " Long: " + location.getLongitude());
+                drawMarker(location);
+                mLocationManager.removeUpdates(mLocationListener);
+            } else {
+                Log.d(TAG, "onLocationChanged: Location is null");
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
 
     private void mapOnClickListener() {
 
@@ -171,11 +207,80 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             public void onMapClick(LatLng latLng) {
                 hideKeyboardFrom();
 
-                if(slidingLayout.getPanelState() == PanelState.EXPANDED){
+                if (slidingLayout.getPanelState() == PanelState.EXPANDED) {
                     slidingLayout.setPanelState(PanelState.COLLAPSED);
                 }
             }
         });
+
+    }
+
+    private void initMap() {
+        if (checkPlayServices()) {
+            if (mGoogleMap != null) {
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                mGoogleMap.setMyLocationEnabled(true);
+            }
+        }
+    }
+
+    private boolean checkPlayServices() {
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(getContext());
+        if(result != ConnectionResult.SUCCESS) {
+            if(googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog(getActivity(), result,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+    private void getCurrentLocation() {
+        boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        Location location = null;
+        if (!(isGPSEnabled || isNetworkEnabled)) Toast.makeText(getContext(), "Please enable location service", Toast.LENGTH_SHORT).show();
+        else {
+
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+
+            if (isNetworkEnabled) {
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                        LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+                location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+
+            if (isGPSEnabled) {
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+                location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+        }
+        if (location != null) {
+            Log.d(TAG, "getCurrentLocation: Lat: "+location.getLatitude()+" Long: "+location.getLongitude());
+            drawMarker(location);
+        }
+    }
+
+    private void drawMarker(Location location) {
+        if (mGoogleMap != null) {
+            mGoogleMap.clear();
+            LatLng gps = new LatLng(location.getLatitude(), location.getLongitude());
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(gps)
+                    .title("Current Position"));
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(gps, 12));
+        }
 
     }
 
@@ -239,12 +344,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        getCurrentLocation();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mMapView.onPause();
+        mLocationManager.removeUpdates(mLocationListener);
     }
 
     @Override
