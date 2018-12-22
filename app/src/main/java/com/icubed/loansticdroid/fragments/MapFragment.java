@@ -56,7 +56,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private RecyclerView slideUpRecyclerView;
     private ImageView btnShow;
     TextView slideUp;
-    private ImageView btnHide;
     Animation bounce, bounce1, blink;
     EditText search;
 
@@ -86,7 +85,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_map, container, false);
-        btnShow = (ImageView) v.findViewById(R.id.btn_show);
+        btnShow = v.findViewById(R.id.btn_show);
         slideUp = v.findViewById(R.id.slideUp);
         search = v.findViewById(R.id.searchEditText);
         slideUpRecyclerView = v.findViewById(R.id.collection_list);
@@ -105,8 +104,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(dueCollectionList, getContext());
         slideUpRecyclerView.setAdapter(slideUpPanelRecyclerAdapter);
 
-        //btnHide = (ImageView) v.findViewById(R.id.btn_hide);
-
         mMapView = v.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
@@ -114,7 +111,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         getLocationPermission();
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         //setting layout slide listener
-        slidingLayout = (SlidingUpPanelLayout) v.findViewById(R.id.sliding_layout);
+        slidingLayout = v.findViewById(R.id.sliding_layout);
 
         //event
         slidingLayout.addPanelSlideListener(new PanelSlideListener() {
@@ -131,7 +128,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        //  btnHide.setOnClickListener(onHideListener());
         btnShow.setOnClickListener(onShowListener());
 
         if (!collection.doesCollectionExistInLocalStorage()) {
@@ -214,6 +210,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    //Initialize map
     private void initMap() {
         if (checkPlayServices()) {
             if (mGoogleMap != null) {
@@ -228,6 +225,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    /**********************check play service compatibility*************/
     private boolean checkPlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(getContext());
@@ -243,7 +241,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return true;
     }
 
-
+    /********************get current location******************/
     private void getCurrentLocation() {
         boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -274,6 +272,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    /*******************set marker on map************************/
     private void drawMarker(Location location) {
         if (mGoogleMap != null) {
             mGoogleMap.clear();
@@ -281,7 +280,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mGoogleMap.addMarker(new MarkerOptions()
                     .position(gps)
                     .title("Current Position"));
-            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(gps, 10));
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(gps, 15));
         }
 
     }
