@@ -224,8 +224,6 @@ public class Collection {
             fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
         }
 
-        Toast.makeText(fragmentActivity, "Got Here", Toast.LENGTH_SHORT).show();
-
         fragment.hideProgressBar();
 
     }
