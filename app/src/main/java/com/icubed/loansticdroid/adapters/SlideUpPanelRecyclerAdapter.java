@@ -24,9 +24,8 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
     List<DueCollectionDetails> collectionList;
     Context context;
 
-    public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList, Context context) {
+    public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList) {
         this.collectionList = collectionList;
-        this.context = context;
     }
 
 
@@ -36,28 +35,32 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.collection_single_layout, parent, false);
 
+        context = parent.getContext();
+
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
-        String collectionName = collectionList.get(position).getBorrowerName();
-        holder.setCollectionName(collectionName, position);
+        String firstName = collectionList.get(position).getFirstName();
+        String lastName = collectionList.get(position).getLastName();
+        holder.setCollectionName(firstName, lastName, position);
         holder.setCollectionAmount(collectionList.get(position).getDueAmount());
-        holder.setBusiness(collectionList.get(position).getBorrowerJob());
-        Log.d("Collections", collectionName);
+        holder.setBusiness(collectionList.get(position).getBusinessName());
 
         holder.detailsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, CollectionDetailsActivity.class);
-                intent.putExtra("borrowerName", collectionList.get(position).getBorrowerName());
-                intent.putExtra("borrowerJob", collectionList.get(position).getBorrowerJob());
+                intent.putExtra("firstName", collectionList.get(position).getFirstName());
+                intent.putExtra("lastName", collectionList.get(position).getLastName());
+                intent.putExtra("businessName", collectionList.get(position).getBusinessName());
                 intent.putExtra("collectionAmount", collectionList.get(position).getDueAmount());
-                intent.putExtra("isDueCollected", collectionList.get(position).getDueCollected());
+                intent.putExtra("isDueCollected", collectionList.get(position).getIsDueCollected());
                 intent.putExtra("collectionDueDate", collectionList.get(position).getDueCollectionDate());
                 intent.putExtra("collectionNumber", collectionList.get(position).getCollectionNumber());
+                intent.putExtra("workAddress", collectionList.get(position).getWorkAddress());
                 context.startActivity(intent);
             }
         });
@@ -86,7 +89,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
             mView = itemView;
         }
 
-        public void setCollectionName(String collections, int position){
+        public void setCollectionName(String firstName, String lastName, int position){
 
             collectionNameTextView = mView.findViewById(R.id.collectionNameTextView);
             dateTextView = mView.findViewById(R.id.dateTextView);
@@ -94,12 +97,12 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
 
             if(position != 0) {
                 dateTextView.setVisibility(View.GONE);
-                collectionNameTextView.setText(collections);
+                collectionNameTextView.setText(lastName + " " + firstName);
 
                 return;
             }
 
-            collectionNameTextView.setText(collections);
+            collectionNameTextView.setText(lastName + " " + firstName);
 
         }
 
@@ -108,9 +111,9 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
             amountTextView.setText(String.valueOf(collectionAmount));
         }
 
-        public void setBusiness(String borrowerJob) {
+        public void setBusiness(String businessName) {
             jobTextView = mView.findViewById(R.id.jobTextView);
-            jobTextView.setText(String.valueOf(borrowerJob));
+            jobTextView.setText(businessName);
         }
     }
 

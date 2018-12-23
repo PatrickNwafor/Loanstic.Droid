@@ -7,38 +7,39 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Borrowers {
+public class BorrowersQueries {
 
     private Account account;
     private FirebaseFirestore firebaseFirestore;
-    private BorrowersTableQueries borrowersTableQueries;
 
-    public Borrowers(Application application){
+    public BorrowersQueries(){
 
         account = new Account();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        borrowersTableQueries = new BorrowersTableQueries(application);
 
     }
 
     /*******************Add new borrower*************/
-    public Task<DocumentReference> addNewBorrower(String name, String business){
-
-        Map<String, Object> borrowersMap = new HashMap<>();
-        borrowersMap.put("name", name);
-        borrowersMap.put("business", business);
-
-        return firebaseFirestore.collection("Borrowers").add(borrowersMap);
+    public Task<DocumentReference> addNewBorrower(BorrowersTable borrowersTable){
+        return firebaseFirestore.collection("Borrowers").add(borrowersTable);
     }
 
     /**************Retrieve all borrower***********/
     public Task<QuerySnapshot> retrieveAllBorrowers(){
         return firebaseFirestore.collection("Borrowers").get();
+    }
+
+    /**************Retrieve all borrower for a loanOfficer***********/
+    public Task<QuerySnapshot> retrieveAllBorrowersForLoanOfficer(){
+        return firebaseFirestore.collection("Borrowers")
+                .whereEqualTo("loanOfficerId", account.getCurrentUserId())
+                .get();
     }
 
     /**************Retrieve single borrower***********/

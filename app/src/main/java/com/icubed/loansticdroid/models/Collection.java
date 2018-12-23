@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,7 +28,7 @@ public class Collection {
     private CollectionQueries collectionQueries;
     private CollectionTableQueries collectionTableQueries;
     private BorrowersTableQueries borrowersTableQueries;
-    private Borrowers borrowers;
+    private BorrowersQueries borrowersQueries;
     private int collectionSize;
     private int count;
 
@@ -43,7 +44,7 @@ public class Collection {
         collectionQueries = new CollectionQueries();
         collectionTableQueries = new CollectionTableQueries(application);
         borrowersTableQueries = new BorrowersTableQueries(application);
-        borrowers = new Borrowers(application);
+        borrowersQueries = new BorrowersQueries();
 
         isDueCollectionSingle = false;
 
@@ -65,7 +66,7 @@ public class Collection {
 
         if(!doesCollectionExistInLocalStorage()){
 
-            collectionQueries.retrieveDueCollectionsDataForAllOfficer()
+            collectionQueries.retrieveAllCollection()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -118,12 +119,12 @@ public class Collection {
     }
 
     private void getBorrowersDetails(String borrowerId, final String collectionId) {
-        borrowers.retrieveSingleBorrowers(borrowerId)
+        borrowersQueries.retrieveSingleBorrowers(borrowerId)
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if(task.isSuccessful()){
-                            Log.d(TAG, "onComplete: Borrowers retrieved");
+                            Log.d(TAG, "onComplete: BorrowersQueries retrieved");
                             if(task.getResult().exists()){
                                 count++;
                                 BorrowersTable borrowersTable = task.getResult().toObject(BorrowersTable.class);
@@ -132,15 +133,29 @@ public class Collection {
                                 saveBorrowerToLocalStorage(borrowersTable, collectionId);
                             }
                         }else{
-                            Log.d(TAG, "onComplete: Borrowers retrieved Failed");
+                            Log.d(TAG, "onComplete: BorrowersQueries retrieved Failed");
                         }
                     }
                 });
     }
 
-    /***********Save new borrowers to storage********************/
+    /***********Save new borrowersQueries to storage********************/
     public void saveBorrowerToLocalStorage(BorrowersTable borrowersTable, String collectionId) {
-        borrowersTableQueries.insertBorrowersToStorage(borrowersTable);
+
+        List<BorrowersTable> allBorrowers = borrowersTableQueries.loadAllBorrowers();
+
+        Boolean doesLoanAlreadyExist = false;
+
+        for(BorrowersTable borrower : allBorrowers){
+            if(borrower.getBorrowersId().equals(borrowersTable.getBorrowersId())){
+                doesLoanAlreadyExist = true;
+                break;
+            }
+        }
+
+        if(!doesLoanAlreadyExist) {
+            borrowersTableQueries.insertBorrowersToStorage(borrowersTable);
+        }
 
         if(count == collectionSize){
             if(!isDueCollectionSingle) {
@@ -155,6 +170,14 @@ public class Collection {
 
     /****************Save loans to storage************************/
     public void saveLoanToLocalStorage(LoansTable loansTable) {
+        List<LoansTable> loansTables = loanTableQueries.loadAllLoans();
+
+        for(LoansTable loan : loansTables){
+            if(loan.getLoanId().equals(loansTable.getLoanId())){
+                return;
+            }
+        }
+
         loanTableQueries.insertLoanToStorage(loansTable);
     }
 
@@ -186,17 +209,22 @@ public class Collection {
             dueCollectionDetails.setDueAmount(collectionTable.getCollectionDueAmount());
             dueCollectionDetails.setCollectionNumber(collectionTable.getCollectionNumber());
             dueCollectionDetails.setDueCollectionDate(collectionTable.getCollectionDueDate());
+            dueCollectionDetails.setIsDueCollected(collectionTable.getIsDueCollected());
 
             LoansTable loan = loanTableQueries.loadSingleLoan(collectionTable.getLoanId());
 
             BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
 
-            dueCollectionDetails.setBorrowerName(borrowersTable.getName());
-            dueCollectionDetails.setBorrowerJob(borrowersTable.getBusiness());
+            dueCollectionDetails.setFirstName(borrowersTable.getFirstName());
+            dueCollectionDetails.setLastName(borrowersTable.getLastName());
+            dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
+            dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
 
             fragment.dueCollectionList.add(dueCollectionDetails);
             fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
         }
+
+        Toast.makeText(fragmentActivity, "Got Here", Toast.LENGTH_SHORT).show();
 
         fragment.hideProgressBar();
 
@@ -213,15 +241,18 @@ public class Collection {
         dueCollectionDetails.setDueAmount(collectionTable.getCollectionDueAmount());
         dueCollectionDetails.setCollectionNumber(collectionTable.getCollectionNumber());
         dueCollectionDetails.setDueCollectionDate(collectionTable.getCollectionDueDate());
+        dueCollectionDetails.setIsDueCollected(collectionTable.getIsDueCollected());
 
         LoansTable loan = loanTableQueries.loadSingleLoan(collectionTable.getLoanId());
 
         BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
 
-        dueCollectionDetails.setBorrowerName(borrowersTable.getName());
-        dueCollectionDetails.setBorrowerJob(borrowersTable.getBusiness());
+        dueCollectionDetails.setFirstName(borrowersTable.getFirstName());
+        dueCollectionDetails.setLastName(borrowersTable.getLastName());
+        dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
+        dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
 
-        fragment.dueCollectionList.add(0, dueCollectionDetails);
+        fragment.dueCollectionList.add(dueCollectionDetails);
         fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
     }
 
@@ -229,7 +260,7 @@ public class Collection {
     public void retrieveDueCollectionToLocalStorageAndCompareToCloud(){
         final List<CollectionTable> localCollection = retrieveCollectionToLocalStorage();
 
-        collectionQueries.retrieveDueCollectionsDataForAllOfficer()
+        collectionQueries.retrieveAllCollection()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {

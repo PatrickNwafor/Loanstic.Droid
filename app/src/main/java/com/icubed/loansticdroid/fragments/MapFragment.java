@@ -25,8 +25,14 @@ import android.widget.*;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
+import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.models.Account;
+import com.icubed.loansticdroid.models.BorrowersQueries;
 import com.icubed.loansticdroid.models.Collection;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -60,6 +66,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     EditText search;
 
     private Collection collection;
+    private Account account;
+    private BorrowersQueries borrowersQueries;
 
     public List<DueCollectionDetails> dueCollectionList;
     public SlideUpPanelRecyclerAdapter slideUpPanelRecyclerAdapter;
@@ -98,10 +106,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         search.setAnimation(bounce1);
 
         collection = new Collection(getActivity().getApplication(), getActivity());
+        account = new Account();
+        borrowersQueries = new BorrowersQueries();
 
         dueCollectionList = new ArrayList<>();
         slideUpRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(dueCollectionList, getContext());
+        slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(dueCollectionList);
         slideUpRecyclerView.setAdapter(slideUpPanelRecyclerAdapter);
 
         mMapView = v.findViewById(R.id.mapView);
@@ -137,7 +147,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
         }
 
-
         return v;
     }
 
@@ -151,7 +160,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 //show sliding layout in bottom of screen (not expand it)
                 slidingLayout.setPanelState(PanelState.EXPANDED);
-
             }
         };
     }

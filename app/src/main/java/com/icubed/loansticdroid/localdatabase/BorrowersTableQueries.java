@@ -13,7 +13,7 @@ public class BorrowersTableQueries {
         borrowersTableDao = daoSession.getBorrowersTableDao();
     }
 
-    /***************Save Borrowers to local Storage*********/
+    /***************Save BorrowersQueries to local Storage*********/
     public void insertBorrowersToStorage(BorrowersTable borrowersTable){
         borrowersTableDao.insert(borrowersTable);
     }

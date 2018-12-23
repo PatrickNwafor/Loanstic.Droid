@@ -2,36 +2,54 @@ package com.icubed.loansticdroid.models;
 
 public class DueCollectionDetails {
 
-    private String borrowerName, borrowerJob, dueCollectionDate;
+    private String firstName, lastName, workAddress, businessName, dueCollectionDate;
     private int collectionNumber;
     private double dueAmount;
     private Boolean isDueCollected;
 
     public DueCollectionDetails(){}
 
-    public DueCollectionDetails(String borrowerName, String borrowerJob, String dueCollectionDate, int collectionNumber, double dueAmount, Boolean isDueCollected) {
-        this.borrowerName = borrowerName;
-        this.borrowerJob = borrowerJob;
+    public DueCollectionDetails(String firstName, String lastName, String workAddress, String businessName, String dueCollectionDate, int collectionNumber, double dueAmount, Boolean isDueCollected) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.workAddress = workAddress;
+        this.businessName = businessName;
         this.dueCollectionDate = dueCollectionDate;
         this.collectionNumber = collectionNumber;
         this.dueAmount = dueAmount;
         this.isDueCollected = isDueCollected;
     }
 
-    public String getBorrowerName() {
-        return borrowerName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setBorrowerName(String borrowerName) {
-        this.borrowerName = borrowerName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getBorrowerJob() {
-        return borrowerJob;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setBorrowerJob(String borrowerJob) {
-        this.borrowerJob = borrowerJob;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getWorkAddress() {
+        return workAddress;
+    }
+
+    public void setWorkAddress(String workAddress) {
+        this.workAddress = workAddress;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
     }
 
     public String getDueCollectionDate() {
@@ -58,16 +76,16 @@ public class DueCollectionDetails {
         this.dueAmount = dueAmount;
     }
 
-    public Boolean getDueCollected() {
+    public Boolean getIsDueCollected() {
         return isDueCollected;
     }
 
-    public void setDueCollected(Boolean dueCollected) {
+    public void setIsDueCollected(Boolean dueCollected) {
         isDueCollected = dueCollected;
     }
 
     @Override
     public String toString() {
-        return "DueCollectionDetails{" + "borrowerName='" + borrowerName + '\'' + ", borrowerJob='" + borrowerJob + '\'' + ", dueCollectionDate='" + dueCollectionDate + '\'' + ", collectionNumber=" + collectionNumber + ", dueAmount=" + dueAmount + ", isDueCollected=" + isDueCollected + '}';
+        return "DueCollectionDetails{" + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", workAddress='" + workAddress + '\'' + ", businessName='" + businessName + '\'' + ", dueCollectionDate='" + dueCollectionDate + '\'' + ", collectionNumber=" + collectionNumber + ", dueAmount=" + dueAmount + ", isDueCollected=" + isDueCollected + '}';
     }
 }

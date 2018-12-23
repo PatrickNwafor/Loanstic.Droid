@@ -10,19 +10,37 @@ public class BorrowersTable {
     @Unique
     private String BorrowersId;
 
-    private String name;
+    private String loanOfficerId, firstName, middleName, lastName, businessName
+            ,profileImageUri, profileImageThumbUri, nationality, workAddress, sex
+            ,homeAddress, state, city, dateOfBirth;
 
-    private String business;
+    private double borrowerLocationLatitude, borrowerLocationLongitude;
 
-    private String profileImageUri;
-
-    @Generated(hash = 628926127)
-    public BorrowersTable(String BorrowersId, String name, String business,
-            String profileImageUri) {
+    @Generated(hash = 1869220762)
+    public BorrowersTable(String BorrowersId, String loanOfficerId,
+            String firstName, String middleName, String lastName,
+            String businessName, String profileImageUri,
+            String profileImageThumbUri, String nationality, String workAddress,
+            String sex, String homeAddress, String state, String city,
+            String dateOfBirth, double borrowerLocationLatitude,
+            double borrowerLocationLongitude) {
         this.BorrowersId = BorrowersId;
-        this.name = name;
-        this.business = business;
+        this.loanOfficerId = loanOfficerId;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.businessName = businessName;
         this.profileImageUri = profileImageUri;
+        this.profileImageThumbUri = profileImageThumbUri;
+        this.nationality = nationality;
+        this.workAddress = workAddress;
+        this.sex = sex;
+        this.homeAddress = homeAddress;
+        this.state = state;
+        this.city = city;
+        this.dateOfBirth = dateOfBirth;
+        this.borrowerLocationLatitude = borrowerLocationLatitude;
+        this.borrowerLocationLongitude = borrowerLocationLongitude;
     }
 
     @Generated(hash = 1250401098)
@@ -37,20 +55,44 @@ public class BorrowersTable {
         this.BorrowersId = BorrowersId;
     }
 
-    public String getName() {
-        return this.name;
+    public String getLoanOfficerId() {
+        return this.loanOfficerId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLoanOfficerId(String loanOfficerId) {
+        this.loanOfficerId = loanOfficerId;
     }
 
-    public String getBusiness() {
-        return this.business;
+    public String getFirstName() {
+        return this.firstName;
     }
 
-    public void setBusiness(String business) {
-        this.business = business;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getMiddleName() {
+        return this.middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getBusinessName() {
+        return this.businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
     }
 
     public String getProfileImageUri() {
@@ -61,8 +103,85 @@ public class BorrowersTable {
         this.profileImageUri = profileImageUri;
     }
 
-    @Override
-    public String toString() {
-        return "BorrowersTable{" + "BorrowersId='" + BorrowersId + '\'' + ", name='" + name + '\'' + ", business='" + business + '\'' + ", profileImageUri='" + profileImageUri + '\'' + '}';
+    public String getProfileImageThumbUri() {
+        return this.profileImageThumbUri;
     }
+
+    public void setProfileImageThumbUri(String profileImageThumbUri) {
+        this.profileImageThumbUri = profileImageThumbUri;
+    }
+
+    public String getNationality() {
+        return this.nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
+    public String getWorkAddress() {
+        return this.workAddress;
+    }
+
+    public void setWorkAddress(String workAddress) {
+        this.workAddress = workAddress;
+    }
+
+    public String getSex() {
+        return this.sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getHomeAddress() {
+        return this.homeAddress;
+    }
+
+    public void setHomeAddress(String homeAddress) {
+        this.homeAddress = homeAddress;
+    }
+
+    public String getState() {
+        return this.state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCity() {
+        return this.city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getDateOfBirth() {
+        return this.dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public double getBorrowerLocationLatitude() {
+        return this.borrowerLocationLatitude;
+    }
+
+    public void setBorrowerLocationLatitude(double borrowerLocationLatitude) {
+        this.borrowerLocationLatitude = borrowerLocationLatitude;
+    }
+
+    public double getBorrowerLocationLongitude() {
+        return this.borrowerLocationLongitude;
+    }
+
+    public void setBorrowerLocationLongitude(double borrowerLocationLongitude) {
+        this.borrowerLocationLongitude = borrowerLocationLongitude;
+    }
+
+
 }
