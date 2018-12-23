@@ -29,10 +29,11 @@ public class CollectionDetailsActivity extends AppCompatActivity {
 
     private ImageView borrowerImageView;
 
-    private String borrowerName, businessName, collectionDueDate;
+    private String businessName, collectionDueDate;
     private double collectionAmount;
     private int colelctionNumber;
     private Boolean collectionStatus;
+    private String firstName, workAddress, lastName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +65,10 @@ public class CollectionDetailsActivity extends AppCompatActivity {
         borrowerImageView = findViewById(R.id.borrower_image);
 
         //getting collection details value
-        borrowerName = getIntent().getStringExtra("borrowerName");
-        businessName = getIntent().getStringExtra("borrowerJob");
+        firstName = getIntent().getStringExtra("firstName");
+        lastName = getIntent().getStringExtra("lastName");
+        workAddress = getIntent().getStringExtra("workAddress");
+        businessName = getIntent().getStringExtra("businessName");
         collectionAmount = getIntent().getDoubleExtra("collectionAmount", 0.0);
         collectionStatus = getIntent().getBooleanExtra("isDueCollected", false);
         collectionDueDate = getIntent().getStringExtra("collectionDueDate");
@@ -73,8 +76,15 @@ public class CollectionDetailsActivity extends AppCompatActivity {
 
 
         //Passing them to an object
-        DueCollectionDetails dueCollectionDetails = new DueCollectionDetails(borrowerName,businessName,
-                collectionDueDate, colelctionNumber,collectionAmount,collectionStatus);
+        DueCollectionDetails dueCollectionDetails = new DueCollectionDetails();
+        dueCollectionDetails.setFirstName(firstName);
+        dueCollectionDetails.setLastName(lastName);
+        dueCollectionDetails.setWorkAddress(workAddress);
+        dueCollectionDetails.setBusinessName(businessName);
+        dueCollectionDetails.setIsDueCollected(collectionStatus);
+        dueCollectionDetails.setCollectionNumber(colelctionNumber);
+        dueCollectionDetails.setDueAmount(collectionAmount);
+        dueCollectionDetails.setDueCollectionDate(collectionDueDate);
 
         //UpdatesUI
         updateUI(dueCollectionDetails);
@@ -82,17 +92,18 @@ public class CollectionDetailsActivity extends AppCompatActivity {
     }
 
     private void updateUI(DueCollectionDetails dueCollectionDetails) {
-        borrowerUsernameView.setText(dueCollectionDetails.getBorrowerName());
-        businessNameView.setText(dueCollectionDetails.getBorrowerJob());
+        borrowerUsernameView.setText(dueCollectionDetails.getLastName() + " " + dueCollectionDetails.getFirstName());
+        businessNameView.setText(dueCollectionDetails.getBusinessName());
         collectionNumberView.setText(String.valueOf(dueCollectionDetails.getCollectionNumber()));
 
-        if(dueCollectionDetails.getDueCollected()){
+        if(dueCollectionDetails.getIsDueCollected()){
             collectionStatusView.setText("Collected");
         }else{
             collectionStatusView.setText("Not Collected");
         }
 
         collectionAmountView.setText(String.valueOf(dueCollectionDetails.getDueAmount()));
+        collectionAddressView.setText(dueCollectionDetails.getWorkAddress());
 
         String dueDate = monthYearDate(dueCollectionDetails.getDueCollectionDate());
         collectionDueDateView.setText(dueDate);
