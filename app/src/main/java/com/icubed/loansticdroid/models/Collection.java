@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.fragments.MapFragment;
+import com.icubed.loansticdroid.localdatabase.BorrowerCloudDetails;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
@@ -127,10 +128,19 @@ public class Collection {
                             Log.d(TAG, "onComplete: BorrowersQueries retrieved");
                             if(task.getResult().exists()){
                                 count++;
+                                BorrowerCloudDetails borrowerCloudDetails = task.getResult().toObject(BorrowerCloudDetails.class);
+
+                                //Set local storage table
                                 BorrowersTable borrowersTable = task.getResult().toObject(BorrowersTable.class);
                                 borrowersTable.setBorrowersId(task.getResult().getId());
+                                borrowersTable.setBorrowerLocationLatitude(borrowerCloudDetails.getBorrowerGeoPoint().getLatitude());
+                                borrowersTable.setBorrowerLocationLongitude(borrowerCloudDetails.getBorrowerGeoPoint().getLongitude());
 
-                                saveBorrowerToLocalStorage(borrowersTable, collectionId);
+                                if(!isDueCollectionSingle) {
+                                    saveBorrowerToLocalStorage(borrowersTable);
+                                }else{
+                                    saveSingleBorrowerToLocalStorage(borrowersTable, collectionId);
+                                }
                             }
                         }else{
                             Log.d(TAG, "onComplete: BorrowersQueries retrieved Failed");
@@ -140,7 +150,7 @@ public class Collection {
     }
 
     /***********Save new borrowersQueries to storage********************/
-    public void saveBorrowerToLocalStorage(BorrowersTable borrowersTable, String collectionId) {
+    public void saveBorrowerToLocalStorage(BorrowersTable borrowersTable) {
 
         List<BorrowersTable> allBorrowers = borrowersTableQueries.loadAllBorrowers();
 
@@ -158,14 +168,29 @@ public class Collection {
         }
 
         if(count == collectionSize){
-            if(!isDueCollectionSingle) {
-                getDueCollectionData();
-            }else{
-                isDueCollectionSingle = false;
-                getSingleDueCollectionData(collectionId);
-            }
+            getDueCollectionData();
             count = 0;
         }
+    }
+
+    public void saveSingleBorrowerToLocalStorage(BorrowersTable borrowersTable, String collectionId){
+        List<BorrowersTable> allBorrowers = borrowersTableQueries.loadAllBorrowers();
+
+        Boolean doesLoanAlreadyExist = false;
+
+        for(BorrowersTable borrower : allBorrowers){
+            if(borrower.getBorrowersId().equals(borrowersTable.getBorrowersId())){
+                doesLoanAlreadyExist = true;
+                break;
+            }
+        }
+
+        if(!doesLoanAlreadyExist) {
+            borrowersTableQueries.insertBorrowersToStorage(borrowersTable);
+        }
+
+        getSingleDueCollectionData(collectionId);
+        isDueCollectionSingle = false;
     }
 
     /****************Save loans to storage************************/
@@ -266,14 +291,12 @@ public class Collection {
                             Log.d(TAG, "onComplete: Success in retrieving data from server");
                             if(!task.getResult().isEmpty()){
 
-                                collectionSize = task.getResult().size();
                                 for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
 
                                     Boolean doesDataExist = false;
                                     for(CollectionTable colTab : localCollection){
                                         if(colTab.getCollectionId().equals(documentSnapshot.getId())){
                                             doesDataExist = true;
-                                            collectionSize = collectionSize - 1;
                                             Log.d(TAG, "onComplete: collection id of "+documentSnapshot.getId()+" already exist");
                                             break;
                                         }

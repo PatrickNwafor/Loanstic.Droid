@@ -7,6 +7,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.icubed.loansticdroid.localdatabase.BorrowerCloudDetails;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 
@@ -26,8 +27,8 @@ public class BorrowersQueries {
     }
 
     /*******************Add new borrower*************/
-    public Task<DocumentReference> addNewBorrower(BorrowersTable borrowersTable){
-        return firebaseFirestore.collection("Borrowers").add(borrowersTable);
+    public Task<DocumentReference> addNewBorrower(BorrowerCloudDetails borrowerCloudDetails){
+        return firebaseFirestore.collection("Borrowers").add(borrowerCloudDetails);
     }
 
     /**************Retrieve all borrower***********/

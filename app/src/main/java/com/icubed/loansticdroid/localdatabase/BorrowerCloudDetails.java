@@ -1,30 +1,19 @@
 package com.icubed.loansticdroid.localdatabase;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.GeoPoint;
 
-@Entity()
-public class BorrowersTable {
-
-    @Unique
-    private String BorrowersId;
+public class BorrowerCloudDetails {
 
     private String loanOfficerId, firstName, middleName, lastName, businessName
             ,profileImageUri, profileImageThumbUri, nationality, workAddress, sex
             ,homeAddress, state, city, dateOfBirth;
 
-    private double borrowerLocationLatitude, borrowerLocationLongitude;
+    private GeoPoint borrowerGeoPoint;
 
-    @Generated(hash = 1869220762)
-    public BorrowersTable(String BorrowersId, String loanOfficerId,
-            String firstName, String middleName, String lastName,
-            String businessName, String profileImageUri,
-            String profileImageThumbUri, String nationality, String workAddress,
-            String sex, String homeAddress, String state, String city,
-            String dateOfBirth, double borrowerLocationLatitude,
-            double borrowerLocationLongitude) {
-        this.BorrowersId = BorrowersId;
+    public BorrowerCloudDetails(){}
+
+    public BorrowerCloudDetails(String loanOfficerId, String firstName, String middleName, String lastName, String businessName, String profileImageUri, String profileImageThumbUri, String nationality, String workAddress, String sex, String homeAddress, String state, String city, String dateOfBirth, GeoPoint borrowerGeoPoint) {
         this.loanOfficerId = loanOfficerId;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -39,24 +28,11 @@ public class BorrowersTable {
         this.state = state;
         this.city = city;
         this.dateOfBirth = dateOfBirth;
-        this.borrowerLocationLatitude = borrowerLocationLatitude;
-        this.borrowerLocationLongitude = borrowerLocationLongitude;
-    }
-
-    @Generated(hash = 1250401098)
-    public BorrowersTable() {
-    }
-
-    public String getBorrowersId() {
-        return this.BorrowersId;
-    }
-
-    public void setBorrowersId(String BorrowersId) {
-        this.BorrowersId = BorrowersId;
+        this.borrowerGeoPoint = borrowerGeoPoint;
     }
 
     public String getLoanOfficerId() {
-        return this.loanOfficerId;
+        return loanOfficerId;
     }
 
     public void setLoanOfficerId(String loanOfficerId) {
@@ -64,7 +40,7 @@ public class BorrowersTable {
     }
 
     public String getFirstName() {
-        return this.firstName;
+        return firstName;
     }
 
     public void setFirstName(String firstName) {
@@ -72,7 +48,7 @@ public class BorrowersTable {
     }
 
     public String getMiddleName() {
-        return this.middleName;
+        return middleName;
     }
 
     public void setMiddleName(String middleName) {
@@ -80,7 +56,7 @@ public class BorrowersTable {
     }
 
     public String getLastName() {
-        return this.lastName;
+        return lastName;
     }
 
     public void setLastName(String lastName) {
@@ -88,7 +64,7 @@ public class BorrowersTable {
     }
 
     public String getBusinessName() {
-        return this.businessName;
+        return businessName;
     }
 
     public void setBusinessName(String businessName) {
@@ -96,7 +72,7 @@ public class BorrowersTable {
     }
 
     public String getProfileImageUri() {
-        return this.profileImageUri;
+        return profileImageUri;
     }
 
     public void setProfileImageUri(String profileImageUri) {
@@ -104,7 +80,7 @@ public class BorrowersTable {
     }
 
     public String getProfileImageThumbUri() {
-        return this.profileImageThumbUri;
+        return profileImageThumbUri;
     }
 
     public void setProfileImageThumbUri(String profileImageThumbUri) {
@@ -112,7 +88,7 @@ public class BorrowersTable {
     }
 
     public String getNationality() {
-        return this.nationality;
+        return nationality;
     }
 
     public void setNationality(String nationality) {
@@ -120,7 +96,7 @@ public class BorrowersTable {
     }
 
     public String getWorkAddress() {
-        return this.workAddress;
+        return workAddress;
     }
 
     public void setWorkAddress(String workAddress) {
@@ -128,7 +104,7 @@ public class BorrowersTable {
     }
 
     public String getSex() {
-        return this.sex;
+        return sex;
     }
 
     public void setSex(String sex) {
@@ -136,7 +112,7 @@ public class BorrowersTable {
     }
 
     public String getHomeAddress() {
-        return this.homeAddress;
+        return homeAddress;
     }
 
     public void setHomeAddress(String homeAddress) {
@@ -144,7 +120,7 @@ public class BorrowersTable {
     }
 
     public String getState() {
-        return this.state;
+        return state;
     }
 
     public void setState(String state) {
@@ -152,7 +128,7 @@ public class BorrowersTable {
     }
 
     public String getCity() {
-        return this.city;
+        return city;
     }
 
     public void setCity(String city) {
@@ -160,27 +136,23 @@ public class BorrowersTable {
     }
 
     public String getDateOfBirth() {
-        return this.dateOfBirth;
+        return dateOfBirth;
     }
 
     public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public double getBorrowerLocationLatitude() {
-        return this.borrowerLocationLatitude;
+    public GeoPoint getBorrowerGeoPoint() {
+        return borrowerGeoPoint;
     }
 
-    public void setBorrowerLocationLatitude(double borrowerLocationLatitude) {
-        this.borrowerLocationLatitude = borrowerLocationLatitude;
+    public void setBorrowerGeoPoint(GeoPoint borrowerGeoPoint) {
+        this.borrowerGeoPoint = borrowerGeoPoint;
     }
 
-    public double getBorrowerLocationLongitude() {
-        return this.borrowerLocationLongitude;
+    @Override
+    public String toString() {
+        return "BorrowerCloudDetails{" + "loanOfficerId='" + loanOfficerId + '\'' + ", firstName='" + firstName + '\'' + ", middleName='" + middleName + '\'' + ", lastName='" + lastName + '\'' + ", businessName='" + businessName + '\'' + ", profileImageUri='" + profileImageUri + '\'' + ", profileImageThumbUri='" + profileImageThumbUri + '\'' + ", nationality='" + nationality + '\'' + ", workAddress='" + workAddress + '\'' + ", sex='" + sex + '\'' + ", homeAddress='" + homeAddress + '\'' + ", state='" + state + '\'' + ", city='" + city + '\'' + ", dateOfBirth='" + dateOfBirth + '\'' + ", borrowerGeoPoint=" + borrowerGeoPoint + '}';
     }
-
-    public void setBorrowerLocationLongitude(double borrowerLocationLongitude) {
-        this.borrowerLocationLongitude = borrowerLocationLongitude;
-    }
-
 }
