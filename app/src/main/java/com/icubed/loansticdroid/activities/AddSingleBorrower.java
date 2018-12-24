@@ -167,4 +167,6 @@ public class AddSingleBorrower extends AppCompatActivity {
     }
 
 
+    public void start_camera(View view) {
+    }
 }
