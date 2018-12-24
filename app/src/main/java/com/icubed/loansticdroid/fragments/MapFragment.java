@@ -25,14 +25,8 @@ import android.widget.*;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.GeoPoint;
 import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
-import com.icubed.loansticdroid.localdatabase.BorrowerCloudDetails;
-import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.models.Account;
 import com.icubed.loansticdroid.models.BorrowersQueries;
 import com.icubed.loansticdroid.models.Collection;
@@ -41,7 +35,6 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import static com.sothree.slidinguppanel.SlidingUpPanelLayout.*;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;

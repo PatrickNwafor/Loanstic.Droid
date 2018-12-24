@@ -1,17 +1,14 @@
 package com.icubed.loansticdroid.models;
 
 import android.app.Application;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.icubed.loansticdroid.localdatabase.BorrowerCloudDetails;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 
@@ -92,24 +89,8 @@ public class Borrower {
         List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowers();
 
         for(BorrowersTable borrowersTable : borrowersTables){
-            BorrowerCloudDetails borrowerCloudDetails = new BorrowerCloudDetails();
 
-            //Setting up borrowerCloud Details
-            borrowerCloudDetails.setBorrowerGeoPoint(new GeoPoint(borrowersTable.getBorrowerLocationLatitude(), borrowersTable.getBorrowerLocationLongitude()));
-            borrowerCloudDetails.setBusinessName(borrowersTable.getBusinessName());
-            borrowerCloudDetails.setCity(borrowersTable.getCity());
-            borrowerCloudDetails.setDateOfBirth(borrowersTable.getDateOfBirth());
-            borrowerCloudDetails.setFirstName(borrowersTable.getFirstName());
-            borrowerCloudDetails.setLastName(borrowersTable.getLastName());
-            borrowerCloudDetails.setMiddleName(borrowersTable.getMiddleName());
-            borrowerCloudDetails.setLoanOfficerId(borrowersTable.getLoanOfficerId());
-            borrowerCloudDetails.setHomeAddress(borrowersTable.getHomeAddress());
-            borrowerCloudDetails.setWorkAddress(borrowersTable.getWorkAddress());
-            borrowerCloudDetails.setNationality(borrowersTable.getNationality());
-            borrowerCloudDetails.setSex(borrowersTable.getSex());
-            borrowerCloudDetails.setState(borrowersTable.getState());
-            borrowerCloudDetails.setProfileImageThumbUri(borrowersTable.getProfileImageThumbUri());
-            borrowerCloudDetails.setProfileImageUri(borrowersTable.getProfileImageUri());
+
 
         }
     }
@@ -117,24 +98,6 @@ public class Borrower {
     private void retrieveSingleBorrowerFromLocalStorage(String borrowerId){
         BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(borrowerId);
 
-        BorrowerCloudDetails borrowerCloudDetails = new BorrowerCloudDetails();
-
-        //Setting up borrowerCloud Details
-        borrowerCloudDetails.setBorrowerGeoPoint(new GeoPoint(borrowersTable.getBorrowerLocationLatitude(), borrowersTable.getBorrowerLocationLongitude()));
-        borrowerCloudDetails.setBusinessName(borrowersTable.getBusinessName());
-        borrowerCloudDetails.setCity(borrowersTable.getCity());
-        borrowerCloudDetails.setDateOfBirth(borrowersTable.getDateOfBirth());
-        borrowerCloudDetails.setFirstName(borrowersTable.getFirstName());
-        borrowerCloudDetails.setLastName(borrowersTable.getLastName());
-        borrowerCloudDetails.setMiddleName(borrowersTable.getMiddleName());
-        borrowerCloudDetails.setLoanOfficerId(borrowersTable.getLoanOfficerId());
-        borrowerCloudDetails.setHomeAddress(borrowersTable.getHomeAddress());
-        borrowerCloudDetails.setWorkAddress(borrowersTable.getWorkAddress());
-        borrowerCloudDetails.setNationality(borrowersTable.getNationality());
-        borrowerCloudDetails.setSex(borrowersTable.getSex());
-        borrowerCloudDetails.setState(borrowersTable.getState());
-        borrowerCloudDetails.setProfileImageThumbUri(borrowersTable.getProfileImageThumbUri());
-        borrowerCloudDetails.setProfileImageUri(borrowersTable.getProfileImageUri());
     }
 
 

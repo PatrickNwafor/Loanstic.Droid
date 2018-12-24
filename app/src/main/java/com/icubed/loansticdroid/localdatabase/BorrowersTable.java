@@ -4,6 +4,8 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.Date;
+
 @Entity()
 public class BorrowersTable {
 
@@ -14,15 +16,17 @@ public class BorrowersTable {
             ,profileImageUri, profileImageThumbUri, nationality, workAddress, sex
             ,homeAddress, state, city, dateOfBirth;
 
+    private Date timestamp;
+
     private double borrowerLocationLatitude, borrowerLocationLongitude;
 
-    @Generated(hash = 1869220762)
+    @Generated(hash = 1777052653)
     public BorrowersTable(String BorrowersId, String loanOfficerId,
             String firstName, String middleName, String lastName,
             String businessName, String profileImageUri,
             String profileImageThumbUri, String nationality, String workAddress,
             String sex, String homeAddress, String state, String city,
-            String dateOfBirth, double borrowerLocationLatitude,
+            String dateOfBirth, Date timestamp, double borrowerLocationLatitude,
             double borrowerLocationLongitude) {
         this.BorrowersId = BorrowersId;
         this.loanOfficerId = loanOfficerId;
@@ -39,6 +43,7 @@ public class BorrowersTable {
         this.state = state;
         this.city = city;
         this.dateOfBirth = dateOfBirth;
+        this.timestamp = timestamp;
         this.borrowerLocationLatitude = borrowerLocationLatitude;
         this.borrowerLocationLongitude = borrowerLocationLongitude;
     }
@@ -167,6 +172,14 @@ public class BorrowersTable {
         this.dateOfBirth = dateOfBirth;
     }
 
+    public Date getTimestamp() {
+        return this.timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public double getBorrowerLocationLatitude() {
         return this.borrowerLocationLatitude;
     }
@@ -182,5 +195,5 @@ public class BorrowersTable {
     public void setBorrowerLocationLongitude(double borrowerLocationLongitude) {
         this.borrowerLocationLongitude = borrowerLocationLongitude;
     }
-
+    
 }

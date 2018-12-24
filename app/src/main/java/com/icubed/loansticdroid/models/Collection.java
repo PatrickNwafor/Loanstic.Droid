@@ -5,14 +5,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.fragments.MapFragment;
-import com.icubed.loansticdroid.localdatabase.BorrowerCloudDetails;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
@@ -128,13 +126,9 @@ public class Collection {
                             Log.d(TAG, "onComplete: BorrowersQueries retrieved");
                             if(task.getResult().exists()){
                                 count++;
-                                BorrowerCloudDetails borrowerCloudDetails = task.getResult().toObject(BorrowerCloudDetails.class);
-
                                 //Set local storage table
                                 BorrowersTable borrowersTable = task.getResult().toObject(BorrowersTable.class);
                                 borrowersTable.setBorrowersId(task.getResult().getId());
-                                borrowersTable.setBorrowerLocationLatitude(borrowerCloudDetails.getBorrowerGeoPoint().getLatitude());
-                                borrowersTable.setBorrowerLocationLongitude(borrowerCloudDetails.getBorrowerGeoPoint().getLongitude());
 
                                 if(!isDueCollectionSingle) {
                                     saveBorrowerToLocalStorage(borrowersTable);

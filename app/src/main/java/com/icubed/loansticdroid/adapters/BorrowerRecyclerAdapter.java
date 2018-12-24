@@ -8,16 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.localdatabase.BorrowerCloudDetails;
+import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 
 import java.util.List;
 
 public class BorrowerRecyclerAdapter extends RecyclerView.Adapter<BorrowerRecyclerAdapter.ViewHolder> {
 
-    List<BorrowerCloudDetails> borrowersTableList;
+    List<BorrowersTable> borrowersTableList;
     Context context;
 
-    public BorrowerRecyclerAdapter(List<BorrowerCloudDetails> borrowersTableList) {
+    public BorrowerRecyclerAdapter(List<BorrowersTable> borrowersTableList) {
         this.borrowersTableList = borrowersTableList;
     }
 
