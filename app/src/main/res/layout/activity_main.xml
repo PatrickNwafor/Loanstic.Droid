@@ -42,16 +42,15 @@
             android:layout_margin="13dp"
             app:srcCompat="@drawable/ic_menu_black_24dp" />
 
-        <Switch
-            android:id="@+id/viewSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
             android:layout_gravity="end"
+
             android:layout_margin="10dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:checked="false"
-            android:drawableTint="@color/colorPrimary"
-            android:drawableStart="@drawable/ic_menu_dashboard" />
+            style="@style/toggleButton"
+            android:background="@drawable/ic_toggle_bg"/>
 
         <ProgressBar
             android:id="@+id/mainProgressBar"

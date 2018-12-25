@@ -7,6 +7,14 @@
     <color name="whiteBegin">#03ffffff</color>
     <color name="whiteEnd">#ffffff</color>
     <color name="yellow">#ffc107</color>
-
     <color name="background_material_light">#ffffff</color>
+
+
+    <color name="darkGrey">#a6a6a6 </color>
+    <color name="Grey">#c3c3c3 </color>
+    <color name="lightGrey">#f2f2f2 </color>
+    <color name="transparentGrey">#21737373 </color>
+    <color name="darkTransparentGrey">#a0737373 </color>
+    <color name="DarkGrey">#737373 </color>
+    <color name="Black">#000 </color>
 </resources>
