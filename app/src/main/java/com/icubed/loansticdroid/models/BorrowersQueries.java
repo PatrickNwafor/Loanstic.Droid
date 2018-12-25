@@ -1,22 +1,64 @@
 package com.icubed.loansticdroid.models;
 
+import android.graphics.Bitmap;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+
+import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class BorrowersQueries {
 
     private Account account;
     private FirebaseFirestore firebaseFirestore;
+    private StorageReference borrowerImageStorageRef;
+    private StorageReference borrowerImageThumbStorageRef;
+    private String uniqueID;
 
     public BorrowersQueries(){
 
         account = new Account();
         firebaseFirestore = FirebaseFirestore.getInstance();
+        uniqueID = UUID.randomUUID().toString();
+        borrowerImageStorageRef = FirebaseStorage.getInstance()
+                .getReference("borrower_profile_image/")
+                .child(uniqueID+".jpg");
 
+        borrowerImageThumbStorageRef = FirebaseStorage.getInstance()
+                .getReference("borrower_profile_image/thumb/")
+                .child(uniqueID+".jpg");
+    }
+
+    /************Upload PaymentQueries Validation Image***************/
+    public UploadTask uploadImage(Bitmap bitmap){
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        return borrowerImageStorageRef.putBytes(data);
+    }
+
+    /***************Upload payment validation image thumb**********/
+    public UploadTask uploadImageThumb(Bitmap bitmap){
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,
+                10, baos);
+        byte[] data = baos.toByteArray();
+
+        return borrowerImageThumbStorageRef.putBytes(data);
     }
 
     /*******************Add new borrower*************/

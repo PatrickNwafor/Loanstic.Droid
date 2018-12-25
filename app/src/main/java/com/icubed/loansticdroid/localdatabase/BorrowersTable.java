@@ -14,19 +14,21 @@ public class BorrowersTable {
 
     private String loanOfficerId, firstName, middleName, lastName, businessName
             ,profileImageUri, profileImageThumbUri, nationality, workAddress, sex
-            ,homeAddress, state, city, dateOfBirth;
+            ,homeAddress, state, city, dateOfBirth, email, businessDescription;
 
     private Date timestamp;
+    private Long phoneNumber;
 
     private double borrowerLocationLatitude, borrowerLocationLongitude;
 
-    @Generated(hash = 1777052653)
+    @Generated(hash = 1331886803)
     public BorrowersTable(String BorrowersId, String loanOfficerId,
             String firstName, String middleName, String lastName,
             String businessName, String profileImageUri,
             String profileImageThumbUri, String nationality, String workAddress,
             String sex, String homeAddress, String state, String city,
-            String dateOfBirth, Date timestamp, double borrowerLocationLatitude,
+            String dateOfBirth, String email, String businessDescription,
+            Date timestamp, Long phoneNumber, double borrowerLocationLatitude,
             double borrowerLocationLongitude) {
         this.BorrowersId = BorrowersId;
         this.loanOfficerId = loanOfficerId;
@@ -43,7 +45,10 @@ public class BorrowersTable {
         this.state = state;
         this.city = city;
         this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.businessDescription = businessDescription;
         this.timestamp = timestamp;
+        this.phoneNumber = phoneNumber;
         this.borrowerLocationLatitude = borrowerLocationLatitude;
         this.borrowerLocationLongitude = borrowerLocationLongitude;
     }
@@ -172,12 +177,36 @@ public class BorrowersTable {
         this.dateOfBirth = dateOfBirth;
     }
 
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getBusinessDescription() {
+        return this.businessDescription;
+    }
+
+    public void setBusinessDescription(String businessDescription) {
+        this.businessDescription = businessDescription;
+    }
+
     public Date getTimestamp() {
         return this.timestamp;
     }
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Long getPhoneNumber() {
+        return this.phoneNumber;
+    }
+
+    public void setPhoneNumber(Long phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public double getBorrowerLocationLatitude() {
@@ -195,5 +224,5 @@ public class BorrowersTable {
     public void setBorrowerLocationLongitude(double borrowerLocationLongitude) {
         this.borrowerLocationLongitude = borrowerLocationLongitude;
     }
-    
+  
 }

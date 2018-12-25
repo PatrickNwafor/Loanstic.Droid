@@ -15,6 +15,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class PaymentQueries {
 
@@ -22,17 +23,18 @@ public class PaymentQueries {
     private FirebaseFirestore firebaseFirestore;
     private StorageReference paymentImageStorageRef;
     private StorageReference paymentImageThumbStorageRef;
+    private String uniqueID;
 
     public PaymentQueries(){
 
         account = new Account();
         firebaseFirestore = FirebaseFirestore.getInstance();
+        uniqueID = UUID.randomUUID().toString();
         paymentImageStorageRef = FirebaseStorage.getInstance()
                 .getReference("payment_validation_image/");
 
         paymentImageThumbStorageRef = FirebaseStorage.getInstance()
-                .getReference()
-                .child("payment_validation_image/thumb");
+                .getReference("payment_validation_image/thumb/");
     }
 
     /************Upload PaymentQueries Validation Image***************/

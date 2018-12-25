@@ -66,18 +66,18 @@
 
     <EditText
         android:id="@+id/mobile_number"
-        android:hint="Mobile Number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="phone" />
+        android:hint="Mobile Number"
+        android:inputType="text" />
 
     <EditText
-        android:id="@+id/Email_address"
+        android:id="@+id/email_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
         android:ems="10"
+        android:hint="Email"
         android:inputType="textEmailAddress" />
 
     <EditText
@@ -142,12 +142,14 @@
         android:text="Borrower Photo"
         android:clickable="true"
         android:onClick="start_camera"/>
+
     <ImageView
+        android:id="@+id/borrower_image"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_marginLeft="30dp"
 
-        android:src="@drawable/ic_person_black_24dp"/>
+        android:layout_marginLeft="30dp"
+        android:src="@drawable/ic_person_black_24dp" />
 
 </LinearLayout>
 
