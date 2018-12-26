@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group
-        android:id="@+id/stats"
+        android:id="@+id/bank"
         android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_home"
-            android:title="@string/home"
-            android:checked="true"/>
         <item
             android:id="@+id/nav_collections"
             android:icon="@drawable/ic_menu_collection"
             android:title="@string/collections" />
-    </group>
-    <group
-        android:id="@+id/bank"
-        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_payment"
             android:icon="@drawable/ic_menu_repayment"

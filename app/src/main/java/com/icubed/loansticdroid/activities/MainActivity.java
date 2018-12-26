@@ -107,9 +107,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean navActions(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.nav_home:
-                return true;
-
             case R.id.nav_collections:
                 startAnotherActivity(CollectionActivity.class);
                 return true;
