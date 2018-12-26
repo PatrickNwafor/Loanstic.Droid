@@ -1,4 +1,4 @@
 package com.icubed.loansticdroid.models;
 
-public class GroupCustomer {
+public class GroupBorrower {
 }

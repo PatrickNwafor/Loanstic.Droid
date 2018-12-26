@@ -29,7 +29,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
 import com.icubed.loansticdroid.models.Account;
-import com.icubed.loansticdroid.models.BorrowersQueries;
+import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.models.Collection;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;

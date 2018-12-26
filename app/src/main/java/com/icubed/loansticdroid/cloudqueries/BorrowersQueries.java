@@ -1,4 +1,4 @@
-package com.icubed.loansticdroid.models;
+package com.icubed.loansticdroid.cloudqueries;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,6 +13,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.models.Account;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

@@ -10,6 +10,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
+import com.icubed.loansticdroid.cloudqueries.CollectionQueries;
 import com.icubed.loansticdroid.fragments.MapFragment;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;

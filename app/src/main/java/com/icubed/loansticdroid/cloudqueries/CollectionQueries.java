@@ -1,9 +1,10 @@
-package com.icubed.loansticdroid.models;
+package com.icubed.loansticdroid.cloudqueries;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.models.Account;
 
 import java.text.SimpleDateFormat;
@@ -21,21 +22,10 @@ public class CollectionQueries {
         account = new Account();
     }
 
-    /*****************Set CollectionTable Details****************/
-    public Task<DocumentReference> sendCollectionsDetails(String loanId, int collectionNumber,
-                                                          double collectionDueAmount, String collectionDueDate){
+    /*****************Create new CollectionTable ****************/
+    public Task<DocumentReference> createCollection(CollectionTable collectionTable){
 
-        Date timestamp = new Date();
-
-        Map<String, Object> collectionMap = new HashMap<>();
-        collectionMap.put("loanId", loanId);
-        collectionMap.put("collectionNumber", collectionNumber);
-        collectionMap.put("collectionDueAmount", collectionDueAmount);
-        collectionMap.put("collectionDueDate", collectionDueDate);
-        collectionMap.put("timestamp", timestamp);
-        collectionMap.put("isDueCollected", false);
-
-        return firebaseFirestore.collection("Collection").add(collectionMap);
+        return firebaseFirestore.collection("Collection").add(collectionTable);
 
     }
 

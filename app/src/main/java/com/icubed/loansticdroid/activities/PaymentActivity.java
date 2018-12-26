@@ -12,7 +12,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.models.PaymentQueries;
+import com.icubed.loansticdroid.cloudqueries.PaymentQueries;
 
 public class PaymentActivity extends AppCompatActivity {
 
