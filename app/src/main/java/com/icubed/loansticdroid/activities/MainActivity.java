@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.fragments.DashboardFragment;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     //Navigation Drawer Layout
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
-    private Switch viewSwitch;
+    ToggleButton viewSwitch1;
     private ProgressBar mainProgrressBar;
     private FrameLayout contentFrame;
 
@@ -52,31 +53,24 @@ public class MainActivity extends AppCompatActivity {
 
         account = new Account();
         ImageView menuBtn = findViewById(R.id.menu_btn);
-        viewSwitch = findViewById(R.id.viewSwitch);
+        viewSwitch1 = findViewById(R.id.toggleButton);
         mainProgrressBar = findViewById(R.id.mainProgressBar);
         contentFrame = findViewById(R.id.content_frame);
 
-        viewSwitch.setChecked(false);
+
 
         //Replacing our frame layout with our map fragment
         mapFragment = new MapFragment();
         dashboardFragment = new DashboardFragment();
         startFragment(mapFragment, "home");
 
-        viewSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        viewSwitch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    //change switch image to map
-                    viewSwitch.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_map, 0,0,0);
-
-                    //Replacing the frame layout with our dashboard fragment
                     startFragment(dashboardFragment, R.anim.enter_from_right, R.anim.exit_to_left, "home");
-                }else{
-                    //change switch image to dashboard
-                    viewSwitch.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_dashboard, 0,0,0);
-
-                    //Replacing our frame layout with our map fragment
+                }
+                else {
                     startFragment(mapFragment, R.anim.enter_from_left, R.anim.exit_to_right, "home");
                 }
             }
