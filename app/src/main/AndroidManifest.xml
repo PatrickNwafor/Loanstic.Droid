@@ -44,7 +44,8 @@
         <activity android:name=".activities.PaymentActivity" />
         <activity android:name=".activities.LoanActivity" />
         <activity android:name=".activities.SavingsActivity" />
-        <activity android:name=".activities.BorrowerActivity" />
+        <activity android:name=".activities.BorrowerActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".activities.BranchesActivity" />
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.AddSingleBorrower"/>
