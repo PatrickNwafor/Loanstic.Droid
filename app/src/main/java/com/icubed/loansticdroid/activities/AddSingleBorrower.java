@@ -1,6 +1,7 @@
 package com.icubed.loansticdroid.activities;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,6 +9,8 @@ import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -16,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -33,8 +37,7 @@ import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.models.Account;
 import com.icubed.loansticdroid.models.BorrowersQueries;
 
-import org.greenrobot.greendao.annotation.Index;
-
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -49,6 +52,7 @@ public class AddSingleBorrower extends AppCompatActivity {
     private LocationManager mLocationManager;
     public static final int LOCATION_UPDATE_MIN_DISTANCE = 10;
     public static final int LOCATION_UPDATE_MIN_TIME = 5000;
+    private static final int REQUEST_CODE_FILES = 222;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -100,6 +104,13 @@ public class AddSingleBorrower extends AppCompatActivity {
                 submitBorrower();
             }
         });
+        
+        borrowerFileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent(REQUEST_CODE_FILES);
+            }
+        });
 
         ArrayAdapter<CharSequence> adapterSex;
         String[] sexArr = {"Male", "Female"};
@@ -108,7 +119,7 @@ public class AddSingleBorrower extends AppCompatActivity {
         sexDrp.setAdapter(adapterSex);
         selectedSex = sexDrp.getSelectedItem().toString();
 
-        borrowersQueries = new BorrowersQueries();
+        borrowersQueries = new BorrowersQueries(this);
         account = new Account();
 
         Locale[] locale = Locale.getAvailableLocales();
@@ -134,9 +145,10 @@ public class AddSingleBorrower extends AppCompatActivity {
     }
 
     private void submitBorrower() {
-        uploadPaymentPicture(borrowerImage);
+        uploadBorrowerPicture(borrowerImage);
     }
 
+    /***************Listener to get user location***********************/
     private LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -233,14 +245,14 @@ public class AddSingleBorrower extends AppCompatActivity {
 
 
     public void start_camera(View view) {
-        dispatchTakePictureIntent();
+        dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE);
     }
 
     /***************Calls up Up Phone camera********************/
-    private void dispatchTakePictureIntent() {
+    private void dispatchTakePictureIntent(int CAMERA_CODE) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            startActivityForResult(takePictureIntent, CAMERA_CODE);
         }
     }
 
@@ -248,14 +260,26 @@ public class AddSingleBorrower extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+
+            //Borrower profile image result
             Bundle extras = data.getExtras();
             //Bitmap returned from camera
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             borrowerImageView.setImageBitmap(imageBitmap);
             borrowerImage = imageBitmap;
+
+        } else if (requestCode == REQUEST_CODE_FILES && resultCode == RESULT_OK) {
+
+            //Borrower profile image result
+            Bundle extras = data.getExtras();
+            //Bitmap returned from camera
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            //uploadImageFile(imageBitmap);
+
         }
     }
 
+    /************Adds new borrower***************/
     public void addNewBorrower(){
         BorrowersTable borrowersTable = new BorrowersTable();
 
@@ -301,15 +325,16 @@ public class AddSingleBorrower extends AppCompatActivity {
                 });
     }
 
-    private void uploadPaymentPicture(final Bitmap bitmap){
-        borrowersQueries.uploadImage(bitmap).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+    /********************Upload borrower profile image****************/
+    private void uploadBorrowerPicture(final Bitmap bitmap){
+        borrowersQueries.uploadBorrowerImage(bitmap).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if(task.isSuccessful()){
 
                     borrowerImageUri = task.getResult().getDownloadUrl().toString();
 
-                    borrowersQueries.uploadImageThumb(bitmap)
+                    borrowersQueries.uploadBorrowerImageThumb(bitmap)
                             .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -325,6 +350,30 @@ public class AddSingleBorrower extends AppCompatActivity {
                             });
                 }else{
                     Toast.makeText(getApplicationContext(), "failed 1", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    /******************Uploads borrower image file*******************/
+    private void uploadImageFile(final Bitmap bitmap) {
+        borrowersQueries.uploadImageFiles(bitmap).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()) {
+                    borrowersQueries.uploadThumbImageFiles(bitmap)
+                            .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        Toast.makeText(AddSingleBorrower.this, "Done", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(AddSingleBorrower.this, "Failed 2", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                } else {
+                    Toast.makeText(AddSingleBorrower.this, "Failed 1", Toast.LENGTH_SHORT).show();
                 }
             }
         });

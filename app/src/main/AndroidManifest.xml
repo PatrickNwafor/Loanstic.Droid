@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -46,8 +47,6 @@
         <activity android:name=".activities.BranchesActivity" />
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.AddSingleBorrower"/>
-        <activity android:name=".activities.StartCameraActivity"></activity>
-
     </application>
 
 </manifest>

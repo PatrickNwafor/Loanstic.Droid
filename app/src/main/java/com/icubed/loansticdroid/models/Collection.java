@@ -43,7 +43,7 @@ public class Collection {
         collectionQueries = new CollectionQueries();
         collectionTableQueries = new CollectionTableQueries(application);
         borrowersTableQueries = new BorrowersTableQueries(application);
-        borrowersQueries = new BorrowersQueries();
+        borrowersQueries = new BorrowersQueries(activity.getApplicationContext());
 
         isDueCollectionSingle = false;
 
