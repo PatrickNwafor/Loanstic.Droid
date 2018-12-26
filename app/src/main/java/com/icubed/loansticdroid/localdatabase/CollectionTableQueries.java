@@ -42,6 +42,14 @@ public class CollectionTableQueries {
                 .list();
     }
 
+    public List<CollectionTable> loadAllOverDueCollection(){
+        return collectionTableDao.queryBuilder()
+                .where(CollectionTableDao.Properties.IsDueCollected.eq(false))
+                .where(CollectionTableDao.Properties.Timestamp.le(new Date()))
+                .build()
+                .list();
+    }
+
     /********Update Table When Due Collection is Confirmed*********/
     public void updateStorageAfterCollection(CollectionTable collectionTable, Date timestamp){
         collectionTable.setIsDueCollected(true);

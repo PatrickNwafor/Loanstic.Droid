@@ -353,6 +353,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onResume();
         mMapView.onResume();
         getCurrentLocation();
+        collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
     }
 
     @Override

@@ -16,70 +16,65 @@ public class GroupBorrowerTable {
     private String groupLeaderId;
     private String loanOfficerId;
     private int numberOfGroupMembers;
-
+    private Boolean isGroupApproved;
     private Date timestamp;
-
-    @Generated(hash = 201876450)
+    @Generated(hash = 1432171188)
     public GroupBorrowerTable(String groupId, String groupName,
             String groupLeaderId, String loanOfficerId, int numberOfGroupMembers,
-            Date timestamp) {
+            Boolean isGroupApproved, Date timestamp) {
         this.groupId = groupId;
         this.groupName = groupName;
         this.groupLeaderId = groupLeaderId;
         this.loanOfficerId = loanOfficerId;
         this.numberOfGroupMembers = numberOfGroupMembers;
+        this.isGroupApproved = isGroupApproved;
         this.timestamp = timestamp;
     }
-
     @Generated(hash = 232308116)
     public GroupBorrowerTable() {
     }
-
     public String getGroupId() {
         return this.groupId;
     }
-
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
-
     public String getGroupName() {
         return this.groupName;
     }
-
     public void setGroupName(String groupName) {
         this.groupName = groupName;
     }
-
     public String getGroupLeaderId() {
         return this.groupLeaderId;
     }
-
     public void setGroupLeaderId(String groupLeaderId) {
         this.groupLeaderId = groupLeaderId;
     }
-
     public String getLoanOfficerId() {
         return this.loanOfficerId;
     }
-
     public void setLoanOfficerId(String loanOfficerId) {
         this.loanOfficerId = loanOfficerId;
     }
-
     public int getNumberOfGroupMembers() {
         return this.numberOfGroupMembers;
     }
-
     public void setNumberOfGroupMembers(int numberOfGroupMembers) {
         this.numberOfGroupMembers = numberOfGroupMembers;
     }
-
+    public Boolean getIsGroupApproved() {
+        return this.isGroupApproved;
+    }
+    public void setIsGroupApproved(Boolean isGroupApproved) {
+        this.isGroupApproved = isGroupApproved;
+    }
     public Date getTimestamp() {
         return this.timestamp;
     }
-
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
+    
 }

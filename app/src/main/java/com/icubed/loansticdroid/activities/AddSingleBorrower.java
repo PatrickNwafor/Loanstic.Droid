@@ -40,6 +40,7 @@ import java.util.Locale;
 
 public class AddSingleBorrower extends AppCompatActivity {
     private static final String TAG = ".AddSingleBorrower";
+    private static final int CAMERA_REQUEST_CODE = 335;
     Spinner sexDrp,citizenship;
     private static final String DEFAULT_LOCAL = "Nigeria";
 
@@ -103,7 +104,7 @@ public class AddSingleBorrower extends AppCompatActivity {
         borrowerFileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent(REQUEST_CODE_FILES);
+                getCameraPermission();
             }
         });
 
@@ -185,6 +186,17 @@ public class AddSingleBorrower extends AppCompatActivity {
         }
     }
 
+    private void getCameraPermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            Log.d(TAG, "getCameraPermission: permission not granted");
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
+        }else{
+            dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE);
+            Log.d(TAG, "getCameraPermission: permission already granted");
+        }
+    }
+
     /************Accepting Permission*************/
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -199,6 +211,17 @@ public class AddSingleBorrower extends AppCompatActivity {
                             return;
                         }
                     }
+                    Log.d(TAG, "onRequestPermissionResult: permission granted");
+                    //initialize our map
+                }
+            }
+            case CAMERA_REQUEST_CODE:{
+                if(grantResults.length > 0){
+                    if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                        Log.d(TAG, "onRequestPermissionResult: permission failed");
+                        return;
+                    }
+                    dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE);
                     Log.d(TAG, "onRequestPermissionResult: permission granted");
                     //initialize our map
                 }
@@ -248,6 +271,8 @@ public class AddSingleBorrower extends AppCompatActivity {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, CAMERA_CODE);
+        }else{
+            Toast.makeText(this, "Could not start camera", Toast.LENGTH_SHORT).show();
         }
     }
 
