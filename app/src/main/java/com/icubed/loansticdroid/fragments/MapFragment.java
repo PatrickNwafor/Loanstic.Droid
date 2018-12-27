@@ -141,12 +141,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         btnShow.setOnClickListener(onShowListener());
 
-        if (!collection.doesCollectionExistInLocalStorage()) {
-            collection.retrieveNewDueCollectionData();
-        } else {
-            collection.getDueCollectionData();
-            collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
-        }
+        /*****
+         * to un comment the line of code below to load due collections
+         * to remove the hide progress bar method
+         */
+//        if (!collection.doesCollectionExistInLocalStorage()) {
+//            collection.retrieveNewDueCollectionData();
+//        } else {
+//            collection.getDueCollectionData();
+//            collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
+//        }
+        hideProgressBar();
     }
 
     /**
@@ -353,7 +358,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onResume();
         mMapView.onResume();
         getCurrentLocation();
-        collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
     }
 
     @Override

@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.algolia.search.saas.Client;
+import com.algolia.search.saas.Index;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -17,6 +20,7 @@ import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.BorrowerRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.models.Borrowers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +28,11 @@ import java.util.List;
 public class BorrowerActivity extends AppCompatActivity {
 
     private RecyclerView borrowerRecyclerView;
-    private BorrowerRecyclerAdapter borrowerRecyclerAdapter;
-    private List<BorrowersTable> borrowersTableList;
+    public BorrowerRecyclerAdapter borrowerRecyclerAdapter;
+    public List<BorrowersTable> borrowersTableList;
+    public ProgressBar borrowerProgressBar;
     private BorrowersQueries borrowersQueries;
+    private Borrowers borrowers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,35 +40,28 @@ public class BorrowerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_borrower);
 
         borrowerRecyclerView = findViewById(R.id.borrower_list);
+        borrowerProgressBar = findViewById(R.id.borrowerProgressBar);
         borrowersTableList = new ArrayList<>();
         borrowerRecyclerAdapter= new BorrowerRecyclerAdapter(borrowersTableList);
         borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         borrowerRecyclerView.setAdapter(borrowerRecyclerAdapter);
-
+        borrowers = new Borrowers(this);
         borrowersQueries = new BorrowersQueries(this);
+
+//        //Algolia search initiation
+//        Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
+//        Index index = client.getIndex("Borrowers");
+
+
         getAllBorrowers();
     }
 
-    public void getAllBorrowers(){
-        borrowersQueries.retrieveAllBorrowers()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            if(!task.getResult().isEmpty()){
-                                for(DocumentSnapshot doc : task.getResult().getDocuments()){
-                                    BorrowersTable borrowersTable = doc.toObject(BorrowersTable.class);
-                                    borrowersTable.setBorrowersId(doc.getId());
-
-                                    borrowersTableList.add(borrowersTable);
-                                    borrowerRecyclerAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        }else{
-                            Toast.makeText(BorrowerActivity.this, "Failed to retrieve borrowers", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+    private void getAllBorrowers() {
+        if(!borrowers.doesBorrowersTableExistInLocalStorage()){
+            borrowers.loadAllBorrowers();
+        }else{
+            borrowers.loadAllBorrowersAndCompareToLocal();
+        }
     }
 
     public void backButton(View view) {

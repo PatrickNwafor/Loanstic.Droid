@@ -19,8 +19,11 @@ public class BorrowersTableQueries {
     }
 
     /************Load all collections from local Storage********/
-    public List<BorrowersTable> loadAllBorrowers(){
-        return borrowersTableDao.loadAll();
+    public List<BorrowersTable> loadAllBorrowersOrderByLastName(){
+        return borrowersTableDao.queryBuilder()
+                .orderAsc(BorrowersTableDao.Properties.LastName)
+                .build()
+                .list();
     }
 
     /**********Load a single borrower from local Storage*******/
@@ -32,4 +35,7 @@ public class BorrowersTableQueries {
                 .get(0);
     }
 
+    public List<BorrowersTable> loadAllBorrowers() {
+        return borrowersTableDao.loadAll();
+    }
 }

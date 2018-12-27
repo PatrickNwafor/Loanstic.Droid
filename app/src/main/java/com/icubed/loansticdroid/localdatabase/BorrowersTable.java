@@ -14,21 +14,19 @@ public class BorrowersTable {
 
     private String loanOfficerId, firstName, middleName, lastName, businessName
             ,profileImageUri, profileImageThumbUri, nationality, workAddress, sex
-            ,homeAddress, state, city, dateOfBirth, email, businessDescription;
+            ,homeAddress, state, city, dateOfBirth, email, businessDescription, photovalidationId;
 
     private Date timestamp;
     private Long phoneNumber;
 
     private double borrowerLocationLatitude, borrowerLocationLongitude;
 
-    @Generated(hash = 1331886803)
-    public BorrowersTable(String BorrowersId, String loanOfficerId,
-            String firstName, String middleName, String lastName,
-            String businessName, String profileImageUri,
-            String profileImageThumbUri, String nationality, String workAddress,
-            String sex, String homeAddress, String state, String city,
-            String dateOfBirth, String email, String businessDescription,
-            Date timestamp, Long phoneNumber, double borrowerLocationLatitude,
+    @Generated(hash = 1627305649)
+    public BorrowersTable(String BorrowersId, String loanOfficerId, String firstName, String middleName,
+            String lastName, String businessName, String profileImageUri, String profileImageThumbUri,
+            String nationality, String workAddress, String sex, String homeAddress, String state,
+            String city, String dateOfBirth, String email, String businessDescription,
+            String photovalidationId, Date timestamp, Long phoneNumber, double borrowerLocationLatitude,
             double borrowerLocationLongitude) {
         this.BorrowersId = BorrowersId;
         this.loanOfficerId = loanOfficerId;
@@ -47,6 +45,7 @@ public class BorrowersTable {
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.businessDescription = businessDescription;
+        this.photovalidationId = photovalidationId;
         this.timestamp = timestamp;
         this.phoneNumber = phoneNumber;
         this.borrowerLocationLatitude = borrowerLocationLatitude;
@@ -193,6 +192,14 @@ public class BorrowersTable {
         this.businessDescription = businessDescription;
     }
 
+    public String getPhotovalidationId() {
+        return this.photovalidationId;
+    }
+
+    public void setPhotovalidationId(String photovalidationId) {
+        this.photovalidationId = photovalidationId;
+    }
+
     public Date getTimestamp() {
         return this.timestamp;
     }
@@ -224,5 +231,10 @@ public class BorrowersTable {
     public void setBorrowerLocationLongitude(double borrowerLocationLongitude) {
         this.borrowerLocationLongitude = borrowerLocationLongitude;
     }
-  
+
+
+    @Override
+    public String toString() {
+        return "BorrowersTable{" + "BorrowersId='" + BorrowersId + '\'' + ", loanOfficerId='" + loanOfficerId + '\'' + ", firstName='" + firstName + '\'' + ", middleName='" + middleName + '\'' + ", lastName='" + lastName + '\'' + ", businessName='" + businessName + '\'' + ", profileImageUri='" + profileImageUri + '\'' + ", profileImageThumbUri='" + profileImageThumbUri + '\'' + ", nationality='" + nationality + '\'' + ", workAddress='" + workAddress + '\'' + ", sex='" + sex + '\'' + ", homeAddress='" + homeAddress + '\'' + ", state='" + state + '\'' + ", city='" + city + '\'' + ", dateOfBirth='" + dateOfBirth + '\'' + ", email='" + email + '\'' + ", businessDescription='" + businessDescription + '\'' + ", photovalidationId='" + photovalidationId + '\'' + ", timestamp=" + timestamp + ", phoneNumber=" + phoneNumber + ", borrowerLocationLatitude=" + borrowerLocationLatitude + ", borrowerLocationLongitude=" + borrowerLocationLongitude + '}';
+    }
 }
