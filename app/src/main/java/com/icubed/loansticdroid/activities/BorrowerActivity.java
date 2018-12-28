@@ -65,7 +65,6 @@ public class BorrowerActivity extends AppCompatActivity {
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
         index = client.getIndex("Borrowers");
 
-
         getAllBorrowers();
         searchBorrowerListener();
 
@@ -104,7 +103,11 @@ public class BorrowerActivity extends AppCompatActivity {
     private void searchBorrowers(final Editable s) {
         if(!TextUtils.isEmpty(s.toString())) {
             //Search for data from cloud storage
-            Query query = new Query(s.toString()).setAttributesToRetrieve("lastName", "firstName", "businessName").setHitsPerPage(50);
+            Query query = new Query(s.toString());
+            query.setAttributesToRetrieve("*");
+            query.setMinWordSizefor2Typos(3);
+            query.setHitsPerPage(50);
+
             index.searchAsync(query, new CompletionHandler() {
                 @Override
                 public void requestCompleted(JSONObject content, AlgoliaException error) {
@@ -118,12 +121,16 @@ public class BorrowerActivity extends AppCompatActivity {
                             String firstName = jsonObject.getString("firstName");
                             String businessName = jsonObject.getString("businessName");
                             String borrowerId = jsonObject.getString("objectID");
+                            String profileImageThumbUri = jsonObject.getString("profileImageThumbUri");
+                            String profileImageUri = jsonObject.getString("profileImageUri");
 
                             BorrowersTable borrowersTable = new BorrowersTable();
                             borrowersTable.setBorrowersId(borrowerId);
                             borrowersTable.setLastName(lastName);
                             borrowersTable.setFirstName(firstName);
                             borrowersTable.setBusinessName(businessName);
+                            borrowersTable.setProfileImageThumbUri(profileImageThumbUri);
+                            borrowersTable.setProfileImageUri(profileImageUri);
                             list.add(borrowersTable);
                         }
 
@@ -143,6 +150,19 @@ public class BorrowerActivity extends AppCompatActivity {
             });
         }else{
             borrowers.loadBorrowersToUI();
+        }
+
+    }
+
+    public void searchAbleAttributes(){
+        JSONObject settings = null;
+        try {
+            settings = new JSONObject(
+                    "{\"searchableAttributes\": [\"lastName\", \"firstName\", \"businessName\"]}"
+            );
+            index.setSettingsAsync(settings, false, null, null);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
     }
