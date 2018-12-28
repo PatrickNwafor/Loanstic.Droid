@@ -6,12 +6,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Client;
+import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
+import com.algolia.search.saas.Query;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -20,48 +28,123 @@ import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.BorrowerRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 import com.icubed.loansticdroid.models.Borrowers;
+import com.icubed.loansticdroid.models.Savings;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BorrowerActivity extends AppCompatActivity {
 
-    private RecyclerView borrowerRecyclerView;
+    public RecyclerView borrowerRecyclerView;
     public BorrowerRecyclerAdapter borrowerRecyclerAdapter;
-    public List<BorrowersTable> borrowersTableList;
     public ProgressBar borrowerProgressBar;
-    private BorrowersQueries borrowersQueries;
     private Borrowers borrowers;
+    private EditText searchBorrowerEditText;
+    Index index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_borrower);
 
+        searchBorrowerEditText = findViewById(R.id.searchEditText);
+
         borrowerRecyclerView = findViewById(R.id.borrower_list);
         borrowerProgressBar = findViewById(R.id.borrowerProgressBar);
-        borrowersTableList = new ArrayList<>();
-        borrowerRecyclerAdapter= new BorrowerRecyclerAdapter(borrowersTableList);
-        borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        borrowerRecyclerView.setAdapter(borrowerRecyclerAdapter);
         borrowers = new Borrowers(this);
-        borrowersQueries = new BorrowersQueries(this);
 
-//        //Algolia search initiation
-//        Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
-//        Index index = client.getIndex("Borrowers");
+        //Algolia search initiation
+        Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
+        index = client.getIndex("Borrowers");
 
 
         getAllBorrowers();
+        searchBorrowerListener();
+
     }
 
     private void getAllBorrowers() {
         if(!borrowers.doesBorrowersTableExistInLocalStorage()){
             borrowers.loadAllBorrowers();
         }else{
+            borrowers.loadBorrowersToUI();
             borrowers.loadAllBorrowersAndCompareToLocal();
         }
+    }
+
+    private void searchBorrowerListener(){
+        searchBorrowerEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged( Editable s) {
+
+                searchBorrowers(s);
+
+            }
+        });
+    }
+
+    private void searchBorrowers(final Editable s) {
+        if(!TextUtils.isEmpty(s.toString())) {
+            //Search for data from cloud storage
+            Query query = new Query(s.toString()).setAttributesToRetrieve("lastName", "firstName", "businessName").setHitsPerPage(50);
+            index.searchAsync(query, new CompletionHandler() {
+                @Override
+                public void requestCompleted(JSONObject content, AlgoliaException error) {
+                    try {
+                        JSONArray hits = content.getJSONArray("hits");
+                        List<BorrowersTable> list = new ArrayList<>();
+
+                        for (int i = 0; i < hits.length(); i++) {
+                            JSONObject jsonObject = hits.getJSONObject(i);
+                            String lastName = jsonObject.getString("lastName");
+                            String firstName = jsonObject.getString("firstName");
+                            String businessName = jsonObject.getString("businessName");
+                            String borrowerId = jsonObject.getString("objectID");
+
+                            BorrowersTable borrowersTable = new BorrowersTable();
+                            borrowersTable.setBorrowersId(borrowerId);
+                            borrowersTable.setLastName(lastName);
+                            borrowersTable.setFirstName(firstName);
+                            borrowersTable.setBusinessName(businessName);
+                            list.add(borrowersTable);
+                        }
+
+                        borrowerRecyclerAdapter = new BorrowerRecyclerAdapter(list);
+                        borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                        borrowerRecyclerView.setAdapter(borrowerRecyclerAdapter);
+
+                        //This is to check immediately after the search to know if string is empty
+                        if(TextUtils.isEmpty(s.toString())){
+                            borrowers.loadBorrowersToUI();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }else{
+            borrowers.loadBorrowersToUI();
+        }
+
     }
 
     public void backButton(View view) {

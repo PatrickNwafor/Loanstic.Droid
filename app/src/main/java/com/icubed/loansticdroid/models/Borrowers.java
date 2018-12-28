@@ -2,6 +2,7 @@ package com.icubed.loansticdroid.models;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -11,6 +12,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.activities.BorrowerActivity;
+import com.icubed.loansticdroid.adapters.BorrowerRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
@@ -76,10 +78,9 @@ public class Borrowers {
     public void loadBorrowersToUI(){
         List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowersOrderByLastName();
 
-        for(BorrowersTable borrower : borrowersTables){
-            ((BorrowerActivity) activity).borrowersTableList.add(borrower);
-            ((BorrowerActivity) activity).borrowerRecyclerAdapter.notifyDataSetChanged();
-        }
+        ((BorrowerActivity) activity).borrowerRecyclerAdapter = new BorrowerRecyclerAdapter(borrowersTables);
+        ((BorrowerActivity) activity).borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
+        ((BorrowerActivity) activity).borrowerRecyclerView.setAdapter(((BorrowerActivity) activity).borrowerRecyclerAdapter);
         ((BorrowerActivity) activity).borrowerProgressBar.setVisibility(View.GONE);
     }
 
@@ -99,6 +100,8 @@ public class Borrowers {
                         if(task.isSuccessful()){
                             if(!task.getResult().isEmpty()){
 
+                                Boolean isThereNewData = false;
+
                                 for(DocumentSnapshot doc : task.getResult().getDocuments()) {
 
                                     Boolean doesDataExist = false;
@@ -115,12 +118,15 @@ public class Borrowers {
 
                                         BorrowersTable borrowersTable = doc.toObject(BorrowersTable.class);
                                         borrowersTable.setBorrowersId(doc.getId());
+                                        isThereNewData = true;
 
                                         saveBorrowersToLocalStorage(borrowersTable);
                                     }
                                 }
 
-                                loadBorrowersToUI();
+                                if(isThereNewData) {
+                                    loadBorrowersToUI();
+                                }
                             }else{
                                 Toast.makeText(activity, "Document is empty", Toast.LENGTH_SHORT).show();
                             }

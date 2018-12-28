@@ -1,7 +1,9 @@
 package com.icubed.loansticdroid.localdatabase;
 
 import android.app.Application;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BorrowersTableQueries {
@@ -37,5 +39,24 @@ public class BorrowersTableQueries {
 
     public List<BorrowersTable> loadAllBorrowers() {
         return borrowersTableDao.loadAll();
+    }
+
+    /**********search for borrowers based on first name, last name or business name************/
+    public List<BorrowersTable> searchBorrowers(String searchString){
+        List<BorrowersTable> list = borrowersTableDao.loadAll();
+        List<BorrowersTable> borrowersTables = new ArrayList<>();
+
+        for(BorrowersTable bt : list) {
+
+            Boolean lastNameCheck = bt.getLastName().toLowerCase().contains(searchString.toLowerCase());
+            Boolean firstNameCheck = bt.getFirstName().toLowerCase().contains(searchString.toLowerCase());
+            Boolean businessNameCheck = bt.getBusinessName().toLowerCase().contains(searchString.toLowerCase());
+
+            if (lastNameCheck || firstNameCheck || businessNameCheck) {
+                borrowersTables.add(bt);
+            }
+        }
+
+        return borrowersTables;
     }
 }
