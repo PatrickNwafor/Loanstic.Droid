@@ -1,7 +1,9 @@
 package com.icubed.loansticdroid.activities;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -236,7 +238,7 @@ public class AddSingleBorrower extends AppCompatActivity {
         boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         Location location = null;
-        if (!(isGPSEnabled || isNetworkEnabled)) Toast.makeText(this, "Please enable location service", Toast.LENGTH_SHORT).show();
+        if (!(isGPSEnabled)) gpsDisabledMessage();
         else {
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -254,10 +256,6 @@ public class AddSingleBorrower extends AppCompatActivity {
                         LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
                 location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             }
-        }
-        if (location != null) {
-            Log.d(TAG, "getCurrentLocation: Lat: "+location.getLatitude()+" Long: "+location.getLongitude());
-            //Do something here
         }
     }
 
@@ -373,6 +371,25 @@ public class AddSingleBorrower extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /************Alert Dialog Message for disabled GPS************/
+    private void gpsDisabledMessage(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
     /******************Uploads borrower image file*******************/

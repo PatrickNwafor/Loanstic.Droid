@@ -2,7 +2,10 @@ package com.icubed.loansticdroid.fragments;
 
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -26,7 +29,9 @@ import android.widget.*;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.icubed.loansticdroid.activities.LoginActivity;
 import com.icubed.loansticdroid.activities.MainActivity;
+import com.icubed.loansticdroid.activities.ResetPasswordActivity;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
 import com.icubed.loansticdroid.models.Account;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
@@ -259,7 +264,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         Location location = null;
-        if (!(isGPSEnabled || isNetworkEnabled)) Toast.makeText(getContext(), "Please enable location service", Toast.LENGTH_SHORT).show();
+        if (!(isGPSEnabled)) gpsDisabledMessage();
         else {
 
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -282,6 +287,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Log.d(TAG, "getCurrentLocation: Lat: "+location.getLatitude()+" Long: "+location.getLongitude());
             drawMarker(location);
         }
+    }
+
+    /************Alert Dialog Message************/
+    private void gpsDisabledMessage(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
     /*******************set marker on map************************/
