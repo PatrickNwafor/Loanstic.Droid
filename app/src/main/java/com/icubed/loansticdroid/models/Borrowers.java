@@ -101,13 +101,14 @@ public class Borrowers {
                             if(!task.getResult().isEmpty()){
 
                                 Boolean isThereNewData = false;
-
+                                List<BorrowersTable> borrowersInStorage = borrowerList;
                                 for(DocumentSnapshot doc : task.getResult().getDocuments()) {
 
                                     Boolean doesDataExist = false;
                                     for (BorrowersTable bowTab : borrowerList) {
                                         if (bowTab.getBorrowersId().equals(doc.getId())) {
                                             doesDataExist = true;
+                                            borrowersInStorage.remove(bowTab);
                                             Log.d(TAG, "onComplete: borrower id of " + doc.getId() + " already exist");
                                             break;
                                         }
@@ -124,7 +125,15 @@ public class Borrowers {
                                     }
                                 }
 
-                                if(isThereNewData) {
+                                //to delete deleted borrower in cloud from storage
+                                if(!borrowersInStorage.isEmpty()){
+                                    for(BorrowersTable borowTab : borrowersInStorage){
+                                        deleteBorrowerFromLocalStorage(borowTab);
+                                        Log.d("Delete", "deleted "+borowTab.getBorrowersId()+ " from storage");
+                                    }
+                                }
+
+                                if(isThereNewData || !borrowersInStorage.isEmpty()) {
                                     loadBorrowersToUI();
                                 }
                             }else{
@@ -135,5 +144,9 @@ public class Borrowers {
                         }
                     }
                 });
+    }
+
+    private void deleteBorrowerFromLocalStorage(BorrowersTable borowTab) {
+        borrowersTableQueries.deleteBorrowersFromStorage(borowTab);
     }
 }

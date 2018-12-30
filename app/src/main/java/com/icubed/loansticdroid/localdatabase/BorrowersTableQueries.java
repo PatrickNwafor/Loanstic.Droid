@@ -3,21 +3,35 @@ package com.icubed.loansticdroid.localdatabase;
 import android.app.Application;
 import android.util.Log;
 
+import org.greenrobot.greendao.query.DeleteQuery;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class BorrowersTableQueries {
 
     private BorrowersTableDao borrowersTableDao;
+    private DaoSession daoSession;
 
     public BorrowersTableQueries(Application application){
-        DaoSession daoSession = ((App) application).getDaoSession();
+        daoSession = ((App) application).getDaoSession();
         borrowersTableDao = daoSession.getBorrowersTableDao();
     }
 
     /***************Save BorrowersQueries to local Storage*********/
     public void insertBorrowersToStorage(BorrowersTable borrowersTable){
         borrowersTableDao.insert(borrowersTable);
+    }
+
+    /***************Save BorrowersQueries to local Storage*********/
+    public void deleteBorrowersFromStorage(BorrowersTable borrowersTable){
+        borrowersTableDao.queryBuilder()
+                .where(BorrowersTableDao.Properties.BorrowersId.eq(borrowersTable.getBorrowersId()))
+                .buildDelete()
+                .executeDeleteWithoutDetachingEntities();
+
+        daoSession.clear();
+
     }
 
     /************Load all collections from local Storage********/
