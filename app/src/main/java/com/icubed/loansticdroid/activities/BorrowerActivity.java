@@ -2,6 +2,7 @@ package com.icubed.loansticdroid.activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,6 +49,7 @@ public class BorrowerActivity extends AppCompatActivity {
     public ProgressBar borrowerProgressBar;
     private Borrowers borrowers;
     private EditText searchBorrowerEditText;
+    public SwipeRefreshLayout swipeRefreshLayout;
     Index index;
 
     @Override
@@ -55,11 +57,19 @@ public class BorrowerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_borrower);
 
-        searchBorrowerEditText = findViewById(R.id.searchEditText);
+        borrowers = new Borrowers(this);
 
+        //Views
+        searchBorrowerEditText = findViewById(R.id.searchEditText);
         borrowerRecyclerView = findViewById(R.id.borrower_list);
         borrowerProgressBar = findViewById(R.id.borrowerProgressBar);
-        borrowers = new Borrowers(this);
+
+        //Swipe down refresher initialization
+        swipeRefreshLayout = findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
+                android.R.color.holo_green_dark,
+                R.color.colorAccent);
+        swipeRefreshListener();
 
         //Algolia search initiation
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
@@ -70,10 +80,22 @@ public class BorrowerActivity extends AppCompatActivity {
 
     }
 
+    //Swipe down refresh lstener
+    private void swipeRefreshListener() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                borrowers.loadAllBorrowersAndCompareToLocal();
+            }
+        });
+    }
+
     private void getAllBorrowers() {
         if(!borrowers.doesBorrowersTableExistInLocalStorage()){
             borrowers.loadAllBorrowers();
         }else{
+            swipeRefreshLayout.setRefreshing(true);
             borrowers.loadBorrowersToUI();
             borrowers.loadAllBorrowersAndCompareToLocal();
         }

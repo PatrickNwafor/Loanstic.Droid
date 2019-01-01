@@ -25,12 +25,13 @@ public class BorrowersTableQueries {
 
     /***************Save BorrowersQueries to local Storage*********/
     public void deleteBorrowersFromStorage(BorrowersTable borrowersTable){
-        borrowersTableDao.queryBuilder()
-                .where(BorrowersTableDao.Properties.BorrowersId.eq(borrowersTable.getBorrowersId()))
-                .buildDelete()
-                .executeDeleteWithoutDetachingEntities();
-
-        daoSession.clear();
+        borrowersTableDao.delete(borrowersTable);
+//        borrowersTableDao.queryBuilder()
+//                .where(BorrowersTableDao.Properties.BorrowersId.eq(borrowersTable.getBorrowersId()))
+//                .buildDelete()
+//                .executeDeleteWithoutDetachingEntities();
+//
+//        daoSession.clear();
 
     }
 

@@ -1,6 +1,7 @@
 package com.icubed.loansticdroid.localdatabase;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.Date;
@@ -12,17 +13,20 @@ public class GroupBorrowerTable {
     @Unique
     private String groupId;
 
+    @Id(autoincrement = true)
+    private Long id;
     private String groupName;
     private String groupLeaderId;
     private String loanOfficerId;
     private int numberOfGroupMembers;
     private Boolean isGroupApproved;
     private Date timestamp;
-    @Generated(hash = 1432171188)
-    public GroupBorrowerTable(String groupId, String groupName,
+    @Generated(hash = 969750323)
+    public GroupBorrowerTable(String groupId, Long id, String groupName,
             String groupLeaderId, String loanOfficerId, int numberOfGroupMembers,
             Boolean isGroupApproved, Date timestamp) {
         this.groupId = groupId;
+        this.id = id;
         this.groupName = groupName;
         this.groupLeaderId = groupLeaderId;
         this.loanOfficerId = loanOfficerId;
@@ -38,6 +42,12 @@ public class GroupBorrowerTable {
     }
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+    public Long getId() {
+        return this.id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
     public String getGroupName() {
         return this.groupName;
@@ -75,6 +85,4 @@ public class GroupBorrowerTable {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
-
-    
 }

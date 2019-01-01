@@ -136,11 +136,14 @@ public class Borrowers {
                                 if(isThereNewData || !borrowersInStorage.isEmpty()) {
                                     loadBorrowersToUI();
                                 }
+                                removeRefresher();
                             }else{
                                 Toast.makeText(activity, "Document is empty", Toast.LENGTH_SHORT).show();
+                                removeRefresher();
                             }
                         }else{
                             Log.d("Borrower", "onComplete: "+task.getException().getMessage());
+                            removeRefresher();
                         }
                     }
                 });
@@ -148,5 +151,11 @@ public class Borrowers {
 
     private void deleteBorrowerFromLocalStorage(BorrowersTable borowTab) {
         borrowersTableQueries.deleteBorrowersFromStorage(borowTab);
+    }
+
+    private void removeRefresher(){
+        ((BorrowerActivity) activity).swipeRefreshLayout.setRefreshing(false);
+        ((BorrowerActivity) activity).swipeRefreshLayout.destroyDrawingCache();
+        ((BorrowerActivity) activity).swipeRefreshLayout.clearAnimation();
     }
 }

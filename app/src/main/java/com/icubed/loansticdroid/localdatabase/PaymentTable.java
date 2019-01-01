@@ -1,6 +1,7 @@
 package com.icubed.loansticdroid.localdatabase;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.Date;
@@ -13,6 +14,9 @@ public class PaymentTable {
     private String paymentId;
 
     private String loanId;
+
+    @Id(autoincrement = true)
+    private Long id;
 
     private String paymentScheduleOrder;
 
@@ -40,8 +44,8 @@ public class PaymentTable {
 
     private String paymentMethod;
 
-    @Generated(hash = 1812322280)
-    public PaymentTable(String paymentId, String loanId,
+    @Generated(hash = 15052619)
+    public PaymentTable(String paymentId, String loanId, Long id,
             String paymentScheduleOrder, String interestId, double interestAmount,
             double repaymentPrincipal, double totalRepaymentDue,
             Date repaymentDueDate, Boolean isPaid, Date actualPaymentDate,
@@ -50,6 +54,7 @@ public class PaymentTable {
             String paymentMethod) {
         this.paymentId = paymentId;
         this.loanId = loanId;
+        this.id = id;
         this.paymentScheduleOrder = paymentScheduleOrder;
         this.interestId = interestId;
         this.interestAmount = interestAmount;
@@ -83,6 +88,14 @@ public class PaymentTable {
 
     public void setLoanId(String loanId) {
         this.loanId = loanId;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getPaymentScheduleOrder() {
@@ -189,6 +202,4 @@ public class PaymentTable {
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
-
-    
 }

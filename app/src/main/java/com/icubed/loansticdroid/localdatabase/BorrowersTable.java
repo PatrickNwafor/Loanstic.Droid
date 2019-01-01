@@ -1,6 +1,7 @@
 package com.icubed.loansticdroid.localdatabase;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
@@ -19,15 +20,18 @@ public class BorrowersTable {
     private Date timestamp;
     private Long phoneNumber;
 
+    @Id(autoincrement = true)
+    private Long id;
+
     private double borrowerLocationLatitude, borrowerLocationLongitude;
 
-    @Generated(hash = 1627305649)
+    @Generated(hash = 1818701032)
     public BorrowersTable(String BorrowersId, String loanOfficerId, String firstName, String middleName,
             String lastName, String businessName, String profileImageUri, String profileImageThumbUri,
             String nationality, String workAddress, String sex, String homeAddress, String state,
             String city, String dateOfBirth, String email, String businessDescription,
-            String photovalidationId, Date timestamp, Long phoneNumber, double borrowerLocationLatitude,
-            double borrowerLocationLongitude) {
+            String photovalidationId, Date timestamp, Long phoneNumber, Long id,
+            double borrowerLocationLatitude, double borrowerLocationLongitude) {
         this.BorrowersId = BorrowersId;
         this.loanOfficerId = loanOfficerId;
         this.firstName = firstName;
@@ -48,6 +52,7 @@ public class BorrowersTable {
         this.photovalidationId = photovalidationId;
         this.timestamp = timestamp;
         this.phoneNumber = phoneNumber;
+        this.id = id;
         this.borrowerLocationLatitude = borrowerLocationLatitude;
         this.borrowerLocationLongitude = borrowerLocationLongitude;
     }
@@ -216,6 +221,14 @@ public class BorrowersTable {
         this.phoneNumber = phoneNumber;
     }
 
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public double getBorrowerLocationLatitude() {
         return this.borrowerLocationLatitude;
     }
@@ -230,11 +243,5 @@ public class BorrowersTable {
 
     public void setBorrowerLocationLongitude(double borrowerLocationLongitude) {
         this.borrowerLocationLongitude = borrowerLocationLongitude;
-    }
-
-
-    @Override
-    public String toString() {
-        return "BorrowersTable{" + "BorrowersId='" + BorrowersId + '\'' + ", loanOfficerId='" + loanOfficerId + '\'' + ", firstName='" + firstName + '\'' + ", middleName='" + middleName + '\'' + ", lastName='" + lastName + '\'' + ", businessName='" + businessName + '\'' + ", profileImageUri='" + profileImageUri + '\'' + ", profileImageThumbUri='" + profileImageThumbUri + '\'' + ", nationality='" + nationality + '\'' + ", workAddress='" + workAddress + '\'' + ", sex='" + sex + '\'' + ", homeAddress='" + homeAddress + '\'' + ", state='" + state + '\'' + ", city='" + city + '\'' + ", dateOfBirth='" + dateOfBirth + '\'' + ", email='" + email + '\'' + ", businessDescription='" + businessDescription + '\'' + ", photovalidationId='" + photovalidationId + '\'' + ", timestamp=" + timestamp + ", phoneNumber=" + phoneNumber + ", borrowerLocationLatitude=" + borrowerLocationLatitude + ", borrowerLocationLongitude=" + borrowerLocationLongitude + '}';
     }
 }
