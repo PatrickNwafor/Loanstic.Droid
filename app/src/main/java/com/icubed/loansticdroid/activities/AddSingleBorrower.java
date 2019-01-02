@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +42,12 @@ import java.util.Date;
 import java.util.Locale;
 
 public class AddSingleBorrower extends AppCompatActivity {
+
+
+    LinearLayout layout1,layout2,layout3,layout4,layout5,layout6,layout7;
+    Button next,next1,previous,takePhoto;
+    ImageView retakePhoto;
+
     private static final String TAG = ".AddSingleBorrower";
     private static final int CAMERA_REQUEST_CODE = 335;
     Spinner sexDrp,citizenship;
@@ -95,6 +102,21 @@ public class AddSingleBorrower extends AppCompatActivity {
         submitBorrowerBtn = findViewById(R.id.submit);
         borrowerFileBtn = findViewById(R.id.borrower_files);
         borrowerImageView = findViewById(R.id.borrower_image);
+
+
+        layout1 = findViewById(R.id.layout1);
+        layout2 = findViewById(R.id.layout2);
+        layout3 = findViewById(R.id.layout3);
+        layout4 = findViewById(R.id.layout4);
+        layout5 = findViewById(R.id.layout5);
+        layout6 = findViewById(R.id.layout6);
+        layout7 = findViewById(R.id.layout7);
+
+        next = findViewById(R.id.next);
+        next1 = findViewById(R.id.next1);
+        previous = findViewById(R.id.previous);
+        takePhoto = findViewById(R.id.verify);
+        retakePhoto = findViewById(R.id.start_camera_button);
 
         submitBorrowerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,6 +284,10 @@ public class AddSingleBorrower extends AppCompatActivity {
 
     public void start_camera(View view) {
         dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE);
+        next1.setVisibility(View.VISIBLE);
+        takePhoto.setVisibility(View.INVISIBLE);
+        retakePhoto.setVisibility(View.VISIBLE);
+
     }
 
     /***************Calls up Up Phone camera********************/
@@ -415,4 +441,123 @@ public class AddSingleBorrower extends AppCompatActivity {
             }
         });
     }
+    public void next_layout(View view) {
+        if(layout1.getVisibility() == View.VISIBLE){
+            layout1.setVisibility(View.INVISIBLE);
+            layout2.setVisibility(View.VISIBLE);
+            layout3.setVisibility(View.INVISIBLE);
+            layout4.setVisibility(View.INVISIBLE);
+            layout5.setVisibility(View.INVISIBLE);
+            previous.setVisibility(View.VISIBLE);
+            next1.setVisibility(View.VISIBLE);
+            next.setVisibility(View.INVISIBLE);
+
+        }
+        else if (layout2.getVisibility()== View.VISIBLE)
+        {   layout1.setVisibility(View.INVISIBLE);
+            layout2.setVisibility(View.INVISIBLE);
+            layout3.setVisibility(View.VISIBLE);
+            layout4.setVisibility(View.INVISIBLE);
+            layout5.setVisibility(View.INVISIBLE);
+
+        }
+        else if (layout3.getVisibility()== View.VISIBLE)
+        {
+            layout1.setVisibility(View.INVISIBLE);
+            layout2.setVisibility(View.INVISIBLE);
+            layout3.setVisibility(View.INVISIBLE);
+            layout4.setVisibility(View.VISIBLE);
+            layout5.setVisibility(View.INVISIBLE);
+        }
+        else if (layout4.getVisibility()== View.VISIBLE)
+        {
+            layout1.setVisibility(View.INVISIBLE);
+            layout2.setVisibility(View.INVISIBLE);
+            layout3.setVisibility(View.INVISIBLE);
+            layout4.setVisibility(View.INVISIBLE);
+            layout5.setVisibility(View.VISIBLE);
+        }
+        else if (layout5.getVisibility()== View.VISIBLE)
+        {
+            layout1.setVisibility(View.INVISIBLE);
+            layout2.setVisibility(View.INVISIBLE);
+            layout3.setVisibility(View.INVISIBLE);
+            layout4.setVisibility(View.INVISIBLE);
+            layout5.setVisibility(View.INVISIBLE);
+            layout6.setVisibility(View.VISIBLE);
+            takePhoto.setVisibility(View.VISIBLE);
+            next1.setVisibility(View.INVISIBLE);
+        }
+        else if (layout6.getVisibility()== View.VISIBLE)
+        {
+            layout1.setVisibility(View.INVISIBLE);
+            layout2.setVisibility(View.INVISIBLE);
+            layout3.setVisibility(View.INVISIBLE);
+            layout4.setVisibility(View.INVISIBLE);
+            layout5.setVisibility(View.INVISIBLE);
+            layout6.setVisibility(View.INVISIBLE);
+            layout7.setVisibility(View.VISIBLE);
+            takePhoto.setVisibility(View.INVISIBLE);
+            next1.setVisibility(View.INVISIBLE);
+            submitBorrowerBtn.setVisibility(View.VISIBLE);
+            previous.setVisibility(View.INVISIBLE);
+        }
+
+
+    }
+
+    public void previous_layout(View view) {
+        if(layout6.getVisibility()==View.VISIBLE)
+        {
+            layout1.setVisibility(View.INVISIBLE);
+            layout2.setVisibility(View.INVISIBLE);
+            layout3.setVisibility(View.INVISIBLE);
+            layout4.setVisibility(View.INVISIBLE);
+            layout5.setVisibility(View.VISIBLE);
+            layout6.setVisibility(View.INVISIBLE);
+            next1.setVisibility(View.VISIBLE);
+            takePhoto.setVisibility(View.INVISIBLE);
+            retakePhoto.setVisibility(View.INVISIBLE);
+        }
+        else if(layout5.getVisibility()==View.VISIBLE)
+        {
+            layout1.setVisibility(View.INVISIBLE);
+            layout2.setVisibility(View.INVISIBLE);
+            layout3.setVisibility(View.INVISIBLE);
+            layout4.setVisibility(View.VISIBLE);
+            layout5.setVisibility(View.INVISIBLE);
+            layout6.setVisibility(View.INVISIBLE);
+        }
+        else if (layout4.getVisibility()==View.VISIBLE)
+        {
+            layout1.setVisibility(View.INVISIBLE);
+            layout2.setVisibility(View.INVISIBLE);
+            layout3.setVisibility(View.VISIBLE);
+            layout4.setVisibility(View.INVISIBLE);
+            layout5.setVisibility(View.INVISIBLE);
+            layout6.setVisibility(View.INVISIBLE);
+        }
+        else if (layout3.getVisibility()==View.VISIBLE)
+        {
+            layout1.setVisibility(View.INVISIBLE);
+            layout2.setVisibility(View.VISIBLE);
+            layout3.setVisibility(View.INVISIBLE);
+            layout4.setVisibility(View.INVISIBLE);
+            layout5.setVisibility(View.INVISIBLE);
+            layout6.setVisibility(View.INVISIBLE);
+        }
+        else if (layout2.getVisibility()==View.VISIBLE)
+        {
+            layout1.setVisibility(View.VISIBLE);
+            layout2.setVisibility(View.INVISIBLE);
+            layout3.setVisibility(View.INVISIBLE);
+            layout4.setVisibility(View.INVISIBLE);
+            layout5.setVisibility(View.INVISIBLE);
+            layout6.setVisibility(View.INVISIBLE);
+            previous.setVisibility(View.INVISIBLE);
+            next.setVisibility(View.VISIBLE);
+            next1.setVisibility(View.INVISIBLE);
+        }
+    }
+
 }

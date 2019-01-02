@@ -50,29 +50,29 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical">
-                <EditText
-                    android:id="@+id/first_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="5dp"
-                    android:hint="First Name"
-                    tools:layout_editor_absoluteX="89dp" />
+            <EditText
+                android:id="@+id/first_name"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="5dp"
+                android:hint="First Name"
+                tools:layout_editor_absoluteX="89dp" />
 
-                <EditText
-                    android:id="@+id/middle_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="5dp"
-                    android:hint="Middle Name"
-                    tools:layout_editor_absoluteX="89dp" />
+            <EditText
+                android:id="@+id/middle_name"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="5dp"
+                android:hint="Middle Name"
+                tools:layout_editor_absoluteX="89dp" />
 
-                <EditText
-                    android:id="@+id/last_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="5dp"
-                    android:hint="Last Name"
-                    tools:layout_editor_absoluteX="89dp" />
+            <EditText
+                android:id="@+id/last_name"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="5dp"
+                android:hint="Last Name"
+                tools:layout_editor_absoluteX="89dp" />
             </LinearLayout>
 
 
