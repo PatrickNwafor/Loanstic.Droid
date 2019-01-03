@@ -163,4 +163,8 @@ public class BorrowerPersonalInfo extends AppCompatActivity {
         takePhoto.setVisibility(View.INVISIBLE);
         retakePhoto.setVisibility(View.VISIBLE);
     }
+
+    public void submit_borrower(View view) {
+
+    }
 }

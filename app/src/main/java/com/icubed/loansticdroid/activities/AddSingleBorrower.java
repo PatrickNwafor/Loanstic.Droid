@@ -20,26 +20,35 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.algolia.search.saas.Client;
+import com.algolia.search.saas.Index;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.models.Account;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
+import com.icubed.loansticdroid.util.FormUtil;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class AddSingleBorrower extends AppCompatActivity {
 
@@ -63,11 +72,12 @@ public class AddSingleBorrower extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    private ProgressBar reg_progress_bar;
     private BorrowersQueries borrowersQueries;
     private Account account;
     private String selectedSex, borrowerImageUri, borrowerImageThumbUri;
     private String selectedCountry;
-    private TextView firstNameTextView, middleNameTextView, lastNameTextView
+    private EditText firstNameTextView, middleNameTextView, lastNameTextView
             ,phoneNumberTextView, emailTextView, dateOfBirthTextView
             ,homeAddressTextView, businessAddressTextView, cityTextView
             ,stateTextView, zipCodeTextView, businessNameTextView, businessDescTextView;
@@ -76,13 +86,20 @@ public class AddSingleBorrower extends AppCompatActivity {
     private Button borrowerFileBtn;
     private ImageView borrowerImageView;
 
-    private Bitmap borrowerImage;
+    private Bitmap borrowerImage = null;
     private LatLng borrowerLatLng;
+    private Index index;
+
+    private FormUtil formUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_single_borrower);
+
+        //Algolia search initiation
+        Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
+        index = client.getIndex("Borrowers");
 
         sexDrp =findViewById(R.id.spSex);
         citizenship = findViewById(R.id.input_citizenship);
@@ -102,6 +119,7 @@ public class AddSingleBorrower extends AppCompatActivity {
         submitBorrowerBtn = findViewById(R.id.submit);
         borrowerFileBtn = findViewById(R.id.borrower_files);
         borrowerImageView = findViewById(R.id.borrower_image);
+        reg_progress_bar = findViewById(R.id.reg_progressBar);
 
 
         layout1 = findViewById(R.id.layout1);
@@ -118,20 +136,6 @@ public class AddSingleBorrower extends AppCompatActivity {
         takePhoto = findViewById(R.id.verify);
         retakePhoto = findViewById(R.id.start_camera_button);
 
-        submitBorrowerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitBorrower();
-            }
-        });
-        
-        borrowerFileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getCameraPermission();
-            }
-        });
-
         ArrayAdapter<CharSequence> adapterSex;
         String[] sexArr = {"Male", "Female"};
         adapterSex = new ArrayAdapter<CharSequence>(this,android.R.layout.simple_spinner_item,sexArr);
@@ -141,6 +145,8 @@ public class AddSingleBorrower extends AppCompatActivity {
 
         borrowersQueries = new BorrowersQueries(this);
         account = new Account();
+
+        formUtil = new FormUtil();
 
         Locale[] locale = Locale.getAvailableLocales();
         ArrayList<String> countries = new ArrayList<String>();
@@ -161,10 +167,11 @@ public class AddSingleBorrower extends AppCompatActivity {
 
         //get location permission
         getLocationPermission();
-        getCurrentLocation();
     }
 
-    private void submitBorrower() {
+    public void submit_borrower(View view) {
+        submitBorrowerBtn.setEnabled(false);
+        reg_progress_bar.setVisibility(View.VISIBLE);
         uploadBorrowerPicture(borrowerImage);
     }
 
@@ -174,7 +181,6 @@ public class AddSingleBorrower extends AppCompatActivity {
         public void onLocationChanged(Location location) {
             if (location != null) {
                 Log.d(TAG, "getCurrentLocation: Lat: " + location.getLatitude() + " Long: " + location.getLongitude());
-                borrowerLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                 mLocationManager.removeUpdates(mLocationListener);
             } else {
                 Log.d(TAG, "onLocationChanged: Location is null");
@@ -219,6 +225,39 @@ public class AddSingleBorrower extends AppCompatActivity {
             dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE);
             Log.d(TAG, "getCameraPermission: permission already granted");
         }
+    }
+
+    /*************Adding borrower to search for indexing***********/
+    private void createBorrowerSearch(DocumentReference borrowersDocRef){
+
+        borrowersDocRef.get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isComplete()){
+                            BorrowersTable borrowersTable = task.getResult().toObject(BorrowersTable.class);
+                            borrowersTable.setBorrowersId(task.getResult().getId());
+
+                            Map<String, Object> searchMap = new HashMap<>();
+                            searchMap.put("lastName", borrowersTable.getLastName());
+                            searchMap.put("firstName", borrowersTable.getFirstName());
+                            searchMap.put("businessName", borrowersTable.getBusinessName());
+                            searchMap.put("profileImageUri", borrowersTable.getProfileImageUri());
+                            searchMap.put("profileImageThumbUri", borrowersTable.getProfileImageThumbUri());
+
+                            JSONObject object = new JSONObject(searchMap);
+                            index.addObjectAsync(object, borrowersTable.getBorrowersId(), null);
+
+                            reg_progress_bar.setVisibility(View.GONE);
+                            submitBorrowerBtn.setEnabled(true);
+                            Toast.makeText(getApplicationContext(), "New borrower Added Successfully", Toast.LENGTH_SHORT).show();
+                        }else{
+                            reg_progress_bar.setVisibility(View.GONE);
+                            submitBorrowerBtn.setEnabled(true);
+                            Toast.makeText(getApplicationContext(), "Failure to create search index for new borrower", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     /************Accepting Permission*************/
@@ -279,6 +318,10 @@ public class AddSingleBorrower extends AppCompatActivity {
                 location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             }
         }
+        if(location != null){
+            borrowerLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            addNewBorrower();
+        }
     }
 
 
@@ -292,11 +335,15 @@ public class AddSingleBorrower extends AppCompatActivity {
 
     /***************Calls up Up Phone camera********************/
     private void dispatchTakePictureIntent(int CAMERA_CODE) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, CAMERA_CODE);
-        }else{
-            Toast.makeText(this, "Could not start camera", Toast.LENGTH_SHORT).show();
+        getCameraPermission();
+        try {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, CAMERA_CODE);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -325,44 +372,41 @@ public class AddSingleBorrower extends AppCompatActivity {
 
     /************Adds new borrower***************/
     public void addNewBorrower(){
-        BorrowersTable borrowersTable = new BorrowersTable();
 
-        //Assigning borrower parameters
-        borrowersTable.setBorrowerLocationLongitude(borrowerLatLng.longitude);
-        borrowersTable.setBorrowerLocationLatitude(borrowerLatLng.latitude);
-        borrowersTable.setProfileImageUri(borrowerImageUri);
-        borrowersTable.setProfileImageThumbUri(borrowerImageThumbUri);
-        borrowersTable.setFirstName(firstNameTextView.getText().toString());
-        borrowersTable.setLastName(lastNameTextView.getText().toString());
-        borrowersTable.setMiddleName(middleNameTextView.getText().toString());
-        borrowersTable.setWorkAddress(businessAddressTextView.getText().toString());
-        borrowersTable.setHomeAddress(homeAddressTextView.getText().toString());
-        borrowersTable.setCity(cityTextView.getText().toString());
-        borrowersTable.setBusinessDescription(businessDescTextView.getText().toString());
-        borrowersTable.setBusinessName(businessNameTextView.getText().toString());
-
-        try {
-            borrowersTable.setPhoneNumber(Long.parseLong(phoneNumberTextView.getText().toString()));
-        } catch (NumberFormatException e) {
-            Log.d(TAG, "addNewBorrower: "+e.getMessage());
-        }
-
-        borrowersTable.setEmail(emailTextView.getText().toString());
-        borrowersTable.setDateOfBirth(dateOfBirthTextView.getText().toString());
-        borrowersTable.setLoanOfficerId(account.getCurrentUserId());
-        borrowersTable.setState(stateTextView.getText().toString());
-        borrowersTable.setSex(selectedSex);
-        borrowersTable.setNationality(selectedCountry);
-        borrowersTable.setTimestamp(new Date());
+        //Assigning borrower parameter
+        Map<String, Object> borrowerMap = new HashMap<>();
+        borrowerMap.put("borrowerLocationLongitude", borrowerLatLng.longitude);
+        borrowerMap.put("borrowerLocationLatitude", borrowerLatLng.latitude);
+        borrowerMap.put("profileImageUri", borrowerImageUri);
+        borrowerMap.put("profileImageThumbUri", borrowerImageThumbUri);
+        borrowerMap.put("firstName", firstNameTextView.getText().toString());
+        borrowerMap.put("lastName", lastNameTextView.getText().toString());
+        borrowerMap.put("middleName", middleNameTextView.getText().toString());
+        borrowerMap.put("workAddress", businessAddressTextView.getText().toString());
+        borrowerMap.put("homeAddress", homeAddressTextView.getText().toString());
+        borrowerMap.put("city", cityTextView.getText().toString());
+        borrowerMap.put("businessDescription", businessDescTextView.getText().toString());
+        borrowerMap.put("businessName", businessNameTextView.getText().toString());
+        borrowerMap.put("phoneNumber", Long.parseLong(phoneNumberTextView.getText().toString()));
+        borrowerMap.put("email", emailTextView.getText().toString());
+        borrowerMap.put("dateOfBirth", dateOfBirthTextView.getText().toString());
+        borrowerMap.put("loanOfficerId", account.getCurrentUserId());
+        borrowerMap.put("state", stateTextView.getText().toString());
+        borrowerMap.put("sex", selectedSex);
+        borrowerMap.put("nationality", selectedCountry);
+        borrowerMap.put("timestamp", new Date());
 
         //Adding new borrower to database
-        borrowersQueries.addNewBorrower(borrowersTable)
+        borrowersQueries.addNewBorrower(borrowerMap)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(AddSingleBorrower.this, "Done", Toast.LENGTH_SHORT).show();
+                        if (task.isSuccessful() && task.isComplete()) {
+                            //Adding borrower to search index
+                            createBorrowerSearch(task.getResult());
                         }else{
+                            reg_progress_bar.setVisibility(View.GONE);
+                            submitBorrowerBtn.setEnabled(true);
                             Toast.makeText(AddSingleBorrower.this, "Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -385,14 +429,18 @@ public class AddSingleBorrower extends AppCompatActivity {
                                     if(task.isSuccessful()){
                                         borrowerImageThumbUri = task.getResult().getDownloadUrl().toString();
 
-                                        //Add borrower to cloud
-                                        addNewBorrower();
+                                        //getCurrentLocation
+                                        getCurrentLocation();
                                     }else{
+                                        reg_progress_bar.setVisibility(View.GONE);
+                                        submitBorrowerBtn.setEnabled(true);
                                         Toast.makeText(getApplicationContext(), "Failed 2", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                 }else{
+                    reg_progress_bar.setVisibility(View.GONE);
+                    submitBorrowerBtn.setEnabled(true);
                     Toast.makeText(getApplicationContext(), "failed 1", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -441,8 +489,15 @@ public class AddSingleBorrower extends AppCompatActivity {
             }
         });
     }
+
     public void next_layout(View view) {
         if(layout1.getVisibility() == View.VISIBLE){
+
+            //Checking form
+            EditText[] editTexts = new EditText[]{firstNameTextView, lastNameTextView};
+            if (isAnyFormEmpty(editTexts)) {
+                return;
+            }
             layout1.setVisibility(View.INVISIBLE);
             layout2.setVisibility(View.VISIBLE);
             layout3.setVisibility(View.INVISIBLE);
@@ -454,7 +509,17 @@ public class AddSingleBorrower extends AppCompatActivity {
 
         }
         else if (layout2.getVisibility()== View.VISIBLE)
-        {   layout1.setVisibility(View.INVISIBLE);
+        {
+            //checking form
+            if(formUtil.isSingleFormEmpty(dateOfBirthTextView)){
+                dateOfBirthTextView.setError("This Field is required");
+                dateOfBirthTextView.requestFocus();
+                return;
+            }else{
+                dateOfBirthTextView.setError(null);
+            }
+
+            layout1.setVisibility(View.INVISIBLE);
             layout2.setVisibility(View.INVISIBLE);
             layout3.setVisibility(View.VISIBLE);
             layout4.setVisibility(View.INVISIBLE);
@@ -463,6 +528,13 @@ public class AddSingleBorrower extends AppCompatActivity {
         }
         else if (layout3.getVisibility()== View.VISIBLE)
         {
+            //Checking form
+            EditText[] editTexts = new EditText[]{cityTextView, stateTextView, zipCodeTextView};
+            if (isAnyFormEmpty(editTexts))
+                return;
+            if(!doesFieldContainNumberOnly(zipCodeTextView))
+                return;
+
             layout1.setVisibility(View.INVISIBLE);
             layout2.setVisibility(View.INVISIBLE);
             layout3.setVisibility(View.INVISIBLE);
@@ -471,6 +543,20 @@ public class AddSingleBorrower extends AppCompatActivity {
         }
         else if (layout4.getVisibility()== View.VISIBLE)
         {
+
+            //Checking form
+            EditText[] editTexts = new EditText[]{phoneNumberTextView, emailTextView, homeAddressTextView};
+            if (isAnyFormEmpty(editTexts))
+                return;
+            //Checking phone numbers
+            if(!doesFieldContainNumberOnly(phoneNumberTextView))
+                return;
+            //Checking if email format is valid
+            if(!formUtil.isValidEmail(emailTextView.getText().toString())) {
+                emailTextView.setError("Invalid email format");
+                return;
+            }
+
             layout1.setVisibility(View.INVISIBLE);
             layout2.setVisibility(View.INVISIBLE);
             layout3.setVisibility(View.INVISIBLE);
@@ -479,6 +565,12 @@ public class AddSingleBorrower extends AppCompatActivity {
         }
         else if (layout5.getVisibility()== View.VISIBLE)
         {
+
+            //Checking form
+            EditText[] editTexts = new EditText[]{businessNameTextView, businessDescTextView, businessAddressTextView};
+            if (isAnyFormEmpty(editTexts))
+                return;
+
             layout1.setVisibility(View.INVISIBLE);
             layout2.setVisibility(View.INVISIBLE);
             layout3.setVisibility(View.INVISIBLE);
@@ -490,6 +582,11 @@ public class AddSingleBorrower extends AppCompatActivity {
         }
         else if (layout6.getVisibility()== View.VISIBLE)
         {
+            if(borrowerImage == null){
+                Toast.makeText(this, "Cannot procede without snapping borrower", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             layout1.setVisibility(View.INVISIBLE);
             layout2.setVisibility(View.INVISIBLE);
             layout3.setVisibility(View.INVISIBLE);
@@ -558,6 +655,38 @@ public class AddSingleBorrower extends AppCompatActivity {
             next.setVisibility(View.VISIBLE);
             next1.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private Boolean isAnyFormEmpty(EditText[] forms){
+        Boolean isFormEmpty = false;
+        boolean[] listOfFormsEmpty = formUtil.isListOfFormsEmpty(forms);
+
+        for(int i = 0; i < forms.length; i++){
+            if(listOfFormsEmpty[i]){
+                forms[i].setError("Field is required");
+
+                if(!isFormEmpty) {
+                    forms[i].requestFocus();
+                }
+
+                isFormEmpty = true;
+            }else{
+                forms[i].setError(null);
+            }
+        }
+
+        return isFormEmpty;
+    }
+
+    private Boolean doesFieldContainNumberOnly(EditText editText){
+        if(!formUtil.doesFormContainNumbersOnly(editText)){
+            editText.setError("Only numbers are allowed");
+            return false;
+        }else {
+            editText.setError(null);
+        }
+
+        return true;
     }
 
 }
