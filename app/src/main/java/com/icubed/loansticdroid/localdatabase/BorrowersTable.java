@@ -18,19 +18,19 @@ public class BorrowersTable {
             ,homeAddress, state, city, dateOfBirth, email, businessDescription, photovalidationId;
 
     private Date timestamp;
-    private Long phoneNumber;
+    private Long phoneNumber, zipcode;
 
     @Id(autoincrement = true)
     private Long id;
 
     private double borrowerLocationLatitude, borrowerLocationLongitude;
 
-    @Generated(hash = 1818701032)
+    @Generated(hash = 105853919)
     public BorrowersTable(String BorrowersId, String loanOfficerId, String firstName, String middleName,
             String lastName, String businessName, String profileImageUri, String profileImageThumbUri,
             String nationality, String workAddress, String sex, String homeAddress, String state,
             String city, String dateOfBirth, String email, String businessDescription,
-            String photovalidationId, Date timestamp, Long phoneNumber, Long id,
+            String photovalidationId, Date timestamp, Long phoneNumber, Long zipcode, Long id,
             double borrowerLocationLatitude, double borrowerLocationLongitude) {
         this.BorrowersId = BorrowersId;
         this.loanOfficerId = loanOfficerId;
@@ -52,6 +52,7 @@ public class BorrowersTable {
         this.photovalidationId = photovalidationId;
         this.timestamp = timestamp;
         this.phoneNumber = phoneNumber;
+        this.zipcode = zipcode;
         this.id = id;
         this.borrowerLocationLatitude = borrowerLocationLatitude;
         this.borrowerLocationLongitude = borrowerLocationLongitude;
@@ -219,6 +220,14 @@ public class BorrowersTable {
 
     public void setPhoneNumber(Long phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Long getZipcode() {
+        return this.zipcode;
+    }
+
+    public void setZipcode(Long zipcode) {
+        this.zipcode = zipcode;
     }
 
     public Long getId() {

@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.models.Account;
+import com.icubed.loansticdroid.util.FormUtil;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -32,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     Animation frombottom,frombottom1,frombottom2;
 
     private Account account;
+    private FormUtil formUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         errorTextView = findViewById(R.id.errorTextView);
         TextView forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
 
-
+        formUtil = new FormUtil();
         account = new Account();
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -81,35 +83,41 @@ public class LoginActivity extends AppCompatActivity {
         String email = emailTextView.getText().toString();
         String password = passwordTextView.getText().toString();
 
-        if(isFormProperlyFilled(email,password)) {
-
-            loginProgressBar.setVisibility(View.VISIBLE);
-            loginBtn.setEnabled(false);
-
-            Task<AuthResult> resultTask = account.signIntoAccount(email, password);
-
-            resultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
-                        Toast.makeText(getApplicationContext(), "Account Login of "+task.getResult().getUser().getEmail()+ " Successful", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "onComplete: Account Login successful");
-
-                        Intent mainActivityIntent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(mainActivityIntent);
-                        finish();
-                    }else{
-
-                        loginProgressBar.setVisibility(View.GONE);
-                        loginBtn.setEnabled(true);
-
-                        //Determine the type of login error message
-                        loginError(task.getException().getMessage());
-                    }
-                }
-            });
-
+        //Checking form
+        EditText[] editTexts = new EditText[]{emailTextView, passwordTextView};
+        if(isAnyFormEmpty(editTexts))
+            return;
+        //Checking if email format is valid
+        if(!formUtil.isValidEmail(emailTextView.getText().toString())) {
+            emailTextView.setError("Invalid email format");
+            return;
         }
+
+        loginProgressBar.setVisibility(View.VISIBLE);
+        loginBtn.setEnabled(false);
+
+        Task<AuthResult> resultTask = account.signIntoAccount(email, password);
+
+        resultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(getApplicationContext(), "Account Login of "+task.getResult().getUser().getEmail()+ " Successful", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onComplete: Account Login successful");
+
+                    Intent mainActivityIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(mainActivityIntent);
+                    finish();
+                }else{
+
+                    loginProgressBar.setVisibility(View.GONE);
+                    loginBtn.setEnabled(true);
+
+                    //Determine the type of login error message
+                    loginError(task.getException().getMessage());
+                }
+            }
+        });
 
     }
 
@@ -138,39 +146,25 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    /************Checks if form is filled properly**************/
-    private Boolean isFormProperlyFilled(String email, String password){
+    /*************To check forms*******************/
+    private Boolean isAnyFormEmpty(EditText[] forms){
+        Boolean isFormEmpty = false;
+        boolean[] listOfFormsEmpty = formUtil.isListOfFormsEmpty(forms);
 
-        if(TextUtils.isEmpty(email) && TextUtils.isEmpty(password)){
+        for(int i = 0; i < forms.length; i++){
+            if(listOfFormsEmpty[i]){
+                forms[i].setError("Field is required");
 
-            emailTextView.setError("Field is required");
-            emailTextView.requestFocus();
-            passwordTextView.setError("Field is required");
-            return false;
+                if(!isFormEmpty) {
+                    forms[i].requestFocus();
+                }
 
-        }else if(TextUtils.isEmpty(email)){
-
-            emailTextView.setError("Field is required");
-            emailTextView.requestFocus();
-            return false;
-
-        }else if(TextUtils.isEmpty(password)){
-
-            passwordTextView.setError("Field is required");
-            passwordTextView.requestFocus();
-            return false;
-
+                isFormEmpty = true;
+            }else{
+                forms[i].setError(null);
+            }
         }
 
-        if(!account.isValidEmail(email)){
-
-            emailTextView.setError("Invalid Email format");
-            emailTextView.requestFocus();
-            return false;
-
-        }
-
-        return true;
-
+        return isFormEmpty;
     }
 }

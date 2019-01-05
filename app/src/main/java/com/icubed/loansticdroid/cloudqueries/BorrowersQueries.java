@@ -19,6 +19,7 @@ import com.icubed.loansticdroid.models.Account;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 public class BorrowersQueries {
@@ -99,6 +100,11 @@ public class BorrowersQueries {
 
     /*******************Add new borrower*************/
     public Task<DocumentReference> addNewBorrower(BorrowersTable borrowersTable){
+        return firebaseFirestore.collection("Borrowers").add(borrowersTable);
+    }
+
+    /*******************Add new borrower*************/
+    public Task<DocumentReference> addNewBorrower(Map<String, Object> borrowersTable){
         return firebaseFirestore.collection("Borrowers").add(borrowersTable);
     }
 

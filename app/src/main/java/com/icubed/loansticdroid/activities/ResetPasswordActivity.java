@@ -17,14 +17,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.models.Account;
+import com.icubed.loansticdroid.util.FormUtil;
 
 public class ResetPasswordActivity extends AppCompatActivity {
 
     private static final String TAG = "ResetPasswordActivity";
     private EditText emailResetEditText;
-    private Button resetBtn;
-
     private Account account;
+    private FormUtil formUtil;
 
     private AlertDialog.Builder digAlert;
 
@@ -34,11 +34,12 @@ public class ResetPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reset_password);
 
         account = new Account();
+        formUtil = new FormUtil();
 
         digAlert = new AlertDialog.Builder(this);
 
         emailResetEditText = findViewById(R.id.emailResetView);
-        resetBtn = findViewById(R.id.sendReset);
+        Button resetBtn = findViewById(R.id.sendReset);
 
         resetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,29 +56,39 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         final String resetEmail = emailResetEditText.getText().toString();
 
-        if(isFormProperlyFilled(resetEmail)){
+        //Checking form
+        if(formUtil.isSingleFormEmpty(emailResetEditText)){
+            emailResetEditText.setError("Email is required");
+            emailResetEditText.requestFocus();
+            return;
+        }
+        if(!formUtil.isValidEmail(resetEmail)){
+            emailResetEditText.setError("Invalid Email format");
+            emailResetEditText.requestFocus();
+            return;
+        }
 
-            account.resetPassword(resetEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
+        emailResetEditText.setError(null);
 
-                    if(task.isSuccessful()){
+        account.resetPassword(resetEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
 
-                        String message = "An email with a link to reset your password has been sent to you";
-                        resetMessage(message, true);
-                        Log.d(TAG, "Email sent.");
+                if(task.isSuccessful()){
 
-                    }else{
+                    String message = "An email with a link to reset your password has been sent to you";
+                    resetMessage(message, true);
+                    Log.d(TAG, "Email sent.");
 
-                        Log.d(TAG, "Email sending failed.");
-                        resetMessage( task.getException().getMessage(), false);
+                }else{
 
-                    }
+                    Log.d(TAG, "Email sending failed.");
+                    resetMessage( task.getException().getMessage(), false);
 
                 }
-            });
 
-        }
+            }
+        });
     }
 
     /************Alert Dialog Message************/
@@ -98,28 +109,5 @@ public class ResetPasswordActivity extends AppCompatActivity {
         });
         digAlert.create();
         digAlert.show();
-    }
-
-    /************Checks if form is filled properly**************/
-    private Boolean isFormProperlyFilled(String email){
-
-        if(TextUtils.isEmpty(email)){
-
-            emailResetEditText.setError("Email is required");
-            emailResetEditText.requestFocus();
-            return false;
-
-        }
-
-        if(!account.isValidEmail(email)){
-
-            emailResetEditText.setError("Invalid Email format");
-            emailResetEditText.requestFocus();
-            return false;
-
-        }
-
-        return true;
-
     }
 }

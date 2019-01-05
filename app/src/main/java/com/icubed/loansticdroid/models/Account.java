@@ -14,15 +14,6 @@ public class Account {
         auth = FirebaseAuth.getInstance();
     }
 
-    /*********To check if email format is correct**********/
-    public boolean isValidEmail(CharSequence email) {
-        if (email == null) {
-            return false;
-        } else {
-            return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-        }
-    }
-
     /********************Reset Account Password*****************/
     public Task<Void> resetPassword(String email){
         return auth.sendPasswordResetEmail(email);

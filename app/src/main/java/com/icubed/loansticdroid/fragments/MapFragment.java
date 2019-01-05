@@ -2,20 +2,14 @@ package com.icubed.loansticdroid.fragments;
 
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,16 +21,14 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.icubed.loansticdroid.activities.LoginActivity;
 import com.icubed.loansticdroid.activities.MainActivity;
-import com.icubed.loansticdroid.activities.ResetPasswordActivity;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
 import com.icubed.loansticdroid.models.Account;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.models.Collection;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
+import com.icubed.loansticdroid.util.PlayServiceUtil;
+import com.icubed.loansticdroid.util.LocationProviderUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import static com.sothree.slidinguppanel.SlidingUpPanelLayout.*;
@@ -74,16 +66,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public SlideUpPanelRecyclerAdapter slideUpPanelRecyclerAdapter;
 
     private static final String TAG = "MapFragment";
-    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
-    private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
 
-    private Boolean mLocationPermissionGranted = false;
-
-    private LocationManager mLocationManager;
-    public static final int LOCATION_UPDATE_MIN_DISTANCE = 10;
-    public static final int LOCATION_UPDATE_MIN_TIME = 5000;
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 200;
+    private LocationProviderUtil locationProviderUtil;
+    private PlayServiceUtil playServiceUtil;
 
     public MapFragment() {
         // Required empty public constructor
@@ -115,6 +101,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         collection = new Collection(getActivity().getApplication(), getActivity());
         account = new Account();
         borrowersQueries = new BorrowersQueries(getContext());
+        playServiceUtil = new PlayServiceUtil(getContext());
+        locationProviderUtil = new LocationProviderUtil(getContext());
 
         dueCollectionList = new ArrayList<>();
         slideUpRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -125,8 +113,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
 
-        getLocationPermission();
-        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         //setting layout slide listener
         slidingLayout = v.findViewById(R.id.sliding_layout);
         //event
@@ -147,6 +133,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         btnShow.setOnClickListener(onShowListener());
 
         /*****
+         * @Todo
          * to un comment the line of code below to load due collections
          * to remove the hide progress bar method
          */
@@ -184,34 +171,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         initMap();
     }
 
-    private LocationListener mLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            if (location != null) {
-                Log.d(TAG, "getCurrentLocation: Lat: " + location.getLatitude() + " Long: " + location.getLongitude());
-                drawMarker(location);
-                mLocationManager.removeUpdates(mLocationListener);
-            } else {
-                Log.d(TAG, "onLocationChanged: Location is null");
-            }
-        }
-
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String s) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String s) {
-
-        }
-    };
-
     private void mapOnClickListener() {
 
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -229,9 +188,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     //Initialize map
     private void initMap() {
-        if (checkPlayServices()) {
+        if (playServiceUtil.isGooglePlayServicesAvailable()) {
             if (mGoogleMap != null) {
-                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
 
@@ -242,73 +202,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    /**********************check play service compatibility*************/
-    private boolean checkPlayServices() {
-        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
-        int result = googleAPI.isGooglePlayServicesAvailable(getContext());
-        if(result != ConnectionResult.SUCCESS) {
-            if(googleAPI.isUserResolvableError(result)) {
-                googleAPI.getErrorDialog(getActivity(), result,
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /********************get current location******************/
     private void getCurrentLocation() {
-        boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-        Location location = null;
-        if (!(isGPSEnabled)) gpsDisabledMessage();
-        else {
-
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
+        locationProviderUtil.requestSingleUpdate(new LocationProviderUtil.LocationCallback() {
+            @Override
+            public void onNewLocationAvailable(LocationProviderUtil.GPSCoordinates location) {
+                drawMarker(location.getLocation);
             }
-
-            if (isNetworkEnabled) {
-                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                        LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-                location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-
-            if (isGPSEnabled) {
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-                location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }
-        }
-        if (location != null) {
-            Log.d(TAG, "getCurrentLocation: Lat: "+location.getLatitude()+" Long: "+location.getLongitude());
-            drawMarker(location);
-        }
+        });
     }
 
-    /************Alert Dialog Message************/
-    private void gpsDisabledMessage(){
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    /*******************set marker on map************************/
+    /****************************set marker on map******************************/
     private void drawMarker(Location location) {
         if (mGoogleMap != null) {
             mGoogleMap.clear();
@@ -321,38 +224,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-    /************Requesting Location Permission**********/
-    private void getLocationPermission(){
-        Log.d(TAG, "checking for permission");
-        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-
-        if(ContextCompat.checkSelfPermission(getContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            mLocationPermissionGranted = true;
-            Log.d(TAG, "Permission already granted");
-        }else{
-            Log.d(TAG, "No permission yet");
-            ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
-        }
-    }
-
-    /************Accepting Permission*************/
+    /***************************Accepting Permission***********************/
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(TAG, "onRequestPermissionResult: called");
-        mLocationPermissionGranted = false;
-
         switch (requestCode){
             case LOCATION_PERMISSION_REQUEST_CODE:{
                 if(grantResults.length > 0){
                     for (int grantResult : grantResults) {
                         if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                            mLocationPermissionGranted = false;
                             Log.d(TAG, "onRequestPermissionResult: permission failed");
                             return;
                         }
                     }
-                    mLocationPermissionGranted = true;
                     Log.d(TAG, "onRequestPermissionResult: permission granted");
+                    getCurrentLocation();
                     //initialize our map
                 }
             }
@@ -388,7 +274,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onPause() {
         super.onPause();
         mMapView.onPause();
-        mLocationManager.removeUpdates(mLocationListener);
     }
 
     @Override
