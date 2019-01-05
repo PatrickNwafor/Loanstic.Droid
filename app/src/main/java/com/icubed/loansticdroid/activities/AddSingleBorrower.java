@@ -72,7 +72,7 @@ public class AddSingleBorrower extends AppCompatActivity {
             ,homeAddressTextView, businessAddressTextView, cityTextView
             ,stateTextView, zipCodeTextView, businessNameTextView, businessDescTextView;
 
-    private Button submitBorrowerBtn;
+    private Button submitBorrowerBtn, done;
     private Button borrowerFileBtn;
     private ImageView borrowerImageView;
 
@@ -103,6 +103,8 @@ public class AddSingleBorrower extends AppCompatActivity {
         borrowerFileBtn = findViewById(R.id.borrower_files);
         borrowerImageView = findViewById(R.id.borrower_image);
 
+
+       // done = findViewById(R.id.done);
 
         layout1 = findViewById(R.id.layout1);
         layout2 = findViewById(R.id.layout2);
@@ -165,7 +167,10 @@ public class AddSingleBorrower extends AppCompatActivity {
     }
 
     private void submitBorrower() {
-        uploadBorrowerPicture(borrowerImage);
+        //uploadBorrowerPicture(borrowerImage);
+        Intent verify = new Intent(AddSingleBorrower.this, LetsVerifyBusiness.class);
+        startActivity(verify);
+
     }
 
     /***************Listener to get user location***********************/
@@ -559,5 +564,6 @@ public class AddSingleBorrower extends AppCompatActivity {
             next1.setVisibility(View.INVISIBLE);
         }
     }
+
 
 }

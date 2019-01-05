@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context="com.icubed.loansticdroid.activities.BorrowerPersonalInfo">
+    tools:context="com.icubed.loansticdroid.activities.AddSingleBorrower">
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView"
@@ -425,6 +425,9 @@
             </LinearLayout>
 
 
+
+
+
         </LinearLayout>
 
 
@@ -521,10 +524,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
         android:background="@drawable/loan_button_back"
-        android:onClick="next_layout"
+
         android:visibility="invisible"
 
-        android:text="Submit"
+        android:text="Done"
         android:textAllCaps="false"
         android:textColor="@color/whiteEnd"
 
