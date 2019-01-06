@@ -7,13 +7,13 @@ import org.greenrobot.greendao.annotation.Generated;
 
 import java.util.Date;
 
-@Entity()
+@Entity
 public class BorrowersTable {
 
     @Unique
     private String BorrowersId;
 
-    private String loanOfficerId, firstName, middleName, lastName, businessName
+    private String loanOfficerId, firstName, middleName, lastName, businessName, assignedBy
             ,profileImageUri, profileImageThumbUri, nationality, workAddress, sex
             ,homeAddress, state, city, dateOfBirth, email, businessDescription, photovalidationId;
 
@@ -25,19 +25,20 @@ public class BorrowersTable {
 
     private double borrowerLocationLatitude, borrowerLocationLongitude;
 
-    @Generated(hash = 105853919)
+    @Generated(hash = 91502844)
     public BorrowersTable(String BorrowersId, String loanOfficerId, String firstName, String middleName,
-            String lastName, String businessName, String profileImageUri, String profileImageThumbUri,
-            String nationality, String workAddress, String sex, String homeAddress, String state,
-            String city, String dateOfBirth, String email, String businessDescription,
-            String photovalidationId, Date timestamp, Long phoneNumber, Long zipcode, Long id,
-            double borrowerLocationLatitude, double borrowerLocationLongitude) {
+            String lastName, String businessName, String assignedBy, String profileImageUri,
+            String profileImageThumbUri, String nationality, String workAddress, String sex,
+            String homeAddress, String state, String city, String dateOfBirth, String email,
+            String businessDescription, String photovalidationId, Date timestamp, Long phoneNumber,
+            Long zipcode, Long id, double borrowerLocationLatitude, double borrowerLocationLongitude) {
         this.BorrowersId = BorrowersId;
         this.loanOfficerId = loanOfficerId;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.businessName = businessName;
+        this.assignedBy = assignedBy;
         this.profileImageUri = profileImageUri;
         this.profileImageThumbUri = profileImageThumbUri;
         this.nationality = nationality;
@@ -108,6 +109,14 @@ public class BorrowersTable {
 
     public void setBusinessName(String businessName) {
         this.businessName = businessName;
+    }
+
+    public String getAssignedBy() {
+        return this.assignedBy;
+    }
+
+    public void setAssignedBy(String assignedBy) {
+        this.assignedBy = assignedBy;
     }
 
     public String getProfileImageUri() {

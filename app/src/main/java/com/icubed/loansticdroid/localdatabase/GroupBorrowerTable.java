@@ -7,7 +7,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
-@Entity()
+@Entity
 public class GroupBorrowerTable {
 
     @Unique
@@ -20,11 +20,14 @@ public class GroupBorrowerTable {
     private String loanOfficerId;
     private int numberOfGroupMembers;
     private Boolean isGroupApproved;
+    private String approvedBy;
+    private String assignedBy;
     private Date timestamp;
-    @Generated(hash = 969750323)
+    @Generated(hash = 828966481)
     public GroupBorrowerTable(String groupId, Long id, String groupName,
             String groupLeaderId, String loanOfficerId, int numberOfGroupMembers,
-            Boolean isGroupApproved, Date timestamp) {
+            Boolean isGroupApproved, String approvedBy, String assignedBy,
+            Date timestamp) {
         this.groupId = groupId;
         this.id = id;
         this.groupName = groupName;
@@ -32,6 +35,8 @@ public class GroupBorrowerTable {
         this.loanOfficerId = loanOfficerId;
         this.numberOfGroupMembers = numberOfGroupMembers;
         this.isGroupApproved = isGroupApproved;
+        this.approvedBy = approvedBy;
+        this.assignedBy = assignedBy;
         this.timestamp = timestamp;
     }
     @Generated(hash = 232308116)
@@ -78,6 +83,18 @@ public class GroupBorrowerTable {
     }
     public void setIsGroupApproved(Boolean isGroupApproved) {
         this.isGroupApproved = isGroupApproved;
+    }
+    public String getApprovedBy() {
+        return this.approvedBy;
+    }
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+    public String getAssignedBy() {
+        return this.assignedBy;
+    }
+    public void setAssignedBy(String assignedBy) {
+        this.assignedBy = assignedBy;
     }
     public Date getTimestamp() {
         return this.timestamp;

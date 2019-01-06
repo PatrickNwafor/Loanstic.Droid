@@ -11,7 +11,6 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.icubed.loansticdroid.models.Account;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;

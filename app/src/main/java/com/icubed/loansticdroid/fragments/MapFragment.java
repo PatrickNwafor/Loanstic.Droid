@@ -23,7 +23,7 @@ import android.widget.*;
 
 import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
-import com.icubed.loansticdroid.models.Account;
+import com.icubed.loansticdroid.cloudqueries.Account;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.models.Collection;
 import com.icubed.loansticdroid.models.DueCollectionDetails;

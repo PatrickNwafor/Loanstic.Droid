@@ -32,7 +32,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
-import com.icubed.loansticdroid.models.Account;
+import com.icubed.loansticdroid.cloudqueries.Account;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.util.FormUtil;
 import com.icubed.loansticdroid.util.LocationProviderUtil;

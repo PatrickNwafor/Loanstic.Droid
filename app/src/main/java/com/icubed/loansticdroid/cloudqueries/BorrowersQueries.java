@@ -2,23 +2,18 @@ package com.icubed.loansticdroid.cloudqueries;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
-import com.icubed.loansticdroid.models.Account;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 

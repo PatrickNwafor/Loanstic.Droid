@@ -114,7 +114,9 @@ public class LocationProviderUtil {
             if (isNetworkEnabled) {
                 mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                         LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-            }else{
+            }
+
+            if(isGPSEnabled){
                 mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
             }

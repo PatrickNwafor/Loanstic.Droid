@@ -6,7 +6,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
-import com.icubed.loansticdroid.models.Account;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,18 +38,6 @@ public class GroupBorrowerQueries {
         return firebaseFirestore.collection("Borrowers_Group")
                 .document(groupId)
                 .get();
-
-    }
-
-    /********************Approve group************************/
-    public Task<Void> approveBorrowersGroup(String groupId){
-
-        Map<String, Object> objectMap = new HashMap<>();
-        objectMap.put("isGroupApproved", true);
-
-        return firebaseFirestore.collection("Borrowers_Group")
-                .document(groupId)
-                .update(objectMap);
 
     }
 

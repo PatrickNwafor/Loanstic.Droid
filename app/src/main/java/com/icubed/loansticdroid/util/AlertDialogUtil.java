@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class AlertDialogUtil {
 
@@ -14,6 +17,7 @@ public class AlertDialogUtil {
     }
 
     public void gpsDisabledMessage(){
+        Log.d(TAG, "gpsDisabledMessage: called");
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
                 .setCancelable(false)

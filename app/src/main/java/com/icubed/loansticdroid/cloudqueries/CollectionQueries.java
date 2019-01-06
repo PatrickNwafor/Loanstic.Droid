@@ -5,7 +5,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
-import com.icubed.loansticdroid.models.Account;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,9 +23,12 @@ public class CollectionQueries {
 
     /*****************Create new CollectionTable ****************/
     public Task<DocumentReference> createCollection(CollectionTable collectionTable){
-
         return firebaseFirestore.collection("Collection").add(collectionTable);
+    }
 
+    /*****************Create new CollectionTable ****************/
+    public Task<DocumentReference> createCollection(Map<String, Object> collectionMap){
+        return firebaseFirestore.collection("Collection").add(collectionMap);
     }
 
     /*****************Retrieve CollectionTable*********************/

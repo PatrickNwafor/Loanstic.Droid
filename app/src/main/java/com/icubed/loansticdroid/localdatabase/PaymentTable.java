@@ -7,7 +7,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
-@Entity()
+@Entity
 public class PaymentTable {
 
     @Unique

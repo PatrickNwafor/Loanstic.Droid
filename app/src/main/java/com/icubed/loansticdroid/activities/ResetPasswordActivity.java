@@ -6,17 +6,15 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.models.Account;
+import com.icubed.loansticdroid.cloudqueries.Account;
 import com.icubed.loansticdroid.util.FormUtil;
 
 public class ResetPasswordActivity extends AppCompatActivity {
