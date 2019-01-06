@@ -46,6 +46,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class AddSingleBorrower extends AppCompatActivity {
 
 
@@ -75,7 +77,7 @@ public class AddSingleBorrower extends AppCompatActivity {
 
     private Button submitBorrowerBtn;
     private Button borrowerFileBtn;
-    private ImageView borrowerImageView;
+    private CircleImageView borrowerImageView;
 
     private Bitmap borrowerImage = null;
     private LatLng borrowerLatLng;

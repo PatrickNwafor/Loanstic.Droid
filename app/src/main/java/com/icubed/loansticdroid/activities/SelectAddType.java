@@ -7,11 +7,13 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.icubed.loansticdroid.R;
 
 public class SelectAddType extends AppCompatActivity {
     Button addSingleBorrower, addGroup;
+    TextView selectNote;
     Animation frombottom;
 
     @Override
@@ -21,11 +23,13 @@ public class SelectAddType extends AppCompatActivity {
 
         setContentView(R.layout.add_new_user_type);
         addSingleBorrower = findViewById(R.id.single_borrower);
+        selectNote = findViewById(R.id.selectNote);
         addGroup = findViewById(R.id.new_group);
         frombottom = AnimationUtils.loadAnimation( this,R.anim.frombottom);
 
         addSingleBorrower.setAnimation(frombottom);
         addGroup.setAnimation(frombottom);
+        selectNote.setAnimation(frombottom);
     }
 
     public void add_single_borrower(View view) {

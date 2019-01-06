@@ -80,7 +80,7 @@ public class BorrowerRecyclerAdapter extends RecyclerView.Adapter<BorrowerRecycl
             borrowerImageView = mView.findViewById(R.id.borrower_image);
 
             RequestOptions placeholderOption = new RequestOptions();
-            placeholderOption.placeholder(R.drawable.download);
+            placeholderOption.placeholder(R.drawable.person_image);
 
             Glide.with(mView.getContext()).applyDefaultRequestOptions(placeholderOption).load(imageUri).thumbnail(
                     Glide.with(mView.getContext()).load(imagethumbUri)

@@ -4,19 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/whiteEnd"
     tools:context="com.icubed.loansticdroid.activities.AddSingleBorrower">
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="50dp"
+
+
+
         android:padding="15dp"
-        app:cardCornerRadius="10dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,17 +44,20 @@
 
 
                 android:src="@drawable/personal_info_image" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical">
+
                 <EditText
                     android:id="@+id/first_name"
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="5dp"
                     android:hint="First Name"
+
                     tools:layout_editor_absoluteX="89dp" />
 
                 <EditText
@@ -79,7 +81,6 @@
         </LinearLayout>
 
 
-
         <LinearLayout
             android:id="@+id/layout2"
             android:layout_width="match_parent"
@@ -88,9 +89,9 @@
             android:background="@color/whiteEnd"
 
             android:orientation="vertical"
-            android:visibility="invisible"
+            android:padding="10dp"
 
-            android:padding="10dp">
+            android:visibility="invisible">
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/image_view1"
@@ -103,17 +104,19 @@
 
 
                 android:src="@drawable/gender" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
+
                 <EditText
                     android:id="@+id/date_of_birth"
-                    android:hint="Date of Birth"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:hint="Date of Birth"
                     android:inputType="date" />
 
                 <Spinner
@@ -121,14 +124,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
 
-                    tools:listitem="@android:layout/simple_spinner_item"
-                    android:layout_marginTop="5dp" />
+                    android:layout_marginTop="5dp"
+                    tools:listitem="@android:layout/simple_spinner_item" />
             </LinearLayout>
 
 
         </LinearLayout>
-
-
 
 
         <LinearLayout
@@ -137,10 +138,10 @@
             android:layout_height="match_parent"
             android:layout_margin="15dp"
             android:background="@color/whiteEnd"
-            android:visibility="invisible"
             android:orientation="vertical"
+            android:padding="10dp"
 
-            android:padding="10dp">
+            android:visibility="invisible">
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/image_view2"
@@ -153,18 +154,21 @@
 
 
                 android:src="@drawable/borrower_location" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical">
+
                 <Spinner
                     android:id="@+id/input_citizenship"
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
 
-                    tools:listitem="@android:layout/simple_spinner_item"
-                    android:layout_marginTop="5dp" />
+                    android:layout_marginTop="5dp"
+                    tools:listitem="@android:layout/simple_spinner_item" />
+
                 <EditText
                     android:id="@+id/city"
                     android:layout_width="match_parent"
@@ -187,7 +191,6 @@
                     android:hint="Zip Code" />
 
 
-
             </LinearLayout>
 
 
@@ -202,8 +205,8 @@
             android:background="@color/whiteEnd"
 
             android:orientation="vertical"
-            android:visibility="invisible"
-            android:padding="10dp">
+            android:padding="10dp"
+            android:visibility="invisible">
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/image_view3"
@@ -216,12 +219,12 @@
 
 
                 android:src="@drawable/contact" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical">
-
 
 
                 <EditText
@@ -241,7 +244,6 @@
                     android:inputType="textEmailAddress" />
 
 
-
                 <EditText
                     android:id="@+id/home_address"
                     android:layout_width="match_parent"
@@ -254,7 +256,6 @@
         </LinearLayout>
 
 
-
         <LinearLayout
             android:id="@+id/layout5"
             android:layout_width="match_parent"
@@ -263,9 +264,9 @@
             android:background="@color/whiteEnd"
 
             android:orientation="vertical"
-            android:visibility="invisible"
+            android:padding="10dp"
 
-            android:padding="10dp">
+            android:visibility="invisible">
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/image_view4"
@@ -278,12 +279,12 @@
 
 
                 android:src="@drawable/business_info" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical">
-
 
 
                 <EditText
@@ -292,18 +293,20 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="Business Name" />
+
                 <EditText
                     android:id="@+id/business_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="Business Address" />
+
                 <EditText
                     android:id="@+id/description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Description"
                     android:ems="10"
+                    android:hint="Description"
                     android:inputType="textMultiLine" />
             </LinearLayout>
 
@@ -319,9 +322,9 @@
             android:background="@color/whiteEnd"
 
             android:orientation="vertical"
-            android:visibility="invisible"
+            android:padding="10dp"
 
-            android:padding="10dp">
+            android:visibility="invisible">
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/image_view5"
@@ -340,13 +343,17 @@
                 android:layout_height="match_parent"
                 android:gravity="center">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/borrower_image"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="80dp"
+                    android:elevation="4dp"
+                    android:scaleType="centerCrop"
 
 
-                    android:src="@drawable/ic_person_black_24dp"
+                    android:src="@color/darkGrey"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -356,18 +363,23 @@
                     android:id="@+id/start_camera_button"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
+                    android:layout_marginBottom="8dp"
                     android:layout_marginTop="8dp"
+                    android:background="@drawable/circle_white"
                     android:clickable="true"
+                    android:elevation="4dp"
                     android:onClick="start_camera"
                     android:padding="10dp"
-                    android:src="@drawable/retake"
-                    android:text="Borrower Photo"
+                    android:src="@drawable/names"
+
                     android:textColor="@color/whiteEnd"
-                    app:layout_constraintBottom_toBottomOf="@+id/borrower_image"
+                    android:tint="@color/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.875"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/borrower_image"
-                    app:layout_constraintVertical_bias="1.0" />
+                    app:layout_constraintVertical_bias="0.756" />
 
 
             </android.support.constraint.ConstraintLayout>
@@ -454,7 +466,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+        />
 
     <Button
         android:id="@+id/next1"
@@ -475,7 +487,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.89"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+         />
 
     <Button
         android:id="@+id/previous"
@@ -496,7 +508,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.109"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+       />
 
     <Button
         android:id="@+id/verify"
@@ -507,8 +519,8 @@
         android:layout_marginBottom="50dp"
         android:background="@drawable/loan_button_back"
 
-        android:text="Take Photo"
         android:onClick="start_camera"
+        android:text="Take Photo"
 
         android:textAllCaps="false"
         android:textColor="@color/whiteEnd"
@@ -518,7 +530,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.89"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+        />
 
     <Button
         android:id="@+id/submit"
@@ -538,7 +550,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+        />
 
 
 </android.support.constraint.ConstraintLayout>

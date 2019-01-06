@@ -13,7 +13,7 @@
     android:clickable="true"
     android:focusable="true"
     sothree:umanoScrollableView="@id/collection_list"
-    sothree:umanoPanelHeight="110dp"
+    sothree:umanoPanelHeight="20dp"
     sothree:umanoShadowHeight="4dp"
 
 
@@ -72,8 +72,7 @@
 
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="104dp"
-
+            android:layout_marginBottom="22dp"
             android:clickable="true"
             android:elevation="10dp"
             android:foreground="?attr/selectableItemBackground"
@@ -84,13 +83,13 @@
             android:id="@+id/slideUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/btn_show"
-            android:layout_centerHorizontal="true"
-            android:elevation="4dp"
-            android:textColor="@color/colorPrimary"
 
-            android:layout_marginBottom="9dp"
-            android:text="Slide Up" />
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:elevation="4dp"
+            android:text="Slide Up"
+            android:textColor="@color/colorPrimary" />
 
     </RelativeLayout>
 </FrameLayout>
