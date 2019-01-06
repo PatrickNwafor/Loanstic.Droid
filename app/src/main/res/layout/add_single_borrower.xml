@@ -384,9 +384,9 @@
             android:background="@color/whiteEnd"
 
             android:orientation="vertical"
-            android:visibility="invisible"
+            android:padding="10dp"
 
-            android:padding="10dp">
+            android:visibility="invisible">
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/image_view6"
@@ -399,6 +399,7 @@
 
 
                 android:src="@drawable/business_info" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -406,30 +407,32 @@
                 android:orientation="vertical">
 
 
-
                 <Button
                     android:id="@+id/borrower_files"
                     android:layout_width="wrap_content"
-                    android:textColor="@color/whiteEnd"
-                    android:padding="14dp"
-                    android:background="@drawable/loan_button_back"
                     android:layout_height="wrap_content"
-                    android:text="Borrower Files"
+                    android:background="@drawable/loan_button_back"
                     android:clickable="true"
-                    />
+                    android:padding="14dp"
+                    android:text="Borrower Files"
+                    android:textColor="@color/whiteEnd" />
+
                 <Button
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:background="@drawable/borrower_business_location"
-                    />
+                    android:background="@drawable/borrower_business_location" />
             </LinearLayout>
-
-
-
 
 
         </LinearLayout>
 
+        <ProgressBar
+            android:id="@+id/reg_progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone" />
 
 
     </android.support.v7.widget.CardView>
@@ -516,6 +519,7 @@
         app:layout_constraintHorizontal_bias="0.89"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
     <Button
         android:id="@+id/submit"
         android:layout_width="206dp"
@@ -525,12 +529,12 @@
         android:layout_marginBottom="50dp"
         android:background="@drawable/loan_button_back"
 
-        android:visibility="invisible"
-
+        android:onClick="submit_borrower"
         android:text="Done"
         android:textAllCaps="false"
-        android:textColor="@color/whiteEnd"
 
+        android:textColor="@color/whiteEnd"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

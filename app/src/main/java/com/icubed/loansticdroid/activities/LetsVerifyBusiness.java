@@ -15,6 +15,7 @@ public class LetsVerifyBusiness extends AppCompatActivity {
     Button  proceed;
     Animation frombottom;
     TextView almostThere,letsVerify;
+    String borrowerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +27,15 @@ public class LetsVerifyBusiness extends AppCompatActivity {
         proceed = findViewById(R.id.proceed);
         frombottom = AnimationUtils.loadAnimation( this,R.anim.frombottom);
 
+        borrowerId = getIntent().getStringExtra("borrowerId");
 
         letsVerify.setAnimation(frombottom);
         proceed.setAnimation(frombottom);
     }
 
     public void proceed(View view) {
-        Intent verify = new Intent(LetsVerifyBusiness.this, BusinessVerification.class);
-        startActivity(verify);
+        Intent addBorrowerIntent = new Intent(LetsVerifyBusiness.this, BusinessVerification.class);
+        addBorrowerIntent.putExtra("borrowerId", borrowerId);
+        startActivity(addBorrowerIntent);
     }
 }

@@ -13,22 +13,20 @@ public class BorrowerPhotoValidationTable {
     @Unique
     private String borrowerPhotoValidationId;
 
-    private String borrowerId, photoUri, photoThumbUri, photoDescription;
+    private String borrowerId, photoUri, photoThumbUri;
     private double photoLatitude, photoLongitude;
 
     @Id(autoincrement = true)
     private Long id;
     private Date timestamp;
-    @Generated(hash = 1836812183)
+    @Generated(hash = 1038683510)
     public BorrowerPhotoValidationTable(String borrowerPhotoValidationId,
             String borrowerId, String photoUri, String photoThumbUri,
-            String photoDescription, double photoLatitude, double photoLongitude,
-            Long id, Date timestamp) {
+            double photoLatitude, double photoLongitude, Long id, Date timestamp) {
         this.borrowerPhotoValidationId = borrowerPhotoValidationId;
         this.borrowerId = borrowerId;
         this.photoUri = photoUri;
         this.photoThumbUri = photoThumbUri;
-        this.photoDescription = photoDescription;
         this.photoLatitude = photoLatitude;
         this.photoLongitude = photoLongitude;
         this.id = id;
@@ -60,12 +58,6 @@ public class BorrowerPhotoValidationTable {
     }
     public void setPhotoThumbUri(String photoThumbUri) {
         this.photoThumbUri = photoThumbUri;
-    }
-    public String getPhotoDescription() {
-        return this.photoDescription;
-    }
-    public void setPhotoDescription(String photoDescription) {
-        this.photoDescription = photoDescription;
     }
     public double getPhotoLatitude() {
         return this.photoLatitude;

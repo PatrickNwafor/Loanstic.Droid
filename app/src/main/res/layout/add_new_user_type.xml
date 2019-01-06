@@ -45,15 +45,16 @@
         android:id="@+id/new_group"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/whiteEnd"
-        android:drawableTint="@color/whiteEnd"
-
-
         android:layout_marginBottom="73dp"
         android:background="@drawable/add_borower_button"
+
+
         android:drawableLeft="@drawable/new_group"
+        android:drawableTint="@color/whiteEnd"
+        android:onClick="add_group"
         android:text="New Group"
         android:textAllCaps="false"
+        android:textColor="@color/whiteEnd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

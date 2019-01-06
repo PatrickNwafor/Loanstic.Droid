@@ -202,6 +202,11 @@ public class AddSingleBorrower extends AppCompatActivity {
                             reg_progress_bar.setVisibility(View.GONE);
                             submitBorrowerBtn.setEnabled(true);
                             Toast.makeText(getApplicationContext(), "New borrower Added Successfully", Toast.LENGTH_SHORT).show();
+
+                            Intent addBorrowerIntent = new Intent(AddSingleBorrower.this, LetsVerifyBusiness.class);
+                            addBorrowerIntent.putExtra("borrowerId", borrowersTable.getBorrowersId());
+                            startActivity(addBorrowerIntent);
+
                         }else{
                             reg_progress_bar.setVisibility(View.GONE);
                             submitBorrowerBtn.setEnabled(true);
@@ -262,7 +267,6 @@ public class AddSingleBorrower extends AppCompatActivity {
         next1.setVisibility(View.VISIBLE);
         takePhoto.setVisibility(View.INVISIBLE);
         retakePhoto.setVisibility(View.VISIBLE);
-
     }
 
     /***************Calls up Up Phone camera********************/
@@ -304,6 +308,8 @@ public class AddSingleBorrower extends AppCompatActivity {
 
     /************Adds new borrower***************/
     public void addNewBorrower(){
+
+        Log.d(TAG, "addNewBorrower: called");
 
         //Assigning borrower parameter
         Map<String, Object> borrowerMap = new HashMap<>();

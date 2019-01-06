@@ -16,22 +16,18 @@ import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.models.Account;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Map;
 import java.util.UUID;
 
 public class BorrowerPhotoValidationQueries {
 
-    private Account account;
     private FirebaseFirestore firebaseFirestore;
     private StorageReference borrowerImageStorageRef;
     private StorageReference borrowerImageThumbStorageRef;
-    private StorageReference borrowerFilesStorageRef;
-    private StorageReference borrowerFilesThumbStorageRef;
     private String uniqueID;
     Context context;
 
     public BorrowerPhotoValidationQueries(Context context){
-
-        account = new Account();
         this.context = context;
         firebaseFirestore = FirebaseFirestore.getInstance();
     }
@@ -40,36 +36,41 @@ public class BorrowerPhotoValidationQueries {
     public UploadTask uploadImage(Bitmap bitmap){
         uniqueID = UUID.randomUUID().toString();
         borrowerImageStorageRef = FirebaseStorage.getInstance()
-                .getReference("borrower_shop_images/")
+                .getReference("Business_Verification_Photos/")
                 .child(uniqueID+".jpg");
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
 
-        return borrowerFilesStorageRef.putBytes(data);
+        return borrowerImageStorageRef.putBytes(data);
     }
 
     /*******************Add new photo*************/
     public Task<DocumentReference> addNewValidationPhoto(BorrowerPhotoValidationTable borrowerPhotoValidationTable){
-        return firebaseFirestore.collection("Photo_Validation").add(borrowerPhotoValidationTable);
+        return firebaseFirestore.collection("Business_Verification_Photos").add(borrowerPhotoValidationTable);
+    }
+
+    /*******************Add new photo*************/
+    public Task<DocumentReference> addNewValidationPhoto(Map<String, Object> borrowerPhotoValidationMap){
+        return firebaseFirestore.collection("Business_Verification_Photos").add(borrowerPhotoValidationMap);
     }
 
     /**************Retrieve all photos***********/
     public Task<QuerySnapshot> retrieveAllValidationPhoto(){
-        return firebaseFirestore.collection("Photo_Validation").get();
+        return firebaseFirestore.collection("Business_Verification_Photos").get();
     }
 
     /**************Retrieve all photos for a borrower***********/
     public Task<QuerySnapshot> retrieveAllValidationPhotosForBorrower(String borrowerId){
-        return firebaseFirestore.collection("Photo_Validation")
+        return firebaseFirestore.collection("Business_Verification_Photos")
                 .whereEqualTo("borrowerId", borrowerId)
                 .get();
     }
 
     /**************Retrieve single borrower***********/
     public Task<DocumentSnapshot> retrieveSingleValidationPhoto(String validationPhotoId){
-        return firebaseFirestore.collection("Photo_Validation")
+        return firebaseFirestore.collection("Business_Verification_Photos")
                 .document(validationPhotoId)
                 .get();
     }
@@ -77,14 +78,14 @@ public class BorrowerPhotoValidationQueries {
     /***********Upload shop image thumb of borrower*************/
     public UploadTask uploadThumbImage(Bitmap bitmap){
         borrowerImageThumbStorageRef = FirebaseStorage.getInstance()
-                .getReference("borrower_shop_images/thumb/")
+                .getReference("Business_Verification_Photos/thumb/")
                 .child(uniqueID+".jpg");
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
         byte[] data = baos.toByteArray();
 
-        return borrowerFilesThumbStorageRef.putBytes(data);
+        return borrowerImageThumbStorageRef.putBytes(data);
     }
 
 }

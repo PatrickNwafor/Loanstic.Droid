@@ -26,6 +26,8 @@ public class LocationProviderUtil {
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
 
+    boolean isSingleUpdate = false;
+
     public LocationProviderUtil(Context context) {
         this.context = context;
         alertDialogUtil = new AlertDialogUtil(context);
@@ -39,36 +41,17 @@ public class LocationProviderUtil {
     // calls back to calling thread, note this is for low grain: if you want higher precision, swap the
     // contents of the else and if. Also be sure to check gps permission/settings are allowed.
     // call usually takes <10ms
+    LocationCallback locationCallback;
     public void requestSingleUpdate(final LocationCallback callback) {
-        boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        isSingleUpdate = true;
+        locationCallback = callback;
+        getCurrentLocation();
+    }
 
-        Location location = null;
-        if (!(isGPSEnabled || isNetworkEnabled)) alertDialogUtil.gpsDisabledMessage();
-        else {
-
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                getLocationPermission();
-                return;
-            }
-
-            if (isNetworkEnabled) {
-                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                        LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-                location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-
-            if (isGPSEnabled) {
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-                location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }
-        }
-        if (location != null) {
-            Log.d(TAG, "getCurrentLocation: Lat: "+location.getLatitude()+" Long: "+location.getLongitude());
-            callback.onNewLocationAvailable(new GPSCoordinates(location));
-        }
+    public void requestContinousUpdate(final LocationCallback callback) {
+        isSingleUpdate = false;
+        locationCallback = callback;
+        getCurrentLocation();
     }
 
     private LocationListener mLocationListener = new LocationListener() {
@@ -76,7 +59,10 @@ public class LocationProviderUtil {
         public void onLocationChanged(Location location) {
             if (location != null) {
                 Log.d(TAG, "getCurrentLocation: Lat: " + location.getLatitude() + " Long: " + location.getLongitude());
-                mLocationManager.removeUpdates(mLocationListener);
+                locationCallback.onNewLocationAvailable(new GPSCoordinates(location));
+                if(isSingleUpdate) {
+                    mLocationManager.removeUpdates(mLocationListener);
+                }
             } else {
                 Log.d(TAG, "onLocationChanged: Location is null");
             }
@@ -109,6 +95,29 @@ public class LocationProviderUtil {
         }else{
             Log.d(TAG, "No permission yet");
             ActivityCompat.requestPermissions((Activity) context, permissions, LOCATION_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    private void getCurrentLocation(){
+        boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if (!(isGPSEnabled || isNetworkEnabled)) alertDialogUtil.gpsDisabledMessage();
+        else {
+
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                getLocationPermission();
+                return;
+            }
+
+            if (isNetworkEnabled) {
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                        LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+            }else{
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+            }
         }
     }
 

@@ -1,45 +1,38 @@
 package com.icubed.loansticdroid.adapters;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.activities.BusinessVerification;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+public class BusinessVerificationRecyclerViewAdapter extends RecyclerView.Adapter<BusinessVerificationRecyclerViewAdapter.ViewHolder> {
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-
-    private static final String TAG = "RecyclerViewAdapter";
+    private static final String TAG = "BusinessVerAdapter";
 
     //vars
 
-    private ArrayList<String> mImageUrls = new ArrayList<>();
+    private ArrayList<Bitmap> mImageBitmap;
     private Context mContext;
 
-    public RecyclerViewAdapter(Context context, ArrayList<String> imageUrls) {
-
-        mImageUrls = imageUrls;
-        mContext = context;
+    public BusinessVerificationRecyclerViewAdapter(ArrayList<Bitmap> mImageBitmap) {
+        this.mImageBitmap = mImageBitmap;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.business_images, parent, false);
+        mContext = parent.getContext();
         return new ViewHolder(view);
     }
 
@@ -47,24 +40,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called.");
 
-        Glide.with(mContext)
-                .asBitmap()
-                .load(mImageUrls.get(position))
-                .into(holder.image);
-
+        holder.image.setImageBitmap(mImageBitmap.get(position));
 
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked on an image: ");
-                Toast.makeText(mContext, mImageUrls.get(position), Toast.LENGTH_SHORT).show();
+                ((BusinessVerification) mContext).showBigImage(mImageBitmap.get(position));
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mImageUrls.size();
+        return mImageBitmap.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
