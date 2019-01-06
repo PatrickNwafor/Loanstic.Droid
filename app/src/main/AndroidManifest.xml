@@ -54,7 +54,8 @@
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.AddSingleBorrower" />
         <activity android:name=".activities.SelectAddType" />
-        <activity android:name=".activities.BorrowerPersonalInfo"></activity>
+        <activity android:name=".activities.BusinessVerification" />
+        <activity android:name=".activities.LetsVerifyBusiness"></activity>
     </application>
 
 </manifest>

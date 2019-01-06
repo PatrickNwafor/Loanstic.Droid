@@ -178,7 +178,7 @@ public class AddSingleBorrower extends AppCompatActivity {
         }
     }
 
-    /*************Adding borrower to algolia for search indexing***********/
+    /*************Adding borrower to search for indexing***********/
     private void createBorrowerSearch(DocumentReference borrowersDocRef){
 
         borrowersDocRef.get()
@@ -211,7 +211,7 @@ public class AddSingleBorrower extends AppCompatActivity {
                 });
     }
 
-    /*************************************Accepting Permission******************************************/
+    /************Accepting Permission*************/
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(TAG, "onRequestPermissionResult: called");
@@ -571,7 +571,6 @@ public class AddSingleBorrower extends AppCompatActivity {
         }
     }
 
-    /************check if a list of forms are empty***************/
     private Boolean isAnyFormEmpty(EditText[] forms){
         Boolean isFormEmpty = false;
         boolean[] listOfFormsEmpty = formUtil.isListOfFormsEmpty(forms);
@@ -593,7 +592,6 @@ public class AddSingleBorrower extends AppCompatActivity {
         return isFormEmpty;
     }
 
-    /***********Check if a form contains numbers only************/
     private Boolean doesFieldContainNumberOnly(EditText editText){
         if(!formUtil.doesFormContainNumbersOnly(editText)){
             editText.setError("Only numbers are allowed");
