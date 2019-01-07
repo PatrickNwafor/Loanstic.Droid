@@ -56,7 +56,8 @@
         <activity android:name=".activities.SelectAddType" />
         <activity android:name=".activities.BusinessVerification" />
         <activity android:name=".activities.LetsVerifyBusiness" />
-        <activity android:name=".activities.AddGroupBorrower"></activity>
+        <activity android:name=".activities.AddGroupBorrower"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
     </application>
 
 </manifest>
