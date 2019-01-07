@@ -36,4 +36,10 @@ public class SelectAddType extends AppCompatActivity {
         Intent addBorrowerIntent = new Intent(SelectAddType.this, AddSingleBorrower.class);
         startActivity(addBorrowerIntent);
     }
+
+
+    public void add_group(View view) {
+        Intent addGroupBorrowerIntent = new Intent(SelectAddType.this, AddGroupBorrower.class);
+        startActivity(addGroupBorrowerIntent);
+    }
 }
