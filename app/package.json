@@ -1,0 +1,18 @@
+{
+  "name": "com.icubed.loansticdroid",
+  "version": "1.0.0",
+  "description": "Microfinance bank app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://icubed.visualstudio.com/Loanstic.Droid/_git/Loanstic.Droid"
+  },
+  "author": "Mr. Greg Idele",
+  "license": "ISC",
+  "dependencies": {
+    "firebase-admin": "^6.4.0"
+  }
+}
