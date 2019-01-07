@@ -28,7 +28,8 @@
                android:gravity="center">
                <ImageView
                    android:layout_width="64dp"
-                   android:layout_height="64dp" />
+                   android:layout_height="64dp"
+                   android:src="@drawable/Group26Copy"/>
                <View
                    android:layout_width="match_parent"
                    android:layout_height="1dp"
@@ -55,7 +56,8 @@
                android:gravity="center">
                <ImageView
                    android:layout_width="64dp"
-                   android:layout_height="64dp" />
+                   android:layout_height="64dp"
+                   android:src="@drawable/Group26Copy2"/>
                <View
                    android:layout_width="match_parent"
                    android:layout_height="1dp"
@@ -82,7 +84,8 @@
                android:gravity="center">
                <ImageView
                    android:layout_width="64dp"
-                   android:layout_height="64dp" />
+                   android:layout_height="64dp"
+                   android:src="@drawable/Group26"/>
                <View
                    android:layout_width="match_parent"
                    android:layout_height="1dp"
@@ -125,8 +128,9 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp" />
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/barChart"/>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -152,8 +156,9 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp" />
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/curves"/>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -190,8 +195,9 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp" />
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/pieChart"/>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -217,8 +223,9 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp" />
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/graph"/>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
