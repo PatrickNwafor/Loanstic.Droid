@@ -11,7 +11,7 @@ import java.util.Date;
 public class BorrowersTable {
 
     @Unique
-    private String BorrowersId;
+    private String borrowersId;
 
     private String loanOfficerId, firstName, middleName, lastName, businessName, assignedBy
             ,profileImageUri, profileImageThumbUri, nationality, workAddress, sex
@@ -25,14 +25,14 @@ public class BorrowersTable {
 
     private double borrowerLocationLatitude, borrowerLocationLongitude;
 
-    @Generated(hash = 91502844)
-    public BorrowersTable(String BorrowersId, String loanOfficerId, String firstName, String middleName,
+    @Generated(hash = 1805713294)
+    public BorrowersTable(String borrowersId, String loanOfficerId, String firstName, String middleName,
             String lastName, String businessName, String assignedBy, String profileImageUri,
             String profileImageThumbUri, String nationality, String workAddress, String sex,
             String homeAddress, String state, String city, String dateOfBirth, String email,
             String businessDescription, String photovalidationId, Date timestamp, Long phoneNumber,
             Long zipcode, Long id, double borrowerLocationLatitude, double borrowerLocationLongitude) {
-        this.BorrowersId = BorrowersId;
+        this.borrowersId = borrowersId;
         this.loanOfficerId = loanOfficerId;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -64,11 +64,11 @@ public class BorrowersTable {
     }
 
     public String getBorrowersId() {
-        return this.BorrowersId;
+        return this.borrowersId;
     }
 
-    public void setBorrowersId(String BorrowersId) {
-        this.BorrowersId = BorrowersId;
+    public void setBorrowersId(String borrowersId) {
+        this.borrowersId = borrowersId;
     }
 
     public String getLoanOfficerId() {
@@ -261,5 +261,20 @@ public class BorrowersTable {
 
     public void setBorrowerLocationLongitude(double borrowerLocationLongitude) {
         this.borrowerLocationLongitude = borrowerLocationLongitude;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(this == other)
+            return true;
+        if(other == null)
+            return false;
+        if(getClass() != other.getClass())
+            return false;
+
+        BorrowersTable test = (BorrowersTable) other;
+        if(this.borrowersId.equals(test.getBorrowersId()))
+            return true;
+        return false;
     }
 }
