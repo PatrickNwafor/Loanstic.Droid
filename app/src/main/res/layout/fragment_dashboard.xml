@@ -29,7 +29,7 @@
                <ImageView
                    android:layout_width="64dp"
                    android:layout_height="64dp"
-                   android:src="@drawable/group26Copy"/>
+                   android:src="@drawable/group26copy"/>
                <View
                    android:layout_width="match_parent"
                    android:layout_height="1dp"
@@ -57,7 +57,7 @@
                <ImageView
                    android:layout_width="64dp"
                    android:layout_height="64dp"
-                   android:src="@drawable/group26Copy2"/>
+                   android:src="@drawable/group26copy2"/>
                <View
                    android:layout_width="match_parent"
                    android:layout_height="1dp"
@@ -197,7 +197,7 @@
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/pieChart"/>
+                    android:src="@drawable/piechart"/>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
