@@ -6,6 +6,11 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -16,6 +21,10 @@ import com.icubed.loansticdroid.cloudqueries.PaymentQueries;
 
 public class PaymentActivity extends AppCompatActivity {
 
+    Button proceed;
+    Animation frombottom;
+    TextView paymentCollection,letsVerify;
+
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private PaymentQueries paymentQueries;
 
@@ -23,6 +32,16 @@ public class PaymentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
+
+        paymentCollection = findViewById(R.id.textView4);
+        letsVerify = findViewById(R.id.textView5);
+        proceed = findViewById(R.id.proceed);
+        frombottom = AnimationUtils.loadAnimation( this,R.anim.frombottom);
+
+
+
+
+        proceed.setAnimation(frombottom);
 
         paymentQueries = new PaymentQueries();
     }
@@ -87,5 +106,9 @@ public class PaymentActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    public void takeBorrowerPicture(View view) {
+        dispatchTakePictureIntent();
     }
 }
