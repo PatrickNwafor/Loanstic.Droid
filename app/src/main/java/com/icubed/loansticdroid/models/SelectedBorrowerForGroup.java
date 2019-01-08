@@ -70,4 +70,9 @@ public class SelectedBorrowerForGroup {
     public void setBorrowersId(String borrowersId) {
         this.borrowersId = borrowersId;
     }
+
+    @Override
+    public String toString() {
+        return "SelectedBorrowerForGroup{" + "imageUri='" + imageUri + '\'' + ", imageThumbUri='" + imageThumbUri + '\'' + ", selectedImageView=" + selectedImageView + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", borrowersId='" + borrowersId + '\'' + '}';
+    }
 }

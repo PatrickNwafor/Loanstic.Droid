@@ -3,6 +3,7 @@ package com.icubed.loansticdroid.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,12 +50,7 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
         holder.setViews(borrowersTableList.get(position));
 
         //to check if borrower is already added incase the user uses the search field to find the borrower
-        for(SelectedBorrowerForGroup borrowerForGroup : ((AddGroupBorrower) context).selectedBorrowerList){
-            if(borrowerForGroup.getBorrowersId().equals(borrowersTableList.get(position).getBorrowersId())){
-                holder.addCheckMark.setVisibility(View.VISIBLE);
-                break;
-            }
-        }
+        holder.addOrRemoveCheck(((AddGroupBorrower) context).selectedBorrowerList, borrowersTableList.get(position).getBorrowersId());
 
         holder.borrowerFrame.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +126,17 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
             Glide.with(mView.getContext()).applyDefaultRequestOptions(placeholderOption).load(borrowersTable.getProfileImageUri()).thumbnail(
                     Glide.with(mView.getContext()).load(borrowersTable.getProfileImageThumbUri())
             ).into(imageView);
+        }
+
+        public void addOrRemoveCheck(List<SelectedBorrowerForGroup> selectedBorrowerList, String borrowersId){
+            addCheckMark.setVisibility(View.GONE);
+            for(SelectedBorrowerForGroup borrowerForGroup : selectedBorrowerList){
+                if(borrowerForGroup.getBorrowersId().equals(borrowersId)){
+                    addCheckMark.setVisibility(View.VISIBLE);
+                    Log.d("BorrowerSelected", selectedBorrowerList.toString());
+                    break;
+                }
+            }
         }
     }
 }
