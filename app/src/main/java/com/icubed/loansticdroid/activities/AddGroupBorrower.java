@@ -332,4 +332,8 @@ public class AddGroupBorrower extends AppCompatActivity {
         }
 
     }
+
+    public void setUpWizard(View view) {
+
+    }
 }

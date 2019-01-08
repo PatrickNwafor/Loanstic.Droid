@@ -137,6 +137,7 @@
 
             android:drawableLeft="@drawable/proceed"
             android:drawableTint="@color/whiteEnd"
+            android:onClick="setUpWizard"
 
             android:text="Next"
             android:textAllCaps="false"
