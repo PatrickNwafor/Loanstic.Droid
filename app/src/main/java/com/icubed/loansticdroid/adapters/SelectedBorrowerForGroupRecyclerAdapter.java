@@ -9,12 +9,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SelectedBorrowerForGroupRecyclerAdapter extends RecyclerView.Adapter<SelectedBorrowerForGroupRecyclerAdapter.ViewHolder> {
 
@@ -48,7 +51,7 @@ public class SelectedBorrowerForGroupRecyclerAdapter extends RecyclerView.Adapte
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
         View mView;
-        public ImageView imageView;
+        public CircleImageView imageView;
         public TextView nameTextView;
 
         public ViewHolder(View itemView) {

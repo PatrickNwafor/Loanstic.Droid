@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.support.constraint.Constraints.TAG;
+import static android.view.View.GONE;
 
 public class AddGroupBorrower extends AppCompatActivity {
 
@@ -324,6 +325,11 @@ public class AddGroupBorrower extends AppCompatActivity {
     }
 
     public void search(View view) {
+        if( searchEditText.getVisibility()==GONE){
+        searchEditText.setVisibility(View.VISIBLE);}
+        else{searchEditText.setVisibility(View.GONE);
+            searchEditText.setText("");
+        }
 
     }
 }

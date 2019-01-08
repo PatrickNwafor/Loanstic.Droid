@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -26,6 +27,7 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
     Context context;
 
 
+
     public GroupBorrowerListRecyclerAdapter(List<BorrowersTable> borrowersTableList) {
         this.borrowersTableList = borrowersTableList;
     }
@@ -36,6 +38,7 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.group_borrower_list_single_layout, parent, false);
 
         context = parent.getContext();
+
 
         return new ViewHolder(view);
     }
@@ -55,6 +58,8 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
                 }else{
                     ((AddGroupBorrower) context).selectedBorrowerList.remove(borrowersTableList.get(position));
                     ((AddGroupBorrower) context).selectedBorrowerForGroupRecyclerAdapter.notifyDataSetChanged();
+
+
                 }
             }
         });
@@ -74,6 +79,7 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
         public TextView borrowerbusinessEditText;
         public CircleImageView imageView;
         public FrameLayout borrowerFrame;
+        ImageView addCheckMark;
 
 
         public ViewHolder(View itemView) {
@@ -85,6 +91,7 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
             borrowerNameEditText = mView.findViewById(R.id.borrower_name);
             imageView = mView.findViewById(R.id.borrower_image);
             borrowerFrame = mView.findViewById(R.id.borrower_frame);
+            addCheckMark = mView.findViewById(R.id.removeImage);
         }
 
         public void setViews(BorrowersTable borrowersTable){
