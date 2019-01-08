@@ -52,7 +52,8 @@ public class AddGroupBorrower extends AppCompatActivity {
     private ProgressBar progressBar;
 
     public List<SelectedBorrowerForGroup> selectedBorrowerList;
-    private GroupBorrowerListRecyclerAdapter groupBorrowerListRecyclerAdapter;
+    private List<BorrowersTable> borrowersTables;
+    public GroupBorrowerListRecyclerAdapter groupBorrowerListRecyclerAdapter;
     public SelectedBorrowerForGroupRecyclerAdapter selectedBorrowerForGroupRecyclerAdapter;
     private BorrowersTableQueries borrowersTableQueries;
     private BorrowersQueries borrowersQueries;
@@ -149,7 +150,9 @@ public class AddGroupBorrower extends AppCompatActivity {
                             list.add(borrowersTable);
                         }
 
-                        groupBorrowerListRecyclerAdapter = new GroupBorrowerListRecyclerAdapter(list);
+                        borrowersTables = list;
+
+                        groupBorrowerListRecyclerAdapter = new GroupBorrowerListRecyclerAdapter(borrowersTables);
                         borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                         borrowerRecyclerView.setAdapter(groupBorrowerListRecyclerAdapter);
 
@@ -233,7 +236,7 @@ public class AddGroupBorrower extends AppCompatActivity {
     }
 
     public void loadBorrowersToUI(){
-        List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowersOrderByLastName();
+        borrowersTables = borrowersTableQueries.loadAllBorrowersOrderByLastName();
 
         //For vertical recycler Adapter
         groupBorrowerListRecyclerAdapter = new GroupBorrowerListRecyclerAdapter(borrowersTables);

@@ -50,6 +50,7 @@ public class SelectedBorrowerForGroupRecyclerAdapter extends RecyclerView.Adapte
                 borrowersTableList.get(position).getSelectedImageView().setVisibility(View.GONE);
                 borrowersTableList.remove(position);
                 ((AddGroupBorrower) context).selectedBorrowerForGroupRecyclerAdapter.notifyDataSetChanged();
+                ((AddGroupBorrower) context).groupBorrowerListRecyclerAdapter.notifyDataSetChanged();
             }
         });
     }
