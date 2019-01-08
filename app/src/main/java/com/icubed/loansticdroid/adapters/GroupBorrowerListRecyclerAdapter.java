@@ -16,6 +16,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.AddGroupBorrower;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
 
 import java.util.List;
 
@@ -47,24 +48,48 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         holder.setViews(borrowersTableList.get(position));
 
+        //to check if borrower is already added incase the user uses the search field to find the borrower
+        for(SelectedBorrowerForGroup borrowerForGroup : ((AddGroupBorrower) context).selectedBorrowerList){
+            if(borrowerForGroup.getBorrowersId().equals(borrowersTableList.get(position).getBorrowersId())){
+                holder.addCheckMark.setVisibility(View.VISIBLE);
+                break;
+            }
+        }
+
         holder.borrowerFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Boolean isBorrowerAlreadyAdded = ((AddGroupBorrower) context).selectedBorrowerList.contains(borrowersTableList.get(position));
+                //Setting up selected borrowers table
+                SelectedBorrowerForGroup selectedBorrowerForGroup = new SelectedBorrowerForGroup();
+                selectedBorrowerForGroup.setBorrowersId(borrowersTableList.get(position).getBorrowersId());
+                selectedBorrowerForGroup.setFirstName(borrowersTableList.get(position).getFirstName());
+                selectedBorrowerForGroup.setLastName(borrowersTableList.get(position).getLastName());
+                selectedBorrowerForGroup.setImageThumbUri(borrowersTableList.get(position).getProfileImageThumbUri());
+                selectedBorrowerForGroup.setImageUri(borrowersTableList.get(position).getProfileImageUri());
+                selectedBorrowerForGroup.setSelectedImageView(holder.addCheckMark);
+
+                Boolean isBorrowerAlreadyAdded = false;
+                int index = 0;
+                for(SelectedBorrowerForGroup borrowerForGroup : ((AddGroupBorrower) context).selectedBorrowerList){
+                    if(borrowerForGroup.getBorrowersId().equals(borrowersTableList.get(position).getBorrowersId())){
+                        isBorrowerAlreadyAdded = true;
+                        break;
+                    }
+                    index++;
+                }
 
                 if(!isBorrowerAlreadyAdded) {
-                    ((AddGroupBorrower) context).selectedBorrowerList.add(0, borrowersTableList.get(position));
+                    holder.addCheckMark.setVisibility(View.VISIBLE);
+                    ((AddGroupBorrower) context).selectedBorrowerList.add(0, selectedBorrowerForGroup);
                     ((AddGroupBorrower) context).selectedBorrowerForGroupRecyclerAdapter.notifyDataSetChanged();
                 }else{
-                    ((AddGroupBorrower) context).selectedBorrowerList.remove(borrowersTableList.get(position));
+                    holder.addCheckMark.setVisibility(View.GONE);
+                    ((AddGroupBorrower) context).selectedBorrowerList.remove(index);
                     ((AddGroupBorrower) context).selectedBorrowerForGroupRecyclerAdapter.notifyDataSetChanged();
-
-
                 }
             }
         });
     }
-
 
 
     @Override
@@ -79,7 +104,7 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
         public TextView borrowerbusinessEditText;
         public CircleImageView imageView;
         public FrameLayout borrowerFrame;
-        ImageView addCheckMark;
+        public ImageView addCheckMark;
 
 
         public ViewHolder(View itemView) {

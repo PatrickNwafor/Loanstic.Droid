@@ -262,19 +262,4 @@ public class BorrowersTable {
     public void setBorrowerLocationLongitude(double borrowerLocationLongitude) {
         this.borrowerLocationLongitude = borrowerLocationLongitude;
     }
-
-    @Override
-    public boolean equals(Object other) {
-        if(this == other)
-            return true;
-        if(other == null)
-            return false;
-        if(getClass() != other.getClass())
-            return false;
-
-        BorrowersTable test = (BorrowersTable) other;
-        if(this.borrowersId.equals(test.getBorrowersId()))
-            return true;
-        return false;
-    }
 }

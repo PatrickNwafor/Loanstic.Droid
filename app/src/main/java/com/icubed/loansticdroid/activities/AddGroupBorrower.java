@@ -32,6 +32,7 @@ import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 import com.icubed.loansticdroid.models.Borrowers;
+import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,7 +51,7 @@ public class AddGroupBorrower extends AppCompatActivity {
     private RecyclerView borrowerRecyclerView, selectedBorrowerRecyclerView;
     private ProgressBar progressBar;
 
-    public List<BorrowersTable> selectedBorrowerList;
+    public List<SelectedBorrowerForGroup> selectedBorrowerList;
     private GroupBorrowerListRecyclerAdapter groupBorrowerListRecyclerAdapter;
     public SelectedBorrowerForGroupRecyclerAdapter selectedBorrowerForGroupRecyclerAdapter;
     private BorrowersTableQueries borrowersTableQueries;
