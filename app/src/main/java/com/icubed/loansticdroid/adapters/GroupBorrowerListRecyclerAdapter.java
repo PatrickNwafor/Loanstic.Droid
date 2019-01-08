@@ -27,8 +27,7 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
 
     List<BorrowersTable> borrowersTableList;
     Context context;
-
-
+    SelectedBorrowerForGroup selectedBorrower;
 
     public GroupBorrowerListRecyclerAdapter(List<BorrowersTable> borrowersTableList) {
         this.borrowersTableList = borrowersTableList;
@@ -65,13 +64,12 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
                 selectedBorrowerForGroup.setSelectedImageView(holder.addCheckMark);
 
                 Boolean isBorrowerAlreadyAdded = false;
-                int index = 0;
                 for(SelectedBorrowerForGroup borrowerForGroup : ((AddGroupBorrower) context).selectedBorrowerList){
                     if(borrowerForGroup.getBorrowersId().equals(borrowersTableList.get(position).getBorrowersId())){
                         isBorrowerAlreadyAdded = true;
+                        selectedBorrower = borrowerForGroup;
                         break;
                     }
-                    index++;
                 }
 
                 if(!isBorrowerAlreadyAdded) {
@@ -80,7 +78,7 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
                     ((AddGroupBorrower) context).selectedBorrowerForGroupRecyclerAdapter.notifyDataSetChanged();
                 }else{
                     holder.addCheckMark.setVisibility(View.GONE);
-                    ((AddGroupBorrower) context).selectedBorrowerList.remove(index);
+                    ((AddGroupBorrower) context).selectedBorrowerList.remove(selectedBorrower);
                     ((AddGroupBorrower) context).selectedBorrowerForGroupRecyclerAdapter.notifyDataSetChanged();
                 }
             }
