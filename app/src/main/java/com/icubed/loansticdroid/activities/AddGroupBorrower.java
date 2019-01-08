@@ -1,5 +1,6 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -330,11 +332,22 @@ public class AddGroupBorrower extends AppCompatActivity {
 
     public void search(View view) {
         if( searchEditText.getVisibility()==GONE){
-        searchEditText.setVisibility(View.VISIBLE);}
-        else{searchEditText.setVisibility(View.GONE);
+            searchEditText.setVisibility(View.VISIBLE);
+            searchEditText.requestFocus();
+            showKeyboard();
+        }else{searchEditText.setVisibility(View.GONE);
             searchEditText.setText("");
         }
 
+    }
+
+    public void showKeyboard() {
+        View focuedView = getCurrentFocus();
+        if (focuedView != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            assert imm != null;
+            imm.showSoftInput(focuedView, 0);
+        }
     }
 
     public void setUpWizard(View view) {
