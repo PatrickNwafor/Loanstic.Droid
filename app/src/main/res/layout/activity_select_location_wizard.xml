@@ -28,7 +28,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="44dp"
         android:gravity="center_horizontal"
-        android:text="Almost Done!"
+        android:text="Last Step!"
         android:textColor="@color/whiteEnd"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/proceed"
@@ -45,7 +45,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="96dp"
         android:gravity="center_horizontal"
-        android:text="Select group leader"
+        android:text="Choose location for collection"
         android:textColor="@color/whiteEnd"
         android:textSize="14sp"
 
@@ -65,10 +65,10 @@
 
 
         android:background="@drawable/add_borower_button"
-        android:drawableLeft="@drawable/new_borrower"
+
         android:drawableTint="@color/whiteEnd"
-        android:onClick="selectLeader"
-        android:text="Group Leader"
+        android:onClick="chooseLocation"
+        android:text="Collection Location"
         android:textAllCaps="false"
         android:textColor="@color/whiteEnd"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -7,17 +7,16 @@ import android.view.View;
 
 import com.icubed.loansticdroid.R;
 
-public class GroupSetUpWizard extends AppCompatActivity {
+public class SelectLocationWizard extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group_set_up_wizard);
+        setContentView(R.layout.activity_select_location_wizard);
     }
 
-    public void selectLeader(View view) {
-        Intent mainActivityIntent = new Intent(GroupSetUpWizard.this, SelectGroupLeader.class);
+    public void chooseLocation(View view) {
+        Intent mainActivityIntent = new Intent(SelectLocationWizard.this, SelectCollectionLocation.class);
         startActivity(mainActivityIntent);
-
     }
 }

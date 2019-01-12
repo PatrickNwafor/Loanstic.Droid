@@ -1,6 +1,7 @@
 package com.icubed.loansticdroid.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -351,6 +352,8 @@ public class AddGroupBorrower extends AppCompatActivity {
     }
 
     public void setUpWizard(View view) {
+        Intent mainActivityIntent = new Intent(AddGroupBorrower.this, GroupSetUpWizard.class);
+        startActivity(mainActivityIntent);
 
     }
 }
