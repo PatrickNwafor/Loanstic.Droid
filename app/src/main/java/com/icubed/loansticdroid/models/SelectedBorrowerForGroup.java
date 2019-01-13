@@ -1,10 +1,12 @@
 package com.icubed.loansticdroid.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.ImageView;
 
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 
-public class SelectedBorrowerForGroup {
+public class SelectedBorrowerForGroup implements Parcelable {
     private String imageUri;
     private String imageThumbUri;
     private ImageView selectedImageView;
@@ -75,4 +77,38 @@ public class SelectedBorrowerForGroup {
     public String toString() {
         return "SelectedBorrowerForGroup{" + "imageUri='" + imageUri + '\'' + ", imageThumbUri='" + imageThumbUri + '\'' + ", selectedImageView=" + selectedImageView + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", borrowersId='" + borrowersId + '\'' + '}';
     }
+
+    // Parcelling part
+    public SelectedBorrowerForGroup(Parcel in){
+        String[] data = new String[5];
+
+        in.readStringArray(data);
+        this.borrowersId = data[0];
+        this.firstName = data[1];
+        this.lastName = data[2];
+        this.imageUri = data[3];
+        this.imageThumbUri = data[4];
+
+    }
+
+    @Override
+    public int describeContents(){
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(new String[] {this.borrowersId,
+                this.firstName, this.lastName, this.imageUri, this.imageThumbUri });
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public SelectedBorrowerForGroup createFromParcel(Parcel in) {
+            return new SelectedBorrowerForGroup(in);
+        }
+
+        public SelectedBorrowerForGroup[] newArray(int size) {
+            return new SelectedBorrowerForGroup[size];
+        }
+    };
 }

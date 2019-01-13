@@ -22,9 +22,12 @@ public class GroupBorrowerQueries {
 
     /*****************Create new Borrower Group ****************/
     public Task<DocumentReference> createBorrowersGroup(GroupBorrowerTable groupBorrowerTable){
-
         return firebaseFirestore.collection("Borrowers_Group").add(groupBorrowerTable);
+    }
 
+    /*****************Create new Borrower Group ****************/
+    public Task<DocumentReference> createBorrowersGroup(Map<String, Object> groupBorrowerMap){
+        return firebaseFirestore.collection("Borrowers_Group").add(groupBorrowerMap);
     }
 
     /*****************Retrieve All Borrower Group*********************/

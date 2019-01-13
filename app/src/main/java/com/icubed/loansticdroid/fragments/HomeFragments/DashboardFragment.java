@@ -1,4 +1,4 @@
-package com.icubed.loansticdroid.fragments;
+package com.icubed.loansticdroid.fragments.HomeFragments;
 
 
 import android.os.Bundle;

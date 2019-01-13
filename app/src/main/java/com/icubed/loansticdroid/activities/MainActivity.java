@@ -22,8 +22,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.fragments.DashboardFragment;
-import com.icubed.loansticdroid.fragments.MapFragment;
+import com.icubed.loansticdroid.fragments.HomeFragments.DashboardFragment;
+import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
 import com.icubed.loansticdroid.cloudqueries.Account;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 

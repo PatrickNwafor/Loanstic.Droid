@@ -20,6 +20,5 @@ public class SelectGroupLeader extends AppCompatActivity {
     public void collectionLocation(View view) {
         Intent mainActivityIntent = new Intent(SelectGroupLeader.this, SelectLocationWizard.class);
         startActivity(mainActivityIntent);
-
     }
 }

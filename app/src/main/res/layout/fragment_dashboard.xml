@@ -7,7 +7,7 @@
     android:padding="10dp"
     android:nestedScrollingEnabled="true"
 
-    tools:context=".fragments.DashboardFragment">
+    tools:context=".fragments.HomeFragments.DashboardFragment">
 
 
    <LinearLayout

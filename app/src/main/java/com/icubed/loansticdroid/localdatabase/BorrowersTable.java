@@ -14,24 +14,26 @@ public class BorrowersTable {
     private String borrowersId;
 
     private String loanOfficerId, firstName, middleName, lastName, businessName, assignedBy
-            ,profileImageUri, profileImageThumbUri, nationality, workAddress, sex
+            ,profileImageUri, profileImageThumbUri, nationality, workAddress, sex, groupId
             ,homeAddress, state, city, dateOfBirth, email, businessDescription, photovalidationId;
 
     private Date timestamp;
     private Long phoneNumber, zipcode;
+    private boolean belongsToGroup;
 
     @Id(autoincrement = true)
     private Long id;
 
     private double borrowerLocationLatitude, borrowerLocationLongitude;
 
-    @Generated(hash = 1805713294)
+    @Generated(hash = 1964642387)
     public BorrowersTable(String borrowersId, String loanOfficerId, String firstName, String middleName,
             String lastName, String businessName, String assignedBy, String profileImageUri,
             String profileImageThumbUri, String nationality, String workAddress, String sex,
-            String homeAddress, String state, String city, String dateOfBirth, String email,
-            String businessDescription, String photovalidationId, Date timestamp, Long phoneNumber,
-            Long zipcode, Long id, double borrowerLocationLatitude, double borrowerLocationLongitude) {
+            String groupId, String homeAddress, String state, String city, String dateOfBirth,
+            String email, String businessDescription, String photovalidationId, Date timestamp,
+            Long phoneNumber, Long zipcode, boolean belongsToGroup, Long id,
+            double borrowerLocationLatitude, double borrowerLocationLongitude) {
         this.borrowersId = borrowersId;
         this.loanOfficerId = loanOfficerId;
         this.firstName = firstName;
@@ -44,6 +46,7 @@ public class BorrowersTable {
         this.nationality = nationality;
         this.workAddress = workAddress;
         this.sex = sex;
+        this.groupId = groupId;
         this.homeAddress = homeAddress;
         this.state = state;
         this.city = city;
@@ -54,6 +57,7 @@ public class BorrowersTable {
         this.timestamp = timestamp;
         this.phoneNumber = phoneNumber;
         this.zipcode = zipcode;
+        this.belongsToGroup = belongsToGroup;
         this.id = id;
         this.borrowerLocationLatitude = borrowerLocationLatitude;
         this.borrowerLocationLongitude = borrowerLocationLongitude;
@@ -159,6 +163,14 @@ public class BorrowersTable {
         this.sex = sex;
     }
 
+    public String getGroupId() {
+        return this.groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
     public String getHomeAddress() {
         return this.homeAddress;
     }
@@ -237,6 +249,14 @@ public class BorrowersTable {
 
     public void setZipcode(Long zipcode) {
         this.zipcode = zipcode;
+    }
+
+    public boolean getBelongsToGroup() {
+        return this.belongsToGroup;
+    }
+
+    public void setBelongsToGroup(boolean belongsToGroup) {
+        this.belongsToGroup = belongsToGroup;
     }
 
     public Long getId() {

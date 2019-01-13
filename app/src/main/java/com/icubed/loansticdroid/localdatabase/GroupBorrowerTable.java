@@ -22,12 +22,15 @@ public class GroupBorrowerTable {
     private Boolean isGroupApproved;
     private String approvedBy;
     private String assignedBy;
+    private String meetingLocation;
+    private double groupLocationLatitude, groupLocationLongitude;
     private Date timestamp;
-    @Generated(hash = 828966481)
+    @Generated(hash = 1002580946)
     public GroupBorrowerTable(String groupId, Long id, String groupName,
             String groupLeaderId, String loanOfficerId, int numberOfGroupMembers,
             Boolean isGroupApproved, String approvedBy, String assignedBy,
-            Date timestamp) {
+            String meetingLocation, double groupLocationLatitude,
+            double groupLocationLongitude, Date timestamp) {
         this.groupId = groupId;
         this.id = id;
         this.groupName = groupName;
@@ -37,6 +40,9 @@ public class GroupBorrowerTable {
         this.isGroupApproved = isGroupApproved;
         this.approvedBy = approvedBy;
         this.assignedBy = assignedBy;
+        this.meetingLocation = meetingLocation;
+        this.groupLocationLatitude = groupLocationLatitude;
+        this.groupLocationLongitude = groupLocationLongitude;
         this.timestamp = timestamp;
     }
     @Generated(hash = 232308116)
@@ -95,6 +101,24 @@ public class GroupBorrowerTable {
     }
     public void setAssignedBy(String assignedBy) {
         this.assignedBy = assignedBy;
+    }
+    public String getMeetingLocation() {
+        return this.meetingLocation;
+    }
+    public void setMeetingLocation(String meetingLocation) {
+        this.meetingLocation = meetingLocation;
+    }
+    public double getGroupLocationLatitude() {
+        return this.groupLocationLatitude;
+    }
+    public void setGroupLocationLatitude(double groupLocationLatitude) {
+        this.groupLocationLatitude = groupLocationLatitude;
+    }
+    public double getGroupLocationLongitude() {
+        return this.groupLocationLongitude;
+    }
+    public void setGroupLocationLongitude(double groupLocationLongitude) {
+        this.groupLocationLongitude = groupLocationLongitude;
     }
     public Date getTimestamp() {
         return this.timestamp;
