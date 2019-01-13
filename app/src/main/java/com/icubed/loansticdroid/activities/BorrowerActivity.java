@@ -1,17 +1,24 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -23,6 +30,7 @@ import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
@@ -51,6 +59,7 @@ public class BorrowerActivity extends AppCompatActivity {
     private EditText searchBorrowerEditText;
     public SwipeRefreshLayout swipeRefreshLayout;
     Index index;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +72,13 @@ public class BorrowerActivity extends AppCompatActivity {
         searchBorrowerEditText = findViewById(R.id.searchEditText);
         borrowerRecyclerView = findViewById(R.id.borrower_list);
         borrowerProgressBar = findViewById(R.id.borrowerProgressBar);
+
+        toolbar = findViewById(R.id.borrower_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Borrowers");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
         //Swipe down refresher initialization
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
@@ -196,5 +212,65 @@ public class BorrowerActivity extends AppCompatActivity {
     public void add_borrower(View view) {
         Intent addBorrowerIntent = new Intent(BorrowerActivity.this, SelectAddType.class);
         startActivity(addBorrowerIntent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.borrower_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.nav_new_borrower:
+                startAnotherActivity(AddSingleBorrower.class);
+                return true;
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            case R.id.action_search:
+                searchBorrowerEditText.setVisibility(View.VISIBLE);
+                searchBorrowerEditText.requestFocus();
+                showKeyboard();
+                return true;
+
+            case R.id.nav_new_group:
+                startAnotherActivity(AddGroupBorrower.class);
+                return true;
+
+                default:
+                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void startAnotherActivity(Class newActivity){
+        Intent newActivityIntent = new Intent(this, newActivity);
+        startActivity(newActivityIntent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(searchBorrowerEditText.getVisibility() == View.VISIBLE){
+            searchBorrowerEditText.setVisibility(View.GONE);
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    public void showKeyboard() {
+        View focuedView = getCurrentFocus();
+        if (focuedView != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            assert imm != null;
+            imm.showSoftInput(focuedView, 0);
+        }
     }
 }
