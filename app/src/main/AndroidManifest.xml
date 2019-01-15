@@ -59,9 +59,7 @@
         <activity
             android:name=".activities.AddGroupBorrower"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".activities.GroupSetUpWizard" />
         <activity android:name=".activities.SelectGroupLeader" />
-        <activity android:name=".activities.SelectLocationWizard" />
         <activity android:name=".activities.SelectCollectionLocation"></activity>
     </application>
 

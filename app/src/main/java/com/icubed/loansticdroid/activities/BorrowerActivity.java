@@ -226,6 +226,7 @@ public class BorrowerActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+
         switch (item.getItemId()) {
             case R.id.nav_new_borrower:
                 startAnotherActivity(AddSingleBorrower.class);

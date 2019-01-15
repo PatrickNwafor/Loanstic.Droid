@@ -23,7 +23,7 @@
         android:background="@drawable/searchtextstyle"
         android:drawableLeft="@drawable/ic_fiber_manual_record_black_24dp"
         android:drawablePadding="40dp"
-        android:elevation="4dp"
+        android:elevation="11dp"
         android:ems="10"
         android:hint="Search borrower's name or business..."
         android:imeOptions="actionSearch"
