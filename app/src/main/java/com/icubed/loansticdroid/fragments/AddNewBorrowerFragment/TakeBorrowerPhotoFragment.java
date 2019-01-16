@@ -46,7 +46,6 @@ public class TakeBorrowerPhotoFragment extends Fragment {
     Bundle bundle;
 
     private Bitmap borrowerImage = null;
-    private static final int CAMERA_REQUEST_CODE = 335;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     public TakeBorrowerPhotoFragment() {
@@ -99,10 +98,9 @@ public class TakeBorrowerPhotoFragment extends Fragment {
     }
 
     private void next() {
-
-        Bundle bundle1 = bundle;
-        bundle1.putString("borrowerImage", BitMapToString(borrowerImage));
         if(borrowerImage != null){
+            Bundle bundle1 = bundle;
+            bundle1.putString("borrowerImage", BitMapToString(borrowerImage));
             ((AddSingleBorrower) context).startFragment(((AddSingleBorrower) context).borrowerFilesFragment, "borrower_files", bundle1);
         }else {
             dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE);
@@ -119,7 +117,6 @@ public class TakeBorrowerPhotoFragment extends Fragment {
 
     /***************Calls up Up Phone camera********************/
     private void dispatchTakePictureIntent(int CAMERA_CODE) {
-        getCameraPermission();
         nextBtn.setText("Next");
         try {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -144,37 +141,6 @@ public class TakeBorrowerPhotoFragment extends Fragment {
             borrowerImageView.setImageBitmap(imageBitmap);
             borrowerImage = imageBitmap;
 
-        }
-    }
-
-    private void getCameraPermission(){
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_DENIED){
-            Log.d(TAG, "getCameraPermission: permission not granted");
-            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
-        }else{
-            dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE);
-            Log.d(TAG, "getCameraPermission: permission already granted");
-        }
-    }
-
-    /************Accepting Permission*************/
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionResult: called");
-
-        switch (requestCode){
-            case CAMERA_REQUEST_CODE:{
-                if(grantResults.length > 0){
-                    if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                        Log.d(TAG, "onRequestPermissionResult: permission failed");
-                        return;
-                    }
-                    dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE);
-                    Log.d(TAG, "onRequestPermissionResult: permission granted");
-                    //initialize our map
-                }
-            }
         }
     }
 }

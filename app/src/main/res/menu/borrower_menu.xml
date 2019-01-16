@@ -9,11 +9,20 @@
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/nav_new_borrower"
-        android:icon="@drawable/new_borrower"
-        android:title="Add Borrower" />
-    <item
-        android:id="@+id/nav_new_group"
-        android:icon="@drawable/new_group"
-        android:title="Add Group" />
+        android:title=""
+        android:id="@+id/overlyingItem"
+        android:icon="@drawable/ic_menu_action_bar"
+        app:showAsAction="always">
+
+        <menu>
+            <item
+                android:id="@+id/nav_new_borrower"
+                android:icon="@drawable/new_borrower"
+                android:title="Add Borrower" />
+            <item
+                android:id="@+id/nav_new_group"
+                android:icon="@drawable/new_group"
+                android:title="Add Group" />
+        </menu>
+    </item>
 </menu>

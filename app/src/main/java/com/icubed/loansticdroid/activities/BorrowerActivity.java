@@ -205,15 +205,6 @@ public class BorrowerActivity extends AppCompatActivity {
 
     }
 
-    public void backButton(View view) {
-        finish();
-    }
-
-    public void add_borrower(View view) {
-        Intent addBorrowerIntent = new Intent(BorrowerActivity.this, SelectAddType.class);
-        startActivity(addBorrowerIntent);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);

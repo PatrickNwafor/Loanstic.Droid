@@ -55,7 +55,7 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
     private MapView mMapView;
     GoogleMap mGoogleMap;
 
-    private String borrowerId, photoUri, photoThumbUri;
+    private String borrowerId, photoUri, photoThumbUri, groupId;
     private BorrowerPhotoValidationQueries photoValidationQueries;
     private double photoLatitude;
     private double photoLongitude;
@@ -84,6 +84,8 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
         recyclerView.setAdapter(adapter);
 
         borrowerId = getIntent().getStringExtra("borrowerId");
+        groupId = getIntent().getStringExtra("groupId");
+        Log.d(TAG, "onCreate: "+groupId);
     }
 
     private void startCamera() {
@@ -97,7 +99,6 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
 
     /***************Calls up Up Phone camera********************/
     private void dispatchTakePictureIntent(int CAMERA_CODE) {
-        getCameraPermission();
         try {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -106,17 +107,6 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
         }
         catch (Exception e){
             e.printStackTrace();
-        }
-    }
-
-    private void getCameraPermission(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_DENIED){
-            Log.d(TAG, "getCameraPermission: permission not granted");
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
-        }else{
-            dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE);
-            Log.d(TAG, "getCameraPermission: permission already granted");
         }
     }
 
@@ -148,17 +138,6 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
                             return;
                         }
                     }
-                    Log.d(TAG, "onRequestPermissionResult: permission granted");
-                    //initialize our map
-                }
-            }
-            case CAMERA_REQUEST_CODE:{
-                if(grantResults.length > 0){
-                    if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                        Log.d(TAG, "onRequestPermissionResult: permission failed");
-                        return;
-                    }
-                    dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE);
                     Log.d(TAG, "onRequestPermissionResult: permission granted");
                     //initialize our map
                 }
@@ -247,7 +226,11 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
      */
     private void addPhotoToCloud() {
         Map<String, Object> photoMap = new HashMap<>();
-        photoMap.put("borrowerId", borrowerId);
+        if(borrowerId != null) {
+            photoMap.put("borrowerId", borrowerId);
+        }else{
+            photoMap.put("groupId", groupId);
+        }
         photoMap.put("photoUri", photoUri);
         photoMap.put("photoThumbUri", photoThumbUri);
         photoMap.put("photoLatitude", photoLatitude);
