@@ -216,18 +216,14 @@ public class AddGroupBorrower extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-
         getMenuInflater().inflate(R.menu.new_group_menu, menu);
-
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-
         switch (item.getItemId()) {
-
 
             case android.R.id.home:
                 onBackPressed();
@@ -238,8 +234,6 @@ public class AddGroupBorrower extends AppCompatActivity {
                 searchEditText.requestFocus();
                 showKeyboard();
                 return true;
-
-
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -370,10 +364,6 @@ public class AddGroupBorrower extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
     }
 
-    public void backButton(View view) {
-        finish();
-    }
-
     public void search(View view) {
         if( searchEditText.getVisibility()==GONE){
             searchEditText.setVisibility(View.VISIBLE);
@@ -398,5 +388,15 @@ public class AddGroupBorrower extends AppCompatActivity {
         Intent mainActivityIntent = new Intent(AddGroupBorrower.this, SelectGroupLeader.class);
         mainActivityIntent.putParcelableArrayListExtra("selectedBorrowers", (ArrayList<? extends Parcelable>) selectedBorrowerList);
         startActivity(mainActivityIntent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(searchEditText.getVisibility() == View.VISIBLE){
+            searchEditText.setVisibility(View.GONE);
+            return;
+        }
+
+        super.onBackPressed();
     }
 }

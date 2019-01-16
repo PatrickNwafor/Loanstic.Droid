@@ -8,7 +8,7 @@ import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 
 public class SelectedBorrowerForGroup implements Parcelable {
     private String imageUri;
-    private String imageThumbUri;
+    private String imageThumbUri, businessName;
     private ImageView selectedImageView;
     private String firstName, lastName;
     private String borrowersId;
@@ -16,9 +16,10 @@ public class SelectedBorrowerForGroup implements Parcelable {
     public SelectedBorrowerForGroup() {
     }
 
-    public SelectedBorrowerForGroup(String imageUri, String imageThumbUri, ImageView selectedImageView, String firstName, String lastName, String borrowersId) {
+    public SelectedBorrowerForGroup(String imageUri, String imageThumbUri, String businessName, ImageView selectedImageView, String firstName, String lastName, String borrowersId) {
         this.imageUri = imageUri;
         this.imageThumbUri = imageThumbUri;
+        this.businessName = businessName;
         this.selectedImageView = selectedImageView;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -73,21 +74,31 @@ public class SelectedBorrowerForGroup implements Parcelable {
         this.borrowersId = borrowersId;
     }
 
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+
     @Override
     public String toString() {
-        return "SelectedBorrowerForGroup{" + "imageUri='" + imageUri + '\'' + ", imageThumbUri='" + imageThumbUri + '\'' + ", selectedImageView=" + selectedImageView + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", borrowersId='" + borrowersId + '\'' + '}';
+        return "SelectedBorrowerForGroup{" + "imageUri='" + imageUri + '\'' + ", imageThumbUri='" + imageThumbUri + '\'' + ", businessName='" + businessName + '\'' + ", selectedImageView=" + selectedImageView + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", borrowersId='" + borrowersId + '\'' + '}';
     }
 
     // Parcelling part
     public SelectedBorrowerForGroup(Parcel in){
-        String[] data = new String[5];
+        String[] data = new String[6];
 
         in.readStringArray(data);
         this.borrowersId = data[0];
         this.firstName = data[1];
         this.lastName = data[2];
-        this.imageUri = data[3];
-        this.imageThumbUri = data[4];
+        this.businessName = data[3];
+        this.imageUri = data[4];
+        this.imageThumbUri = data[5];
 
     }
 
@@ -99,7 +110,7 @@ public class SelectedBorrowerForGroup implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStringArray(new String[] {this.borrowersId,
-                this.firstName, this.lastName, this.imageUri, this.imageThumbUri });
+                this.firstName, this.lastName, this.businessName, this.imageUri, this.imageThumbUri });
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
