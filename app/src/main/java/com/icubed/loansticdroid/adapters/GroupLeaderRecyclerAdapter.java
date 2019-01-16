@@ -50,6 +50,7 @@ public class GroupLeaderRecyclerAdapter extends RecyclerView.Adapter<GroupLeader
             if(isSelectedBefore){
                 ((SelectGroupLeader) context).lastChecked = holder.addCheckMark;
                 ((SelectGroupLeader) context).selectedGroupLeader = selectedBorrowerForGroups.get(position);
+                ((SelectGroupLeader) context).proceedBtn.setVisibility(View.VISIBLE);
                 holder.addCheckMark.setVisibility(View.VISIBLE);
             }
         }
@@ -66,11 +67,13 @@ public class GroupLeaderRecyclerAdapter extends RecyclerView.Adapter<GroupLeader
 
                     ((SelectGroupLeader) context).lastChecked = holder.addCheckMark;
                     ((SelectGroupLeader) context).selectedGroupLeader = selectedBorrowerForGroups.get(position);
+                    ((SelectGroupLeader) context).proceedBtn.setVisibility(View.VISIBLE);
                     holder.addCheckMark.setVisibility(View.VISIBLE);
 
                 }else{
                     ((SelectGroupLeader) context).lastChecked = null;
                     ((SelectGroupLeader) context).selectedGroupLeader = null;
+                    ((SelectGroupLeader) context).proceedBtn.setVisibility(View.GONE);
                     holder.addCheckMark.setVisibility(View.GONE);
                 }
             }

@@ -2,6 +2,7 @@ package com.icubed.loansticdroid.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -34,6 +36,7 @@ public class SelectGroupLeader extends AppCompatActivity {
     private List<SelectedBorrowerForGroup> groupList;
     private RecyclerView borrowerRecyclerView;
     private GroupLeaderRecyclerAdapter groupLeaderRecyclerAdapter;
+    public Button proceedBtn;
     public ImageView lastChecked;
     public SelectedBorrowerForGroup selectedGroupLeader;
     private ProgressBar progressBar;
@@ -46,6 +49,7 @@ public class SelectGroupLeader extends AppCompatActivity {
         searchEditText = findViewById(R.id.searchEditText);
         borrowerRecyclerView = findViewById(R.id.borrower_list);
         progressBar = findViewById(R.id.borrowerProgressBar);
+        proceedBtn = findViewById(R.id.proceed);
 
         searchEditTextTextChangeListener();
 
@@ -62,6 +66,19 @@ public class SelectGroupLeader extends AppCompatActivity {
         borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         borrowerRecyclerView.setAdapter(groupLeaderRecyclerAdapter);
         hideProgressBar();
+        proceedBtnClickListener();
+    }
+
+    private void proceedBtnClickListener() {
+        proceedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainActivityIntent = new Intent(SelectGroupLeader.this, GroupDetailsActivity.class);
+                mainActivityIntent.putParcelableArrayListExtra("selectedBorrowers", (ArrayList<? extends Parcelable>) groupList);
+                mainActivityIntent.putExtra("groupLeaderId", selectedGroupLeader.getBorrowersId());
+                startActivity(mainActivityIntent);
+            }
+        });
     }
 
     private void searchEditTextTextChangeListener() {
