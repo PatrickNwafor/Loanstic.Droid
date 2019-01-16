@@ -9,10 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -62,6 +65,7 @@ public class AddGroupBorrower extends AppCompatActivity {
     private BorrowersTableQueries borrowersTableQueries;
     private BorrowersQueries borrowersQueries;
     private Index index;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +80,12 @@ public class AddGroupBorrower extends AppCompatActivity {
         borrowerRecyclerView = findViewById(R.id.borrower_list);
         selectedBorrowerRecyclerView = findViewById(R.id.busiVerifRecyclerView);
         progressBar = findViewById(R.id.borrowerProgressBar);
+
+        toolbar = findViewById(R.id.new_group_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("New group");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         //For horizontal recycler adapter
         selectedBorrowerList = new ArrayList<>();
@@ -202,6 +212,38 @@ public class AddGroupBorrower extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.new_group_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+
+        switch (item.getItemId()) {
+
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            case R.id.action_search:
+                searchEditText.setVisibility(View.VISIBLE);
+                searchEditText.requestFocus();
+                showKeyboard();
+                return true;
+
+
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /****
@@ -353,7 +395,7 @@ public class AddGroupBorrower extends AppCompatActivity {
     }
 
     public void setUpWizard(View view) {
-        Intent mainActivityIntent = new Intent(AddGroupBorrower.this, GroupSetUpWizard.class);
+        Intent mainActivityIntent = new Intent(AddGroupBorrower.this, SelectGroupLeader.class);
         mainActivityIntent.putParcelableArrayListExtra("selectedBorrowers", (ArrayList<? extends Parcelable>) selectedBorrowerList);
         startActivity(mainActivityIntent);
     }
