@@ -6,10 +6,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Client;
+import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,6 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.support.constraint.Constraints.TAG;
+
 public class GroupDetailsActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
@@ -40,7 +45,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private LocationProviderUtil locationProviderUtil;
     private GroupBorrowerQueries groupBorrowerQueries;
     private Account account;
-    Location local;
+    private Location local;
     private Index index;
 
     @Override
@@ -71,6 +76,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
             @Override
             public void onNewLocationAvailable(LocationProviderUtil.GPSCoordinates location) {
                 local = location.getLocation;
+                createBorrower();
             }
         });
     }
@@ -106,7 +112,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if(task.isSuccessful()){
-                            registerGroupForSearch(task.getResult());
+                            registerGroupForSearch(task.getResult().getId());
                         }else{
                             Toast.makeText(GroupDetailsActivity.this, "Failed to register group", Toast.LENGTH_SHORT).show();
                         }
@@ -114,33 +120,28 @@ public class GroupDetailsActivity extends AppCompatActivity {
                 });
     }
 
-    private void registerGroupForSearch(DocumentReference result) {
-        result.get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isComplete()){
-                            GroupBorrowerTable groupBorrowerTable = task.getResult().toObject(GroupBorrowerTable.class);
-                            groupBorrowerTable.setGroupId(task.getResult().getId());
+    private void registerGroupForSearch(final String groupId) {
+        Map<String, Object> searchMap = new HashMap<>();
+        //searchMap.put("groupName", );
 
-                            Map<String, Object> searchMap = new HashMap<>();
-                            searchMap.put("groupName", groupBorrowerTable.getGroupName());
+        JSONObject object = new JSONObject(searchMap);
+        index.addObjectAsync(object, groupId, new CompletionHandler() {
+            @Override
+            public void requestCompleted(JSONObject jsonObject, AlgoliaException e) {
 
-                            JSONObject object = new JSONObject(searchMap);
-                            index.addObjectAsync(object, groupBorrowerTable.getGroupId(), null);
+                if(e == null) {
+                    Toast.makeText(getApplicationContext(), "New Group Added Successfully", Toast.LENGTH_SHORT).show();
 
-                            Toast.makeText(getApplicationContext(), "New Group Added Successfully", Toast.LENGTH_SHORT).show();
-
-                            //Going to business verification page to verify business location
-                            Intent businessVerificationIntent = new Intent(getApplicationContext(), BusinessVerification.class);
-                            businessVerificationIntent.putExtra("groupId", groupBorrowerTable.getGroupId());
-                            startActivity(businessVerificationIntent);
-                            finish();
-
-                        }else{
-                            Toast.makeText(getApplicationContext(), "Failure to create search index for new borrower", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                    //Going to business verification page to verify business location
+                    Intent businessVerificationIntent = new Intent(getApplicationContext(), BusinessVerification.class);
+                    businessVerificationIntent.putExtra("groupId", groupId);
+                    startActivity(businessVerificationIntent);
+                    finish();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Failed to register group for search", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "requestCompleted: "+e.getMessage());
+                }
+            }
+        });
     }
 }

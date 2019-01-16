@@ -25,7 +25,9 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Client;
+import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -209,7 +211,7 @@ public class BorrowerFilesFragment extends Fragment {
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if (task.isSuccessful() && task.isComplete()) {
                             //Adding borrower to search index
-                            createBorrowerSearch(task.getResult());
+                            createBorrowerSearch(task.getResult().getId());
                         }else{
                             reg_progress_bar.setVisibility(View.GONE);
                             submitButton.setEnabled(true);
@@ -219,41 +221,32 @@ public class BorrowerFilesFragment extends Fragment {
                 });
     }
 
-    /*************Adding borrower to search for indexing***********/
-    private void createBorrowerSearch(DocumentReference borrowersDocRef){
+    private void createBorrowerSearch(final String borrowerId) {
+        Map<String, Object> searchMap = new HashMap<>();
+        searchMap.put("lastName", bundle.getString("lastName"));
+        searchMap.put("firstName", bundle.getString("firstName"));
+        searchMap.put("businessName", bundle.getString("businessName"));
+        searchMap.put("profileImageUri", borrowerImageUri);
+        searchMap.put("profileImageThumbUri", borrowerImageThumbUri);
 
-        borrowersDocRef.get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isComplete()){
-                            BorrowersTable borrowersTable = task.getResult().toObject(BorrowersTable.class);
-                            borrowersTable.setBorrowersId(task.getResult().getId());
+        JSONObject object = new JSONObject(searchMap);
+        index.addObjectAsync(object, borrowerId, new CompletionHandler() {
+            @Override
+            public void requestCompleted(JSONObject jsonObject, AlgoliaException e) {
+                if(e == null) {
+                    reg_progress_bar.setVisibility(View.GONE);
+                    submitButton.setEnabled(true);
+                    Toast.makeText(context, "New borrower Added Successfully", Toast.LENGTH_SHORT).show();
 
-                            Map<String, Object> searchMap = new HashMap<>();
-                            searchMap.put("lastName", borrowersTable.getLastName());
-                            searchMap.put("firstName", borrowersTable.getFirstName());
-                            searchMap.put("businessName", borrowersTable.getBusinessName());
-                            searchMap.put("profileImageUri", borrowersTable.getProfileImageUri());
-                            searchMap.put("profileImageThumbUri", borrowersTable.getProfileImageThumbUri());
-
-                            JSONObject object = new JSONObject(searchMap);
-                            index.addObjectAsync(object, borrowersTable.getBorrowersId(), null);
-
-                            reg_progress_bar.setVisibility(View.GONE);
-                            submitButton.setEnabled(true);
-                            Toast.makeText(context, "New borrower Added Successfully", Toast.LENGTH_SHORT).show();
-
-                            //moving to business verification page
-                            ((AddSingleBorrower) context).goToBusinessVerification(borrowersTable.getBorrowersId());
-
-                        }else{
-                            reg_progress_bar.setVisibility(View.GONE);
-                            submitButton.setEnabled(true);
-                            Toast.makeText(context, "Failure to create search index for new borrower", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                    //moving to business verification page
+                    ((AddSingleBorrower) context).goToBusinessVerification(borrowerId);
+                }else{
+                    reg_progress_bar.setVisibility(View.GONE);
+                    Toast.makeText(context, "Failed to register borrower for search", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "requestCompleted: "+e.getMessage());
+                }
+            }
+        });
     }
 
     /************Accepting Permission*************/
