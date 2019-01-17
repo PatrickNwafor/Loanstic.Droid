@@ -144,4 +144,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void proceedToVerification(View view) {
+    }
 }
