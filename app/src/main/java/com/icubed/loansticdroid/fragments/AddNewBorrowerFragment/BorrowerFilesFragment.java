@@ -202,6 +202,7 @@ public class BorrowerFilesFragment extends Fragment {
         borrowerMap.put("state", bundle.getString("state"));
         borrowerMap.put("sex", bundle.getString("sex"));
         borrowerMap.put("belongsToGroup",  false);
+        borrowerMap.put("assignedBy",  "");
         borrowerMap.put("nationality", bundle.getString("nationality"));
         borrowerMap.put("timestamp", new Date());
 

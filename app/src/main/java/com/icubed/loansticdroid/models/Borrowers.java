@@ -172,6 +172,7 @@ public class Borrowers {
         if(!borrowersTable.getFirstName().equals(currentlySaved.getFirstName()) ||
                 !borrowersTable.getLastName().equals(currentlySaved.getLastName()) ||
                 !borrowersTable.getMiddleName().equals(currentlySaved.getMiddleName()) ||
+                !borrowersTable.getAssignedBy().equals(currentlySaved.getAssignedBy()) ||
                 borrowersTable.getBelongsToGroup() != currentlySaved.getBelongsToGroup() ||
                 borrowersTable.getBorrowerLocationLatitude() != currentlySaved.getBorrowerLocationLatitude() ||
                 borrowersTable.getBorrowerLocationLongitude() != currentlySaved.getBorrowerLocationLongitude() ||
