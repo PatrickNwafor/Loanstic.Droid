@@ -1,9 +1,6 @@
 package com.icubed.loansticdroid.localdatabase;
 
 import android.app.Application;
-import android.util.Log;
-
-import org.greenrobot.greendao.query.DeleteQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +8,10 @@ import java.util.List;
 public class BorrowersTableQueries {
 
     private BorrowersTableDao borrowersTableDao;
+    DaoSession daoSession;
 
     public BorrowersTableQueries(Application application){
-        DaoSession daoSession = ((App) application).getDaoSession();
+        daoSession = ((App) application).getDaoSession();
         borrowersTableDao = daoSession.getBorrowersTableDao();
     }
 
@@ -44,8 +42,21 @@ public class BorrowersTableQueries {
                 .get(0);
     }
 
+    /**********Load a single borrower from local Storage*******/
+    public List<BorrowersTable> loadBorrowersNotBelongingToGroup(){
+        return borrowersTableDao.queryBuilder()
+                .where(BorrowersTableDao.Properties.BelongsToGroup.eq(false))
+                .orderAsc(BorrowersTableDao.Properties.LastName)
+                .build()
+                .list();
+    }
+
     public List<BorrowersTable> loadAllBorrowers() {
         return borrowersTableDao.loadAll();
+    }
+
+    public void updateBorrowerDetails(BorrowersTable borrowersTable){
+        borrowersTableDao.update(borrowersTable);
     }
 
     /**********search for borrowers based on first name, last name or business name************/

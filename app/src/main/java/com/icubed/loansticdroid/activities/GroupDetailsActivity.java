@@ -24,6 +24,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.cloudqueries.Account;
+import com.icubed.loansticdroid.cloudqueries.BorrowerGroupsQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.cloudqueries.GroupBorrowerQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
@@ -54,6 +55,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private GroupBorrowerQueries groupBorrowerQueries;
     private BorrowersQueries borrowersQueries;
     private EditText groupNameEditText, meetingLocationEditText;
+    private BorrowerGroupsQueries borrowerGroupsQueries;
     private Account account;
     private Location local;
     private Index index;
@@ -90,6 +92,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
         borrowersQueries = new BorrowersQueries(this);
         formUtil = new FormUtil();
         groupNotificationQueries = new GroupNotificationQueries();
+        borrowerGroupsQueries = new BorrowerGroupsQueries();
 
         //Algolia search initiation
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
@@ -164,15 +167,15 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
     private void updateBorrowerProfile(final String groupId) {
 
-        for(SelectedBorrowerForGroup borrower : groupList){
-            borrowersQueries.updateBorrowerWhenAddedToGroup(groupId, borrower.getBorrowersId())
+        for(final SelectedBorrowerForGroup borrower : groupList){
+            borrowersQueries.updateBorrowerWhenAddedToGroup(borrower.getBorrowersId())
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                count++;
-                                if(count == groupList.size())
-                                    registerGroupForSearch(groupId);
+
+                                registerBorrowerGroups(borrower.getBorrowersId(), groupId);
+
                             }else{
                                 Toast.makeText(GroupDetailsActivity.this, "Failed updating borrower details", Toast.LENGTH_SHORT).show();
                                 Log.d(TAG, "onComplete: "+task.getException().getMessage());
@@ -183,6 +186,30 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private void registerBorrowerGroups(String borrowersId, final String groupId) {
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("borrowerId", borrowersId);
+        objectMap.put("groupId", groupId);
+        objectMap.put("timestamp", new Date());
+
+        borrowerGroupsQueries.saveNewGroupForBorrower(objectMap)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if(task.isSuccessful()){
+                            count++;
+
+                            if(count == groupList.size())
+                                registerGroupForSearch(groupId);
+                        }else{
+                            Toast.makeText(GroupDetailsActivity.this, "Failed updating borrower details", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                            hideProgressBar();
+                        }
+                    }
+                });
     }
 
     private void registerGroupForSearch(final String groupId) {

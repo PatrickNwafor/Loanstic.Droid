@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -124,9 +125,8 @@ public class BorrowersQueries {
                 .get();
     }
 
-    public Task<Void> updateBorrowerWhenAddedToGroup(String groupId, String borrowerId){
+    public Task<Void> updateBorrowerWhenAddedToGroup(String borrowerId){
         Map<String, Object> objectMap = new HashMap<>();
-        objectMap.put("groupId", groupId);
         objectMap.put("belongsToGroup", true);
 
         return firebaseFirestore.collection("Borrowers")

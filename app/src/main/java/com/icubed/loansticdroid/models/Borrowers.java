@@ -122,6 +122,9 @@ public class Borrowers {
                                         isThereNewData = true;
 
                                         saveBorrowersToLocalStorage(borrowersTable);
+                                    }else{
+                                        //Update local table if any changes
+                                        updateTable(doc);
                                     }
                                 }
 
@@ -157,5 +160,28 @@ public class Borrowers {
         ((BorrowerActivity) activity).swipeRefreshLayout.setRefreshing(false);
         ((BorrowerActivity) activity).swipeRefreshLayout.destroyDrawingCache();
         ((BorrowerActivity) activity).swipeRefreshLayout.clearAnimation();
+    }
+
+    private void updateTable(DocumentSnapshot doc) {
+        BorrowersTable borrowersTable = doc.toObject(BorrowersTable.class);
+        borrowersTable.setBorrowersId(doc.getId());
+
+        BorrowersTable currentlySaved = borrowersTableQueries.loadSingleBorrower(doc.getId());
+        borrowersTable.setId(currentlySaved.getId());
+
+        if(!borrowersTable.getFirstName().equals(currentlySaved.getFirstName()) ||
+                !borrowersTable.getLastName().equals(currentlySaved.getLastName()) ||
+                !borrowersTable.getMiddleName().equals(currentlySaved.getMiddleName()) ||
+                borrowersTable.getBelongsToGroup() != currentlySaved.getBelongsToGroup() ||
+                borrowersTable.getBorrowerLocationLatitude() != currentlySaved.getBorrowerLocationLatitude() ||
+                borrowersTable.getBorrowerLocationLongitude() != currentlySaved.getBorrowerLocationLongitude() ||
+                !borrowersTable.getLoanOfficerId().equals(currentlySaved.getLoanOfficerId()) ||
+                !borrowersTable.getSex().equals(currentlySaved.getSex()) ||
+                !borrowersTable.getBusinessName().equals(currentlySaved.getBusinessName())){
+
+            borrowersTableQueries.updateBorrowerDetails(borrowersTable);
+            Log.d("Borrower", "Borrower Detailed updated");
+
+        }
     }
 }
