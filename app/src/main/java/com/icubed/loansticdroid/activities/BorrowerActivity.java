@@ -50,6 +50,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import co.ceryle.segmentedbutton.SegmentedButtonGroup;
+
 public class BorrowerActivity extends AppCompatActivity {
 
     public RecyclerView borrowerRecyclerView;
@@ -58,6 +60,7 @@ public class BorrowerActivity extends AppCompatActivity {
     private Borrowers borrowers;
     private EditText searchBorrowerEditText;
     public SwipeRefreshLayout swipeRefreshLayout;
+    public SegmentedButtonGroup sbg;
     Index index;
     private Toolbar toolbar;
 
@@ -70,6 +73,7 @@ public class BorrowerActivity extends AppCompatActivity {
 
         //Views
         searchBorrowerEditText = findViewById(R.id.searchEditText);
+
         borrowerRecyclerView = findViewById(R.id.borrower_list);
         borrowerProgressBar = findViewById(R.id.borrowerProgressBar);
 
@@ -93,6 +97,21 @@ public class BorrowerActivity extends AppCompatActivity {
 
         getAllBorrowers();
         searchBorrowerListener();
+
+        //segmented control
+        sbg = findViewById(R.id.segmentedButtonGroup);
+        sbg.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition(){
+            @Override
+            public void onClickedButtonPosition(int position){
+                if(position==0)
+                    Toast.makeText(BorrowerActivity.this,"Single Borrowers", Toast.LENGTH_SHORT).show();
+                else if (position==1)
+                    Toast.makeText(BorrowerActivity.this,"Grouped Borrowers", Toast.LENGTH_SHORT).show();
+            }
+
+
+
+        });
 
     }
 
