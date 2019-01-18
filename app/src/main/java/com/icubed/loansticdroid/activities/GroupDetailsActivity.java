@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.algolia.search.saas.AlgoliaException;
@@ -15,6 +18,7 @@ import com.algolia.search.saas.Client;
 import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -26,6 +30,9 @@ import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.models.GroupBorrower;
 import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
+import com.icubed.loansticdroid.notification.GroupNotificationQueries;
+import com.icubed.loansticdroid.notification.GroupNotificationTable;
+import com.icubed.loansticdroid.util.FormUtil;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
 
 import org.json.JSONException;
@@ -46,15 +53,27 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private LocationProviderUtil locationProviderUtil;
     private GroupBorrowerQueries groupBorrowerQueries;
     private BorrowersQueries borrowersQueries;
+    private EditText groupNameEditText, meetingLocationEditText;
     private Account account;
     private Location local;
     private Index index;
+    private Button submitBtn;
+    private FormUtil formUtil;
+    private ProgressBar groupProgressBar;
+    private GroupNotificationQueries groupNotificationQueries;
     int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_details);
+
+        groupNameEditText = findViewById(R.id.groupName);
+        meetingLocationEditText = findViewById(R.id.meetingLocation);
+        submitBtn = findViewById(R.id.submit_group);
+        groupProgressBar = findViewById(R.id.group_progressbar);
+
+        submitBtnClickListener();
 
         toolbar = findViewById(R.id.group_details_toolbar);
         setSupportActionBar(toolbar);
@@ -69,10 +88,25 @@ public class GroupDetailsActivity extends AppCompatActivity {
         groupBorrowerQueries = new GroupBorrowerQueries();
         account = new Account();
         borrowersQueries = new BorrowersQueries(this);
+        formUtil = new FormUtil();
+        groupNotificationQueries = new GroupNotificationQueries();
 
         //Algolia search initiation
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
         index = client.getIndex("BORROWER_GROUP");
+    }
+
+    private void submitBtnClickListener() {
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText[] forms = new EditText[]{groupNameEditText, meetingLocationEditText};
+                if(isAnyFormEmpty(forms))
+                    return;
+                showProgressBar();
+                getCurrentLocation();
+            }
+        });
     }
 
     private void getCurrentLocation(){
@@ -101,12 +135,12 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private void createBorrower(){
 
         Map<String, Object> groupMap = new HashMap<>();
-        //groupMap.put("groupName", );
+        groupMap.put("groupName", groupNameEditText.getText().toString());
         groupMap.put("groupLeaderId", groupLeaderId);
         groupMap.put("numberOfGroupMembers", groupList.size());
         groupMap.put("loanOfficerId", account.getCurrentUserId());
         groupMap.put("isGroupApproved", false);
-        //groupMap.put("meetingLocation",);
+        groupMap.put("meetingLocation",meetingLocationEditText.getText().toString());
         groupMap.put("groupLocationLatitude", local.getLatitude());
         groupMap.put("groupLocationLongitude", local.getLongitude());
         groupMap.put("timestamp", new Date());
@@ -116,8 +150,12 @@ public class GroupDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if(task.isSuccessful()){
+                            //Send notification
+                            sendNotification(task.getResult().getId());
+                            //update borrower details
                             updateBorrowerProfile(task.getResult().getId());
                         }else{
+                            hideProgressBar();
                             Toast.makeText(GroupDetailsActivity.this, "Failed to register group", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -132,23 +170,24 @@ public class GroupDetailsActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                if(count == groupList.size()-1)
+                                count++;
+                                if(count == groupList.size())
                                     registerGroupForSearch(groupId);
                             }else{
                                 Toast.makeText(GroupDetailsActivity.this, "Failed updating borrower details", Toast.LENGTH_SHORT).show();
                                 Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                                hideProgressBar();
                             }
                         }
                     });
 
-            count++;
         }
 
     }
 
     private void registerGroupForSearch(final String groupId) {
         Map<String, Object> searchMap = new HashMap<>();
-        //searchMap.put("groupName", );
+        searchMap.put("groupName", groupNameEditText.getText().toString());
 
         JSONObject object = new JSONObject(searchMap);
         index.addObjectAsync(object, groupId, new CompletionHandler() {
@@ -164,6 +203,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                     startActivity(businessVerificationIntent);
                     finish();
                 }else{
+                    hideProgressBar();
                     Toast.makeText(getApplicationContext(), "Failed to register group for search", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "requestCompleted: "+e.getMessage());
                 }
@@ -171,6 +211,49 @@ public class GroupDetailsActivity extends AppCompatActivity {
         });
     }
 
-    public void proceedToVerification(View view) {
+    private void sendNotification(String groupId){
+        GroupNotificationTable groupNotificationTable = new GroupNotificationTable();
+        groupNotificationTable.setGroupId(groupId);
+        groupNotificationTable.setLoanOfficerId(account.getCurrentUserId());
+        groupNotificationTable.setTimestamp(new Date());
+
+        groupNotificationQueries.sendNotification(groupNotificationTable)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "onSuccess: notification sent");
+                    }
+                });
+    }
+
+    private void showProgressBar(){
+        groupProgressBar.setVisibility(View.VISIBLE);
+        submitBtn.setEnabled(false);
+    }
+
+    private void hideProgressBar(){
+        groupProgressBar.setVisibility(View.GONE);
+        submitBtn.setEnabled(true);
+    }
+
+    public Boolean isAnyFormEmpty(EditText[] forms){
+        Boolean isFormEmpty = false;
+        boolean[] listOfFormsEmpty = formUtil.isListOfFormsEmpty(forms);
+
+        for(int i = 0; i < forms.length; i++){
+            if(listOfFormsEmpty[i]){
+                forms[i].setError("Field is required");
+
+                if(!isFormEmpty) {
+                    forms[i].requestFocus();
+                }
+
+                isFormEmpty = true;
+            }else{
+                forms[i].setError(null);
+            }
+        }
+
+        return isFormEmpty;
     }
 }

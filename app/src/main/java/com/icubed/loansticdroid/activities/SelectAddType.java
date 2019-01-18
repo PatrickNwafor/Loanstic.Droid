@@ -24,7 +24,7 @@ public class SelectAddType extends AppCompatActivity {
         setContentView(R.layout.add_new_user_type);
         addSingleBorrower = findViewById(R.id.single_borrower);
         selectNote = findViewById(R.id.selectNote);
-        addGroup = findViewById(R.id.new_group);
+        addGroup = findViewById(R.id.submit_group);
         frombottom = AnimationUtils.loadAnimation( this,R.anim.frombottom);
 
         addSingleBorrower.setAnimation(frombottom);

@@ -23,42 +23,51 @@
         android:id="@+id/groupName"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginBottom="451dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="16dp"
         android:hint="Group Name"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/group_details_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/group_progressbar" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/meetingLocation"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="378dp"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:hint="Meeting location"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/groupName" />
 
     <Button
-        android:id="@+id/new_group"
+        android:id="@+id/submit_group"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="48dp"
         android:background="@drawable/add_borower_button"
         android:drawableLeft="@drawable/proceed"
         android:drawableTint="@color/whiteEnd"
-        android:onClick="proceedToVerification"
         android:text="Verify"
         android:textAllCaps="false"
         android:textColor="@color/whiteEnd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/group_progressbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/group_details_toolbar" />
 
 </android.support.constraint.ConstraintLayout>

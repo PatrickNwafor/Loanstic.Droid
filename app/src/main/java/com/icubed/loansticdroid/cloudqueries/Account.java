@@ -7,8 +7,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.icubed.loansticdroid.localdatabase.AccountTable;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Account {
@@ -60,6 +63,17 @@ public class Account {
     /****************Get Current User Id****************/
     public String getCurrentUserId(){
         return auth.getCurrentUser().getUid();
+    }
+
+    public Task<Void> saveDeviceToken(){
+
+        String deviceToken = FirebaseInstanceId.getInstance().getToken();
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("device_token", deviceToken);
+
+        return firebaseFirestore.collection("Account")
+                .document(getCurrentUserId())
+                .set(objectMap, SetOptions.merge());
     }
 
     /****************Sign Out of Account******************/
