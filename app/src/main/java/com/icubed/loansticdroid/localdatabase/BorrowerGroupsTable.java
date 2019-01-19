@@ -17,15 +17,13 @@ public class BorrowerGroupsTable {
     private String documentId;
 
     private String groupId;
-    private String borrowerId;
     private Date timestamp;
-    @Generated(hash = 1904989122)
+    @Generated(hash = 1372025015)
     public BorrowerGroupsTable(Long id, String documentId, String groupId,
-            String borrowerId, Date timestamp) {
+            Date timestamp) {
         this.id = id;
         this.documentId = documentId;
         this.groupId = groupId;
-        this.borrowerId = borrowerId;
         this.timestamp = timestamp;
     }
     @Generated(hash = 5069995)
@@ -48,12 +46,6 @@ public class BorrowerGroupsTable {
     }
     public void setGroupId(String groupId) {
         this.groupId = groupId;
-    }
-    public String getBorrowerId() {
-        return this.borrowerId;
-    }
-    public void setBorrowerId(String borrowerId) {
-        this.borrowerId = borrowerId;
     }
     public Date getTimestamp() {
         return this.timestamp;

@@ -12,11 +12,12 @@ public class SelectedBorrowerForGroup implements Parcelable {
     private ImageView selectedImageView;
     private String firstName, lastName;
     private String borrowersId;
+    private boolean belongsToGroup;
 
     public SelectedBorrowerForGroup() {
     }
 
-    public SelectedBorrowerForGroup(String imageUri, String imageThumbUri, String businessName, ImageView selectedImageView, String firstName, String lastName, String borrowersId) {
+    public SelectedBorrowerForGroup(String imageUri, String imageThumbUri, String businessName, ImageView selectedImageView, String firstName, String lastName, String borrowersId, boolean belongsToGroup) {
         this.imageUri = imageUri;
         this.imageThumbUri = imageThumbUri;
         this.businessName = businessName;
@@ -24,6 +25,7 @@ public class SelectedBorrowerForGroup implements Parcelable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.borrowersId = borrowersId;
+        this.belongsToGroup = belongsToGroup;
     }
 
     public String getImageUri() {
@@ -82,15 +84,22 @@ public class SelectedBorrowerForGroup implements Parcelable {
         this.businessName = businessName;
     }
 
+    public boolean isBelongsToGroup() {
+        return belongsToGroup;
+    }
+
+    public void setBelongsToGroup(boolean belongsToGroup) {
+        this.belongsToGroup = belongsToGroup;
+    }
 
     @Override
     public String toString() {
-        return "SelectedBorrowerForGroup{" + "imageUri='" + imageUri + '\'' + ", imageThumbUri='" + imageThumbUri + '\'' + ", businessName='" + businessName + '\'' + ", selectedImageView=" + selectedImageView + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", borrowersId='" + borrowersId + '\'' + '}';
+        return "SelectedBorrowerForGroup{" + "imageUri='" + imageUri + '\'' + ", imageThumbUri='" + imageThumbUri + '\'' + ", businessName='" + businessName + '\'' + ", selectedImageView=" + selectedImageView + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", borrowersId='" + borrowersId + '\'' + ", belongsToGroup=" + belongsToGroup + '}';
     }
 
     // Parcelling part
     public SelectedBorrowerForGroup(Parcel in){
-        String[] data = new String[6];
+        String[] data = new String[7];
 
         in.readStringArray(data);
         this.borrowersId = data[0];
@@ -99,6 +108,7 @@ public class SelectedBorrowerForGroup implements Parcelable {
         this.businessName = data[3];
         this.imageUri = data[4];
         this.imageThumbUri = data[5];
+        this.belongsToGroup = Boolean.parseBoolean(data[6]);
 
     }
 
@@ -110,7 +120,7 @@ public class SelectedBorrowerForGroup implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStringArray(new String[] {this.borrowersId,
-                this.firstName, this.lastName, this.businessName, this.imageUri, this.imageThumbUri });
+                this.firstName, this.lastName, this.businessName, this.imageUri, this.imageThumbUri, String.valueOf(this.belongsToGroup)});
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

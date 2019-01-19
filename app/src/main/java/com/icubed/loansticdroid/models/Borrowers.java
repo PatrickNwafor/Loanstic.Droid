@@ -62,6 +62,8 @@ public class Borrowers {
 
                         loadBorrowersToUI();
                     }else{
+                        removeRefresher();
+                        ((BorrowerActivity) activity).borrowerProgressBar.setVisibility(View.GONE);
                         Toast.makeText(activity, "Document is empty", Toast.LENGTH_SHORT).show();
                     }
                 }else{

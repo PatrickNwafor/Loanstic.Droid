@@ -18,24 +18,31 @@ public class BorrowerGroupsQueries {
         firebaseFirestore = FirebaseFirestore.getInstance();
     }
 
-    public Task<DocumentReference> saveNewGroupForBorrower(Map<String, Object> borrowerGroupMap){
-        return firebaseFirestore.collection("borrower_groups_ids")
+    public Task<DocumentReference> saveNewGroupForBorrower(String borrowerId, Map<String, Object> borrowerGroupMap){
+        return firebaseFirestore.collection("Borrowers")
+                .document(borrowerId)
+                .collection("groups")
                 .add(borrowerGroupMap);
     }
 
-    public Task<DocumentReference> saveNewGroupForBorrower(BorrowerGroupsTable borrowerGroupsTable){
-        return firebaseFirestore.collection("borrower_groups_ids")
+    public Task<DocumentReference> saveNewGroupForBorrower(String borrowerId, BorrowerGroupsTable borrowerGroupsTable){
+        return firebaseFirestore.collection("Borrowers")
+                .document(borrowerId)
+                .collection("groups")
                 .add(borrowerGroupsTable);
     }
 
     public Task<QuerySnapshot> retrieveGroupsOfBorrower(String borrowerId){
-        return firebaseFirestore.collection("borrower_groups_ids")
-                .whereEqualTo("borrowerId", borrowerId)
+        return firebaseFirestore.collection("Borrowers")
+                .document(borrowerId)
+                .collection("groups")
                 .get();
     }
 
-    public Task<Void> deleteGroupFromBorrower(String documentId){
-        return firebaseFirestore.collection("borrower_groups_ids")
+    public Task<Void> deleteGroupFromBorrower(String documentId, String borrowerId){
+        return firebaseFirestore.collection("Borrowers")
+                .document(borrowerId)
+                .collection("groups")
                 .document(documentId)
                 .delete();
     }

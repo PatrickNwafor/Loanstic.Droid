@@ -85,6 +85,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
         groupLeaderId = getIntent().getStringExtra("groupLeaderId");
         groupList = getIntent().getParcelableArrayListExtra("selectedBorrowers");
+        Log.d(TAG, "onCreate: "+groupList.toString());
 
         locationProviderUtil = new LocationProviderUtil(this);
         groupBorrowerQueries = new GroupBorrowerQueries();
@@ -143,6 +144,8 @@ public class GroupDetailsActivity extends AppCompatActivity {
         groupMap.put("numberOfGroupMembers", groupList.size());
         groupMap.put("loanOfficerId", account.getCurrentUserId());
         groupMap.put("isGroupApproved", false);
+        groupMap.put("approvedBy", "");
+        groupMap.put("assignedBy", "");
         groupMap.put("meetingLocation",meetingLocationEditText.getText().toString());
         groupMap.put("groupLocationLatitude", local.getLatitude());
         groupMap.put("groupLocationLongitude", local.getLongitude());
@@ -168,21 +171,26 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private void updateBorrowerProfile(final String groupId) {
 
         for(final SelectedBorrowerForGroup borrower : groupList){
-            borrowersQueries.updateBorrowerWhenAddedToGroup(borrower.getBorrowersId())
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
 
-                                registerBorrowerGroups(borrower.getBorrowersId(), groupId);
+            if(borrower.isBelongsToGroup()){
+                registerBorrowerGroups(borrower.getBorrowersId(), groupId);
+            }else{
+                borrowersQueries.updateBorrowerWhenAddedToGroup(borrower.getBorrowersId())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
 
-                            }else{
-                                Toast.makeText(GroupDetailsActivity.this, "Failed updating borrower details", Toast.LENGTH_SHORT).show();
-                                Log.d(TAG, "onComplete: "+task.getException().getMessage());
-                                hideProgressBar();
+                                    registerBorrowerGroups(borrower.getBorrowersId(), groupId);
+
+                                }else{
+                                    Toast.makeText(GroupDetailsActivity.this, "Failed updating borrower details", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                                    hideProgressBar();
+                                }
                             }
-                        }
-                    });
+                        });
+            }
 
         }
 
@@ -190,11 +198,10 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
     private void registerBorrowerGroups(String borrowersId, final String groupId) {
         Map<String, Object> objectMap = new HashMap<>();
-        objectMap.put("borrowerId", borrowersId);
         objectMap.put("groupId", groupId);
         objectMap.put("timestamp", new Date());
 
-        borrowerGroupsQueries.saveNewGroupForBorrower(objectMap)
+        borrowerGroupsQueries.saveNewGroupForBorrower(borrowersId, objectMap)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {

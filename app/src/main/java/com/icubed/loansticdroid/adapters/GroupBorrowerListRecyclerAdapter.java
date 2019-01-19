@@ -62,6 +62,7 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
                 selectedBorrowerForGroup.setBusinessName(borrowersTableList.get(position).getBusinessName());
                 selectedBorrowerForGroup.setImageThumbUri(borrowersTableList.get(position).getProfileImageThumbUri());
                 selectedBorrowerForGroup.setImageUri(borrowersTableList.get(position).getProfileImageUri());
+                selectedBorrowerForGroup.setBelongsToGroup(borrowersTableList.get(position).getBelongsToGroup());
                 selectedBorrowerForGroup.setSelectedImageView(holder.addCheckMark);
 
                 Boolean isBorrowerAlreadyAdded = false;
