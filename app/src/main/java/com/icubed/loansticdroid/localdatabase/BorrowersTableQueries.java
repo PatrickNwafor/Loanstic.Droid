@@ -42,15 +42,6 @@ public class BorrowersTableQueries {
                 .get(0);
     }
 
-    /**********Load a single borrower from local Storage*******/
-    public List<BorrowersTable> loadBorrowersNotBelongingToGroup(){
-        return borrowersTableDao.queryBuilder()
-                .where(BorrowersTableDao.Properties.BelongsToGroup.eq(false))
-                .orderAsc(BorrowersTableDao.Properties.LastName)
-                .build()
-                .list();
-    }
-
     public List<BorrowersTable> loadAllBorrowers() {
         return borrowersTableDao.loadAll();
     }

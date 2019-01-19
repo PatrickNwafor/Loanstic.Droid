@@ -2,6 +2,8 @@ package com.icubed.loansticdroid.models;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +16,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.activities.BorrowerActivity;
 import com.icubed.loansticdroid.adapters.BorrowerRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
+import com.icubed.loansticdroid.fragments.BorrowersFragment.SingleBorrowerFragment;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 
@@ -24,12 +27,16 @@ import static android.support.constraint.Constraints.TAG;
 public class Borrowers {
     private BorrowersQueries borrowersQueries;
     private BorrowersTableQueries borrowersTableQueries;
-    Activity activity;
+    FragmentActivity activity;
+    SingleBorrowerFragment fragment;
 
-    public Borrowers(Activity activity) {
+    public Borrowers(FragmentActivity activity) {
         this.activity = activity;
         borrowersQueries = new BorrowersQueries(activity.getApplicationContext());
         borrowersTableQueries = new BorrowersTableQueries(activity.getApplication());
+
+        FragmentManager fm = activity.getSupportFragmentManager();
+        fragment = (SingleBorrowerFragment) fm.findFragmentByTag("single");
     }
 
     public Boolean doesBorrowersTableExistInLocalStorage(){
@@ -80,9 +87,9 @@ public class Borrowers {
     public void loadBorrowersToUI(){
         List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowersOrderByLastName();
 
-        ((BorrowerActivity) activity).borrowerRecyclerAdapter = new BorrowerRecyclerAdapter(borrowersTables);
-        ((BorrowerActivity) activity).borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
-        ((BorrowerActivity) activity).borrowerRecyclerView.setAdapter(((BorrowerActivity) activity).borrowerRecyclerAdapter);
+        fragment.borrowerRecyclerAdapter = new BorrowerRecyclerAdapter(borrowersTables);
+        fragment.borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
+        fragment.borrowerRecyclerView.setAdapter((fragment.borrowerRecyclerAdapter));
         ((BorrowerActivity) activity).borrowerProgressBar.setVisibility(View.GONE);
     }
 
@@ -159,9 +166,9 @@ public class Borrowers {
     }
 
     private void removeRefresher(){
-        ((BorrowerActivity) activity).swipeRefreshLayout.setRefreshing(false);
-        ((BorrowerActivity) activity).swipeRefreshLayout.destroyDrawingCache();
-        ((BorrowerActivity) activity).swipeRefreshLayout.clearAnimation();
+        fragment.swipeRefreshLayout.setRefreshing(false);
+        fragment.swipeRefreshLayout.destroyDrawingCache();
+        fragment.swipeRefreshLayout.clearAnimation();
     }
 
     private void updateTable(DocumentSnapshot doc) {
@@ -183,6 +190,7 @@ public class Borrowers {
                 !borrowersTable.getBusinessName().equals(currentlySaved.getBusinessName())){
 
             borrowersTableQueries.updateBorrowerDetails(borrowersTable);
+            loadAllBorrowers();
             Log.d("Borrower", "Borrower Detailed updated");
 
         }

@@ -3,6 +3,9 @@ package com.icubed.loansticdroid.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -35,9 +38,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.BorrowerRecyclerAdapter;
+import com.icubed.loansticdroid.adapters.GroupRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
+import com.icubed.loansticdroid.fragments.BorrowersFragment.GroupBorrowerFragment;
+import com.icubed.loansticdroid.fragments.BorrowersFragment.SingleBorrowerFragment;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
+import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.models.Borrowers;
 import com.icubed.loansticdroid.models.Savings;
 
@@ -54,27 +61,31 @@ import co.ceryle.segmentedbutton.SegmentedButtonGroup;
 
 public class BorrowerActivity extends AppCompatActivity {
 
-    public RecyclerView borrowerRecyclerView;
-    public BorrowerRecyclerAdapter borrowerRecyclerAdapter;
+
     public ProgressBar borrowerProgressBar;
-    private Borrowers borrowers;
     private EditText searchBorrowerEditText;
-    public SwipeRefreshLayout swipeRefreshLayout;
     public SegmentedButtonGroup sbg;
     Index index;
+    Index groupIndex;
     private Toolbar toolbar;
+    private int searchPosition = 0;
+
+    private SingleBorrowerFragment singleBorrowerFragment;
+    private GroupBorrowerFragment groupBorrowerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_borrower);
 
-        borrowers = new Borrowers(this);
+        groupBorrowerFragment = new GroupBorrowerFragment();
+        singleBorrowerFragment = new SingleBorrowerFragment();
+
+        startFragment(singleBorrowerFragment, "single");
 
         //Views
         searchBorrowerEditText = findViewById(R.id.searchEditText);
 
-        borrowerRecyclerView = findViewById(R.id.borrower_list);
         borrowerProgressBar = findViewById(R.id.borrowerProgressBar);
 
         toolbar = findViewById(R.id.borrower_toolbar);
@@ -83,19 +94,11 @@ public class BorrowerActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-
-        //Swipe down refresher initialization
-        swipeRefreshLayout = findViewById(R.id.swiperefresh);
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
-                android.R.color.holo_green_dark,
-                R.color.colorAccent);
-        swipeRefreshListener();
-
         //Algolia search initiation
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
         index = client.getIndex("Borrowers");
+        groupIndex = client.getIndex("BORROWER_GROUP");
 
-        getAllBorrowers();
         searchBorrowerListener();
 
         //segmented control
@@ -103,37 +106,24 @@ public class BorrowerActivity extends AppCompatActivity {
         sbg.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition(){
             @Override
             public void onClickedButtonPosition(int position){
-                if(position==0)
-                    Toast.makeText(BorrowerActivity.this,"Single Borrowers", Toast.LENGTH_SHORT).show();
-                else if (position==1)
-                    Toast.makeText(BorrowerActivity.this,"Grouped Borrowers", Toast.LENGTH_SHORT).show();
+                if(position==0) {
+                    searchPosition = 0;
+                    startFragment(singleBorrowerFragment, "single");
+                }
+                else if (position==1) {
+                    searchPosition = 1;
+                    startFragment(groupBorrowerFragment, "group");
+                }
             }
-
-
-
         });
 
     }
 
-    //Swipe down refresh lstener
-    private void swipeRefreshListener() {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(true);
-                borrowers.loadAllBorrowersAndCompareToLocal();
-            }
-        });
-    }
-
-    private void getAllBorrowers() {
-        if(!borrowers.doesBorrowersTableExistInLocalStorage()){
-            borrowers.loadAllBorrowers();
-        }else{
-            swipeRefreshLayout.setRefreshing(true);
-            borrowers.loadBorrowersToUI();
-            borrowers.loadAllBorrowersAndCompareToLocal();
-        }
+    /************Instantiate fragment transactions**********/
+    public void startFragment(Fragment fragment, String fragmentTag){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content, fragment, fragmentTag);
+        transaction.commit();
     }
 
     private void searchBorrowerListener(){
@@ -151,12 +141,72 @@ public class BorrowerActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged( Editable s) {
 
-                searchBorrowers(s);
+                if(searchPosition == 0) {
+                    searchBorrowers(s);
+                }else if(searchPosition == 1){
+                    searchGroup(s);
+                }
 
             }
         });
     }
 
+    /**
+     * Search for groups
+     * @param s
+     */
+    private void searchGroup(final Editable s) {
+        if(!TextUtils.isEmpty(s.toString())) {
+            //Search for data from cloud storage
+            Query query = new Query(s.toString());
+            query.setAttributesToRetrieve("*");
+            query.setMinWordSizefor2Typos(3);
+            query.setHitsPerPage(50);
+
+            groupIndex.searchAsync(query, new CompletionHandler() {
+                @Override
+                public void requestCompleted(JSONObject content, AlgoliaException error) {
+                    try {
+                        JSONArray hits = content.getJSONArray("hits");
+                        List<GroupBorrowerTable> list = new ArrayList<>();
+
+                        for (int i = 0; i < hits.length(); i++) {
+                            JSONObject jsonObject = hits.getJSONObject(i);
+                            String groupName = jsonObject.getString("groupName");
+                            int groupMembers = jsonObject.getInt("groupMembersCount");
+                            String groupId = jsonObject.getString("objectID");
+
+                            GroupBorrowerTable groupBorrowerTable = new GroupBorrowerTable();
+                            groupBorrowerTable.setGroupId(groupId);
+                            groupBorrowerTable.setGroupName(groupName);
+                            groupBorrowerTable.setNumberOfGroupMembers(groupMembers);
+                            list.add(groupBorrowerTable);
+                        }
+
+                        groupBorrowerFragment.groupRecyclerAdapter = new GroupRecyclerAdapter(list);
+                        groupBorrowerFragment.groupRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                        groupBorrowerFragment.groupRecyclerView.setAdapter(groupBorrowerFragment.groupRecyclerAdapter);
+
+                        //This is to check immediately after the search to know if string is empty
+                        if(TextUtils.isEmpty(s.toString())){
+                            groupBorrowerFragment.groups.loadGroupsToUI();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }else{
+            groupBorrowerFragment.groups.loadGroupsToUI();
+        }
+    }
+
+
+    /**
+     * search for borrowers
+     * @param s
+     */
     private void searchBorrowers(final Editable s) {
         if(!TextUtils.isEmpty(s.toString())) {
             //Search for data from cloud storage
@@ -191,13 +241,13 @@ public class BorrowerActivity extends AppCompatActivity {
                             list.add(borrowersTable);
                         }
 
-                        borrowerRecyclerAdapter = new BorrowerRecyclerAdapter(list);
-                        borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                        borrowerRecyclerView.setAdapter(borrowerRecyclerAdapter);
+                        singleBorrowerFragment.borrowerRecyclerAdapter = new BorrowerRecyclerAdapter(list);
+                        singleBorrowerFragment.borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                        singleBorrowerFragment.borrowerRecyclerView.setAdapter(singleBorrowerFragment.borrowerRecyclerAdapter);
 
                         //This is to check immediately after the search to know if string is empty
                         if(TextUtils.isEmpty(s.toString())){
-                            borrowers.loadBorrowersToUI();
+                            singleBorrowerFragment.borrowers.loadBorrowersToUI();
                         }
 
                     } catch (JSONException e) {
@@ -206,7 +256,7 @@ public class BorrowerActivity extends AppCompatActivity {
                 }
             });
         }else{
-            borrowers.loadBorrowersToUI();
+            singleBorrowerFragment.borrowers.loadBorrowersToUI();
         }
 
     }

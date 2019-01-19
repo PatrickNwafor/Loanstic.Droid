@@ -32,4 +32,21 @@ public class GroupBorrowerTableQueries {
                 .get(0);
     }
 
+    /***************Delete Group from local Storage*********/
+    public void deleteGroupFromStorage(GroupBorrowerTable groupBorrowerTable){
+        groupBorrowerTableDao.delete(groupBorrowerTable);
+    }
+
+    /************Load all collections from local Storage********/
+    public List<GroupBorrowerTable> loadAllGroupsOrderByLastName(){
+        return groupBorrowerTableDao.queryBuilder()
+                .orderAsc(GroupBorrowerTableDao.Properties.GroupName)
+                .build()
+                .list();
+    }
+
+    public void updateGroupDetails(GroupBorrowerTable groupBorrowerTable){
+        groupBorrowerTableDao.update(groupBorrowerTable);
+    }
+
 }

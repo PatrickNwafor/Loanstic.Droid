@@ -372,6 +372,7 @@ public class AddGroupBorrower extends AppCompatActivity {
                 !borrowersTable.getBusinessName().equals(currentlySaved.getBusinessName())){
 
             borrowersTableQueries.updateBorrowerDetails(borrowersTable);
+            loadBorrowersToUI();
             Log.d("Borrower", "Borrower Detailed updated");
 
         }

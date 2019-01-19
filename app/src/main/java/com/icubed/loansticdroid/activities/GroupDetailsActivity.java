@@ -222,6 +222,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private void registerGroupForSearch(final String groupId) {
         Map<String, Object> searchMap = new HashMap<>();
         searchMap.put("groupName", groupNameEditText.getText().toString());
+        searchMap.put("groupMembersCount", groupList.size());
 
         JSONObject object = new JSONObject(searchMap);
         index.addObjectAsync(object, groupId, new CompletionHandler() {
