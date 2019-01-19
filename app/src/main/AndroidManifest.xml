@@ -23,7 +23,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <service android:name=".notification.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -33,7 +32,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/new_group" />
@@ -61,7 +59,8 @@
             android:name=".activities.BorrowerActivity"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
-                <action android:name="com.icubed.loansticdroid_TARGET_NOTIFICATION"/>
+                <action android:name="com.icubed.loansticdroid_TARGET_NOTIFICATION" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -76,7 +75,8 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".activities.SelectGroupLeader" />
         <activity android:name=".activities.SelectCollectionLocation" />
-        <activity android:name=".activities.GroupDetailsActivity"></activity>
+        <activity android:name=".activities.GroupDetailsActivity" />
+        <activity android:name=".activities.Borrower_Files"></activity>
     </application>
 
 </manifest>
