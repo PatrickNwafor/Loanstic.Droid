@@ -6,18 +6,17 @@ import android.support.v7.widget.Toolbar;
 
 import com.icubed.loansticdroid.R;
 
-public class Borrower_Files extends AppCompatActivity {
+public class BorrrowerFileDriverLicense extends AppCompatActivity {
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_borrower_files);
+        setContentView(R.layout.activity_borrrower_file_driver_license);
         toolbar = findViewById(R.id.ID_document_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("ID document");
+        getSupportActionBar().setTitle("Driver's license");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
     }
 }

@@ -14,14 +14,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -33,15 +34,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.AddSingleBorrower;
-import com.icubed.loansticdroid.activities.LetsVerifyBusiness;
+import com.icubed.loansticdroid.activities.BorrowerFileOtherDocuments;
+import com.icubed.loansticdroid.activities.BorrowerFilesIdCard;
+import com.icubed.loansticdroid.activities.BorrowerFilesPassport;
+import com.icubed.loansticdroid.activities.BorrrowerFileDriverLicense;
 import com.icubed.loansticdroid.cloudqueries.Account;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
-import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
-import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
 
 import org.json.JSONObject;
@@ -72,6 +73,8 @@ public class BorrowerFilesFragment extends Fragment {
     private Index index;
     private ProgressBar reg_progress_bar;
     Bundle bundle;
+    private Toolbar toolbar;
+    LinearLayout idLayout, driverLayout, passportLayout, otherLayout;
 
     public BorrowerFilesFragment() {
         // Required empty public constructor
@@ -102,11 +105,48 @@ public class BorrowerFilesFragment extends Fragment {
 
         reg_progress_bar = view.findViewById(R.id.reg_progress_bar);
         submitButton = view.findViewById(R.id.submit);
+        toolbar = view.findViewById(R.id.ID_document_toolbar);
+        idLayout = view.findViewById(R.id.idLayout);
+        driverLayout = view.findViewById(R.id.driverLayout);
+        passportLayout = view.findViewById(R.id.passportLayout);
+        otherLayout = view.findViewById(R.id.otherLayout);
+       /* setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("ID document");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);*/
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startSubmission();
+            }
+        });
+        idLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), BorrowerFilesIdCard.class);
+                startActivity(intent);
+            }
+        });
+        driverLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), BorrrowerFileDriverLicense.class);
+                startActivity(intent);
+            }
+        });
+        passportLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), BorrowerFilesPassport.class);
+                startActivity(intent);
+            }
+        });
+        otherLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), BorrowerFileOtherDocuments.class);
+                startActivity(intent);
             }
         });
     }
@@ -116,6 +156,10 @@ public class BorrowerFilesFragment extends Fragment {
         submitButton.setEnabled(false);
         Bitmap bitmap = StringToBitMap(bundle.getString("borrowerImage"));
         uploadBorrowerPicture(bitmap);
+    }
+    private void provideDocuments(){
+        Intent intent = new Intent(getActivity(), BorrowerFilesIdCard.class);
+        startActivity(intent);
     }
 
     public Bitmap StringToBitMap(String encodedString){

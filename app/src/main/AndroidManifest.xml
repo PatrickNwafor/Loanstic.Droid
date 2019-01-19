@@ -76,7 +76,10 @@
         <activity android:name=".activities.SelectGroupLeader" />
         <activity android:name=".activities.SelectCollectionLocation" />
         <activity android:name=".activities.GroupDetailsActivity" />
-        <activity android:name=".activities.Borrower_Files"></activity>
+        <activity android:name=".activities.BorrowerFilesIdCard" />
+        <activity android:name=".activities.BorrrowerFileDriverLicense" />
+        <activity android:name=".activities.BorrowerFilesPassport" />
+        <activity android:name=".activities.BorrowerFileOtherDocuments"></activity>
     </application>
 
 </manifest>
