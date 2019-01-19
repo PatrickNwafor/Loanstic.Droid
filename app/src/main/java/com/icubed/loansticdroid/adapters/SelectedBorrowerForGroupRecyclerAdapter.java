@@ -44,6 +44,12 @@ public class SelectedBorrowerForGroupRecyclerAdapter extends RecyclerView.Adapte
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.setViews(borrowersTableList.get(position));
 
+        if(borrowersTableList.size() > 1){
+            ((AddGroupBorrower) context).proceed.setVisibility(View.VISIBLE);
+        }else{
+            ((AddGroupBorrower) context).proceed.setVisibility(View.INVISIBLE);
+        }
+
         holder.removeBorrower.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

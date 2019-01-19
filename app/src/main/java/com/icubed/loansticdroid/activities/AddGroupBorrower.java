@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -66,6 +67,7 @@ public class AddGroupBorrower extends AppCompatActivity {
     private BorrowersQueries borrowersQueries;
     private Index index;
     private Toolbar toolbar;
+    public Button proceed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,7 @@ public class AddGroupBorrower extends AppCompatActivity {
         borrowerRecyclerView = findViewById(R.id.borrower_list);
         selectedBorrowerRecyclerView = findViewById(R.id.busiVerifRecyclerView);
         progressBar = findViewById(R.id.borrowerProgressBar);
+        proceed = findViewById(R.id.proceed);
 
         toolbar = findViewById(R.id.new_group_toolbar);
         setSupportActionBar(toolbar);
