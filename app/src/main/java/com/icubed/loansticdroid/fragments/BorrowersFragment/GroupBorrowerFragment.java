@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.activities.BorrowerActivity;
 import com.icubed.loansticdroid.adapters.BorrowerRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.GroupRecyclerAdapter;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
@@ -56,6 +57,7 @@ public class GroupBorrowerFragment extends Fragment {
                 android.R.color.holo_green_dark,
                 R.color.colorAccent);
         swipeRefreshListener();
+        ((BorrowerActivity) getContext()).borrowerProgressBar.setVisibility(View.VISIBLE);
 
         getAllGroups();
     }
