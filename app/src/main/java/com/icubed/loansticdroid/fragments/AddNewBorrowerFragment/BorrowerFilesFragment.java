@@ -16,13 +16,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.algolia.search.saas.AlgoliaException;
@@ -37,8 +40,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.AddSingleBorrower;
+import com.icubed.loansticdroid.activities.BorrowerFileOtherDocuments;
+import com.icubed.loansticdroid.activities.BorrowerFilesIdCard;
+import com.icubed.loansticdroid.activities.BorrowerFilesPassport;
+import com.icubed.loansticdroid.activities.BorrrowerFileDriverLicense;
 import com.icubed.loansticdroid.activities.LetsVerifyBusiness;
 import com.icubed.loansticdroid.cloudqueries.Account;
+import com.icubed.loansticdroid.cloudqueries.BorrowerFilesQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
@@ -46,8 +54,10 @@ import com.icubed.loansticdroid.util.LocationProviderUtil;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
@@ -59,8 +69,18 @@ import static com.icubed.loansticdroid.util.LocationProviderUtil.LOCATION_PERMIS
  */
 public class BorrowerFilesFragment extends Fragment {
 
-    private static final int REQUEST_CODE_FILES = 8282;
-    private static final int CAMERA_REQUEST_CODE = 335;
+    public static final int REQUEST_CODE_FILES = 8282;
+    private static final int ID_CARD_FILE = 2424;
+    private static final int DRIVER_LICENSE_FILE = 722;
+    private static final int PASSPORT_FILE = 2552;
+    private static final int OTHER_FILES = 113;
+    public static final String ID_CARD_FILE_FRONT = "id_front";
+    public static final String ID_CARD_FILE_BACK = "id_back";
+    public static final String DRIVER_LICENSE = "driver_license";
+    public static final String PASSPORT = "passport";
+    public static final String OTHER_DOC = "other_file";
+    public static final String OTHER_DOC_DESC = "other_file_desc";
+    private boolean gottenLocation = false;
     Context context;
     private Button submitButton;
     private BorrowersQueries borrowersQueries;
@@ -70,8 +90,15 @@ public class BorrowerFilesFragment extends Fragment {
     private LatLng borrowerLatLng;
     private Account account;
     private Index index;
+    private BorrowerFilesQueries borrowerFilesQueries;
     private ProgressBar reg_progress_bar;
     Bundle bundle;
+    private Toolbar toolbar;
+    LinearLayout idLayout, driverLayout, passportLayout, otherLayout;
+    Bitmap frontId, backId, driverLicense, passport;
+    private ArrayList<String> otherFile;
+    private ArrayList<String> otherFileDesc;
+    private int otherFilesCount = 0;
 
     public BorrowerFilesFragment() {
         // Required empty public constructor
@@ -96,17 +123,58 @@ public class BorrowerFilesFragment extends Fragment {
         bundle = getArguments();
         Log.d(TAG, "onViewCreated: "+bundle.toString());
 
+        otherFile = new ArrayList<>();
+        otherFileDesc = new ArrayList<>();
+
         borrowersQueries = new BorrowersQueries(context);
         locationProviderUtil = new LocationProviderUtil(context);
         account = new Account();
 
+        //Changing action bar title
+        ((AddSingleBorrower) getContext()).actionBar.setTitle("ID Documents");
+
         reg_progress_bar = view.findViewById(R.id.reg_progress_bar);
         submitButton = view.findViewById(R.id.submit);
+        toolbar = view.findViewById(R.id.ID_document_toolbar);
+        idLayout = view.findViewById(R.id.idLayout);
+        driverLayout = view.findViewById(R.id.driverLayout);
+        passportLayout = view.findViewById(R.id.passportLayout);
+        otherLayout = view.findViewById(R.id.otherLayout);
+        borrowerFilesQueries = new BorrowerFilesQueries(context);
+
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startSubmission();
+            }
+        });
+        idLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(),BorrowerFilesIdCard.class);
+                startActivityForResult(i, ID_CARD_FILE);
+            }
+        });
+        driverLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), BorrrowerFileDriverLicense.class);
+                startActivityForResult(intent, DRIVER_LICENSE_FILE);
+            }
+        });
+        passportLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), BorrowerFilesPassport.class);
+                startActivityForResult(intent, PASSPORT_FILE);
+            }
+        });
+        otherLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), BorrowerFileOtherDocuments.class);
+                startActivityForResult(intent, OTHER_FILES);
             }
         });
     }
@@ -168,9 +236,12 @@ public class BorrowerFilesFragment extends Fragment {
         locationProviderUtil.requestSingleUpdate(new LocationProviderUtil.LocationCallback() {
             @Override
             public void onNewLocationAvailable(LocationProviderUtil.GPSCoordinates location) {
-                Location currentLocal = location.getLocation;
-                borrowerLatLng = new LatLng(currentLocal.getLatitude(), currentLocal.getLongitude());
-                addNewBorrower();
+                if(!gottenLocation) {
+                    Location currentLocal = location.getLocation;
+                    borrowerLatLng = new LatLng(currentLocal.getLatitude(), currentLocal.getLongitude());
+                    addNewBorrower();
+                    gottenLocation = true;
+                }
             }
         });
     }
@@ -214,6 +285,10 @@ public class BorrowerFilesFragment extends Fragment {
                         if (task.isSuccessful() && task.isComplete()) {
                             //Adding borrower to search index
                             createBorrowerSearch(task.getResult().getId());
+
+                            //Upload files if available
+                            uploadImageFile(task.getResult().getId());
+                            uploadImageOtherFiles(task.getResult().getId());
                         }else{
                             reg_progress_bar.setVisibility(View.GONE);
                             submitButton.setEnabled(true);
@@ -265,7 +340,7 @@ public class BorrowerFilesFragment extends Fragment {
                             return;
                         }
                     }
-                    Log.d(TAG, "onRequestPermissionResult: permission granted");
+                    Log.d(TAG, "onRequestPermissionResult: permission granted"  );
                     //initialize our map
                 }
             }
@@ -277,65 +352,148 @@ public class BorrowerFilesFragment extends Fragment {
      * it isnt used for now as the borrowers file page is still worked on
      */
     /******************Uploads borrower image file*******************/
-    private void uploadImageFile(final Bitmap bitmap) {
-        borrowersQueries.uploadImageFiles(bitmap).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if (task.isSuccessful()) {
-                    borrowersQueries.uploadThumbImageFiles(bitmap)
-                            .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+    private void uploadImageFile(final String borrowerId) {
+
+        final Bitmap[] allFilesBitMap = new Bitmap[]{frontId, backId, driverLicense, passport};
+        String[] decs = new String[]{"Identification card front", "Identification card back", "Drivers license", "Passport"};
+
+        for(int i = 0; i < allFilesBitMap.length; i++){
+
+            if(allFilesBitMap[i] != null) {
+                final Map<String, Object> filesMap = new HashMap<>();
+                filesMap.put("fileDescription", decs[i]);
+
+                final int finalI = i;
+                borrowerFilesQueries.uploadImageFiles(allFilesBitMap[i]).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            String imageUri = task.getResult().getDownloadUrl().toString();
+                            filesMap.put("fileImageUri", imageUri);
+                            Log.d(TAG, "onComplete: done uploading files to storage");
+
+                            borrowerFilesQueries.uploadThumbImageFiles(allFilesBitMap[finalI]).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                    if(task.isSuccessful()){
-                                        Toast.makeText(context, "Done", Toast.LENGTH_SHORT).show();
-                                    }else{
+                                    if (task.isSuccessful()) {
+
+                                        String imageThumbUri = task.getResult().getDownloadUrl().toString();
+                                        filesMap.put("fileImageUriThumb", imageThumbUri);
+                                        filesMap.put("timestamp", new Date());
+                                        Log.d(TAG, "onComplete: done uploading files thumb to storage");
+
+                                        uploadImageFileToCloud(filesMap, borrowerId);
+
+                                    } else {
                                         Toast.makeText(context, "Failed 2", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
-                } else {
-                    Toast.makeText(context, "Failed 1", Toast.LENGTH_SHORT).show();
-                }
+                        } else {
+                            Toast.makeText(context, "Failed uploading files", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
             }
-        });
+
+        }
+    }
+
+    private void uploadImageOtherFiles(final String borrowerId){
+
+        if(!otherFile.isEmpty()){
+
+            for(final String bitmapString : otherFile){
+
+                final Bitmap bitmap = StringToBitMap(bitmapString);
+
+                final Map<String, Object> filesMap = new HashMap<>();
+                filesMap.put("fileDescription", otherFileDesc.get(otherFilesCount));
+
+                borrowerFilesQueries.uploadImageFiles(bitmap)
+                        .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                if(task.isSuccessful()){
+
+                                    String imageUri = task.getResult().getDownloadUrl().toString();
+                                    filesMap.put("fileImageUri", imageUri);
+                                    Log.d(TAG, "onComplete: done uploading files to storage");
+
+                                    borrowerFilesQueries.uploadThumbImageFiles(bitmap)
+                                            .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                    if(task.isSuccessful()){
+                                                        if(task.isSuccessful()){
+
+                                                            String imageThumbUri = task.getResult().getDownloadUrl().toString();
+                                                            filesMap.put("fileImageUriThumb", imageThumbUri);
+                                                            filesMap.put("timestamp", new Date());
+                                                            Log.d(TAG, "onComplete: done uploading files thumb to storage");
+
+                                                            uploadImageFileToCloud(filesMap, borrowerId);
+
+                                                            otherFilesCount++;
+                                                        }else{
+                                                            Toast.makeText(context, "Failed uploading files thumb to storage", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                }
+                                            });
+
+                                }else{
+                                    Toast.makeText(context, "Failed uploading files to storage", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        }
+    }
+
+    private void uploadImageFileToCloud(Map<String, Object> filesMap, String borrowerId) {
+        borrowerFilesQueries.saveFileToCloud(borrowerId, filesMap)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if(task.isSuccessful()){
+                            Log.d(TAG, "onComplete: done uploading files to cloud");
+                        }else{
+                            Toast.makeText(context, "Failed uploading files to cloud", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_FILES && resultCode == RESULT_OK) {
-
-            //Borrower profile image result
-            Bundle extras = data.getExtras();
-            //Bitmap returned from camera
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            //uploadImageFile(imageBitmap);
-
-        }
-    }
-
-    /***************Calls up Up Phone camera********************/
-    private void dispatchTakePictureIntent(int CAMERA_CODE) {
-        getCameraPermission();
-        try {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
-                startActivityForResult(takePictureIntent, CAMERA_CODE);
+        switch (requestCode){
+            case (ID_CARD_FILE) : {
+                if(resultCode == RESULT_OK){
+                    frontId = StringToBitMap(data.getStringExtra(ID_CARD_FILE_FRONT));
+                    backId = StringToBitMap(data.getStringExtra(ID_CARD_FILE_BACK));
+                }
+            }
+            case DRIVER_LICENSE_FILE : {
+                if(resultCode == RESULT_OK){
+                    driverLicense = StringToBitMap(data.getStringExtra(DRIVER_LICENSE));
+                }
+            }
+            case PASSPORT_FILE : {
+                if(resultCode == RESULT_OK){
+                    passport = StringToBitMap(data.getStringExtra(PASSPORT));
+                }
+            }
+            case OTHER_FILES : {
+                if (resultCode == RESULT_OK){
+                    otherFile = data.getStringArrayListExtra(OTHER_DOC);
+                    otherFileDesc = data.getStringArrayListExtra(OTHER_DOC_DESC);
+                }
             }
         }
-        catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
-    private void getCameraPermission(){
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_DENIED){
-            Log.d(TAG, "getCameraPermission: permission not granted");
-            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
-        }else{
-            dispatchTakePictureIntent(REQUEST_CODE_FILES);
-            Log.d(TAG, "getCameraPermission: permission already granted");
-        }
-    }
 }

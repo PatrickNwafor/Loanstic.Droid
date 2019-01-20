@@ -71,6 +71,8 @@ public class TakeBorrowerPhotoFragment extends Fragment {
 
         bundle = getArguments();
 
+        ((AddSingleBorrower) getContext()).actionBar.setTitle("Take Borrower Photo");
+
         editImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

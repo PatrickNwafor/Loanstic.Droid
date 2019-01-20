@@ -6,25 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".fragments.AddNewBorrowerFragment.BorrowerFilesFragment">
 
-    <include
-        android:id="@+id/ID_document_toolbar"
-        layout="@layout/app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
     <ProgressBar
         android:id="@+id/reg_progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
         android:indeterminate="true"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,20 +22,23 @@
         android:id="@+id/linearLayout4"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ID_document_toolbar">
+        app:layout_constraintTop_toTopOf="parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:gravity="center"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Choose your document type below"/>
+                android:text="Choose your document type below" />
         </LinearLayout>
 
 
@@ -57,19 +46,19 @@
             android:id="@+id/idLayout"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:gravity="center_vertical"
             android:foreground="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
 
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginLeft="20dp"
-                android:padding="7dp"
-                android:tint="@color/whiteEnd"
                 android:background="@drawable/circle_background_id_document"
+                android:padding="7dp"
                 android:src="@drawable/id_card"
-                />
+                android:tint="@color/whiteEnd" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -83,20 +72,20 @@
             android:id="@+id/driverLayout"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:gravity="center_vertical"
             android:layout_marginTop="10dp"
             android:foreground="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
 
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginLeft="20dp"
-                android:padding="7dp"
-                android:tint="@color/whiteEnd"
                 android:background="@drawable/circle_background_id_document"
+                android:padding="7dp"
                 android:src="@drawable/driver_licence"
-                />
+                android:tint="@color/whiteEnd" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -110,19 +99,19 @@
             android:id="@+id/passportLayout"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:gravity="center_vertical"
             android:layout_marginTop="10dp"
             android:foreground="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginLeft="20dp"
-                android:padding="7dp"
-                android:tint="@color/whiteEnd"
                 android:background="@drawable/circle_background_id_document"
+                android:padding="7dp"
                 android:src="@drawable/passport"
-                />
+                android:tint="@color/whiteEnd" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -136,19 +125,19 @@
             android:id="@+id/otherLayout"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:gravity="center_vertical"
             android:layout_marginTop="10dp"
             android:foreground="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginLeft="20dp"
-                android:padding="7dp"
-                android:tint="@color/whiteEnd"
                 android:background="@drawable/circle_background_id_document"
+                android:padding="7dp"
                 android:src="@drawable/identity_card"
-                />
+                android:tint="@color/whiteEnd" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -158,8 +147,8 @@
         </LinearLayout>
 
 
-
     </LinearLayout>
+
     <Button
         android:id="@+id/submit"
         android:layout_width="206dp"
@@ -169,14 +158,13 @@
         android:layout_marginBottom="50dp"
         android:background="@drawable/loan_button_back"
 
-        android:text="Done"
+        android:text="Submit"
         android:textAllCaps="false"
 
         android:textColor="@color/whiteEnd"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

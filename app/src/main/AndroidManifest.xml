@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -68,15 +69,17 @@
         <activity android:name=".activities.BranchesActivity" />
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.AddSingleBorrower" />
-        <activity android:name=".activities.SelectAddType" />
         <activity android:name=".activities.BusinessVerification" />
         <activity android:name=".activities.LetsVerifyBusiness" />
         <activity
             android:name=".activities.AddGroupBorrower"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".activities.SelectGroupLeader" />
-        <activity android:name=".activities.SelectCollectionLocation" />
-        <activity android:name=".activities.GroupDetailsActivity"></activity>
+        <activity android:name=".activities.GroupDetailsActivity" />
+        <activity android:name=".activities.BorrowerFilesIdCard" />
+        <activity android:name=".activities.BorrrowerFileDriverLicense" />
+        <activity android:name=".activities.BorrowerFilesPassport" />
+        <activity android:name=".activities.BorrowerFileOtherDocuments" />
     </application>
 
 </manifest>

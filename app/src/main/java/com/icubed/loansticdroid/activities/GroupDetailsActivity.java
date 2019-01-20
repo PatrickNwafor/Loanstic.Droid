@@ -62,6 +62,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private Button submitBtn;
     private FormUtil formUtil;
     private ProgressBar groupProgressBar;
+    private boolean gottenLocation = false;
     private GroupNotificationQueries groupNotificationQueries;
     int count = 0;
 
@@ -117,8 +118,11 @@ public class GroupDetailsActivity extends AppCompatActivity {
         locationProviderUtil.requestSingleUpdate(new LocationProviderUtil.LocationCallback() {
             @Override
             public void onNewLocationAvailable(LocationProviderUtil.GPSCoordinates location) {
-                local = location.getLocation;
-                createBorrower();
+                if(!gottenLocation) {
+                    local = location.getLocation;
+                    createBorrower();
+                    gottenLocation = true;
+                }
             }
         });
     }
