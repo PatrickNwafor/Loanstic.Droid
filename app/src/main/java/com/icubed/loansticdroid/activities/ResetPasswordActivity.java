@@ -10,11 +10,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.cloudqueries.Account;
+import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.FormUtil;
 
 public class ResetPasswordActivity extends AppCompatActivity {
@@ -43,7 +45,11 @@ public class ResetPasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                resetPassword();
+                if(AndroidUtils.isMobileDataEnabled(getApplicationContext())) {
+                    resetPassword();
+                }else{
+                    Toast.makeText(ResetPasswordActivity.this, "Request failed, Please try again later", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });

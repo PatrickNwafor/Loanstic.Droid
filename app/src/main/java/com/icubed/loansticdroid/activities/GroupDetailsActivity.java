@@ -33,6 +33,7 @@ import com.icubed.loansticdroid.models.GroupBorrower;
 import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
 import com.icubed.loansticdroid.notification.GroupNotificationQueries;
 import com.icubed.loansticdroid.notification.GroupNotificationTable;
+import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.FormUtil;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
 
@@ -108,8 +109,13 @@ public class GroupDetailsActivity extends AppCompatActivity {
                 EditText[] forms = new EditText[]{groupNameEditText, meetingLocationEditText};
                 if(isAnyFormEmpty(forms))
                     return;
-                showProgressBar();
-                getCurrentLocation();
+
+                if(AndroidUtils.isMobileDataEnabled(getApplicationContext())) {
+                    showProgressBar();
+                    getCurrentLocation();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Request failed, please try again", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

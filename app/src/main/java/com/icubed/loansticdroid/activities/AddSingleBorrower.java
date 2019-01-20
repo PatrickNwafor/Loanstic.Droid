@@ -94,7 +94,7 @@ public class AddSingleBorrower extends AppCompatActivity {
     }
 
     public void goToBusinessVerification(String borrowerId){
-        Intent addBorrowerIntent = new Intent(this, LetsVerifyBusiness.class);
+        Intent addBorrowerIntent = new Intent(this, BusinessVerification.class);
         addBorrowerIntent.putExtra("borrowerId", borrowerId);
         startActivity(addBorrowerIntent);
         finish();

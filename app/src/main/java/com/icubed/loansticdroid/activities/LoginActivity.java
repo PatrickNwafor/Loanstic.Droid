@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.cloudqueries.Account;
+import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.FormUtil;
 
 public class LoginActivity extends AppCompatActivity {
@@ -52,7 +53,11 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginToAccount();
+                if(AndroidUtils.isMobileDataEnabled(getApplicationContext())) {
+                    loginToAccount();
+                }else{
+                    Toast.makeText(LoginActivity.this, "Request failed, Please try again later", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         frombottom = AnimationUtils.loadAnimation( this,R.anim.frombottom);

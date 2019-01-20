@@ -71,12 +71,13 @@
 
         android:layout_marginBottom="8dp"
         android:background="@drawable/add_borower_button"
+        android:onClick="done"
 
 
         android:drawableLeft="@drawable/proceed"
         android:drawableTint="@color/whiteEnd"
 
-        android:text="Next"
+        android:text="Finish"
         android:textAllCaps="false"
         android:textColor="@color/whiteEnd"
         app:layout_constraintBottom_toBottomOf="parent"

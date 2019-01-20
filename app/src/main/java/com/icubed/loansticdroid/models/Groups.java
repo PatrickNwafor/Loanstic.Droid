@@ -86,9 +86,12 @@ public class Groups {
     public void loadGroupsToUI(){
         List<GroupBorrowerTable> groupBorrowerTables = groupBorrowerTableQueries.loadAllGroupsOrderByLastName();
 
-        fragment.groupRecyclerAdapter = new GroupRecyclerAdapter(groupBorrowerTables);
-        fragment.groupRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
-        fragment.groupRecyclerView.setAdapter((fragment.groupRecyclerAdapter));
+        if(fragment != null) {
+            fragment.groupRecyclerAdapter = new GroupRecyclerAdapter(groupBorrowerTables);
+            fragment.groupRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
+            fragment.groupRecyclerView.setAdapter((fragment.groupRecyclerAdapter));
+        }
+
         ((BorrowerActivity) activity).borrowerProgressBar.setVisibility(View.GONE);
     }
 
@@ -165,9 +168,11 @@ public class Groups {
     }
 
     private void removeRefresher(){
-        fragment.swipeRefreshLayout.setRefreshing(false);
-        fragment.swipeRefreshLayout.destroyDrawingCache();
-        fragment.swipeRefreshLayout.clearAnimation();
+        if(fragment != null) {
+            fragment.swipeRefreshLayout.setRefreshing(false);
+            fragment.swipeRefreshLayout.destroyDrawingCache();
+            fragment.swipeRefreshLayout.clearAnimation();
+        }
     }
 
     private void updateTable(DocumentSnapshot doc) {

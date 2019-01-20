@@ -36,7 +36,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.AddSingleBorrower;
@@ -44,12 +43,10 @@ import com.icubed.loansticdroid.activities.BorrowerFileOtherDocuments;
 import com.icubed.loansticdroid.activities.BorrowerFilesIdCard;
 import com.icubed.loansticdroid.activities.BorrowerFilesPassport;
 import com.icubed.loansticdroid.activities.BorrrowerFileDriverLicense;
-import com.icubed.loansticdroid.activities.LetsVerifyBusiness;
 import com.icubed.loansticdroid.cloudqueries.Account;
 import com.icubed.loansticdroid.cloudqueries.BorrowerFilesQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
-import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
-import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
 
 import org.json.JSONObject;
@@ -180,10 +177,14 @@ public class BorrowerFilesFragment extends Fragment {
     }
 
     private void startSubmission(){
-        reg_progress_bar.setVisibility(View.VISIBLE);
-        submitButton.setEnabled(false);
-        Bitmap bitmap = StringToBitMap(bundle.getString("borrowerImage"));
-        uploadBorrowerPicture(bitmap);
+        if(AndroidUtils.isMobileDataEnabled(getContext())) {
+            reg_progress_bar.setVisibility(View.VISIBLE);
+            submitButton.setEnabled(false);
+            Bitmap bitmap = StringToBitMap(bundle.getString("borrowerImage"));
+            uploadBorrowerPicture(bitmap);
+        }else{
+            Toast.makeText(context, "Request Failed, Please try again", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public Bitmap StringToBitMap(String encodedString){
@@ -403,7 +404,7 @@ public class BorrowerFilesFragment extends Fragment {
 
     private void uploadImageOtherFiles(final String borrowerId){
 
-        if(!otherFile.isEmpty()){
+        if(otherFile != null){
 
             for(final String bitmapString : otherFile){
 

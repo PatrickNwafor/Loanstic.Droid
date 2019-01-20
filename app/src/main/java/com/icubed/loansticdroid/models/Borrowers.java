@@ -87,9 +87,12 @@ public class Borrowers {
     public void loadBorrowersToUI(){
         List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowersOrderByLastName();
 
-        fragment.borrowerRecyclerAdapter = new BorrowerRecyclerAdapter(borrowersTables);
-        fragment.borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
-        fragment.borrowerRecyclerView.setAdapter((fragment.borrowerRecyclerAdapter));
+        if(fragment != null) {
+            fragment.borrowerRecyclerAdapter = new BorrowerRecyclerAdapter(borrowersTables);
+            fragment.borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
+            fragment.borrowerRecyclerView.setAdapter((fragment.borrowerRecyclerAdapter));
+        }
+
         ((BorrowerActivity) activity).borrowerProgressBar.setVisibility(View.GONE);
     }
 
@@ -166,9 +169,11 @@ public class Borrowers {
     }
 
     private void removeRefresher(){
-        fragment.swipeRefreshLayout.setRefreshing(false);
-        fragment.swipeRefreshLayout.destroyDrawingCache();
-        fragment.swipeRefreshLayout.clearAnimation();
+        if(fragment != null) {
+            fragment.swipeRefreshLayout.setRefreshing(false);
+            fragment.swipeRefreshLayout.destroyDrawingCache();
+            fragment.swipeRefreshLayout.clearAnimation();
+        }
     }
 
     private void updateTable(DocumentSnapshot doc) {

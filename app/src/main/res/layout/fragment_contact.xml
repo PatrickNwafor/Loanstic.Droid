@@ -56,7 +56,7 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="Mobile Number"
-                        android:inputType="text"
+                        android:inputType="number"
                         android:singleLine="true" />
 
                     <EditText

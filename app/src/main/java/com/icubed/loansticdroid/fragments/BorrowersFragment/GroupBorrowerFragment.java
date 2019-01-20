@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.BorrowerActivity;
@@ -18,6 +19,7 @@ import com.icubed.loansticdroid.adapters.GroupRecyclerAdapter;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.models.Borrowers;
 import com.icubed.loansticdroid.models.Groups;
+import com.icubed.loansticdroid.util.AndroidUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,8 +69,12 @@ public class GroupBorrowerFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(true);
-                groups.loadAllGroupsAndCompareToLocal();
+                if(AndroidUtils.isMobileDataEnabled(getContext())) {
+                    swipeRefreshLayout.setRefreshing(true);
+                    groups.loadAllGroupsAndCompareToLocal();
+                }else{
+                    Toast.makeText(getContext(), "Request failed, please try again", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

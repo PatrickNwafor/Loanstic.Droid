@@ -280,4 +280,10 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
         super.onLowMemory();
         mMapView.onLowMemory();
     }
+
+    public void done(View view) {
+        Intent intent = new Intent(this, BorrowerActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

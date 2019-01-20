@@ -70,7 +70,6 @@
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.AddSingleBorrower" />
         <activity android:name=".activities.BusinessVerification" />
-        <activity android:name=".activities.LetsVerifyBusiness" />
         <activity
             android:name=".activities.AddGroupBorrower"
             android:windowSoftInputMode="stateAlwaysHidden" />
