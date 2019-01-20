@@ -136,11 +136,6 @@ public class SelectGroupLeader extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
     }
 
-    public void collectionLocation(View view) {
-        Intent mainActivityIntent = new Intent(SelectGroupLeader.this, SelectCollectionLocation.class);
-        startActivity(mainActivityIntent);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);

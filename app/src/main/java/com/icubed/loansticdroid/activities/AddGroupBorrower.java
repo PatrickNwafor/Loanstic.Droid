@@ -41,6 +41,7 @@ import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 import com.icubed.loansticdroid.models.Borrowers;
 import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
+import com.icubed.loansticdroid.util.AndroidUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -194,15 +195,32 @@ public class AddGroupBorrower extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
-                loadAllBorrowersAndCompareToLocal();
+                if(AndroidUtils.isMobileDataEnabled(getApplicationContext())) {
+                    if(borrowersTables.size() > 0) {
+                        loadAllBorrowersAndCompareToLocal();
+                    }else{
+                        loadAllBorrowers();
+                    }
+                }else{
+                    Toast.makeText(getApplicationContext(), "Request failed, please try again", Toast.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
             }
         });
     }
 
     private void getAllBorrowers() {
-        if(!doesBorrowersTableExistInLocalStorage()){
-            loadAllBorrowers();
-        }else{
+        if (!doesBorrowersTableExistInLocalStorage()) {
+
+            //Checking if cellular is turned on
+            if(AndroidUtils.isMobileDataEnabled(this)) {
+                loadAllBorrowers();
+            }else{
+                Toast.makeText(this, "Request failed, please try again", Toast.LENGTH_SHORT).show();
+                hideProgressBar();
+            }
+
+        } else {
             swipeRefreshLayout.setRefreshing(true);
             loadBorrowersToUI();
             loadAllBorrowersAndCompareToLocal();

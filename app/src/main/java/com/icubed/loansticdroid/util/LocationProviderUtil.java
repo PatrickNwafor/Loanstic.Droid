@@ -20,7 +20,7 @@ public class LocationProviderUtil {
     public static final int LOCATION_UPDATE_MIN_DISTANCE = 10;
     public static final int LOCATION_UPDATE_MIN_TIME = 5000;
     LocationManager mLocationManager;
-    AlertDialogUtil alertDialogUtil;
+    AndroidUtils androidUtils;
 
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -30,7 +30,7 @@ public class LocationProviderUtil {
 
     public LocationProviderUtil(Context context) {
         this.context = context;
-        alertDialogUtil = new AlertDialogUtil(context);
+        androidUtils = new AndroidUtils(context);
         mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
@@ -102,7 +102,7 @@ public class LocationProviderUtil {
         boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-        if (!(isGPSEnabled || isNetworkEnabled)) alertDialogUtil.gpsDisabledMessage();
+        if (!(isGPSEnabled || isNetworkEnabled)) androidUtils.gpsDisabledMessage();
         else {
 
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
