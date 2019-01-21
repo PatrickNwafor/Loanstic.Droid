@@ -26,6 +26,7 @@ public class BorrowerFilesPassport extends AppCompatActivity {
     private final int CAMERA_REQUEST_CODE = 2494;
     private Button takePhotoBtn;
     private String passport;
+    private Bitmap passportBitMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,14 @@ public class BorrowerFilesPassport extends AppCompatActivity {
         imageView = findViewById(R.id.image);
         takePhotoBtn = findViewById(R.id.takeaphoto);
         editImageView = findViewById(R.id.start_camera_button);
+
+        passportBitMap = getIntent().getParcelableExtra("image");
+
+        if(passportBitMap != null){
+            imageView.setImageBitmap(passportBitMap);
+            passport = BitMapToString(passportBitMap);
+            takePhotoBtn.setText("Done");
+        }
 
         editImageView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -52,8 +52,13 @@ public class BorrowerFileOtherDocuments extends AppCompatActivity {
         doneBtn = findViewById(R.id.done);
         fileTextViewDesc = findViewById(R.id.document_desc);
 
-        otherFile = new ArrayList<>();
-        otherFileDesc = new ArrayList<>();
+        otherFile = getIntent().getStringArrayListExtra("files");
+        otherFileDesc = getIntent().getStringArrayListExtra("files_desc");
+
+        if(otherFileDesc == null && otherFile == null) {
+            otherFile = new ArrayList<>();
+            otherFileDesc = new ArrayList<>();
+        }
 
         formUtil = new FormUtil();
 
@@ -77,6 +82,14 @@ public class BorrowerFileOtherDocuments extends AppCompatActivity {
             public void onClick(View v) {
                 if(!formUtil.isSingleFormEmpty(fileDesc)) {
                     fileDesc.setError(null);
+
+                    //to check that a new file description is entered
+                    if(otherFileDesc != null){
+                        if(otherFileDesc.contains(fileDesc.getText().toString())){
+                            fileDesc.setError("This file description has already been used");
+                            return;
+                        }
+                    }
                     dispatchTakePictureIntent(CAMERA_REQUEST_CODE);
                 }else{
                     fileDesc.setError("This field is required before taking picture");
@@ -96,8 +109,6 @@ public class BorrowerFileOtherDocuments extends AppCompatActivity {
 
     /***************Calls up Up Phone camera********************/
     private void dispatchTakePictureIntent(int CAMERA_CODE) {
-
-        otherFileDesc.add(fileDesc.getText().toString());
 
         try {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -122,6 +133,7 @@ public class BorrowerFileOtherDocuments extends AppCompatActivity {
                     //Bitmap returned from camera
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
                     otherFile.add(BitMapToString(imageBitmap));
+                    otherFileDesc.add(fileDesc.getText().toString());
                     fileTextViewDesc.setText(fileDesc.getText().toString());
                     imageView.setImageBitmap(imageBitmap);
                     fileDesc.setText("");

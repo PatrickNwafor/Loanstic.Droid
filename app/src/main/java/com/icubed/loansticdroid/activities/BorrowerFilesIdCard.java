@@ -11,6 +11,7 @@ import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ public class BorrowerFilesIdCard extends AppCompatActivity {
     private final int CAMERA_REQUEST_CODE = 2494;
     private Button takePhotoBtn;
     private String bitmapFront, bitmapBack;
+    private Bitmap front, back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,35 @@ public class BorrowerFilesIdCard extends AppCompatActivity {
         takePhotoBtn = findViewById(R.id.takeaphoto);
 
         frontRadioBtn.setChecked(true);
+        front = getIntent().getParcelableExtra("idFront");
+        back = getIntent().getParcelableExtra("idBack");
+
+        if(front != null && back != null){
+            imageView.setImageBitmap(front);
+            takePhotoBtn.setText("Done");
+            bitmapFront = BitMapToString(front);
+            bitmapBack = BitMapToString(back);
+        }
+
+        frontRadioBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    if(front != null)
+                        imageView.setImageBitmap(front);
+                }
+            }
+        });
+
+        backRadioBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    if(front != null)
+                        imageView.setImageBitmap(back);
+                }
+            }
+        });
 
         editImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,8 +139,10 @@ public class BorrowerFilesIdCard extends AppCompatActivity {
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
                     if(frontRadioBtn.isChecked()) {
                         bitmapFront = BitMapToString(imageBitmap);
+                        front = imageBitmap;
                     }else{
                         bitmapBack = BitMapToString(imageBitmap);
+                        back = imageBitmap;
                     }
 
                     if(bitmapFront != null && bitmapBack != null){

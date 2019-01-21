@@ -16,6 +16,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
@@ -43,6 +45,7 @@ import com.icubed.loansticdroid.activities.BorrowerFileOtherDocuments;
 import com.icubed.loansticdroid.activities.BorrowerFilesIdCard;
 import com.icubed.loansticdroid.activities.BorrowerFilesPassport;
 import com.icubed.loansticdroid.activities.BorrrowerFileDriverLicense;
+import com.icubed.loansticdroid.adapters.FilesRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.Account;
 import com.icubed.loansticdroid.cloudqueries.BorrowerFilesQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
@@ -89,12 +92,15 @@ public class BorrowerFilesFragment extends Fragment {
     private Index index;
     private BorrowerFilesQueries borrowerFilesQueries;
     private ProgressBar reg_progress_bar;
+    private RecyclerView filesRecyclerView;
+    private FilesRecyclerAdapter filesRecyclerAdapter;
+    private ArrayList<String> filesDescription;
     Bundle bundle;
     private Toolbar toolbar;
     LinearLayout idLayout, driverLayout, passportLayout, otherLayout;
-    Bitmap frontId, backId, driverLicense, passport;
-    private ArrayList<String> otherFile;
-    private ArrayList<String> otherFileDesc;
+    public Bitmap frontId, backId, driverLicense, passport;
+    public ArrayList<String> otherFile;
+    public ArrayList<String> otherFileDesc;
     private int otherFilesCount = 0;
 
     public BorrowerFilesFragment() {
@@ -119,6 +125,12 @@ public class BorrowerFilesFragment extends Fragment {
 
         bundle = getArguments();
         Log.d(TAG, "onViewCreated: "+bundle.toString());
+
+        filesRecyclerView = view.findViewById(R.id.add_files_list);
+        filesDescription = new ArrayList<>();
+        filesRecyclerAdapter = new FilesRecyclerAdapter(filesDescription, getActivity());
+        filesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        filesRecyclerView.setAdapter(filesRecyclerAdapter);
 
         otherFile = new ArrayList<>();
         otherFileDesc = new ArrayList<>();
@@ -150,6 +162,8 @@ public class BorrowerFilesFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getContext(),BorrowerFilesIdCard.class);
+                i.putExtra("idFront", frontId);
+                i.putExtra("idBack", backId);
                 startActivityForResult(i, ID_CARD_FILE);
             }
         });
@@ -157,6 +171,7 @@ public class BorrowerFilesFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), BorrrowerFileDriverLicense.class);
+                intent.putExtra("image", driverLicense);
                 startActivityForResult(intent, DRIVER_LICENSE_FILE);
             }
         });
@@ -164,6 +179,7 @@ public class BorrowerFilesFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), BorrowerFilesPassport.class);
+                intent.putExtra("image", passport);
                 startActivityForResult(intent, PASSPORT_FILE);
             }
         });
@@ -171,6 +187,8 @@ public class BorrowerFilesFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), BorrowerFileOtherDocuments.class);
+                intent.putStringArrayListExtra("files_desc", otherFileDesc);
+                intent.putStringArrayListExtra("files", otherFile);
                 startActivityForResult(intent, OTHER_FILES);
             }
         });
@@ -402,9 +420,14 @@ public class BorrowerFilesFragment extends Fragment {
         }
     }
 
+    /*****************Uploads other files to storage********************/
     private void uploadImageOtherFiles(final String borrowerId){
 
         if(otherFile != null){
+
+            if(otherFile.isEmpty()){
+                return;
+            }
 
             for(final String bitmapString : otherFile){
 
@@ -454,6 +477,7 @@ public class BorrowerFilesFragment extends Fragment {
         }
     }
 
+    /*******************Uploads files uri to cloud firestore************************/
     private void uploadImageFileToCloud(Map<String, Object> filesMap, String borrowerId) {
         borrowerFilesQueries.saveFileToCloud(borrowerId, filesMap)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
@@ -471,27 +495,43 @@ public class BorrowerFilesFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
-            case (ID_CARD_FILE) : {
-                if(resultCode == RESULT_OK){
-                    frontId = StringToBitMap(data.getStringExtra(ID_CARD_FILE_FRONT));
-                    backId = StringToBitMap(data.getStringExtra(ID_CARD_FILE_BACK));
-                }
+
+        if(requestCode == ID_CARD_FILE && resultCode == RESULT_OK){
+            frontId = StringToBitMap(data.getStringExtra(ID_CARD_FILE_FRONT));
+            backId = StringToBitMap(data.getStringExtra(ID_CARD_FILE_BACK));
+
+            //update recycler view
+            if(!filesDescription.contains("Identification Card")){
+                filesDescription.add("Identification Card");
+                filesRecyclerAdapter.notifyDataSetChanged();
             }
-            case DRIVER_LICENSE_FILE : {
-                if(resultCode == RESULT_OK){
-                    driverLicense = StringToBitMap(data.getStringExtra(DRIVER_LICENSE));
-                }
+        }else if(requestCode == DRIVER_LICENSE_FILE && resultCode == RESULT_OK){
+            driverLicense = StringToBitMap(data.getStringExtra(DRIVER_LICENSE));
+
+            //update recycler view
+            if(!filesDescription.contains("Drivers license")) {
+                filesDescription.add("Drivers license");
+                filesRecyclerAdapter.notifyDataSetChanged();
             }
-            case PASSPORT_FILE : {
-                if(resultCode == RESULT_OK){
-                    passport = StringToBitMap(data.getStringExtra(PASSPORT));
-                }
+        }else if(requestCode == PASSPORT_FILE && resultCode == RESULT_OK){
+            passport = StringToBitMap(data.getStringExtra(PASSPORT));
+
+            //update recycler view
+            if(!filesDescription.contains("Passport")) {
+                filesDescription.add("Passport");
+                filesRecyclerAdapter.notifyDataSetChanged();
             }
-            case OTHER_FILES : {
-                if (resultCode == RESULT_OK){
-                    otherFile = data.getStringArrayListExtra(OTHER_DOC);
-                    otherFileDesc = data.getStringArrayListExtra(OTHER_DOC_DESC);
+        }else if(requestCode == OTHER_FILES && resultCode == RESULT_OK){
+            otherFile = data.getStringArrayListExtra(OTHER_DOC);
+            otherFileDesc = data.getStringArrayListExtra(OTHER_DOC_DESC);
+
+            //update recycler view{
+            if(otherFileDesc != null) {
+                for (String desc : otherFileDesc) {
+                    if (!filesDescription.contains(desc)) {
+                        filesDescription.add(desc);
+                        filesRecyclerAdapter.notifyDataSetChanged();
+                    }
                 }
             }
         }

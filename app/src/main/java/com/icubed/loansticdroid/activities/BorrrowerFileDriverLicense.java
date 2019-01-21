@@ -28,6 +28,7 @@ public class BorrrowerFileDriverLicense extends AppCompatActivity {
     private final int CAMERA_REQUEST_CODE = 2494;
     private Button takePhotoBtn;
     private String driverLicense;
+    private Bitmap licenseBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,14 @@ public class BorrrowerFileDriverLicense extends AppCompatActivity {
         imageView = findViewById(R.id.image);
         takePhotoBtn = findViewById(R.id.takeaphoto);
         editImageBtn = findViewById(R.id.start_camera_button);
+
+        licenseBitmap = getIntent().getParcelableExtra("image");
+
+        if(licenseBitmap != null){
+            imageView.setImageBitmap(licenseBitmap);
+            driverLicense = BitMapToString(licenseBitmap);
+            takePhotoBtn.setText("Done");
+        }
 
         editImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
