@@ -1,5 +1,8 @@
 package com.icubed.loansticdroid.localdatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
@@ -8,7 +11,7 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class BorrowerFilesTable {
+public class BorrowerFilesTable implements Parcelable {
 
     @Unique
     private String filesId;
@@ -67,4 +70,39 @@ public class BorrowerFilesTable {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
+    // Parcelling part
+    public BorrowerFilesTable(Parcel in){
+        String[] data = new String[4];
+
+        in.readStringArray(data);
+        this.fileDescription = data[0];
+        this.fileImageUri = data[1];
+        this.fileImageUriThumb = data[2];
+        this.filesId = data[3];
+
+    }
+
+    @Override
+    public int describeContents(){
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(new String[] {this.fileDescription,
+                this.fileImageUri,
+                this.fileImageUriThumb,
+                this.filesId,});
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public BorrowerFilesTable createFromParcel(Parcel in) {
+            return new BorrowerFilesTable(in);
+        }
+
+        public BorrowerFilesTable[] newArray(int size) {
+            return new BorrowerFilesTable[size];
+        }
+    };
 }

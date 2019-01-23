@@ -80,7 +80,8 @@
         <activity android:name=".activities.BorrowerFileOtherDocuments" />
         <activity android:name=".activities.BorrowerDetailsSingle" />
         <activity android:name=".activities.BorrowerDetailsGroup" />
-        <activity android:name=".activities.LocationActivity"></activity>
+        <activity android:name=".activities.LocationActivity" />
+        <activity android:name=".activities.PictureViewActivity"></activity>
     </application>
 
 </manifest>
