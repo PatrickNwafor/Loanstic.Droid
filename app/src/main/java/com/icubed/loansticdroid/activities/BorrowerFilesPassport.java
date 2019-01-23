@@ -34,7 +34,7 @@ public class BorrowerFilesPassport extends AppCompatActivity {
         setContentView(R.layout.activity_borrower_files_passport);
         toolbar = findViewById(R.id.ID_document_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Identity card");
+        getSupportActionBar().setTitle("Passport");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

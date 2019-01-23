@@ -33,7 +33,8 @@ public class BorrowerFileOtherDocuments extends AppCompatActivity {
     private Button takePhotoBtn, doneBtn;
     private TextView fileTextViewDesc;
     private EditText fileDesc;
-    private ArrayList<String> otherFile, otherFileDesc;
+    private ArrayList<String> otherFileDesc;
+    private ArrayList<Bitmap> otherFile;
     private FormUtil formUtil;
 
     @Override
@@ -42,7 +43,7 @@ public class BorrowerFileOtherDocuments extends AppCompatActivity {
         setContentView(R.layout.activity_borrower_file_other_documents);
         toolbar = findViewById(R.id.ID_document_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Identity card");
+        getSupportActionBar().setTitle("Other documents");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -52,7 +53,7 @@ public class BorrowerFileOtherDocuments extends AppCompatActivity {
         doneBtn = findViewById(R.id.done);
         fileTextViewDesc = findViewById(R.id.document_desc);
 
-        otherFile = getIntent().getStringArrayListExtra("files");
+        otherFile = getIntent().getParcelableArrayListExtra("files");
         otherFileDesc = getIntent().getStringArrayListExtra("files_desc");
 
         if(otherFileDesc == null && otherFile == null) {
@@ -69,7 +70,7 @@ public class BorrowerFileOtherDocuments extends AppCompatActivity {
                     finish();
                 }else {
                     Intent resultIntent = new Intent();
-                    resultIntent.putStringArrayListExtra(OTHER_DOC, otherFile);
+                    resultIntent.putParcelableArrayListExtra(OTHER_DOC, otherFile);
                     resultIntent.putStringArrayListExtra(OTHER_DOC_DESC, otherFileDesc);
                     setResult(Activity.RESULT_OK, resultIntent);
                     finish();
@@ -99,14 +100,6 @@ public class BorrowerFileOtherDocuments extends AppCompatActivity {
 
     }
 
-    public String BitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-        byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
-
     /***************Calls up Up Phone camera********************/
     private void dispatchTakePictureIntent(int CAMERA_CODE) {
 
@@ -132,7 +125,7 @@ public class BorrowerFileOtherDocuments extends AppCompatActivity {
                     Bundle extras = data.getExtras();
                     //Bitmap returned from camera
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    otherFile.add(BitMapToString(imageBitmap));
+                    otherFile.add(imageBitmap);
                     otherFileDesc.add(fileDesc.getText().toString());
                     fileTextViewDesc.setText(fileDesc.getText().toString());
                     imageView.setImageBitmap(imageBitmap);

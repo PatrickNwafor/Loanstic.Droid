@@ -98,10 +98,9 @@ public class BorrowerFilesFragment extends Fragment {
     private FilesRecyclerAdapter filesRecyclerAdapter;
     private ArrayList<String> filesDescription;
     Bundle bundle;
-    private Toolbar toolbar;
     LinearLayout idLayout, driverLayout, passportLayout, otherLayout;
-    public Bitmap frontId, backId, driverLicense, passport;
-    public ArrayList<String> otherFile;
+    public Bitmap frontId, backId, driverLicense, passport = null;
+    public ArrayList<Bitmap> otherFile;
     public ArrayList<String> otherFileDesc;
     private int otherFilesCount = 0;
 
@@ -147,7 +146,6 @@ public class BorrowerFilesFragment extends Fragment {
         addFileTextView = view.findViewById(R.id.addFileTextView);
         reg_progress_bar = view.findViewById(R.id.reg_progress_bar);
         submitButton = view.findViewById(R.id.submit);
-        toolbar = view.findViewById(R.id.ID_document_toolbar);
         idLayout = view.findViewById(R.id.idLayout);
         driverLayout = view.findViewById(R.id.driverLayout);
         passportLayout = view.findViewById(R.id.passportLayout);
@@ -191,7 +189,7 @@ public class BorrowerFilesFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), BorrowerFileOtherDocuments.class);
                 intent.putStringArrayListExtra("files_desc", otherFileDesc);
-                intent.putStringArrayListExtra("files", otherFile);
+                intent.putExtra("files", otherFile);
                 startActivityForResult(intent, OTHER_FILES);
             }
         });
@@ -199,10 +197,15 @@ public class BorrowerFilesFragment extends Fragment {
 
     private void startSubmission(){
         if(AndroidUtils.isMobileDataEnabled(getContext())) {
-            reg_progress_bar.setVisibility(View.VISIBLE);
-            submitButton.setEnabled(false);
-            Bitmap bitmap = StringToBitMap(bundle.getString("borrowerImage"));
-            uploadBorrowerPicture(bitmap);
+            if(frontId != null || backId !=null || driverLicense != null
+                    || passport != null || !otherFile.isEmpty()) {
+                reg_progress_bar.setVisibility(View.VISIBLE);
+                submitButton.setEnabled(false);
+                Bitmap bitmap = StringToBitMap(bundle.getString("borrowerImage"));
+                uploadBorrowerPicture(bitmap);
+            }else{
+                Toast.makeText(context, "Please upload at least one file", Toast.LENGTH_SHORT).show();
+            }
         }else{
             Toast.makeText(context, "Request Failed, Please try again", Toast.LENGTH_SHORT).show();
         }
@@ -432,9 +435,7 @@ public class BorrowerFilesFragment extends Fragment {
                 return;
             }
 
-            for(final String bitmapString : otherFile){
-
-                final Bitmap bitmap = StringToBitMap(bitmapString);
+            for(final Bitmap bitmap : otherFile){
 
                 final Map<String, Object> filesMap = new HashMap<>();
                 filesMap.put("fileDescription", otherFileDesc.get(otherFilesCount));
@@ -525,7 +526,7 @@ public class BorrowerFilesFragment extends Fragment {
                 filesRecyclerAdapter.notifyDataSetChanged();
             }
         }else if(requestCode == OTHER_FILES && resultCode == RESULT_OK){
-            otherFile = data.getStringArrayListExtra(OTHER_DOC);
+            otherFile = data.getParcelableArrayListExtra(OTHER_DOC);
             otherFileDesc = data.getStringArrayListExtra(OTHER_DOC_DESC);
 
             //update recycler view{
