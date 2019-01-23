@@ -150,10 +150,12 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/addFileTextView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="Added Files" />
+                android:text="Added Files"
+                android:visibility="gone" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/add_files_list"
@@ -172,7 +174,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/loan_button_back"
 
         android:text="Submit"

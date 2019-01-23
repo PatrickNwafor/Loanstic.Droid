@@ -17,16 +17,16 @@ public class BorrowerFilesTable {
     private Long id;
 
     private String fileImageUri, fileImageUriThumb, fileDescription;
-    private Date timesstamp;
-    @Generated(hash = 741742471)
+    private Date timestamp;
+    @Generated(hash = 578265760)
     public BorrowerFilesTable(String filesId, Long id, String fileImageUri,
-            String fileImageUriThumb, String fileDescription, Date timesstamp) {
+            String fileImageUriThumb, String fileDescription, Date timestamp) {
         this.filesId = filesId;
         this.id = id;
         this.fileImageUri = fileImageUri;
         this.fileImageUriThumb = fileImageUriThumb;
         this.fileDescription = fileDescription;
-        this.timesstamp = timesstamp;
+        this.timestamp = timestamp;
     }
     @Generated(hash = 1402127370)
     public BorrowerFilesTable() {
@@ -61,10 +61,10 @@ public class BorrowerFilesTable {
     public void setFileDescription(String fileDescription) {
         this.fileDescription = fileDescription;
     }
-    public Date getTimesstamp() {
-        return this.timesstamp;
+    public Date getTimestamp() {
+        return this.timestamp;
     }
-    public void setTimesstamp(Date timesstamp) {
-        this.timesstamp = timesstamp;
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 }

@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.algolia.search.saas.AlgoliaException;
@@ -88,6 +89,7 @@ public class BorrowerFilesFragment extends Fragment {
     private String borrowerImageThumbUri;
     private LocationProviderUtil locationProviderUtil;
     private LatLng borrowerLatLng;
+    public TextView addFileTextView;
     private Account account;
     private Index index;
     private BorrowerFilesQueries borrowerFilesQueries;
@@ -142,6 +144,7 @@ public class BorrowerFilesFragment extends Fragment {
         //Changing action bar title
         ((AddSingleBorrower) getContext()).actionBar.setTitle("ID Documents");
 
+        addFileTextView = view.findViewById(R.id.addFileTextView);
         reg_progress_bar = view.findViewById(R.id.reg_progress_bar);
         submitButton = view.findViewById(R.id.submit);
         toolbar = view.findViewById(R.id.ID_document_toolbar);

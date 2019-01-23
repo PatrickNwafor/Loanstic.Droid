@@ -37,6 +37,13 @@ public class FilesRecyclerAdapter extends RecyclerView.Adapter<FilesRecyclerAdap
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         holder.fileDesc.setText(fileDescription.get(position));
+
+        if(!fileDescription.isEmpty()){
+            fragment.addFileTextView.setVisibility(View.VISIBLE);
+        }else{
+            fragment.addFileTextView.setVisibility(View.GONE);
+        }
+
         holder.removeFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

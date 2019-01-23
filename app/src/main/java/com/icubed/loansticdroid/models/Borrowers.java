@@ -1,14 +1,23 @@
 package com.icubed.loansticdroid.models;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.Request;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -20,6 +29,7 @@ import com.icubed.loansticdroid.fragments.BorrowersFragment.SingleBorrowerFragme
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import static android.support.constraint.Constraints.TAG;
@@ -187,6 +197,7 @@ public class Borrowers {
                 !borrowersTable.getLastName().equals(currentlySaved.getLastName()) ||
                 !borrowersTable.getMiddleName().equals(currentlySaved.getMiddleName()) ||
                 !borrowersTable.getAssignedBy().equals(currentlySaved.getAssignedBy()) ||
+                !borrowersTable.getProfileImageUri().equals(currentlySaved.getProfileImageUri()) ||
                 borrowersTable.getBelongsToGroup() != currentlySaved.getBelongsToGroup() ||
                 borrowersTable.getBorrowerLocationLatitude() != currentlySaved.getBorrowerLocationLatitude() ||
                 borrowersTable.getBorrowerLocationLongitude() != currentlySaved.getBorrowerLocationLongitude() ||

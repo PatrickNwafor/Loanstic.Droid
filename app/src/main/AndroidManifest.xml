@@ -79,7 +79,8 @@
         <activity android:name=".activities.BorrowerFilesPassport" />
         <activity android:name=".activities.BorrowerFileOtherDocuments" />
         <activity android:name=".activities.BorrowerDetailsSingle" />
-        <activity android:name=".activities.BorrowerDetailsGroup"></activity>
+        <activity android:name=".activities.BorrowerDetailsGroup" />
+        <activity android:name=".activities.LocationActivity"></activity>
     </application>
 
 </manifest>

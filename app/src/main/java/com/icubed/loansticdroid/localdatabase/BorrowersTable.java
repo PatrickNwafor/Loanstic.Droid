@@ -1,14 +1,20 @@
 package com.icubed.loansticdroid.localdatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 @Entity
-public class BorrowersTable {
+public class BorrowersTable implements Parcelable {
 
     @Unique
     private String borrowersId;
@@ -19,20 +25,20 @@ public class BorrowersTable {
 
     private Date timestamp;
     private Long phoneNumber, zipcode;
-    private boolean belongsToGroup;
+    private boolean belongsToGroup, isBorrowerActive;
 
     @Id(autoincrement = true)
     private Long id;
 
     private double borrowerLocationLatitude, borrowerLocationLongitude;
 
-    @Generated(hash = 1573834719)
+    @Generated(hash = 606290059)
     public BorrowersTable(String borrowersId, String loanOfficerId, String firstName, String middleName,
             String lastName, String businessName, String assignedBy, String profileImageUri,
-            String profileImageThumbUri, String nationality, String workAddress, String sex,
-            String homeAddress, String state, String city, String dateOfBirth, String email,
-            String businessDescription, String photovalidationId, Date timestamp, Long phoneNumber,
-            Long zipcode, boolean belongsToGroup, Long id, double borrowerLocationLatitude,
+            String profileImageThumbUri, String nationality, String workAddress, String sex, String homeAddress,
+            String state, String city, String dateOfBirth, String email, String businessDescription,
+            String photovalidationId, Date timestamp, Long phoneNumber, Long zipcode, boolean belongsToGroup,
+            boolean isBorrowerActive, Long id, double borrowerLocationLatitude,
             double borrowerLocationLongitude) {
         this.borrowersId = borrowersId;
         this.loanOfficerId = loanOfficerId;
@@ -57,6 +63,7 @@ public class BorrowersTable {
         this.phoneNumber = phoneNumber;
         this.zipcode = zipcode;
         this.belongsToGroup = belongsToGroup;
+        this.isBorrowerActive = isBorrowerActive;
         this.id = id;
         this.borrowerLocationLatitude = borrowerLocationLatitude;
         this.borrowerLocationLongitude = borrowerLocationLongitude;
@@ -250,6 +257,14 @@ public class BorrowersTable {
         this.belongsToGroup = belongsToGroup;
     }
 
+    public boolean getIsBorrowerActive() {
+        return this.isBorrowerActive;
+    }
+
+    public void setIsBorrowerActive(boolean isBorrowerActive) {
+        this.isBorrowerActive = isBorrowerActive;
+    }
+
     public Long getId() {
         return this.id;
     }
@@ -273,4 +288,84 @@ public class BorrowersTable {
     public void setBorrowerLocationLongitude(double borrowerLocationLongitude) {
         this.borrowerLocationLongitude = borrowerLocationLongitude;
     }
+
+    @Override
+    public String toString() {
+        return "BorrowersTable{" + "borrowersId='" + borrowersId + '\'' + ", loanOfficerId='" + loanOfficerId + '\'' + ", firstName='" + firstName + '\'' + ", middleName='" + middleName + '\'' + ", lastName='" + lastName + '\'' + ", businessName='" + businessName + '\'' + ", assignedBy='" + assignedBy + '\'' + ", profileImageUri='" + profileImageUri + '\'' + ", profileImageThumbUri='" + profileImageThumbUri + '\'' + ", nationality='" + nationality + '\'' + ", workAddress='" + workAddress + '\'' + ", sex='" + sex + '\'' + ", homeAddress='" + homeAddress + '\'' + ", state='" + state + '\'' + ", city='" + city + '\'' + ", dateOfBirth='" + dateOfBirth + '\'' + ", email='" + email + '\'' + ", businessDescription='" + businessDescription + '\'' + ", photovalidationId='" + photovalidationId + '\'' + ", timestamp=" + timestamp + ", phoneNumber=" + phoneNumber + ", zipcode=" + zipcode + ", belongsToGroup=" + belongsToGroup + ", isBorrowerActive=" + isBorrowerActive + ", id=" + id + ", borrowerLocationLatitude=" + borrowerLocationLatitude + ", borrowerLocationLongitude=" + borrowerLocationLongitude + '}';
+    }
+
+    // Parcelling part
+    public BorrowersTable(Parcel in){
+        String[] data = new String[26];
+
+        in.readStringArray(data);
+        this.borrowersId = data[0];
+        this.loanOfficerId = data[1];
+        this.firstName = data[2];
+        this.middleName = data[3];
+        this.lastName = data[4];
+        this.businessName = data[5];
+        this.assignedBy = data[6];
+        this.profileImageUri = data[7];
+        this.profileImageThumbUri = data[8];
+        this.nationality = data[9];
+        this.workAddress = data[10];
+        this.sex = data[11];
+        this.homeAddress = data[12];
+        this.state = data[13];
+        this.city = data[14];
+        this.dateOfBirth = data[15];
+        this.email = data[16];
+        this.businessDescription = data[17];
+        this.photovalidationId = data[18];
+        this.phoneNumber = Long.valueOf(data[19]);
+        this.zipcode = Long.valueOf(data[20]);
+        this.belongsToGroup = Boolean.parseBoolean(data[21]);
+        this.id = Long.valueOf(data[22]);
+        this.borrowerLocationLatitude = Double.parseDouble(data[23]);
+        this.borrowerLocationLongitude = Double.parseDouble(data[24]);
+        this.isBorrowerActive = Boolean.parseBoolean(data[25]);
+
+    }
+
+    @Override
+    public int describeContents(){
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(new String[] {this.borrowersId,
+                this.loanOfficerId,
+                this.firstName,
+                this.middleName,
+                this.lastName,
+                this.businessName,
+                this.assignedBy,
+                this.profileImageUri,
+                this.profileImageThumbUri,
+                this.nationality,
+                this.workAddress,
+                this.sex,
+                this.homeAddress,
+                this.state,
+                this.city,
+                this.dateOfBirth,
+                this.email,
+                this.businessDescription,
+                this.photovalidationId,String.valueOf(this.phoneNumber), String.valueOf(this.zipcode),
+                String.valueOf(this.belongsToGroup), String.valueOf(this.id),
+                String.valueOf(this.borrowerLocationLatitude), String.valueOf(this.borrowerLocationLongitude)
+                , String.valueOf(this.isBorrowerActive)});
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public BorrowersTable createFromParcel(Parcel in) {
+            return new BorrowersTable(in);
+        }
+
+        public BorrowersTable[] newArray(int size) {
+            return new BorrowersTable[size];
+        }
+    };
 }
