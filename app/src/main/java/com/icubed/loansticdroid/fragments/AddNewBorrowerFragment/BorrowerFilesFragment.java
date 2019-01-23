@@ -464,7 +464,6 @@ public class BorrowerFilesFragment extends Fragment {
 
                                                             uploadImageFileToCloud(filesMap, borrowerId);
 
-                                                            otherFilesCount++;
                                                         }else{
                                                             Toast.makeText(context, "Failed uploading files thumb to storage", Toast.LENGTH_SHORT).show();
                                                         }
@@ -477,6 +476,7 @@ public class BorrowerFilesFragment extends Fragment {
                                 }
                             }
                         });
+                otherFilesCount++;
             }
         }
     }
