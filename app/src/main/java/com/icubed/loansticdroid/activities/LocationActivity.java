@@ -26,6 +26,7 @@ import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
+import com.google.maps.model.TravelMode;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
@@ -83,7 +84,8 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
                 LatLng user = new LatLng(location.getLocation.getLatitude(), location.getLocation.getLongitude());
                 LatLng bor = new LatLng(borrower.getBorrowerLocationLatitude(), borrower.getBorrowerLocationLongitude());
 
-                placeMarkers(user, bor);
+                //getRoute(user, bor);
+                getRoute(user, bor);
             }
         });
     }
@@ -91,18 +93,27 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
     public void getRoute(LatLng user, LatLng bor){
 
         //Define list to get all latlng for the route
-        List<LatLng> path = new ArrayList();
+        List<LatLng> path = new ArrayList<>();
         String origin = user.latitude +","+user.longitude;
         String destination = bor.latitude +","+bor.longitude;
 
+        mMap.clear();
+        placeMarkers(user, bor);
 
         //Execute Directions API request
         GeoApiContext context = new GeoApiContext()
                 .setApiKey("AIzaSyDljIVWu1Pi1RO1Gl9DQrYpoXfKQ5TnHC8");
 
-        DirectionsApiRequest req = DirectionsApi.getDirections(context, origin, destination);
+
+        DirectionsApiRequest req = DirectionsApi.newRequest(context)
+                .origin(origin)
+                .destination(destination)
+                .mode(TravelMode.WALKING);
+
         try {
             DirectionsResult res = req.await();
+
+            Log.d("Directions", res.toString());
 
             //Loop through legs and steps to get encoded polylines of each step
             if (res.routes != null && res.routes.length > 0) {
@@ -144,10 +155,6 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         } catch(Exception ex) {
             Log.e(TAG, ex.getLocalizedMessage());
         }
-
-        mMap.clear();
-        placeMarkers(user, bor);
-        Log.d(TAG, "getRoute: "+path.size());
 
         //Draw the polyline
         if (path.size() > 0) {
