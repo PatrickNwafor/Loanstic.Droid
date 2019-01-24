@@ -259,10 +259,9 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private void sendNotification(String groupId){
         GroupNotificationTable groupNotificationTable = new GroupNotificationTable();
         groupNotificationTable.setGroupId(groupId);
-        groupNotificationTable.setLoanOfficerId(account.getCurrentUserId());
         groupNotificationTable.setTimestamp(new Date());
 
-        groupNotificationQueries.sendNotification(groupNotificationTable)
+        groupNotificationQueries.sendNotification(groupNotificationTable, account.getCurrentUserId())
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {

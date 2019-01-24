@@ -16,8 +16,10 @@ public class GroupNotificationQueries {
     }
 
 
-    public Task<DocumentReference> sendNotification(GroupNotificationTable groupNotificationTable){
+    public Task<DocumentReference> sendNotification(GroupNotificationTable groupNotificationTable, String loanOfficerId){
         return firebaseFirestore.collection("notification")
+                .document(loanOfficerId)
+                .collection("group_notification")
                 .add(groupNotificationTable);
     }
 }
