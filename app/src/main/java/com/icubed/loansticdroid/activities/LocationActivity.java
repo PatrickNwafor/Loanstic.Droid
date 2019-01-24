@@ -108,7 +108,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         DirectionsApiRequest req = DirectionsApi.newRequest(context)
                 .origin(origin)
                 .destination(destination)
-                .mode(TravelMode.WALKING);
+                .mode(TravelMode.DRIVING);
 
         try {
             DirectionsResult res = req.await();
