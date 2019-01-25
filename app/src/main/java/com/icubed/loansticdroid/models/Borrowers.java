@@ -19,13 +19,17 @@ import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.activities.BorrowerActivity;
 import com.icubed.loansticdroid.adapters.BorrowerRecyclerAdapter;
+import com.icubed.loansticdroid.cloudqueries.ActivityCycleQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.fragments.BorrowersFragment.SingleBorrowerFragment;
+import com.icubed.loansticdroid.localdatabase.ActivityCycleTable;
+import com.icubed.loansticdroid.localdatabase.ActivityCycleTableQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 
@@ -37,6 +41,8 @@ import static android.support.constraint.Constraints.TAG;
 public class Borrowers {
     private BorrowersQueries borrowersQueries;
     private BorrowersTableQueries borrowersTableQueries;
+    private ActivityCycleTableQueries activityCycleTableQueries;
+    private ActivityCycleQueries activityCycleQueries;
     FragmentActivity activity;
     SingleBorrowerFragment fragment;
 
@@ -44,6 +50,8 @@ public class Borrowers {
         this.activity = activity;
         borrowersQueries = new BorrowersQueries(activity.getApplicationContext());
         borrowersTableQueries = new BorrowersTableQueries(activity.getApplication());
+        activityCycleTableQueries = new ActivityCycleTableQueries(activity.getApplication());
+        activityCycleQueries = new ActivityCycleQueries();
 
         FragmentManager fm = activity.getSupportFragmentManager();
         fragment = (SingleBorrowerFragment) fm.findFragmentByTag("single");
@@ -75,6 +83,7 @@ public class Borrowers {
                             borrowersTable.setBorrowersId(doc.getId());
 
                             saveBorrowersToLocalStorage(borrowersTable);
+                            getActivityCycleData(doc.getId());
                         }
 
                         loadBorrowersToUI();
@@ -88,6 +97,44 @@ public class Borrowers {
                 }
             }
         });
+    }
+
+    private void getActivityCycleData(final String id) {
+        activityCycleQueries.retrieveAllCycleForBorrower(id)
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(DocumentSnapshot doc : queryDocumentSnapshots){
+                            ActivityCycleTable activityCycleTable = doc.toObject(ActivityCycleTable.class);
+                            activityCycleTable.setActivityCycleId(doc.getId());
+
+                            List<ActivityCycleTable> activityCycleTable1 = activityCycleTableQueries.loadAllActivityCyclesForBorrower(id);
+                            ActivityCycleTable cycleTable = null;
+                            Boolean doesActivityExist = false;
+
+                            for(ActivityCycleTable act : activityCycleTable1){
+                                if(act.getActivityCycleId().equals(activityCycleTable.getActivityCycleId())){
+                                    cycleTable = act;
+                                    doesActivityExist = true;
+                                    break;
+                                }
+                            }
+
+                            if(!doesActivityExist){
+                                saveActivityCycleToLocalStorage(activityCycleTable);
+                            }else if(activityCycleTable.getIsActive() != cycleTable.getIsActive()){
+                                activityCycleTable.setId(cycleTable.getId());
+                                updateActivityCycleTable(activityCycleTable);
+                                Log.i("data", activityCycleTableQueries.loadSingleActivityCycle(cycleTable.getActivityCycleId()).toString());
+                            }
+
+                        }
+                    }
+                });
+    }
+
+    private void saveActivityCycleToLocalStorage(ActivityCycleTable activityCycleTable) {
+        activityCycleTableQueries.insertActivityCycleToStorage(activityCycleTable);
     }
 
     private void saveBorrowersToLocalStorage(BorrowersTable borrowersTable) {
@@ -143,10 +190,12 @@ public class Borrowers {
                                         borrowersTable.setBorrowersId(doc.getId());
                                         isThereNewData = true;
 
+                                        getActivityCycleData(doc.getId());
                                         saveBorrowersToLocalStorage(borrowersTable);
                                     }else{
                                         //Update local table if any changes
                                         updateTable(doc);
+                                        getActivityCycleData(doc.getId());
                                     }
                                 }
 
@@ -172,6 +221,10 @@ public class Borrowers {
                         }
                     }
                 });
+    }
+
+    private void updateActivityCycleTable(ActivityCycleTable doc) {
+        activityCycleTableQueries.updateStorageAfterActivityCycleEnds(doc);
     }
 
     private void deleteBorrowerFromLocalStorage(BorrowersTable borowTab) {

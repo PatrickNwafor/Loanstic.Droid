@@ -24,9 +24,10 @@ public class BorrowerPhotoValidationTableQueries {
     }
 
     /**********Load a single Borrowers photos from local Storage*******/
-    public List<BorrowerPhotoValidationTable> loadSingleBorrowerPhotos(String borrowerId){
+    public List<BorrowerPhotoValidationTable> loadSingleBorrowerPhotos(String borrowerId, String activityCycleId){
         return borrowerPhotoValidationTableDao.queryBuilder()
                 .where(BorrowerPhotoValidationTableDao.Properties.BorrowerId.eq(borrowerId))
+                .where(BorrowerPhotoValidationTableDao.Properties.ActivityCycleId.eq(activityCycleId))
                 .build()
                 .list();
     }

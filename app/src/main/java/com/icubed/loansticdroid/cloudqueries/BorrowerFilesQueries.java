@@ -71,10 +71,11 @@ public class BorrowerFilesQueries {
                 .add(borrowerFilesTable);
     }
 
-    public Task<QuerySnapshot> retrieveFilesFromCloud(String borrowerId){
+    public Task<QuerySnapshot> retrieveFilesFromCloud(String borrowerId, String activityCycleId){
         return firebaseFirestore.collection("Borrowers")
                 .document(borrowerId)
                 .collection("files")
+                .whereEqualTo("activityCycleId",activityCycleId)
                 .get();
     }
 

@@ -25,21 +25,20 @@ public class BorrowersTable implements Parcelable {
 
     private Date timestamp;
     private Long phoneNumber, zipcode;
-    private boolean belongsToGroup, isBorrowerActive;
+    private boolean belongsToGroup;
 
     @Id(autoincrement = true)
     private Long id;
 
     private double borrowerLocationLatitude, borrowerLocationLongitude;
 
-    @Generated(hash = 606290059)
+    @Generated(hash = 1573834719)
     public BorrowersTable(String borrowersId, String loanOfficerId, String firstName, String middleName,
             String lastName, String businessName, String assignedBy, String profileImageUri,
             String profileImageThumbUri, String nationality, String workAddress, String sex, String homeAddress,
             String state, String city, String dateOfBirth, String email, String businessDescription,
             String photovalidationId, Date timestamp, Long phoneNumber, Long zipcode, boolean belongsToGroup,
-            boolean isBorrowerActive, Long id, double borrowerLocationLatitude,
-            double borrowerLocationLongitude) {
+            Long id, double borrowerLocationLatitude, double borrowerLocationLongitude) {
         this.borrowersId = borrowersId;
         this.loanOfficerId = loanOfficerId;
         this.firstName = firstName;
@@ -63,7 +62,6 @@ public class BorrowersTable implements Parcelable {
         this.phoneNumber = phoneNumber;
         this.zipcode = zipcode;
         this.belongsToGroup = belongsToGroup;
-        this.isBorrowerActive = isBorrowerActive;
         this.id = id;
         this.borrowerLocationLatitude = borrowerLocationLatitude;
         this.borrowerLocationLongitude = borrowerLocationLongitude;
@@ -257,14 +255,6 @@ public class BorrowersTable implements Parcelable {
         this.belongsToGroup = belongsToGroup;
     }
 
-    public boolean getIsBorrowerActive() {
-        return this.isBorrowerActive;
-    }
-
-    public void setIsBorrowerActive(boolean isBorrowerActive) {
-        this.isBorrowerActive = isBorrowerActive;
-    }
-
     public Long getId() {
         return this.id;
     }
@@ -289,14 +279,9 @@ public class BorrowersTable implements Parcelable {
         this.borrowerLocationLongitude = borrowerLocationLongitude;
     }
 
-    @Override
-    public String toString() {
-        return "BorrowersTable{" + "borrowersId='" + borrowersId + '\'' + ", loanOfficerId='" + loanOfficerId + '\'' + ", firstName='" + firstName + '\'' + ", middleName='" + middleName + '\'' + ", lastName='" + lastName + '\'' + ", businessName='" + businessName + '\'' + ", assignedBy='" + assignedBy + '\'' + ", profileImageUri='" + profileImageUri + '\'' + ", profileImageThumbUri='" + profileImageThumbUri + '\'' + ", nationality='" + nationality + '\'' + ", workAddress='" + workAddress + '\'' + ", sex='" + sex + '\'' + ", homeAddress='" + homeAddress + '\'' + ", state='" + state + '\'' + ", city='" + city + '\'' + ", dateOfBirth='" + dateOfBirth + '\'' + ", email='" + email + '\'' + ", businessDescription='" + businessDescription + '\'' + ", photovalidationId='" + photovalidationId + '\'' + ", timestamp=" + timestamp + ", phoneNumber=" + phoneNumber + ", zipcode=" + zipcode + ", belongsToGroup=" + belongsToGroup + ", isBorrowerActive=" + isBorrowerActive + ", id=" + id + ", borrowerLocationLatitude=" + borrowerLocationLatitude + ", borrowerLocationLongitude=" + borrowerLocationLongitude + '}';
-    }
-
     // Parcelling part
     public BorrowersTable(Parcel in){
-        String[] data = new String[26];
+        String[] data = new String[25];
 
         in.readStringArray(data);
         this.borrowersId = data[0];
@@ -324,7 +309,6 @@ public class BorrowersTable implements Parcelable {
         this.id = Long.valueOf(data[22]);
         this.borrowerLocationLatitude = Double.parseDouble(data[23]);
         this.borrowerLocationLongitude = Double.parseDouble(data[24]);
-        this.isBorrowerActive = Boolean.parseBoolean(data[25]);
 
     }
 
@@ -355,9 +339,9 @@ public class BorrowersTable implements Parcelable {
                 this.businessDescription,
                 this.photovalidationId,String.valueOf(this.phoneNumber), String.valueOf(this.zipcode),
                 String.valueOf(this.belongsToGroup), String.valueOf(this.id),
-                String.valueOf(this.borrowerLocationLatitude), String.valueOf(this.borrowerLocationLongitude)
-                , String.valueOf(this.isBorrowerActive)});
+                String.valueOf(this.borrowerLocationLatitude), String.valueOf(this.borrowerLocationLongitude)});
     }
+
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public BorrowersTable createFromParcel(Parcel in) {

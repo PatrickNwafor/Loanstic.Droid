@@ -10,7 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,8 @@ import com.icubed.loansticdroid.adapters.BorrowerBusinessVerificationRecyclerAda
 import com.icubed.loansticdroid.adapters.DocumentRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.BorrowerFilesQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowerPhotoValidationQueries;
+import com.icubed.loansticdroid.localdatabase.ActivityCycleTable;
+import com.icubed.loansticdroid.localdatabase.ActivityCycleTableQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowerFilesTable;
 import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
@@ -42,11 +46,14 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
             , businessNameTextView, businessLocationTextView, businessDescriptionTextView
             , genderTextView, dobTextView, homeAddressTextView, countryTextView
             , stateTextView, cityTextView, numberOfDocTextView, borrowerLocationTextView;
+    private Button activateBorrowerBtn;
 
     private RecyclerView docRecyclerView;
     private RecyclerView businessVerificationRecyclerView;
     private DocumentRecyclerAdapter documentRecyclerAdapter;
+    private LinearLayout linearLayout;
     private List<BorrowerFilesTable> borrowerFilesTables;
+    private ActivityCycleTableQueries activityCycleTableQueries;
     private List<BorrowerPhotoValidationTable> borrowerPhotoValidationTables;
     private BorrowerBusinessVerificationRecyclerAdapter borrowerBusinessVerificationRecyclerAdapter;
     private BorrowerFilesQueries borrowerFilesQueries;
@@ -67,8 +74,11 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         Log.d(TAG, "onCreate: "+borrower.toString());
 
         borrowerFilesQueries = new BorrowerFilesQueries(this);
+        activityCycleTableQueries = new ActivityCycleTableQueries(getApplication());
         borrowerPhotoValidationQueries = new BorrowerPhotoValidationQueries(this);
 
+        linearLayout = findViewById(R.id.activate_borrower_layout);
+        activateBorrowerBtn = findViewById(R.id.activateBorrower);
         profileImageView = findViewById(R.id.profileImageView);
         nameTextView = findViewById(R.id.name);
         numberTextView = findViewById(R.id.mobile_number);
@@ -87,6 +97,20 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         numberOfDocTextView = findViewById(R.id.number_of_documents);
         docRecyclerView = findViewById(R.id.documentRecyclerView);
         borrowerLocationTextView = findViewById(R.id.borrower_location);
+
+        ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadLastCreatedCycle(borrower.getBorrowersId());
+        if(!activityCycleTable.getIsActive()){
+            linearLayout.setVisibility(View.VISIBLE);
+        }
+
+        activateBorrowerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ReactivateBorrowerActivity.class);
+                intent.putExtra("borrowerId", borrower.getBorrowersId());
+                startActivity(intent);
+            }
+        });
 
         borrowerLocationTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +140,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     }
 
     private void getBusinessVerificationPhotos() {
-        borrowerPhotoValidationQueries.retrieveAllValidationPhotosForBorrower(borrower.getBorrowersId())
+
+        ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadLastCreatedCycle(borrower.getBorrowersId());
+
+        borrowerPhotoValidationQueries.retrieveAllValidationPhotosForBorrower(borrower.getBorrowersId(), activityCycleTable.getActivityCycleId())
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -147,7 +174,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     }
 
     private void getFiles() {
-        borrowerFilesQueries.retrieveFilesFromCloud(borrower.getBorrowersId())
+
+        ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadLastCreatedCycle(borrower.getBorrowersId());
+
+        borrowerFilesQueries.retrieveFilesFromCloud(borrower.getBorrowersId(), activityCycleTable.getActivityCycleId())
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {

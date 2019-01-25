@@ -93,9 +93,10 @@ public class AddSingleBorrower extends AppCompatActivity {
         transaction.commit();
     }
 
-    public void goToBusinessVerification(String borrowerId){
+    public void goToBusinessVerification(String borrowerId, String activityCycleId){
         Intent addBorrowerIntent = new Intent(this, BusinessVerification.class);
         addBorrowerIntent.putExtra("borrowerId", borrowerId);
+        addBorrowerIntent.putExtra("activityCycleId", activityCycleId);
         startActivity(addBorrowerIntent);
         finish();
     }

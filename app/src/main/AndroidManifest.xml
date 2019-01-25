@@ -81,7 +81,8 @@
         <activity android:name=".activities.BorrowerDetailsSingle" />
         <activity android:name=".activities.BorrowerDetailsGroup" />
         <activity android:name=".activities.LocationActivity" />
-        <activity android:name=".activities.PictureViewActivity"></activity>
+        <activity android:name=".activities.PictureViewActivity" />
+        <activity android:name=".activities.ReactivateBorrowerActivity"></activity>
     </application>
 
 </manifest>

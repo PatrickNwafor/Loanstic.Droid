@@ -55,7 +55,7 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
     private MapView mMapView;
     GoogleMap mGoogleMap;
 
-    private String borrowerId, photoUri, photoThumbUri, groupId;
+    private String borrowerId, photoUri, photoThumbUri, groupId, activityCycleId;
     private BorrowerPhotoValidationQueries photoValidationQueries;
     private double photoLatitude;
     private double photoLongitude;
@@ -84,6 +84,7 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
         recyclerView.setAdapter(adapter);
 
         borrowerId = getIntent().getStringExtra("borrowerId");
+        activityCycleId = getIntent().getStringExtra("activityCycleId");
         groupId = getIntent().getStringExtra("groupId");
         Log.d(TAG, "onCreate: "+groupId);
     }
@@ -228,6 +229,7 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
         Map<String, Object> photoMap = new HashMap<>();
         if(borrowerId != null) {
             photoMap.put("borrowerId", borrowerId);
+            photoMap.put("activityCycleId", activityCycleId);
         }else{
             photoMap.put("groupId", groupId);
         }

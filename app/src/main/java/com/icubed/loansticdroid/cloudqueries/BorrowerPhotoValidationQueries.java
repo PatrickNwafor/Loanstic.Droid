@@ -60,9 +60,10 @@ public class BorrowerPhotoValidationQueries {
     }
 
     /**************Retrieve all photos for a borrower***********/
-    public Task<QuerySnapshot> retrieveAllValidationPhotosForBorrower(String borrowerId){
+    public Task<QuerySnapshot> retrieveAllValidationPhotosForBorrower(String borrowerId, String activityCycleId){
         return firebaseFirestore.collection("Business_Verification_Photos")
                 .whereEqualTo("borrowerId", borrowerId)
+                .whereEqualTo("activityCycleId",activityCycleId)
                 .get();
     }
 
