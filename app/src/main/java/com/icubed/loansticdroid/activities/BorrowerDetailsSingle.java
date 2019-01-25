@@ -155,6 +155,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
             getNewBusinessVerificationPhotos(borrower.getBorrowersId(), activityCycleTable.getActivityCycleId());
         }else{
 
+            numberOfBizVerifTextView.setText(String.valueOf(validationTables.size()));
+
             for (BorrowerPhotoValidationTable validationTable : validationTables) {
                 borrowerPhotoValidationTables.add(validationTable);
                 borrowerBusinessVerificationRecyclerAdapter.notifyDataSetChanged();
@@ -211,6 +213,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         if(bow.isEmpty()){
             getNewFiles(borrower.getBorrowersId(), activityCycleTable.getActivityCycleId());
         }else{
+
+            numberOfDocTextView.setText(String.valueOf(bow.size()));
 
             for (BorrowerFilesTable borrowerFilesTable : bow) {
                 borrowerFilesTables.add(borrowerFilesTable);

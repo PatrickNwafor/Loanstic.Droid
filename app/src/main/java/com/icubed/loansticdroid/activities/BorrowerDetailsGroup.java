@@ -103,6 +103,7 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
         if(loadPhotosForGroup.isEmpty()){
             getNewBusinessVerificationPhotos();
         }else{
+            numberOfBusiVerifTextView.setText(String.valueOf(loadPhotosForGroup.size()));
             for (GroupPhotoValidationTable validationTable : loadPhotosForGroup) {
                 groupPhotoValidationTables.add(validationTable);
                 groupBusinessVerificationRecyclerAdapter.notifyDataSetChanged();
