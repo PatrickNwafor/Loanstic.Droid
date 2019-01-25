@@ -21,10 +21,13 @@ import com.icubed.loansticdroid.adapters.GroupMembersRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.BorrowerGroupsQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowerPhotoValidationQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
+import com.icubed.loansticdroid.localdatabase.ActivityCycleTable;
+import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.GroupPhotoValidationTable;
+import com.icubed.loansticdroid.localdatabase.GroupPhotoValidationTableQueries;
 import com.icubed.loansticdroid.models.Borrowers;
 
 import java.util.ArrayList;
@@ -45,6 +48,7 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
     private BorrowerGroupsQueries borrowerGroupsQueries;
     private BorrowersTableQueries borrowersTableQueries;
     private BorrowerPhotoValidationQueries borrowerPhotoValidationQueries;
+    GroupPhotoValidationTableQueries groupPhotoValidationTableQueries;
     private Toolbar toolbar;
 
     @Override
@@ -62,6 +66,7 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
         borrowerGroupsQueries = new BorrowerGroupsQueries();
         borrowersTableQueries = new BorrowersTableQueries(getApplication());
         borrowerPhotoValidationQueries = new BorrowerPhotoValidationQueries(this);
+        groupPhotoValidationTableQueries = new GroupPhotoValidationTableQueries(getApplication());
 
         group = getIntent().getParcelableExtra("group");
         Log.d(TAG, "onCreate: "+group.toString());
@@ -92,6 +97,23 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
     }
 
     private void getBusinessVerificationPhotos() {
+
+        List<GroupPhotoValidationTable> loadPhotosForGroup = groupPhotoValidationTableQueries.loadPhotosForGroup(group.getGroupId());
+
+        if(loadPhotosForGroup.isEmpty()){
+            getNewBusinessVerificationPhotos();
+        }else{
+            for (GroupPhotoValidationTable validationTable : loadPhotosForGroup) {
+                groupPhotoValidationTables.add(validationTable);
+                groupBusinessVerificationRecyclerAdapter.notifyDataSetChanged();
+            }
+
+        }
+
+
+    }
+
+    private void getNewBusinessVerificationPhotos() {
         borrowerPhotoValidationQueries.retrieveAllValidationPhotosForGroup(group.getGroupId())
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -109,6 +131,7 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
                                     groupPhotoValidationTables.add(groupPhotoValidationTable);
                                     groupBusinessVerificationRecyclerAdapter.notifyDataSetChanged();
 
+                                    saveGroupVerificationPhotoToStorage(groupPhotoValidationTable);
                                 }
 
                             }else{
@@ -120,6 +143,10 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void saveGroupVerificationPhotoToStorage(GroupPhotoValidationTable groupPhotoValidationTable) {
+        groupPhotoValidationTableQueries.insertBorrowersToStorage(groupPhotoValidationTable);
     }
 
     private void setGroupDetailsToUI() {

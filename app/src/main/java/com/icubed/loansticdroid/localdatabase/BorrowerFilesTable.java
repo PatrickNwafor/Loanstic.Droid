@@ -95,6 +95,11 @@ public class BorrowerFilesTable implements Parcelable {
         this.timestamp = timestamp;
     }
 
+    @Override
+    public String toString() {
+        return "BorrowerFilesTable{" + "filesId='" + filesId + '\'' + ", id=" + id + ", fileImageUri='" + fileImageUri + '\'' + ", fileImageUriThumb='" + fileImageUriThumb + '\'' + ", fileDescription='" + fileDescription + '\'' + ", activityCycleId='" + activityCycleId + '\'' + ", timestamp=" + timestamp + '}';
+    }
+
     // Parcelling part
     public BorrowerFilesTable(Parcel in){
         String[] data = new String[5];

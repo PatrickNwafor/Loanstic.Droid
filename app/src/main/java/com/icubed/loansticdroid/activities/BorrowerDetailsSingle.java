@@ -30,7 +30,9 @@ import com.icubed.loansticdroid.cloudqueries.BorrowerPhotoValidationQueries;
 import com.icubed.loansticdroid.localdatabase.ActivityCycleTable;
 import com.icubed.loansticdroid.localdatabase.ActivityCycleTableQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowerFilesTable;
+import com.icubed.loansticdroid.localdatabase.BorrowerFilesTableQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTable;
+import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTableQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupPhotoValidationTable;
 
@@ -58,6 +60,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     private BorrowerBusinessVerificationRecyclerAdapter borrowerBusinessVerificationRecyclerAdapter;
     private BorrowerFilesQueries borrowerFilesQueries;
     private BorrowerPhotoValidationQueries borrowerPhotoValidationQueries;
+    private BorrowerPhotoValidationTableQueries borrowerPhotoValidationTableQueries;
+    private BorrowerFilesTableQueries borrowerFilesTableQueries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +80,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         borrowerFilesQueries = new BorrowerFilesQueries(this);
         activityCycleTableQueries = new ActivityCycleTableQueries(getApplication());
         borrowerPhotoValidationQueries = new BorrowerPhotoValidationQueries(this);
+        borrowerFilesTableQueries = new BorrowerFilesTableQueries(getApplication());
+        borrowerPhotoValidationTableQueries = new BorrowerPhotoValidationTableQueries(getApplication());
 
         linearLayout = findViewById(R.id.activate_borrower_layout);
         activateBorrowerBtn = findViewById(R.id.activateBorrower);
@@ -143,7 +149,24 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
 
         ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadLastCreatedCycle(borrower.getBorrowersId());
 
-        borrowerPhotoValidationQueries.retrieveAllValidationPhotosForBorrower(borrower.getBorrowersId(), activityCycleTable.getActivityCycleId())
+        List<BorrowerPhotoValidationTable> validationTables = borrowerPhotoValidationTableQueries.loadAllPhotes(activityCycleTable.getActivityCycleId());
+
+        if(validationTables.isEmpty()){
+            getNewBusinessVerificationPhotos(borrower.getBorrowersId(), activityCycleTable.getActivityCycleId());
+        }else{
+
+            for (BorrowerPhotoValidationTable validationTable : validationTables) {
+                borrowerPhotoValidationTables.add(validationTable);
+                borrowerBusinessVerificationRecyclerAdapter.notifyDataSetChanged();
+            }
+
+        }
+
+
+    }
+
+    private void getNewBusinessVerificationPhotos(String borrowersId, String activityCycleId){
+        borrowerPhotoValidationQueries.retrieveAllValidationPhotosForBorrower(borrowersId, activityCycleId)
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -160,6 +183,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                                     borrowerPhotoValidationTables.add(borrowerPhotoValidationTable);
                                     borrowerBusinessVerificationRecyclerAdapter.notifyDataSetChanged();
 
+                                    savePhotoVerifToStorage(borrowerPhotoValidationTable);
+
                                 }
 
                             }else{
@@ -173,11 +198,30 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                 });
     }
 
+    private void savePhotoVerifToStorage(BorrowerPhotoValidationTable borrowerPhotoValidationTable) {
+        borrowerPhotoValidationTableQueries.insertPhototsToStorage(borrowerPhotoValidationTable);
+    }
+
     private void getFiles() {
 
         ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadLastCreatedCycle(borrower.getBorrowersId());
 
-        borrowerFilesQueries.retrieveFilesFromCloud(borrower.getBorrowersId(), activityCycleTable.getActivityCycleId())
+        List<BorrowerFilesTable> bow = borrowerFilesTableQueries.loadAllBorrowersFile(activityCycleTable.getActivityCycleId());
+
+        if(bow.isEmpty()){
+            getNewFiles(borrower.getBorrowersId(), activityCycleTable.getActivityCycleId());
+        }else{
+
+            for (BorrowerFilesTable borrowerFilesTable : bow) {
+                borrowerFilesTables.add(borrowerFilesTable);
+                documentRecyclerAdapter.notifyDataSetChanged();
+            }
+
+        }
+    }
+
+    private void getNewFiles(String borrowersId, String activityCycleId) {
+        borrowerFilesQueries.retrieveFilesFromCloud(borrowersId, activityCycleId)
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -195,6 +239,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
 
                                     borrowerFilesTables.add(borrowerFilesTable);
                                     documentRecyclerAdapter.notifyDataSetChanged();
+                                    
+                                    saveFileToStorage(borrowerFilesTable);
                                 }
                             }else{
                                 Toast.makeText(BorrowerDetailsSingle.this, "No file saved", Toast.LENGTH_SHORT).show();
@@ -206,6 +252,11 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void saveFileToStorage(BorrowerFilesTable borrowerFilesTable) {
+        borrowerFilesTableQueries.insertBorrowersFileToStorage(borrowerFilesTable);
+        Log.d(TAG, "saveFileToStorage: files saved");
     }
 
     private void setBorrowerDetailsOnUi() {

@@ -23,11 +23,9 @@ public class BorrowerPhotoValidationTableQueries {
         return borrowerPhotoValidationTableDao.loadAll();
     }
 
-    /**********Load a single Borrowers photos from local Storage*******/
-    public List<BorrowerPhotoValidationTable> loadSingleBorrowerPhotos(String borrowerId, String activityCycleId){
-        return borrowerPhotoValidationTableDao.queryBuilder()
-                .where(BorrowerPhotoValidationTableDao.Properties.BorrowerId.eq(borrowerId))
-                .where(BorrowerPhotoValidationTableDao.Properties.ActivityCycleId.eq(activityCycleId))
+    public List<BorrowerPhotoValidationTable> loadAllPhotes(String activityId) {
+        return  borrowerPhotoValidationTableDao.queryBuilder()
+                .where(BorrowerPhotoValidationTableDao.Properties.ActivityCycleId.eq(activityId))
                 .build()
                 .list();
     }
