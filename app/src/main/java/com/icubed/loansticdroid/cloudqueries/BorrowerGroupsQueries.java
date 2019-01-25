@@ -39,6 +39,14 @@ public class BorrowerGroupsQueries {
                 .get();
     }
 
+    public Task<QuerySnapshot> retrieveSingleGroupOfBorrower(String borrowerId, String groupId){
+        return firebaseFirestore.collection("Borrowers")
+                .document(borrowerId)
+                .collection("groups")
+                .whereEqualTo("groupId", groupId)
+                .get();
+    }
+
     public Task<Void> deleteGroupFromBorrower(String documentId, String borrowerId){
         return firebaseFirestore.collection("Borrowers")
                 .document(borrowerId)

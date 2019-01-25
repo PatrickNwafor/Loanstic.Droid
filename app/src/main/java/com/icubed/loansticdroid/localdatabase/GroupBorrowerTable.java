@@ -1,5 +1,8 @@
 package com.icubed.loansticdroid.localdatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
@@ -8,7 +11,7 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class GroupBorrowerTable {
+public class GroupBorrowerTable implements Parcelable {
 
     @Unique
     private String groupId;
@@ -126,4 +129,55 @@ public class GroupBorrowerTable {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
+    @Override
+    public String toString() {
+        return "GroupBorrowerTable{" + "groupId='" + groupId + '\'' + ", id=" + id + ", groupName='" + groupName + '\'' + ", groupLeaderId='" + groupLeaderId + '\'' + ", loanOfficerId='" + loanOfficerId + '\'' + ", numberOfGroupMembers=" + numberOfGroupMembers + ", isGroupApproved=" + isGroupApproved + ", approvedBy='" + approvedBy + '\'' + ", assignedBy='" + assignedBy + '\'' + ", meetingLocation='" + meetingLocation + '\'' + ", groupLocationLatitude=" + groupLocationLatitude + ", groupLocationLongitude=" + groupLocationLongitude + ", timestamp=" + timestamp + '}';
+    }
+
+    // Parcelling part
+    public GroupBorrowerTable(Parcel in){
+        String[] data = new String[12];
+
+        in.readStringArray(data);
+        this.groupId = data[0];
+        this.loanOfficerId = data[1];
+        this.id = Long.valueOf(data[2]);
+        this.groupName = data[3];
+        this.groupLeaderId = data[4];
+        this.numberOfGroupMembers = Integer.parseInt(data[5]);
+        this.assignedBy = data[6];
+        this.isGroupApproved = Boolean.valueOf(data[7]);
+        this.approvedBy = data[8];
+        this.meetingLocation = data[9];
+        this.groupLocationLatitude = Double.parseDouble(data[10]);
+        this.groupLocationLongitude = Double.parseDouble(data[11]);
+
+    }
+
+    @Override
+    public int describeContents(){
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(new String[] {this.groupId,
+                this.loanOfficerId, String.valueOf(this.id),
+                this.groupName,
+                this.groupLeaderId, String.valueOf(this.numberOfGroupMembers),
+                this.assignedBy, String.valueOf(this.isGroupApproved),
+                this.approvedBy,
+                this.meetingLocation, String.valueOf(this.groupLocationLatitude), String.valueOf(this.groupLocationLongitude)});
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public GroupBorrowerTable createFromParcel(Parcel in) {
+            return new GroupBorrowerTable(in);
+        }
+
+        public GroupBorrowerTable[] newArray(int size) {
+            return new GroupBorrowerTable[size];
+        }
+    };
 }

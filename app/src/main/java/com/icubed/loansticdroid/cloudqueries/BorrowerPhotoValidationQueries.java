@@ -66,6 +66,12 @@ public class BorrowerPhotoValidationQueries {
                 .get();
     }
 
+    public Task<QuerySnapshot> retrieveAllValidationPhotosForGroup(String groupId){
+        return firebaseFirestore.collection("Business_Verification_Photos")
+                .whereEqualTo("groupId", groupId)
+                .get();
+    }
+
     /**************Retrieve single borrower***********/
     public Task<DocumentSnapshot> retrieveSingleValidationPhoto(String validationPhotoId){
         return firebaseFirestore.collection("Business_Verification_Photos")

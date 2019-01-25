@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
 
-    tools:context="com.icubed.loansticdroid.activities.BorrowerDetailsSingle">
+    tools:context="com.icubed.loansticdroid.activities.BorrowerDetailsGroup">
 
     <include
-        android:id="@+id/borrower_profile_toolbar"
+        android:id="@+id/group_profile_toolbar"
         layout="@layout/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                         android:layout_marginEnd="233dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="8dp"
-                        android:text="Documents"
+                        android:text="Business Verification"
                         android:textColor="@color/colorPrimary"
                         app:layout_constraintEnd_toStartOf="@+id/number_of_documents"
                         app:layout_constraintHorizontal_bias="0.029"
@@ -63,7 +63,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/number_of_documents"
+                        android:id="@+id/number_of_biz_verif"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="40dp"
@@ -141,7 +141,7 @@
                     android:background="@color/lightGrey" />
 
                 <TextView
-                    android:id="@+id/mobile_number"
+                    android:id="@+id/group_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
@@ -171,7 +171,7 @@
                         android:layout_marginEnd="233dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="8dp"
-                        android:text="Documents"
+                        android:text="Group Members"
                         android:textColor="@color/colorPrimary"
                         app:layout_constraintEnd_toStartOf="@+id/number_of_members"
                         app:layout_constraintHorizontal_bias="0.029"

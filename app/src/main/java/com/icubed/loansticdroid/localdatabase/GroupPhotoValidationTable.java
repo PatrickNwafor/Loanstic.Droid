@@ -11,23 +11,23 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class BorrowerPhotoValidationTable implements Parcelable {
+public class GroupPhotoValidationTable implements Parcelable {
 
     @Unique
-    private String borrowerPhotoValidationId;
+    private String groupPhotoValidationId;
 
-    private String borrowerId, photoUri, photoThumbUri;
+    private String groupId, photoUri, photoThumbUri;
     private double photoLatitude, photoLongitude;
 
     @Id(autoincrement = true)
     private Long id;
     private Date timestamp;
-    @Generated(hash = 1038683510)
-    public BorrowerPhotoValidationTable(String borrowerPhotoValidationId,
-            String borrowerId, String photoUri, String photoThumbUri,
-            double photoLatitude, double photoLongitude, Long id, Date timestamp) {
-        this.borrowerPhotoValidationId = borrowerPhotoValidationId;
-        this.borrowerId = borrowerId;
+    @Generated(hash = 481843018)
+    public GroupPhotoValidationTable(String groupPhotoValidationId, String groupId,
+            String photoUri, String photoThumbUri, double photoLatitude,
+            double photoLongitude, Long id, Date timestamp) {
+        this.groupPhotoValidationId = groupPhotoValidationId;
+        this.groupId = groupId;
         this.photoUri = photoUri;
         this.photoThumbUri = photoThumbUri;
         this.photoLatitude = photoLatitude;
@@ -35,20 +35,20 @@ public class BorrowerPhotoValidationTable implements Parcelable {
         this.id = id;
         this.timestamp = timestamp;
     }
-    @Generated(hash = 1299040209)
-    public BorrowerPhotoValidationTable() {
+    @Generated(hash = 392511556)
+    public GroupPhotoValidationTable() {
     }
-    public String getBorrowerPhotoValidationId() {
-        return this.borrowerPhotoValidationId;
+    public String getGroupPhotoValidationId() {
+        return this.groupPhotoValidationId;
     }
-    public void setBorrowerPhotoValidationId(String borrowerPhotoValidationId) {
-        this.borrowerPhotoValidationId = borrowerPhotoValidationId;
+    public void setGroupPhotoValidationId(String groupPhotoValidationId) {
+        this.groupPhotoValidationId = groupPhotoValidationId;
     }
-    public String getBorrowerId() {
-        return this.borrowerId;
+    public String getGroupId() {
+        return this.groupId;
     }
-    public void setBorrowerId(String borrowerId) {
-        this.borrowerId = borrowerId;
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
     public String getPhotoUri() {
         return this.photoUri;
@@ -88,12 +88,12 @@ public class BorrowerPhotoValidationTable implements Parcelable {
     }
 
     // Parcelling part
-    public BorrowerPhotoValidationTable(Parcel in){
+    public GroupPhotoValidationTable(Parcel in){
         String[] data = new String[6];
 
         in.readStringArray(data);
-        this.borrowerPhotoValidationId = data[0];
-        this.borrowerId = data[1];
+        this.groupPhotoValidationId = data[0];
+        this.groupId = data[1];
         this.photoUri = data[2];
         this.photoThumbUri = data[3];
         this.photoLatitude = Double.parseDouble(data[4]);
@@ -108,18 +108,18 @@ public class BorrowerPhotoValidationTable implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringArray(new String[] {this.borrowerPhotoValidationId,
-                this.borrowerId, this.photoUri,
+        dest.writeStringArray(new String[] {this.groupPhotoValidationId,
+                this.groupId, this.photoUri,
                 this.photoThumbUri, String.valueOf(this.photoLatitude), String.valueOf(this.photoLongitude)});
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public BorrowerPhotoValidationTable createFromParcel(Parcel in) {
-            return new BorrowerPhotoValidationTable(in);
+        public GroupPhotoValidationTable createFromParcel(Parcel in) {
+            return new GroupPhotoValidationTable(in);
         }
 
-        public BorrowerPhotoValidationTable[] newArray(int size) {
-            return new BorrowerPhotoValidationTable[size];
+        public GroupPhotoValidationTable[] newArray(int size) {
+            return new GroupPhotoValidationTable[size];
         }
     };
 }

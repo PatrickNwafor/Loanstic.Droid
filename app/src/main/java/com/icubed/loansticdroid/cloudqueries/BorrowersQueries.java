@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -122,6 +121,12 @@ public class BorrowersQueries {
     public Task<DocumentSnapshot> retrieveSingleBorrowers(String borrowersId){
         return firebaseFirestore.collection("Borrowers")
                 .document(borrowersId)
+                .get();
+    }
+
+    public Task<QuerySnapshot> retrieveBorrowersBelongingToGroup(){
+        return firebaseFirestore.collection("Borrowers")
+                .whereEqualTo("belongsToGroup", true)
                 .get();
     }
 
