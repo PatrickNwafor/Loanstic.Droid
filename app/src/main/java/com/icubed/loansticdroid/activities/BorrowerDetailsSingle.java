@@ -2,6 +2,7 @@ package com.icubed.loansticdroid.activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,20 +14,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.BorrowerBusinessVerificationRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.DocumentRecyclerAdapter;
+import com.icubed.loansticdroid.cloudqueries.ActivityCycleQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowerFilesQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowerPhotoValidationQueries;
+import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.localdatabase.ActivityCycleTable;
 import com.icubed.loansticdroid.localdatabase.ActivityCycleTableQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowerFilesTable;
@@ -49,6 +54,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
             , genderTextView, dobTextView, homeAddressTextView, countryTextView
             , stateTextView, cityTextView, numberOfDocTextView, borrowerLocationTextView;
     private Button activateBorrowerBtn;
+    private ProgressBar progressBar;
+    private NestedScrollView content;
+    private boolean isDataFromSearch = false;
+    private String borrowerId;
 
     private RecyclerView docRecyclerView;
     private RecyclerView businessVerificationRecyclerView;
@@ -62,6 +71,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     private BorrowerPhotoValidationQueries borrowerPhotoValidationQueries;
     private BorrowerPhotoValidationTableQueries borrowerPhotoValidationTableQueries;
     private BorrowerFilesTableQueries borrowerFilesTableQueries;
+    private BorrowersQueries borrowersQueries;
+    private ActivityCycleQueries activityCycleQueries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,13 +86,17 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         
         borrower = getIntent().getParcelableExtra("borrower");
-        Log.d(TAG, "onCreate: "+borrower.toString());
+        borrowerId = getIntent().getStringExtra("borrowerId");
+        //Log.d(TAG, "onCreate: "+borrower.toString());
+        Log.d(TAG, "onCreate: "+borrowerId);
 
         borrowerFilesQueries = new BorrowerFilesQueries(this);
         activityCycleTableQueries = new ActivityCycleTableQueries(getApplication());
         borrowerPhotoValidationQueries = new BorrowerPhotoValidationQueries(this);
         borrowerFilesTableQueries = new BorrowerFilesTableQueries(getApplication());
         borrowerPhotoValidationTableQueries = new BorrowerPhotoValidationTableQueries(getApplication());
+        activityCycleQueries = new ActivityCycleQueries();
+        borrowersQueries = new BorrowersQueries(this);
 
         linearLayout = findViewById(R.id.activate_borrower_layout);
         activateBorrowerBtn = findViewById(R.id.activateBorrower);
@@ -97,17 +112,14 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         homeAddressTextView = findViewById(R.id.home_adress);
         countryTextView = findViewById(R.id.country);
         stateTextView = findViewById(R.id.state);
+        progressBar = findViewById(R.id.borrower_progressbar);
         cityTextView = findViewById(R.id.city);
         numberOfBizVerifTextView = findViewById(R.id.number_of_biz_verif);
         businessVerificationRecyclerView = findViewById(R.id.business_verif_recycler_view);
         numberOfDocTextView = findViewById(R.id.number_of_documents);
         docRecyclerView = findViewById(R.id.documentRecyclerView);
         borrowerLocationTextView = findViewById(R.id.borrower_location);
-
-        ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadLastCreatedCycle(borrower.getBorrowersId());
-        if(!activityCycleTable.getIsActive()){
-            linearLayout.setVisibility(View.VISIBLE);
-        }
+        content = findViewById(R.id.borrower_content);
 
         activateBorrowerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,17 +144,83 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         docRecyclerView.setLayoutManager(layoutManager);
         documentRecyclerAdapter = new DocumentRecyclerAdapter(borrowerFilesTables);
         docRecyclerView.setAdapter(documentRecyclerAdapter);
-        getFiles();
 
         borrowerPhotoValidationTables = new ArrayList<>();
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         businessVerificationRecyclerView.setLayoutManager(layoutManager2);
         borrowerBusinessVerificationRecyclerAdapter = new BorrowerBusinessVerificationRecyclerAdapter(borrowerPhotoValidationTables);
         businessVerificationRecyclerView.setAdapter(borrowerBusinessVerificationRecyclerAdapter);
-        getBusinessVerificationPhotos();
 
-        setBorrowerDetailsOnUi();
+        if(borrower != null){
 
+            ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadLastCreatedCycle(borrower.getBorrowersId());
+
+            if (!activityCycleTable.getIsActive()) {
+                linearLayout.setVisibility(View.VISIBLE);
+            }
+
+            setBorrowerDetailsOnUi();
+            getFiles();
+            getBusinessVerificationPhotos();
+        }else{
+            getActivityCycleData(borrowerId);
+            isDataFromSearch = true;
+        }
+
+    }
+
+    private void getActivityCycleData(final String borrowerId) {
+        activityCycleQueries.retrieveLastCreatedCycleForBorrower(borrowerId)
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(DocumentSnapshot doc : task.getResult()){
+                                ActivityCycleTable activityCycleTable = doc.toObject(ActivityCycleTable.class);
+                                activityCycleTable.setActivityCycleId(doc.getId());
+
+                                if (!activityCycleTable.getIsActive()) {
+                                    linearLayout.setVisibility(View.VISIBLE);
+                                }
+
+                                retrieveBorrowerDetailsFromCloud();
+                                getNewFiles(borrowerId, activityCycleTable.getActivityCycleId());
+                                getNewBusinessVerificationPhotos(borrowerId, activityCycleTable.getActivityCycleId());
+                            }
+                        }else{
+                            hideProgressBar();
+                            Toast.makeText(BorrowerDetailsSingle.this, "Unable to retrieve borrower details", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void retrieveBorrowerDetailsFromCloud() {
+        borrowersQueries.retrieveSingleBorrowers(borrowerId)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            BorrowersTable borrowersTable = task.getResult().toObject(BorrowersTable.class);
+                            borrowersTable.setBorrowersId(task.getResult().getId());
+
+                            borrower = borrowersTable;
+                            borrowersTable.setId((long) 23);
+                            setBorrowerDetailsOnUi();
+
+                        }else{
+                            hideProgressBar();
+                            Toast.makeText(BorrowerDetailsSingle.this, "Unable to retrieve borrower details", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void hideProgressBar(){
+        content.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
     private void getBusinessVerificationPhotos() {
@@ -185,6 +263,7 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                                     borrowerPhotoValidationTables.add(borrowerPhotoValidationTable);
                                     borrowerBusinessVerificationRecyclerAdapter.notifyDataSetChanged();
 
+                                    if(!isDataFromSearch)
                                     savePhotoVerifToStorage(borrowerPhotoValidationTable);
 
                                 }
@@ -243,7 +322,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
 
                                     borrowerFilesTables.add(borrowerFilesTable);
                                     documentRecyclerAdapter.notifyDataSetChanged();
-                                    
+
+                                    if(!isDataFromSearch)
                                     saveFileToStorage(borrowerFilesTable);
                                 }
                             }else{
@@ -284,6 +364,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         countryTextView.setText(borrower.getNationality());
         stateTextView.setText(borrower.getState());
         cityTextView.setText(borrower.getCity());
+
+        hideProgressBar();
     }
 
     @Override

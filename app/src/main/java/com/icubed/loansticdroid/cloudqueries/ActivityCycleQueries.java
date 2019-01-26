@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.localdatabase.ActivityCycleTable;
 
@@ -38,6 +39,14 @@ public class ActivityCycleQueries {
         return firebaseFirestore.collection("Activity_Cycle")
                 .whereEqualTo("borrowerId", borrowerId)
                 .whereEqualTo("isActive", true)
+                .get();
+    }
+
+    public Task<QuerySnapshot> retrieveLastCreatedCycleForBorrower(String borrowerId){
+        return firebaseFirestore.collection("Activity_Cycle")
+                .whereEqualTo("borrowerId", borrowerId)
+                .orderBy("startCycleTime", Query.Direction.DESCENDING)
+                .limit(1)
                 .get();
     }
 

@@ -1,6 +1,7 @@
 package com.icubed.loansticdroid.activities;
 
 import android.support.annotation.NonNull;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +24,14 @@ import com.icubed.loansticdroid.adapters.GroupMembersRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.BorrowerGroupsQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowerPhotoValidationQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
+import com.icubed.loansticdroid.cloudqueries.GroupBorrowerQueries;
 import com.icubed.loansticdroid.localdatabase.ActivityCycleTable;
 import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
+import com.icubed.loansticdroid.localdatabase.GroupMembersTable;
+import com.icubed.loansticdroid.localdatabase.GroupMembersTableQueries;
 import com.icubed.loansticdroid.localdatabase.GroupPhotoValidationTable;
 import com.icubed.loansticdroid.localdatabase.GroupPhotoValidationTableQueries;
 import com.icubed.loansticdroid.models.Borrowers;
@@ -39,6 +45,7 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
     private TextView groupNameTextView, groupAddressTextView
             ,numberOfGroupMembersTextView, numberOfBusiVerifTextView;
     private RecyclerView businessVerificationRecyclerView, groupMembersRecyclerView;
+    private String groupId;
     private GroupMembersRecyclerAdapter groupMembersRecyclerAdapter;
     private GroupBusinessVerificationRecyclerAdapter groupBusinessVerificationRecyclerAdapter;
     private List<GroupPhotoValidationTable> groupPhotoValidationTables;
@@ -48,8 +55,12 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
     private BorrowerGroupsQueries borrowerGroupsQueries;
     private BorrowersTableQueries borrowersTableQueries;
     private BorrowerPhotoValidationQueries borrowerPhotoValidationQueries;
+    private GroupMembersTableQueries groupMembersTableQueries;
     GroupPhotoValidationTableQueries groupPhotoValidationTableQueries;
+    private GroupBorrowerQueries groupBorrowerQueries;
     private Toolbar toolbar;
+    private ProgressBar progressBar;
+    private NestedScrollView content;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +78,11 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
         borrowersTableQueries = new BorrowersTableQueries(getApplication());
         borrowerPhotoValidationQueries = new BorrowerPhotoValidationQueries(this);
         groupPhotoValidationTableQueries = new GroupPhotoValidationTableQueries(getApplication());
+        groupMembersTableQueries = new GroupMembersTableQueries(getApplication());
+        groupBorrowerQueries = new GroupBorrowerQueries();
 
         group = getIntent().getParcelableExtra("group");
-        Log.d(TAG, "onCreate: "+group.toString());
+        groupId = getIntent().getStringExtra("groupId");
 
         groupNameTextView = findViewById(R.id.name);
         groupAddressTextView = findViewById(R.id.group_address);
@@ -77,6 +90,8 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
         numberOfBusiVerifTextView = findViewById(R.id.number_of_biz_verif);
         businessVerificationRecyclerView = findViewById(R.id.documentRecyclerView);
         groupMembersRecyclerView = findViewById(R.id.membersRecyclerView);
+        content = findViewById(R.id.content_frame);
+        progressBar = findViewById(R.id.group_progressbar);
 
 
         groupPhotoValidationTables = new ArrayList<>();
@@ -84,16 +99,49 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
         businessVerificationRecyclerView.setLayoutManager(layoutManager);
         groupBusinessVerificationRecyclerAdapter = new GroupBusinessVerificationRecyclerAdapter(groupPhotoValidationTables);
         businessVerificationRecyclerView.setAdapter(groupBusinessVerificationRecyclerAdapter);
-        getBusinessVerificationPhotos();
 
         borrowersTableList = new ArrayList<>();
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         groupMembersRecyclerView.setLayoutManager(layoutManager2);
         groupMembersRecyclerAdapter = new GroupMembersRecyclerAdapter(borrowersTableList);
         groupMembersRecyclerView.setAdapter(groupMembersRecyclerAdapter);
-        getMembers();
 
-        setGroupDetailsToUI();
+        if(group != null) {
+            getMembers();
+            getBusinessVerificationPhotos();
+            setGroupDetailsToUI();
+        }else{
+            getGroupOnline();
+        }
+    }
+
+    private void hideProgressBar(){
+        content.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void getGroupOnline() {
+        groupBorrowerQueries.retrieveSingleBorrowerGroup(groupId)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            GroupBorrowerTable groupBorrowerTable = task.getResult().toObject(GroupBorrowerTable.class);
+                            groupBorrowerTable.setGroupId(task.getResult().getId());
+
+                            group = groupBorrowerTable;
+                            setGroupDetailsToUI();
+                            getNewBusinessVerificationPhotos();
+                            getGroupMembersFromCloud();
+
+                        }else{
+                            hideProgressBar();
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                            Toast.makeText(BorrowerDetailsGroup.this, "Failed to retrieve group details", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     private void getBusinessVerificationPhotos() {
@@ -132,6 +180,7 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
                                     groupPhotoValidationTables.add(groupPhotoValidationTable);
                                     groupBusinessVerificationRecyclerAdapter.notifyDataSetChanged();
 
+                                    if(groupId == null)
                                     saveGroupVerificationPhotoToStorage(groupPhotoValidationTable);
                                 }
 
@@ -154,9 +203,11 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
         groupNameTextView.setText(group.getGroupName());
         groupAddressTextView.setText(group.getMeetingLocation());
         numberOfGroupMembersTextView.setText(String.valueOf(group.getNumberOfGroupMembers()));
+
+        hideProgressBar();
     }
 
-    private void getMembers() {
+    private void getGroupMembersFromCloud(){
         borrowersQueries.retrieveBorrowersBelongingToGroup()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -180,10 +231,21 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
                                                     BorrowersTable borrowersTable = doc.toObject(BorrowersTable.class);
                                                     borrowersTable.setBorrowersId(doc.getId());
 
-                                                    BorrowersTable bow = saveBorrowerToLocalIfNotExist(borrowersTable);
+                                                    if(groupId == null) {
+                                                        BorrowersTable bow = saveBorrowerToLocalIfNotExist(borrowersTable);
 
-                                                    borrowersTableList.add(bow);
-                                                    groupMembersRecyclerAdapter.notifyDataSetChanged();
+                                                        //saving members to members table
+                                                        GroupMembersTable groupMembersTable = task.getResult().getDocuments().get(0).toObject(GroupMembersTable.class);
+                                                        groupMembersTable.setGroupMemberId(task.getResult().getDocuments().get(0).getId());
+                                                        groupMembersTable.setBorrowerId(doc.getId());
+                                                        saveGroupMembersToTable(groupMembersTable);
+                                                        borrowersTableList.add(bow);
+                                                        groupMembersRecyclerAdapter.notifyDataSetChanged();
+                                                    }else{
+                                                        borrowersTable.setId((long) 464);
+                                                        borrowersTableList.add(borrowersTable);
+                                                        groupMembersRecyclerAdapter.notifyDataSetChanged();
+                                                    }
 
                                                 }else{
                                                     //Toast.makeText(BorrowerDetailsGroup.this, "No borrower has a group yet", Toast.LENGTH_SHORT).show();
@@ -211,6 +273,28 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void saveGroupMembersToTable(GroupMembersTable groupMembersTable) {
+        groupMembersTableQueries.insertGroupMemberToStorage(groupMembersTable);
+    }
+
+    private void getMembers() {
+        List<GroupMembersTable> groupMembersTables = groupMembersTableQueries.loadGroupMembers(group.getGroupId());
+
+        if(groupMembersTables.isEmpty()){
+            getGroupMembersFromCloud();
+        }else{
+            for (GroupMembersTable membersTable : groupMembersTables) {
+
+                BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(membersTable.getBorrowerId());
+
+                borrowersTableList.add(borrowersTable);
+                groupMembersRecyclerAdapter.notifyDataSetChanged();
+
+            }
+
+        }
     }
 
     private BorrowersTable saveBorrowerToLocalIfNotExist(BorrowersTable borrowersTable){

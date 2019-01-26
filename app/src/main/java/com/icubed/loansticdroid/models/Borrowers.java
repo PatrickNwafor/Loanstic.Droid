@@ -59,10 +59,7 @@ public class Borrowers {
 
     public Boolean doesBorrowersTableExistInLocalStorage(){
         List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowers();
-        if(borrowersTables.isEmpty()){
-            return false;
-        }
-        return true;
+        return !borrowersTables.isEmpty();
     }
 
     /****
@@ -72,6 +69,12 @@ public class Borrowers {
      * if the officers need to search for a non assigned borrower, he has to use the search field
      */
     public void loadAllBorrowers(){
+
+        if(doesBorrowersTableExistInLocalStorage()){
+           loadAllBorrowersAndCompareToLocal();
+           return;
+        }
+
         borrowersQueries.retrieveAllBorrowers().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -143,6 +146,8 @@ public class Borrowers {
 
     public void loadBorrowersToUI(){
         List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowersOrderByLastName();
+
+        ((BorrowerActivity) activity).isSearch = false;
 
         if(fragment != null) {
             fragment.borrowerRecyclerAdapter = new BorrowerRecyclerAdapter(borrowersTables);

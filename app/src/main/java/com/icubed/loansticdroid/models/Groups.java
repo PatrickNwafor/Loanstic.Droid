@@ -40,10 +40,7 @@ public class Groups {
 
     public Boolean doesGroupTableExistInLocalStorage(){
         List<GroupBorrowerTable> borrowersTables = groupBorrowerTableQueries.loadAllGroups();
-        if(borrowersTables.isEmpty()){
-            return false;
-        }
-        return true;
+        return !borrowersTables.isEmpty();
     }
 
     /****
@@ -53,6 +50,12 @@ public class Groups {
      * if the officers need to search for a non assigned borrower, he has to use the search field
      */
     public void loadAllGroups(){
+
+        if(doesGroupTableExistInLocalStorage()){
+            loadAllGroupsAndCompareToLocal();
+            return;
+        }
+
         groupBorrowerQueries.retrieveAllBorrowersGroup().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -86,6 +89,7 @@ public class Groups {
     public void loadGroupsToUI(){
         List<GroupBorrowerTable> groupBorrowerTables = groupBorrowerTableQueries.loadAllGroupsOrderByLastName();
 
+        ((BorrowerActivity) activity).isGroupSearch = false;
         if(fragment != null) {
             fragment.groupRecyclerAdapter = new GroupRecyclerAdapter(groupBorrowerTables);
             fragment.groupRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));

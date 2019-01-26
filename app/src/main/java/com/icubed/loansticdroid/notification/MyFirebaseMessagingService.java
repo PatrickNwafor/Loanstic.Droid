@@ -41,6 +41,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String notificationTitle = remoteMessage.getNotification().getTitle();
         String notificationBody = remoteMessage.getNotification().getBody();
         String click_action = remoteMessage.getNotification().getClickAction();
+        String groupId = remoteMessage.getData().get("groupId");
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.new_group)
@@ -50,6 +51,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         //Setting up tap action
         Intent intent = new Intent(click_action);
+        intent.putExtra("groupId", groupId);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 

@@ -58,13 +58,7 @@
         <activity android:name=".activities.SavingsActivity" />
         <activity
             android:name=".activities.BorrowerActivity"
-            android:windowSoftInputMode="stateAlwaysHidden">
-            <intent-filter>
-                <action android:name="com.icubed.loansticdroid_TARGET_NOTIFICATION" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".activities.BranchesActivity" />
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.AddSingleBorrower" />
@@ -79,7 +73,13 @@
         <activity android:name=".activities.BorrowerFilesPassport" />
         <activity android:name=".activities.BorrowerFileOtherDocuments" />
         <activity android:name=".activities.BorrowerDetailsSingle" />
-        <activity android:name=".activities.BorrowerDetailsGroup" />
+        <activity android:name=".activities.BorrowerDetailsGroup" >
+            <intent-filter>
+                <action android:name="com.icubed.loansticdroid_TARGET_NOTIFICATION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activities.LocationActivity" />
         <activity android:name=".activities.PictureViewActivity" />
         <activity android:name=".activities.ReactivateBorrowerActivity"></activity>

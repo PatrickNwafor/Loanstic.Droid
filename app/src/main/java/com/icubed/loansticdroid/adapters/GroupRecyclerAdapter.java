@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.activities.BorrowerActivity;
 import com.icubed.loansticdroid.activities.BorrowerDetailsGroup;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 
@@ -45,7 +46,12 @@ public class GroupRecyclerAdapter extends RecyclerView.Adapter<GroupRecyclerAdap
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, BorrowerDetailsGroup.class);
-                intent.putExtra("group", groupBorrowerTables.get(position));
+
+                if(!((BorrowerActivity) context).isGroupSearch) {
+                    intent.putExtra("group", groupBorrowerTables.get(position));
+                }else{
+                    intent.putExtra("groupId", groupBorrowerTables.get(position).getGroupId());
+                }
                 context.startActivity(intent);
             }
         });

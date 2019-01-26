@@ -44,6 +44,7 @@ public class BorrowerGroupsQueries {
                 .document(borrowerId)
                 .collection("groups")
                 .whereEqualTo("groupId", groupId)
+                .limit(1)
                 .get();
     }
 

@@ -73,6 +73,9 @@ public class BorrowerActivity extends AppCompatActivity {
     private SingleBorrowerFragment singleBorrowerFragment;
     private GroupBorrowerFragment groupBorrowerFragment;
 
+    public boolean isSearch = false;
+    public boolean isGroupSearch = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,6 +186,7 @@ public class BorrowerActivity extends AppCompatActivity {
                             list.add(groupBorrowerTable);
                         }
 
+                        isGroupSearch = true;
                         groupBorrowerFragment.groupRecyclerAdapter = new GroupRecyclerAdapter(list);
                         groupBorrowerFragment.groupRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                         groupBorrowerFragment.groupRecyclerView.setAdapter(groupBorrowerFragment.groupRecyclerAdapter);
@@ -241,6 +245,7 @@ public class BorrowerActivity extends AppCompatActivity {
                             list.add(borrowersTable);
                         }
 
+                        isSearch = true;
                         singleBorrowerFragment.borrowerRecyclerAdapter = new BorrowerRecyclerAdapter(list);
                         singleBorrowerFragment.borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                         singleBorrowerFragment.borrowerRecyclerView.setAdapter(singleBorrowerFragment.borrowerRecyclerAdapter);

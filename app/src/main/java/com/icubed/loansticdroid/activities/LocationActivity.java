@@ -56,6 +56,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         locationProviderUtil = new LocationProviderUtil(this);
         locationProviderUtil.getLocationPermission();
         borrower = getIntent().getParcelableExtra("borrower");
+        Log.d(TAG, "onCreate: "+borrower.toString());
         borrowerLatLng = new LatLng(borrower.getBorrowerLocationLatitude(), borrower.getBorrowerLocationLongitude());
     }
 

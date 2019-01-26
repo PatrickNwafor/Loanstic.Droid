@@ -279,6 +279,11 @@ public class BorrowersTable implements Parcelable {
         this.borrowerLocationLongitude = borrowerLocationLongitude;
     }
 
+    @Override
+    public String toString() {
+        return "BorrowersTable{" + "borrowersId='" + borrowersId + '\'' + ", loanOfficerId='" + loanOfficerId + '\'' + ", firstName='" + firstName + '\'' + ", middleName='" + middleName + '\'' + ", lastName='" + lastName + '\'' + ", businessName='" + businessName + '\'' + ", assignedBy='" + assignedBy + '\'' + ", profileImageUri='" + profileImageUri + '\'' + ", profileImageThumbUri='" + profileImageThumbUri + '\'' + ", nationality='" + nationality + '\'' + ", workAddress='" + workAddress + '\'' + ", sex='" + sex + '\'' + ", homeAddress='" + homeAddress + '\'' + ", state='" + state + '\'' + ", city='" + city + '\'' + ", dateOfBirth='" + dateOfBirth + '\'' + ", email='" + email + '\'' + ", businessDescription='" + businessDescription + '\'' + ", photovalidationId='" + photovalidationId + '\'' + ", timestamp=" + timestamp + ", phoneNumber=" + phoneNumber + ", zipcode=" + zipcode + ", belongsToGroup=" + belongsToGroup + ", id=" + id + ", borrowerLocationLatitude=" + borrowerLocationLatitude + ", borrowerLocationLongitude=" + borrowerLocationLongitude + '}';
+    }
+
     // Parcelling part
     public BorrowersTable(Parcel in){
         String[] data = new String[25];
@@ -305,10 +310,10 @@ public class BorrowersTable implements Parcelable {
         this.photovalidationId = data[18];
         this.phoneNumber = Long.valueOf(data[19]);
         this.zipcode = Long.valueOf(data[20]);
-        this.belongsToGroup = Boolean.parseBoolean(data[21]);
-        this.id = Long.valueOf(data[22]);
         this.borrowerLocationLatitude = Double.parseDouble(data[23]);
         this.borrowerLocationLongitude = Double.parseDouble(data[24]);
+        this.belongsToGroup = Boolean.parseBoolean(data[21]);
+        this.id = Long.valueOf(data[22]);
 
     }
 

@@ -25,6 +25,7 @@ import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.activities.BorrowerActivity;
 import com.icubed.loansticdroid.activities.BorrowerDetailsSingle;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
@@ -62,7 +63,12 @@ public class BorrowerRecyclerAdapter extends RecyclerView.Adapter<BorrowerRecycl
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, BorrowerDetailsSingle.class);
-                intent.putExtra("borrower", borrowersTableList.get(position));
+
+                if(!((BorrowerActivity) context).isSearch) {
+                    intent.putExtra("borrower", borrowersTableList.get(position));
+                }else {
+                    intent.putExtra("borrowerId", borrowersTableList.get(position).getBorrowersId());
+                }
                 context.startActivity(intent);
             }
         });
