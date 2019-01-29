@@ -127,15 +127,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignEnd="@+id/status"
+                        android:layout_marginBottom="7dp"
                         android:layout_alignParentBottom="true"
                         android:text="Active"
                         android:textColor="@color/darkGrey" />
 
                     <ImageView
                         android:id="@+id/indicator"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_alignBottom="@+id/status_state"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+
+
+                        android:layout_below="@+id/status"
                         android:layout_toEndOf="@+id/status"
                         android:src="@drawable/indicator_active" />
 

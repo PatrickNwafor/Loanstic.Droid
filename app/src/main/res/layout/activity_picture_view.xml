@@ -9,7 +9,7 @@
 
     <include
         android:id="@+id/picture_toolbar"
-        layout="@layout/app_bar_layout"
+        layout="@layout/app_bar_layout_picture_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
