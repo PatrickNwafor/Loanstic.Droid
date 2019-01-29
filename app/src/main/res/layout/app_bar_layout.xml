@@ -8,7 +8,7 @@
     android:elevation="10dp"
     app:titleTextColor="@color/whiteEnd"
 
-    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+
    >
 
 </android.support.v7.widget.Toolbar>
