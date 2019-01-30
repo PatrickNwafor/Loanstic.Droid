@@ -33,6 +33,8 @@ import com.icubed.loansticdroid.cloudqueries.Account;
 import com.icubed.loansticdroid.cloudqueries.ActivityCycleQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowerFilesQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
+import com.icubed.loansticdroid.notification.BorrowerPendingApprovalNotificationTable;
+import com.icubed.loansticdroid.notification.BorrowerPendingApprovalNotificationTableQueries;
 import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
 
@@ -73,6 +75,8 @@ public class ReactivateBorrowerActivity extends AppCompatActivity {
     public ArrayList<Bitmap> otherFile;
     public ArrayList<String> otherFileDesc;
     private int otherFilesCount = 0;
+    private Account account;
+    private BorrowerPendingApprovalNotificationTableQueries borrowerPendingApprovalNotificationTableQueries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +90,8 @@ public class ReactivateBorrowerActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         borrowerId = getIntent().getStringExtra("borrowerId");
+        account = new Account();
+        borrowerPendingApprovalNotificationTableQueries = new BorrowerPendingApprovalNotificationTableQueries();
 
         filesRecyclerView = findViewById(R.id.add_files_list);
         filesDescription = new ArrayList<>();
@@ -168,7 +174,7 @@ public class ReactivateBorrowerActivity extends AppCompatActivity {
 
     private void createActivityCycle() {
         Map<String, Object> activityCycleMap = new HashMap<>();
-        activityCycleMap.put("isActive", true);
+        activityCycleMap.put("isActive", false);
         activityCycleMap.put("borrowerId", borrowerId);
         activityCycleMap.put("startCycleTime", new Date());
         activityCycleMap.put("endCycleTime", null);
@@ -179,12 +185,35 @@ public class ReactivateBorrowerActivity extends AppCompatActivity {
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "onSuccess: new borrower activity cycle created");
 
+                        //Send notification
+                        sendNotification(borrowerId);
+
                         //Upload files if available
                         uploadImageFile(borrowerId, documentReference.getId());
                         uploadImageOtherFiles(borrowerId, documentReference.getId());
                         goToBusinessVerification(borrowerId, documentReference.getId());
                     }
                 });
+    }
+
+    private void sendNotification(String id) {
+        BorrowerPendingApprovalNotificationTable borrowerPendingApprovalNotificationTable = new BorrowerPendingApprovalNotificationTable();
+        borrowerPendingApprovalNotificationTable.setBorrowerId(id);
+        borrowerPendingApprovalNotificationTable.setTimestamp(new Date());
+
+        borrowerPendingApprovalNotificationTableQueries.sendNotification(
+                borrowerPendingApprovalNotificationTable, account.getCurrentUserId()
+        ).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if(task.isSuccessful()){
+                    Log.d(TAG, "onComplete: notification sent");
+                }else{
+                    Log.d("Notification", "failed to send borrower pending approval notification");
+                    Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                }
+            }
+        });
     }
 
     /******************Uploads borrower image file*******************/

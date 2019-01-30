@@ -20,25 +20,26 @@ public class BorrowersTable implements Parcelable {
     private String borrowersId;
 
     private String loanOfficerId, firstName, middleName, lastName, businessName, assignedBy
-            ,profileImageUri, profileImageThumbUri, nationality, workAddress, sex
+            ,profileImageUri, profileImageThumbUri, nationality, workAddress, sex, approvedBy
             ,homeAddress, state, city, dateOfBirth, email, businessDescription, photovalidationId;
 
     private Date timestamp;
     private Long phoneNumber, zipcode;
-    private boolean belongsToGroup;
+    private boolean belongsToGroup, isApproved;
 
     @Id(autoincrement = true)
     private Long id;
 
     private double borrowerLocationLatitude, borrowerLocationLongitude;
 
-    @Generated(hash = 1573834719)
+    @Generated(hash = 557029862)
     public BorrowersTable(String borrowersId, String loanOfficerId, String firstName, String middleName,
             String lastName, String businessName, String assignedBy, String profileImageUri,
-            String profileImageThumbUri, String nationality, String workAddress, String sex, String homeAddress,
-            String state, String city, String dateOfBirth, String email, String businessDescription,
-            String photovalidationId, Date timestamp, Long phoneNumber, Long zipcode, boolean belongsToGroup,
-            Long id, double borrowerLocationLatitude, double borrowerLocationLongitude) {
+            String profileImageThumbUri, String nationality, String workAddress, String sex, String approvedBy,
+            String homeAddress, String state, String city, String dateOfBirth, String email,
+            String businessDescription, String photovalidationId, Date timestamp, Long phoneNumber, Long zipcode,
+            boolean belongsToGroup, boolean isApproved, Long id, double borrowerLocationLatitude,
+            double borrowerLocationLongitude) {
         this.borrowersId = borrowersId;
         this.loanOfficerId = loanOfficerId;
         this.firstName = firstName;
@@ -51,6 +52,7 @@ public class BorrowersTable implements Parcelable {
         this.nationality = nationality;
         this.workAddress = workAddress;
         this.sex = sex;
+        this.approvedBy = approvedBy;
         this.homeAddress = homeAddress;
         this.state = state;
         this.city = city;
@@ -62,6 +64,7 @@ public class BorrowersTable implements Parcelable {
         this.phoneNumber = phoneNumber;
         this.zipcode = zipcode;
         this.belongsToGroup = belongsToGroup;
+        this.isApproved = isApproved;
         this.id = id;
         this.borrowerLocationLatitude = borrowerLocationLatitude;
         this.borrowerLocationLongitude = borrowerLocationLongitude;
@@ -167,6 +170,14 @@ public class BorrowersTable implements Parcelable {
         this.sex = sex;
     }
 
+    public String getApprovedBy() {
+        return this.approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
     public String getHomeAddress() {
         return this.homeAddress;
     }
@@ -255,6 +266,14 @@ public class BorrowersTable implements Parcelable {
         this.belongsToGroup = belongsToGroup;
     }
 
+    public boolean getIsApproved() {
+        return this.isApproved;
+    }
+
+    public void setIsApproved(boolean isApproved) {
+        this.isApproved = isApproved;
+    }
+
     public Long getId() {
         return this.id;
     }
@@ -281,12 +300,12 @@ public class BorrowersTable implements Parcelable {
 
     @Override
     public String toString() {
-        return "BorrowersTable{" + "borrowersId='" + borrowersId + '\'' + ", loanOfficerId='" + loanOfficerId + '\'' + ", firstName='" + firstName + '\'' + ", middleName='" + middleName + '\'' + ", lastName='" + lastName + '\'' + ", businessName='" + businessName + '\'' + ", assignedBy='" + assignedBy + '\'' + ", profileImageUri='" + profileImageUri + '\'' + ", profileImageThumbUri='" + profileImageThumbUri + '\'' + ", nationality='" + nationality + '\'' + ", workAddress='" + workAddress + '\'' + ", sex='" + sex + '\'' + ", homeAddress='" + homeAddress + '\'' + ", state='" + state + '\'' + ", city='" + city + '\'' + ", dateOfBirth='" + dateOfBirth + '\'' + ", email='" + email + '\'' + ", businessDescription='" + businessDescription + '\'' + ", photovalidationId='" + photovalidationId + '\'' + ", timestamp=" + timestamp + ", phoneNumber=" + phoneNumber + ", zipcode=" + zipcode + ", belongsToGroup=" + belongsToGroup + ", id=" + id + ", borrowerLocationLatitude=" + borrowerLocationLatitude + ", borrowerLocationLongitude=" + borrowerLocationLongitude + '}';
+        return "BorrowersTable{" + "borrowersId='" + borrowersId + '\'' + ", loanOfficerId='" + loanOfficerId + '\'' + ", firstName='" + firstName + '\'' + ", middleName='" + middleName + '\'' + ", lastName='" + lastName + '\'' + ", businessName='" + businessName + '\'' + ", assignedBy='" + assignedBy + '\'' + ", profileImageUri='" + profileImageUri + '\'' + ", profileImageThumbUri='" + profileImageThumbUri + '\'' + ", nationality='" + nationality + '\'' + ", workAddress='" + workAddress + '\'' + ", sex='" + sex + '\'' + ", approvedBy='" + approvedBy + '\'' + ", homeAddress='" + homeAddress + '\'' + ", state='" + state + '\'' + ", city='" + city + '\'' + ", dateOfBirth='" + dateOfBirth + '\'' + ", email='" + email + '\'' + ", businessDescription='" + businessDescription + '\'' + ", photovalidationId='" + photovalidationId + '\'' + ", timestamp=" + timestamp + ", phoneNumber=" + phoneNumber + ", zipcode=" + zipcode + ", belongsToGroup=" + belongsToGroup + ", isApproved=" + isApproved + ", id=" + id + ", borrowerLocationLatitude=" + borrowerLocationLatitude + ", borrowerLocationLongitude=" + borrowerLocationLongitude + '}';
     }
 
     // Parcelling part
     public BorrowersTable(Parcel in){
-        String[] data = new String[25];
+        String[] data = new String[27];
 
         in.readStringArray(data);
         this.borrowersId = data[0];
@@ -310,10 +329,12 @@ public class BorrowersTable implements Parcelable {
         this.photovalidationId = data[18];
         this.phoneNumber = Long.valueOf(data[19]);
         this.zipcode = Long.valueOf(data[20]);
-        this.borrowerLocationLatitude = Double.parseDouble(data[23]);
-        this.borrowerLocationLongitude = Double.parseDouble(data[24]);
         this.belongsToGroup = Boolean.parseBoolean(data[21]);
         this.id = Long.valueOf(data[22]);
+        this.borrowerLocationLatitude = Double.parseDouble(data[23]);
+        this.borrowerLocationLongitude = Double.parseDouble(data[24]);
+        this.approvedBy = data[25];
+        this.isApproved = Boolean.parseBoolean(data[26]);
 
     }
 
@@ -344,7 +365,8 @@ public class BorrowersTable implements Parcelable {
                 this.businessDescription,
                 this.photovalidationId,String.valueOf(this.phoneNumber), String.valueOf(this.zipcode),
                 String.valueOf(this.belongsToGroup), String.valueOf(this.id),
-                String.valueOf(this.borrowerLocationLatitude), String.valueOf(this.borrowerLocationLongitude)});
+                String.valueOf(this.borrowerLocationLatitude), String.valueOf(this.borrowerLocationLongitude),
+                this.approvedBy, String.valueOf(this.isApproved)});
     }
 
 

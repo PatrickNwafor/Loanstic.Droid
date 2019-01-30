@@ -52,6 +52,8 @@ import com.icubed.loansticdroid.cloudqueries.Account;
 import com.icubed.loansticdroid.cloudqueries.ActivityCycleQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowerFilesQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
+import com.icubed.loansticdroid.notification.BorrowerPendingApprovalNotificationTable;
+import com.icubed.loansticdroid.notification.BorrowerPendingApprovalNotificationTableQueries;
 import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
 
@@ -90,6 +92,7 @@ public class BorrowerFilesFragment extends Fragment {
     private String borrowerImageUri;
     private String borrowerImageThumbUri;
     private LocationProviderUtil locationProviderUtil;
+    private BorrowerPendingApprovalNotificationTableQueries borrowerPendingApprovalNotificationTableQueries;
     private LatLng borrowerLatLng;
     public TextView addFileTextView;
     private Account account;
@@ -143,6 +146,7 @@ public class BorrowerFilesFragment extends Fragment {
         activityCycleQueries = new ActivityCycleQueries();
         locationProviderUtil = new LocationProviderUtil(context);
         account = new Account();
+        borrowerPendingApprovalNotificationTableQueries = new BorrowerPendingApprovalNotificationTableQueries();
 
         //Changing action bar title
         ((AddSingleBorrower) getContext()).actionBar.setTitle("ID Documents");
@@ -315,7 +319,6 @@ public class BorrowerFilesFragment extends Fragment {
 
                             //Create an Activity cycle for borrower
                             createActivityCycle(task.getResult().getId());
-
                         }else{
                             reg_progress_bar.setVisibility(View.GONE);
                             submitButton.setEnabled(true);
@@ -325,9 +328,29 @@ public class BorrowerFilesFragment extends Fragment {
                 });
     }
 
+    private void sendNotification(String id) {
+        BorrowerPendingApprovalNotificationTable borrowerPendingApprovalNotificationTable = new BorrowerPendingApprovalNotificationTable();
+        borrowerPendingApprovalNotificationTable.setBorrowerId(id);
+        borrowerPendingApprovalNotificationTable.setTimestamp(new Date());
+
+        borrowerPendingApprovalNotificationTableQueries.sendNotification(
+                borrowerPendingApprovalNotificationTable, account.getCurrentUserId()
+        ).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if(task.isSuccessful()){
+                    Log.d(TAG, "onComplete: notification sent");
+                }else{
+                    Log.d("Notification", "failed to send borrower pending approval notification");
+                    Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                }
+            }
+        });
+    }
+
     private void createActivityCycle(final String borrowerId) {
         Map<String, Object> activityCycleMap = new HashMap<>();
-        activityCycleMap.put("isActive", true);
+        activityCycleMap.put("isActive", false);
         activityCycleMap.put("borrowerId", borrowerId);
         activityCycleMap.put("startCycleTime", new Date());
         activityCycleMap.put("endCycleTime", null);
@@ -337,6 +360,9 @@ public class BorrowerFilesFragment extends Fragment {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "onSuccess: new borrower activity cycle created");
+
+                        //Send notification
+                        sendNotification(borrowerId);
 
                         //Adding borrower to search index
                         createBorrowerSearch(borrowerId, documentReference.getId());

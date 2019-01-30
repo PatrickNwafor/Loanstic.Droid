@@ -35,7 +35,7 @@
             android:value="@string/google_maps_key" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/new_group" />
+            android:resource="@mipmap/ic_launcher" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
@@ -72,7 +72,13 @@
         <activity android:name=".activities.BorrrowerFileDriverLicense" />
         <activity android:name=".activities.BorrowerFilesPassport" />
         <activity android:name=".activities.BorrowerFileOtherDocuments" />
-        <activity android:name=".activities.BorrowerDetailsSingle" />
+        <activity android:name=".activities.BorrowerDetailsSingle" >
+            <intent-filter>
+                <action android:name="com.icubed.loansticdroid_PENDING_BORROWER_APPROVAL" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activities.BorrowerDetailsGroup" >
             <intent-filter>
                 <action android:name="com.icubed.loansticdroid_TARGET_NOTIFICATION" />

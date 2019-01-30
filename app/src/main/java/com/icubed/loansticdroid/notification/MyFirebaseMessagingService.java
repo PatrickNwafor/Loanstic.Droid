@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.text.TextUtils;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -22,7 +23,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.channel_name);
             String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
@@ -38,6 +39,47 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         createNotificationChannel();
 
+        String groupPendingApproval = remoteMessage.getData().get("group_notification");
+        String borrowerPendingApproval = remoteMessage.getData().get("borrower_pending_approval");
+
+        if(groupPendingApproval != null && !TextUtils.isEmpty(groupPendingApproval)){
+            pendingGroupApproval(remoteMessage);
+        }
+
+        if(borrowerPendingApproval != null && !TextUtils.isEmpty(borrowerPendingApproval)){
+            pendingBorrowerApproval(remoteMessage);
+        }
+    }
+
+    private void pendingBorrowerApproval(RemoteMessage remoteMessage) {
+        String notificationTitle = remoteMessage.getNotification().getTitle();
+        String notificationBody = remoteMessage.getNotification().getBody();
+        String click_action = remoteMessage.getNotification().getClickAction();
+        String borrowerId = remoteMessage.getData().get("borrowerId");
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.new_borrower)
+                .setContentTitle(notificationTitle)
+                .setContentText(notificationBody)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        //Setting up tap action
+        Intent intent = new Intent(click_action);
+        intent.putExtra("borrowerId", borrowerId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        mBuilder.setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        int notificationId = (int)System.currentTimeMillis();
+        notificationManager.notify(notificationId, mBuilder.build());
+    }
+
+    private void pendingGroupApproval(RemoteMessage remoteMessage){
         String notificationTitle = remoteMessage.getNotification().getTitle();
         String notificationBody = remoteMessage.getNotification().getBody();
         String click_action = remoteMessage.getNotification().getClickAction();
