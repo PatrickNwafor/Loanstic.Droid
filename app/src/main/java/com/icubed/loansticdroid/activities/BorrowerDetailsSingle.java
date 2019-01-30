@@ -13,19 +13,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -43,7 +39,6 @@ import com.icubed.loansticdroid.localdatabase.BorrowerFilesTableQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTable;
 import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTableQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
-import com.icubed.loansticdroid.localdatabase.GroupPhotoValidationTable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -64,6 +59,7 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     private String activityCycleId;
     private boolean isDataFromSearch = false;
     private String borrowerId;
+    private AlertDialog.Builder alert;
 
     private RecyclerView docRecyclerView;
     private RecyclerView businessVerificationRecyclerView;
@@ -87,14 +83,11 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         toolbar = findViewById(R.id.borrower_profile_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Borrower profile");
-        //getSupportActionBar().setSubtitle("Fullname");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         
         borrower = getIntent().getParcelableExtra("borrower");
         borrowerId = getIntent().getStringExtra("borrowerId");
-        //Log.d(TAG, "onCreate: "+borrower.toString());
-        Log.d(TAG, "onCreate: "+borrowerId);
 
         borrowerFilesQueries = new BorrowerFilesQueries(this);
         activityCycleTableQueries = new ActivityCycleTableQueries(getApplication());
@@ -106,7 +99,7 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
 
         statusSwitch = findViewById(R.id.active_switch);
         statusIndicator = findViewById(R.id.indicator);
-        statusText = findViewById(R.id.status_text);
+        statusText = findViewById(R.id.status_state);
         profileImageView = findViewById(R.id.profileImageView);
         nameTextView = findViewById(R.id.name);
         numberTextView = findViewById(R.id.mobile_number);
@@ -128,6 +121,9 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         borrowerLocationTextView = findViewById(R.id.borrower_location);
         content = findViewById(R.id.borrower_content);
 
+        alert = new AlertDialog.Builder(this);
+
+        statusSwitch.setChecked(true);
         statusSwitchChangeListener();
 
         borrowerLocationTextView.setOnClickListener(new View.OnClickListener() {
@@ -151,7 +147,6 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         borrowerBusinessVerificationRecyclerAdapter = new BorrowerBusinessVerificationRecyclerAdapter(borrowerPhotoValidationTables);
         businessVerificationRecyclerView.setAdapter(borrowerBusinessVerificationRecyclerAdapter);
 
-        statusSwitch.setChecked(true);
         if(borrower != null){
 
             ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadLastCreatedCycle(borrower.getBorrowersId());
@@ -171,12 +166,11 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
 
     }
 
-    private void statusSwitchChangeListener() {
-        statusSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    private CompoundButton.OnCheckedChangeListener listener(){
+        return new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    AlertDialog.Builder alert = new AlertDialog.Builder(getApplicationContext());
                     alert.setCancelable(true);
                     alert.setTitle("Activate Borrower");
                     alert.setMessage("Upload documents to verify borrower?");
@@ -189,6 +183,7 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                     alert.setNegativeButton("Verify Borrower", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            maintainFalse();
                             Intent intent = new Intent(getApplicationContext(), ReactivateBorrowerActivity.class);
                             intent.putExtra("borrowerId", borrower.getBorrowersId());
                             startActivity(intent);
@@ -197,14 +192,26 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                     alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
-                            statusSwitch.setChecked(false);
+                            maintainFalse();
                         }
                     });
+                    final AlertDialog builder = alert.create();
+                    builder.show();
                 }else{
                     makeBorrowerInActive();
                 }
             }
-        });
+        };
+    }
+
+    private void maintainFalse(){
+        statusSwitch.setOnCheckedChangeListener(null);
+        statusSwitch.setChecked(false);
+        statusSwitchChangeListener();
+    }
+
+    private void statusSwitchChangeListener() {
+        statusSwitch.setOnCheckedChangeListener(listener());
     }
 
     private void makeBorrowerActive(){
@@ -264,13 +271,17 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     }
 
     private void inActiveIndicators(){
+        statusSwitch.setOnCheckedChangeListener(null);
         statusSwitch.setChecked(false);
+        statusSwitchChangeListener();
         statusText.setText("Inactive");
         statusIndicator.setImageResource(R.drawable.indicator_inactive);
     }
 
     private void activeIndicators(){
+        statusSwitch.setOnCheckedChangeListener(null);
         statusSwitch.setChecked(true);
+        statusSwitchChangeListener();
         statusText.setText("Active");
         statusIndicator.setImageResource(R.drawable.indicator_active);
     }
@@ -452,6 +463,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     }
 
     private void setBorrowerDetailsOnUi() {
+
+        getSupportActionBar().setSubtitle(borrower.getLastName()+" "+borrower.getMiddleName()+" "+borrower.getFirstName());
 
         Glide.with(this)
                 .load(borrower.getProfileImageUri())
