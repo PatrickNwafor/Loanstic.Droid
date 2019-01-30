@@ -1,8 +1,10 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,9 +14,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,27 +46,28 @@ import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupPhotoValidationTable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class BorrowerDetailsSingle extends AppCompatActivity {
     private static final String TAG = ".BorrowerDetailsSingle";
     private Toolbar toolbar;
     private BorrowersTable borrower;
-    private ImageView profileImageView;
+    private ImageView profileImageView, statusIndicator;
     private TextView nameTextView, numberTextView, emailTextView, numberOfBizVerifTextView
             , businessNameTextView, businessLocationTextView, businessDescriptionTextView
             , genderTextView, dobTextView, homeAddressTextView, countryTextView
-            , stateTextView, cityTextView, numberOfDocTextView, borrowerLocationTextView;
-    private Button activateBorrowerBtn;
+            , stateTextView, cityTextView, numberOfDocTextView, borrowerLocationTextView, statusText;
+    private Switch statusSwitch;
     private ProgressBar progressBar;
     private NestedScrollView content;
+    private String activityCycleId;
     private boolean isDataFromSearch = false;
     private String borrowerId;
 
     private RecyclerView docRecyclerView;
     private RecyclerView businessVerificationRecyclerView;
     private DocumentRecyclerAdapter documentRecyclerAdapter;
-    private LinearLayout linearLayout;
     private List<BorrowerFilesTable> borrowerFilesTables;
     private ActivityCycleTableQueries activityCycleTableQueries;
     private List<BorrowerPhotoValidationTable> borrowerPhotoValidationTables;
@@ -98,8 +103,9 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         activityCycleQueries = new ActivityCycleQueries();
         borrowersQueries = new BorrowersQueries(this);
 
-        linearLayout = findViewById(R.id.activate_borrower_layout);
-        activateBorrowerBtn = findViewById(R.id.activateBorrower);
+        statusSwitch = findViewById(R.id.active_switch);
+        statusIndicator = findViewById(R.id.indicator);
+        statusText = findViewById(R.id.status_text);
         profileImageView = findViewById(R.id.profileImageView);
         nameTextView = findViewById(R.id.name);
         numberTextView = findViewById(R.id.mobile_number);
@@ -121,14 +127,7 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         borrowerLocationTextView = findViewById(R.id.borrower_location);
         content = findViewById(R.id.borrower_content);
 
-        activateBorrowerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ReactivateBorrowerActivity.class);
-                intent.putExtra("borrowerId", borrower.getBorrowersId());
-                startActivity(intent);
-            }
-        });
+        statusSwitchChangeListener();
 
         borrowerLocationTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,12 +150,14 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         borrowerBusinessVerificationRecyclerAdapter = new BorrowerBusinessVerificationRecyclerAdapter(borrowerPhotoValidationTables);
         businessVerificationRecyclerView.setAdapter(borrowerBusinessVerificationRecyclerAdapter);
 
+        statusSwitch.setChecked(true);
         if(borrower != null){
 
             ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadLastCreatedCycle(borrower.getBorrowersId());
+            activityCycleId = activityCycleTable.getActivityCycleId();
 
             if (!activityCycleTable.getIsActive()) {
-                linearLayout.setVisibility(View.VISIBLE);
+                inActiveIndicators();
             }
 
             setBorrowerDetailsOnUi();
@@ -169,6 +170,110 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
 
     }
 
+    private void statusSwitchChangeListener() {
+        statusSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    AlertDialog.Builder alert = new AlertDialog.Builder(getApplicationContext());
+                    alert.setCancelable(true);
+                    alert.setTitle("Activate Borrower");
+                    alert.setMessage("Upload documents to verify borrower?");
+                    alert.setPositiveButton("Activate", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            makeBorrowerActive();
+                        }
+                    });
+                    alert.setNegativeButton("Verify Borrower", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getApplicationContext(), ReactivateBorrowerActivity.class);
+                            intent.putExtra("borrowerId", borrower.getBorrowersId());
+                            startActivity(intent);
+                        }
+                    });
+                    alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            statusSwitch.setChecked(false);
+                        }
+                    });
+                }else{
+                    makeBorrowerInActive();
+                }
+            }
+        });
+    }
+
+    private void makeBorrowerActive(){
+        statusIndicator.setImageResource(R.drawable.indicator_active);
+        statusText.setText("Active");
+
+        activityCycleQueries.activateBorrower(activityCycleId)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+
+                            ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadSingleActivityCycle(activityCycleId);
+
+                            if(activityCycleTable != null){
+                                activityCycleTable.setIsActive(true);
+                                activityCycleTable.setEndCycleTime(null);
+
+                                activityCycleTableQueries.updateStorageAfterActivityCycleEnds(activityCycleTable);
+                            }
+
+                            Toast.makeText(BorrowerDetailsSingle.this, "Borrower Activated", Toast.LENGTH_SHORT).show();
+                        }else{
+                            inActiveIndicators();
+                            Toast.makeText(BorrowerDetailsSingle.this, "Borrower Activation failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void makeBorrowerInActive(){
+        inActiveIndicators();
+        final Date deactivationDate = new Date();
+
+        activityCycleQueries.deactivateBorrower(activityCycleId, deactivationDate)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+
+                            ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadSingleActivityCycle(activityCycleId);
+
+                            if(activityCycleTable != null){
+                                activityCycleTable.setIsActive(false);
+                                activityCycleTable.setEndCycleTime(deactivationDate);
+
+                                activityCycleTableQueries.updateStorageAfterActivityCycleEnds(activityCycleTable);
+                            }
+
+                            Toast.makeText(BorrowerDetailsSingle.this, "Borrower made inactive", Toast.LENGTH_SHORT).show();
+                        }else{
+                            activeIndicators();
+                            Toast.makeText(BorrowerDetailsSingle.this, "Failed to make borrower inactive", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void inActiveIndicators(){
+        statusSwitch.setChecked(false);
+        statusText.setText("Inactive");
+        statusIndicator.setImageResource(R.drawable.indicator_inactive);
+    }
+
+    private void activeIndicators(){
+        statusSwitch.setChecked(true);
+        statusText.setText("Active");
+        statusIndicator.setImageResource(R.drawable.indicator_active);
+    }
+
     private void getActivityCycleData(final String borrowerId) {
         activityCycleQueries.retrieveLastCreatedCycleForBorrower(borrowerId)
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -179,8 +284,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                                 ActivityCycleTable activityCycleTable = doc.toObject(ActivityCycleTable.class);
                                 activityCycleTable.setActivityCycleId(doc.getId());
 
+                                activityCycleId = doc.getId();
+
                                 if (!activityCycleTable.getIsActive()) {
-                                    linearLayout.setVisibility(View.VISIBLE);
+                                    inActiveIndicators();
                                 }
 
                                 retrieveBorrowerDetailsFromCloud();

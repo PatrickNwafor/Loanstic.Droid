@@ -6,8 +6,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.icubed.loansticdroid.localdatabase.ActivityCycleTable;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ActivityCycleQueries {
@@ -54,6 +57,32 @@ public class ActivityCycleQueries {
         return firebaseFirestore.collection("Activity_Cycle")
                 .document(activityCycleId)
                 .get();
+    }
+
+    public Task<Void> activateBorrower(String activityCycleId){
+
+        Map<String,Object> objectMap = new HashMap<>();
+        objectMap.put("isActive", true);
+        objectMap.put("endCycleTime", null);
+
+
+        return firebaseFirestore.collection("Activity_Cycle")
+                .document(activityCycleId)
+                .set(objectMap, SetOptions.merge());
+
+    }
+
+    public Task<Void> deactivateBorrower(String activityCycleId, Date deactivationDate){
+
+        Map<String,Object> objectMap = new HashMap<>();
+        objectMap.put("isActive", false);
+        objectMap.put("endCycleTime", deactivationDate);
+
+
+        return firebaseFirestore.collection("Activity_Cycle")
+                .document(activityCycleId)
+                .set(objectMap, SetOptions.merge());
+
     }
     
 }
