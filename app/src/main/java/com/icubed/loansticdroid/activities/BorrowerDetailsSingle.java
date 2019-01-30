@@ -87,6 +87,7 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         toolbar = findViewById(R.id.borrower_profile_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Borrower profile");
+        //getSupportActionBar().setSubtitle("Fullname");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         
@@ -471,6 +472,9 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         countryTextView.setText(borrower.getNationality());
         stateTextView.setText(borrower.getState());
         cityTextView.setText(borrower.getCity());
+
+        getSupportActionBar().setSubtitle(borrower.getLastName()+" "+borrower.getMiddleName()+" "+borrower.getFirstName());
+
 
         hideProgressBar();
     }
