@@ -166,6 +166,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
 
     }
 
+    /**
+     * this method return the ochange listener feature for the status switch button
+     * @return
+     */
     private CompoundButton.OnCheckedChangeListener listener(){
         return new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -204,16 +208,26 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         };
     }
 
+    /**
+     * set status indicator to maintain inactive position
+     */
     private void maintainFalse(){
         statusSwitch.setOnCheckedChangeListener(null);
         statusSwitch.setChecked(false);
         statusSwitchChangeListener();
     }
 
+    /**
+     * status switch wudget on change listener
+     */
     private void statusSwitchChangeListener() {
         statusSwitch.setOnCheckedChangeListener(listener());
     }
 
+    /**
+     * this method makes borrower active
+     * it updates the server and the local storage if the data already exist
+     */
     private void makeBorrowerActive(){
         statusIndicator.setImageResource(R.drawable.indicator_active);
         statusText.setText("Active");
@@ -242,6 +256,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                 });
     }
 
+    /**
+     * this method makes a borrower in active
+     * it updates the server and the local storage if the data already exist
+     */
     private void makeBorrowerInActive(){
         inActiveIndicators();
         final Date deactivationDate = new Date();
@@ -270,6 +288,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                 });
     }
 
+    /**
+     * this methods changes all the necessary UI features for when a borrower is in active
+     * like the status colour and text
+     */
     private void inActiveIndicators(){
         statusSwitch.setOnCheckedChangeListener(null);
         statusSwitch.setChecked(false);
@@ -278,6 +300,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         statusIndicator.setImageResource(R.drawable.indicator_inactive);
     }
 
+    /**
+     * this methods changes all the necessary UI features for when a borrower is active
+     * like the status colour and text
+     */
     private void activeIndicators(){
         statusSwitch.setOnCheckedChangeListener(null);
         statusSwitch.setChecked(true);
@@ -286,6 +312,12 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         statusIndicator.setImageResource(R.drawable.indicator_active);
     }
 
+    /**
+     * gets the last active cycle ID of a borrower
+     * this is needed to get the borrower documents and business verification photo
+     * it also enables us to get the state of the borrower.
+     * @param borrowerId
+     */
     private void getActivityCycleData(final String borrowerId) {
         activityCycleQueries.retrieveLastCreatedCycleForBorrower(borrowerId)
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -315,6 +347,11 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                 });
     }
 
+    /**
+     * this retrieves borrower full details from the cloud
+     * this method is usually called when the borrower is selected from a search and not from the borrower list in the borrower pages
+     * because loading a borrower profile from the search, only the borrower id is returned
+     */
     private void retrieveBorrowerDetailsFromCloud() {
         borrowersQueries.retrieveSingleBorrowers(borrowerId)
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -337,11 +374,18 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                 });
     }
 
+    /**
+     * this hides progress bar from UI and show the other UI
+     */
     private void hideProgressBar(){
         content.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
     }
 
+    /**
+     * checks if business verification photo already exist in the local storage and loads to the UI
+     * if the photo does not exist, it call getNewBusinessVerificationPhotos(String borrowersId, String activityCycleId) method
+     */
     private void getBusinessVerificationPhotos() {
 
         ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadLastCreatedCycle(borrower.getBorrowersId());
@@ -364,6 +408,11 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
 
     }
 
+    /**
+     * this gets the business verification photo of a borrower from the cloud
+     * @param borrowersId
+     * @param activityCycleId
+     */
     private void getNewBusinessVerificationPhotos(String borrowersId, String activityCycleId){
         borrowerPhotoValidationQueries.retrieveAllValidationPhotosForBorrower(borrowersId, activityCycleId)
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -398,10 +447,18 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                 });
     }
 
+    /**
+     * this saves a new business verification photo to local storage
+     * @param borrowerPhotoValidationTable
+     */
     private void savePhotoVerifToStorage(BorrowerPhotoValidationTable borrowerPhotoValidationTable) {
         borrowerPhotoValidationTableQueries.insertPhototsToStorage(borrowerPhotoValidationTable);
     }
 
+    /**
+     * checks if borrower document already exist in the local storage and loads to the UI
+     * if the document does not exist, it call getNewFiles(String borrowersId, String activityCycleId) method
+     */
     private void getFiles() {
 
         ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadLastCreatedCycle(borrower.getBorrowersId());
@@ -422,6 +479,12 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * this gets the borrower document from the server
+     * @param borrowersId
+     * @param activityCycleId
+     */
     private void getNewFiles(String borrowersId, String activityCycleId) {
         borrowerFilesQueries.retrieveFilesFromCloud(borrowersId, activityCycleId)
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -457,11 +520,19 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                 });
     }
 
+    /**
+     * this saves new borrower document to local storage
+     * @param borrowerFilesTable
+     */
     private void saveFileToStorage(BorrowerFilesTable borrowerFilesTable) {
         borrowerFilesTableQueries.insertBorrowersFileToStorage(borrowerFilesTable);
         Log.d(TAG, "saveFileToStorage: files saved");
     }
 
+    /**
+     * sets the various borrower details to the UI of the activity
+     * this enables the user to view the details
+     */
     private void setBorrowerDetailsOnUi() {
 
         getSupportActionBar().setSubtitle(borrower.getLastName()+" "+borrower.getMiddleName()+" "+borrower.getFirstName());
