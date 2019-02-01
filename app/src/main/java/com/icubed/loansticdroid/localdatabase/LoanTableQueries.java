@@ -13,12 +13,12 @@ public class LoanTableQueries {
         loansTableDao = daoSession.getLoansTableDao();
     }
 
-    /***************Save Loans to local Storage*********/
+    /***************Save LoansQueries to local Storage*********/
     public void insertLoanToStorage(LoansTable loansTable){
         loansTableDao.insert(loansTable);
     }
 
-    /************Load all Loans from local Storage********/
+    /************Load all LoansQueries from local Storage********/
     public List<LoansTable> loadAllLoans(){
         return loansTableDao.loadAll();
     }
@@ -30,6 +30,14 @@ public class LoanTableQueries {
                 .build()
                 .list()
                 .get(0);
+    }
+
+    public void updateLoanDetails(LoansTable loansTable){
+        loansTableDao.update(loansTable);
+    }
+
+    public void deleteLoan(LoansTable loansTable){
+        loansTableDao.delete(loansTable);
     }
 
 }

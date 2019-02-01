@@ -12,6 +12,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.cloudqueries.CollectionQueries;
+import com.icubed.loansticdroid.cloudqueries.LoansQueries;
 import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
@@ -25,7 +26,7 @@ import java.util.List;
 public class Collection {
 
     private LoanTableQueries loanTableQueries;
-    private Loans loans;
+    private LoansQueries loansQueries;
     private CollectionQueries collectionQueries;
     private CollectionTableQueries collectionTableQueries;
     private BorrowersTableQueries borrowersTableQueries;
@@ -41,7 +42,7 @@ public class Collection {
 
     public Collection(Application application, FragmentActivity activity){
         loanTableQueries = new LoanTableQueries(application);
-        loans = new Loans(application);
+        loansQueries = new LoansQueries();
         collectionQueries = new CollectionQueries();
         collectionTableQueries = new CollectionTableQueries(application);
         borrowersTableQueries = new BorrowersTableQueries(application);
@@ -98,7 +99,7 @@ public class Collection {
     }
 
     private void getLoansData(String loanId, final String collectionId) {
-        loans.retrieveSingleLoan(loanId)
+        loansQueries.retrieveSingleLoan(loanId)
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -189,7 +190,7 @@ public class Collection {
         isDueCollectionSingle = false;
     }
 
-    /****************Save loans to storage************************/
+    /****************Save loansQueries to storage************************/
     public void saveLoanToLocalStorage(LoansTable loansTable) {
         List<LoansTable> loansTables = loanTableQueries.loadAllLoans();
 
