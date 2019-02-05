@@ -72,14 +72,14 @@
         <activity android:name=".activities.BorrrowerFileDriverLicense" />
         <activity android:name=".activities.BorrowerFilesPassport" />
         <activity android:name=".activities.BorrowerFileOtherDocuments" />
-        <activity android:name=".activities.BorrowerDetailsSingle" >
+        <activity android:name=".activities.BorrowerDetailsSingle">
             <intent-filter>
                 <action android:name="com.icubed.loansticdroid_PENDING_BORROWER_APPROVAL" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.BorrowerDetailsGroup" >
+        <activity android:name=".activities.BorrowerDetailsGroup">
             <intent-filter>
                 <action android:name="com.icubed.loansticdroid_TARGET_NOTIFICATION" />
 
@@ -88,7 +88,10 @@
         </activity>
         <activity android:name=".activities.LocationActivity" />
         <activity android:name=".activities.PictureViewActivity" />
-        <activity android:name=".activities.ReactivateBorrowerActivity"></activity>
+        <activity android:name=".activities.ReactivateBorrowerActivity" />
+        <activity android:name=".activities.NewLoanWizard" />
+        <activity android:name=".activities.SelectLoanType" />
+        <activity android:name=".activities.LoanTerms"></activity>
     </application>
 
 </manifest>

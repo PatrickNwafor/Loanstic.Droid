@@ -4,10 +4,10 @@
     android:id="@+id/main_app_bar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
+    android:background="@color/whiteEnd"
     android:elevation="10dp"
-    app:titleTextColor="@color/whiteEnd"
-    app:subtitleTextColor="@color/whiteEnd"
+    app:titleTextColor="@color/colorPrimary"
+    app:subtitleTextColor="@color/colorPrimary"
 
 
    >
