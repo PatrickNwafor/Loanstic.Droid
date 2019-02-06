@@ -4,9 +4,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
 
 import static android.support.constraint.Constraints.TAG;
@@ -36,6 +41,27 @@ public class AndroidUtils {
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public static byte[] getBytesFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
+
+    public static Bitmap getBitMapFromBytes(byte[] bytes){
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+
+    public Bitmap getBitmap(int drawableRes) {
+        Drawable drawable = context.getResources().getDrawable(drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 
 

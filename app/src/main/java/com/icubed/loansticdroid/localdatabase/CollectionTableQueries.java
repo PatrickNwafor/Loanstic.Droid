@@ -5,6 +5,7 @@ import android.app.Application;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class CollectionTableQueries {
 
@@ -59,8 +60,8 @@ public class CollectionTableQueries {
 
     /****************Convert date to string format*****************/
     private String dateString(Date date){
-        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String finalDate = timeFormat.format(date);
-        return  finalDate;
+        String myFormat = "MM/dd/yy";
+        SimpleDateFormat timeFormat = new SimpleDateFormat(myFormat, Locale.US);
+        return timeFormat.format(date);
     }
 }

@@ -9,6 +9,7 @@ import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class CollectionQueries {
@@ -67,9 +68,9 @@ public class CollectionQueries {
 
     /****************Convert date to string format*****************/
     private String dateString(Date date){
-        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String finalDate = timeFormat.format(date);
-        return  finalDate;
+        String myFormat = "MM/dd/yy";
+        SimpleDateFormat timeFormat = new SimpleDateFormat(myFormat, Locale.US);
+        return timeFormat.format(date);
     }
 
 }

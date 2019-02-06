@@ -4,7 +4,9 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -13,19 +15,26 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class LoanTerms extends AppCompatActivity {
-    EditText edittext;
+    private static final String TAG = ".LoanTerms";
+    EditText loanReleaseDateEditText;
      Spinner spRate;
     Spinner spDuration;
 
     String selectedRate;
     String selectedDuration;
     private Toolbar toolbar;
+    private LoanTypeTable loanTypeTable;
+    
+    private EditText loanTypeNameEditText, principlaAmountEditText, loanInterestEditText
+            , loanDurationTextView, repaymentCycleEditText, loanFeesEditText;
+    private CardView otherLoanCardView;
 
     final Calendar myCalendar = Calendar.getInstance();
 
@@ -36,13 +45,32 @@ public class LoanTerms extends AppCompatActivity {
 
         toolbar = findViewById(R.id.loan_terms_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Loan Terrms");
+        getSupportActionBar().setTitle("Loan Terms");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        loanTypeTable = getIntent().getParcelableExtra("loan_type");
+//        Log.d(TAG, "onCreate: "+loanTypeTable.toString());
 
+        
+        loanTypeNameEditText = findViewById(R.id.loan_type_name);
+        principlaAmountEditText = findViewById(R.id.principal_amount);
+        loanReleaseDateEditText= findViewById(R.id.loan_releae_date);
+        loanInterestEditText = findViewById(R.id.loan_interest);
+        loanDurationTextView = findViewById(R.id.loan_duration);
+        repaymentCycleEditText = findViewById(R.id.repayment_cycle);
+        loanFeesEditText = findViewById(R.id.loan_fees);
+        otherLoanCardView = findViewById(R.id.other_loan_card);
 
-//for rate
+        //checking if the type of loan is a registered loan or other loan
+        if(loanTypeTable == null){
+            otherLoanCardView.setVisibility(View.VISIBLE);
+            loanTypeNameEditText.setEnabled(true);
+        }else{
+            loanTypeNameEditText.setText(loanTypeTable.getLoanTypeName());
+        }
+
+        //for rate
         spRate = findViewById(R.id.spRate);
 
         ArrayAdapter<CharSequence> adapterRate;
@@ -52,7 +80,7 @@ public class LoanTerms extends AppCompatActivity {
         spRate.setAdapter(adapterRate);
         selectedRate = spRate.getSelectedItem().toString();
 
-//for duration
+        //for duration
         spDuration = findViewById(R.id.spDuration);
         ArrayAdapter<CharSequence> adapterDuration;
         String[] DurationArr = {"year", "month", "week", "day"};
@@ -62,7 +90,7 @@ public class LoanTerms extends AppCompatActivity {
         selectedDuration = spDuration.getSelectedItem().toString();
 
 
-         edittext= (EditText) findViewById(R.id.loan_releae_date);
+
        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
@@ -74,10 +102,9 @@ public class LoanTerms extends AppCompatActivity {
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 updateLabel();
             }
+       };
 
-        };
-
-        edittext.setOnClickListener(new View.OnClickListener() {
+        loanReleaseDateEditText.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -88,13 +115,12 @@ public class LoanTerms extends AppCompatActivity {
             }
         });
 
-
     }
     private void updateLabel() {
         String myFormat = "MM/dd/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-        edittext.setText(sdf.format(myCalendar.getTime()));
+        loanReleaseDateEditText.setText(sdf.format(myCalendar.getTime()));
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

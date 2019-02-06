@@ -8,6 +8,7 @@
 
         android:id="@+id/next_to_loan_terms"
         android:title="Next"
+        android:visible="false"
 
         app:showAsAction="always"/>
 

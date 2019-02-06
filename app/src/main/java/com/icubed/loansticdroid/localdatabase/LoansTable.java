@@ -17,17 +17,21 @@ public class LoansTable {
     @Id(autoincrement = true)
     private Long id;
 
+    private boolean isOtherLoanType;
+
     private double loanAmount;
     private Date loanCreationDate;
     private Date loanDuration, loanApprovedDate;
     private String loanTypeId, loanOfficerId, loanStatus;
-    @Generated(hash = 1394393180)
-    public LoansTable(String loanId, String borrowerId, Long id, double loanAmount,
-            Date loanCreationDate, Date loanDuration, Date loanApprovedDate,
-            String loanTypeId, String loanOfficerId, String loanStatus) {
+    @Generated(hash = 573671248)
+    public LoansTable(String loanId, String borrowerId, Long id,
+            boolean isOtherLoanType, double loanAmount, Date loanCreationDate,
+            Date loanDuration, Date loanApprovedDate, String loanTypeId,
+            String loanOfficerId, String loanStatus) {
         this.loanId = loanId;
         this.borrowerId = borrowerId;
         this.id = id;
+        this.isOtherLoanType = isOtherLoanType;
         this.loanAmount = loanAmount;
         this.loanCreationDate = loanCreationDate;
         this.loanDuration = loanDuration;
@@ -98,5 +102,11 @@ public class LoansTable {
     }
     public void setLoanStatus(String loanStatus) {
         this.loanStatus = loanStatus;
+    }
+    public boolean getIsOtherLoanType() {
+        return this.isOtherLoanType;
+    }
+    public void setIsOtherLoanType(boolean isOtherLoanType) {
+        this.isOtherLoanType = isOtherLoanType;
     }
 }

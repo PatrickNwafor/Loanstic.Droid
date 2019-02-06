@@ -1,6 +1,11 @@
 package com.icubed.loansticdroid.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -9,14 +14,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.algolia.search.saas.Index;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.cloudqueries.LoanTypeQueries;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import co.ceryle.segmentedbutton.SegmentedButtonGroup;
 
 public class LoanActivity extends AppCompatActivity {
     public ProgressBar loanProgressBar;
+    private LoanTypeQueries loanTypeQueries;
     private EditText searchLoanEditText;
     public SegmentedButtonGroup sbg;
     Index index;
@@ -37,6 +53,7 @@ public class LoanActivity extends AppCompatActivity {
         searchLoanEditText = findViewById(R.id.searchEditText);
 
         loanProgressBar = findViewById(R.id.borrowerProgressBar);
+        loanTypeQueries = new LoanTypeQueries();
 
         toolbar = findViewById(R.id.loan_toolbar);
         setSupportActionBar(toolbar);
@@ -106,4 +123,5 @@ public class LoanActivity extends AppCompatActivity {
 
         super.onBackPressed();
     }
+
 }
