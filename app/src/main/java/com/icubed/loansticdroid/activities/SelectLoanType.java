@@ -35,6 +35,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.LoanTypeRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.LoanTypeQueries;
+import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTableQueries;
 import com.icubed.loansticdroid.util.AndroidUtils;
@@ -57,6 +59,9 @@ public class SelectLoanType extends AppCompatActivity {
     public LoanTypeTable selectedLoanTypeTable = null;
     public ImageView lastCheck = null;
 
+    private BorrowersTable borrower;
+    private GroupBorrowerTable group;
+
     private CardView otherLoanCard;
     public ImageView otherLoanCheck;
 
@@ -75,6 +80,9 @@ public class SelectLoanType extends AppCompatActivity {
         getSupportActionBar().setTitle("Select loan type");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        borrower = getIntent().getParcelableExtra("borrower");
+        group = getIntent().getParcelableExtra("group");
 
         progressBar = findViewById(R.id.loan_types_progress_bar);
         otherLoanCard = findViewById(R.id.other_loan_card);
@@ -98,14 +106,20 @@ public class SelectLoanType extends AppCompatActivity {
 
     private void selectOtherLoan() {
         if(otherLoanCheck.getVisibility() == View.GONE){
+
+            if(lastCheck != null){
+                lastCheck.setVisibility(View.GONE);
+            }
+
             otherLoanCheck.setVisibility(View.VISIBLE);
-            lastCheck = null;
+            lastCheck = otherLoanCheck;
             selectedLoanTypeTable = null;
             invalidateOptionsMenu();
-            loanTypeRecyclerAdapter.notifyDataSetChanged();
         }else{
-            invalidateOptionsMenu();
+            lastCheck = null;
+            selectedLoanTypeTable = null;
             otherLoanCheck.setVisibility(View.GONE);
+            invalidateOptionsMenu();
         }
     }
 
@@ -283,6 +297,11 @@ public class SelectLoanType extends AppCompatActivity {
     private void startAnotherActivity(Class newActivity){
         Intent newActivityIntent = new Intent(this, newActivity);
         newActivityIntent.putExtra("loan_type", selectedLoanTypeTable);
+        if(borrower != null){
+            newActivityIntent.putExtra("borrower", borrower);
+        }else{
+            newActivityIntent.putExtra("group", group);
+        }
         startActivity(newActivityIntent);
     }
 

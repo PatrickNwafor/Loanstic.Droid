@@ -6,4 +6,129 @@
     android:layout_height="match_parent"
     tools:context="com.icubed.loansticdroid.activities.NewLoanWizard">
 
+    <include
+        android:id="@+id/select_loan_toolbar"
+        layout="@layout/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/searchEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/searchtextstyle"
+        android:drawableLeft="@drawable/ic_fiber_manual_record_black_24dp"
+        android:drawablePadding="40dp"
+        android:elevation="11dp"
+        android:ems="10"
+        android:hint="Search borrower's name or business..."
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:singleLine="true"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <co.ceryle.segmentedbutton.SegmentedButtonGroup
+        android:id="@+id/segmentedButtonGroup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.85"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/select_loan_toolbar"
+        app:sbg_animateSelector="bounce"
+        app:sbg_backgroundColor="@color/whiteEnd"
+        app:sbg_dividerColor="@color/colorPrimary"
+        app:sbg_dividerPadding="10dp"
+        app:sbg_dividerSize="1dp"
+        app:sbg_position="0"
+        app:sbg_radius="2dp"
+        app:sbg_ripple="true"
+        app:sbg_rippleColor="@color/colorPrimary"
+        app:sbg_selectorColor="@color/colorPrimary"
+        app:sbg_selectorTextColor="@color/whiteEnd"
+        app:sbg_shadow="true"
+        app:sbg_shadowElevation="3dp"
+        app:sbg_shadowMargin="4dp"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:id="@+id/singleBorrowerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="10dp"
+            android:text="Single"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/groupBorrowerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="10dp"
+            android:text="Group"
+            android:textAllCaps="false" />
+
+
+    </co.ceryle.segmentedbutton.SegmentedButtonGroup>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/segmentedButtonGroup"
+        tools:ignore="UnknownId">
+
+
+        <FrameLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/borrowerProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/proceed"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/add_borower_button"
+
+
+            android:drawableLeft="@drawable/proceed"
+            android:drawableTint="@color/whiteEnd"
+            android:onClick="collectionLocation"
+
+            android:text="Proceed"
+            android:textAllCaps="false"
+            android:textColor="@color/whiteEnd"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

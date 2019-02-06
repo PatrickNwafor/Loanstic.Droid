@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
 
 import java.text.SimpleDateFormat;
@@ -31,9 +33,11 @@ public class LoanTerms extends AppCompatActivity {
     String selectedDuration;
     private Toolbar toolbar;
     private LoanTypeTable loanTypeTable;
+    private GroupBorrowerTable group;
+    private BorrowersTable borrower;
     
     private EditText loanTypeNameEditText, principlaAmountEditText, loanInterestEditText
-            , loanDurationTextView, repaymentCycleEditText, loanFeesEditText;
+            , loanDurationTextView, repaymentCycleEditText, loanFeesEditText, loanTypeDesc;
     private CardView otherLoanCardView;
 
     final Calendar myCalendar = Calendar.getInstance();
@@ -50,8 +54,8 @@ public class LoanTerms extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         loanTypeTable = getIntent().getParcelableExtra("loan_type");
-//        Log.d(TAG, "onCreate: "+loanTypeTable.toString());
-
+        borrower = getIntent().getParcelableExtra("borrower");
+        group = getIntent().getParcelableExtra("group");
         
         loanTypeNameEditText = findViewById(R.id.loan_type_name);
         principlaAmountEditText = findViewById(R.id.principal_amount);
@@ -60,6 +64,7 @@ public class LoanTerms extends AppCompatActivity {
         loanDurationTextView = findViewById(R.id.loan_duration);
         repaymentCycleEditText = findViewById(R.id.repayment_cycle);
         loanFeesEditText = findViewById(R.id.loan_fees);
+        loanTypeDesc = findViewById(R.id.loan_type_desc);
         otherLoanCardView = findViewById(R.id.other_loan_card);
 
         //checking if the type of loan is a registered loan or other loan

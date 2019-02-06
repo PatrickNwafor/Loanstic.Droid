@@ -111,7 +111,6 @@
                         android:layout_marginTop="8dp"
                         android:background="@drawable/text_field_background"
                         android:ems="10"
-                        android:enabled="false"
                         android:inputType="text"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

@@ -101,7 +101,7 @@ public class LoanActivity extends AppCompatActivity {
                 return true;
 
             case R.id.add_loan:
-                startAnotherActivity(SelectLoanType.class);
+                startAnotherActivity(NewLoanWizard.class);
                 return true;
 
             default:
