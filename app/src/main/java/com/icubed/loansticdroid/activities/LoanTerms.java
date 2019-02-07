@@ -32,6 +32,8 @@ import com.icubed.loansticdroid.cloudqueries.OtherLoanTypeQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
+import com.icubed.loansticdroid.notification.LoanRequestNotificationQueries;
+import com.icubed.loansticdroid.notification.LoanRequestNotificationTable;
 import com.icubed.loansticdroid.util.FormUtil;
 
 import org.json.JSONException;
@@ -70,8 +72,11 @@ public class LoanTerms extends AppCompatActivity {
     private Button submitBtn;
     private ProgressBar progressBar;
 
+    private LoanRequestNotificationQueries loanRequestNotificationQueries;
+
     final Calendar myCalendar = Calendar.getInstance();
     private Index index;
+    private Date creationDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +109,7 @@ public class LoanTerms extends AppCompatActivity {
         formUtil = new FormUtil();
         account = new Account();
         otherLoanTypeQueries = new OtherLoanTypeQueries();
+        loanRequestNotificationQueries = new LoanRequestNotificationQueries();
 
         //Algolia search initiation
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
@@ -182,6 +188,7 @@ public class LoanTerms extends AppCompatActivity {
     }
 
     private void submitButtonListener(){
+        creationDate = new Date();
         if(loanTypeTable == null){
             createLoanTypeId();
         }else {
@@ -233,7 +240,7 @@ public class LoanTerms extends AppCompatActivity {
         loanMap.put("isOtherLoanType", isOtherLoanType);
         loanMap.put("loanOfficerId", account.getCurrentUserId());
         loanMap.put("loanTypeId", loanTypeTable.getLoanTypeId());
-        loanMap.put("loanCreationDate",  new Date());
+        loanMap.put("loanCreationDate",  creationDate);
         loanMap.put("loanAmount", Double.parseDouble(principlaAmountEditText.getText().toString()));
         loanMap.put("loanInterestRate", Double.parseDouble(loanInterestEditText.getText().toString()));
         loanMap.put("isLoanApproved", false);
@@ -255,6 +262,7 @@ public class LoanTerms extends AppCompatActivity {
                         if(task.isSuccessful()){
 
                             registerLoanForSearch(task.getResult().getId());
+                            sendNotification(task.getResult().getId());
 
                         }else{
                             progressBar.setVisibility(View.GONE);
@@ -263,6 +271,14 @@ public class LoanTerms extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void sendNotification(String loanId){
+        LoanRequestNotificationTable loanRequestNotificationTable = new LoanRequestNotificationTable();
+        loanRequestNotificationTable.setLoanId(loanId);
+        loanRequestNotificationTable.setTimestamp(creationDate);
+
+        loanRequestNotificationQueries.sendNotification(loanRequestNotificationTable, account.getCurrentUserId());
     }
 
     private void updateLabel() {

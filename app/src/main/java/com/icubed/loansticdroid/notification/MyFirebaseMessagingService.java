@@ -41,6 +41,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         String groupPendingApproval = remoteMessage.getData().get("group_notification");
         String borrowerPendingApproval = remoteMessage.getData().get("borrower_pending_approval");
+        String loanRequest = remoteMessage.getData().get("pending_loan_approval");
 
         if(groupPendingApproval != null && !TextUtils.isEmpty(groupPendingApproval)){
             pendingGroupApproval(remoteMessage);
@@ -49,6 +50,38 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if(borrowerPendingApproval != null && !TextUtils.isEmpty(borrowerPendingApproval)){
             pendingBorrowerApproval(remoteMessage);
         }
+
+        if(loanRequest != null && !TextUtils.isEmpty(loanRequest)){
+            loanRequest(remoteMessage);
+        }
+    }
+
+    private void loanRequest(RemoteMessage remoteMessage) {
+        String notificationTitle = remoteMessage.getNotification().getTitle();
+        String notificationBody = remoteMessage.getNotification().getBody();
+        String click_action = remoteMessage.getNotification().getClickAction();
+        String loanId = remoteMessage.getData().get("loanId");
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.add_new_loan)
+                .setContentTitle(notificationTitle)
+                .setContentText(notificationBody)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        //Setting up tap action
+        Intent intent = new Intent(click_action);
+        intent.putExtra("loanId", loanId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        mBuilder.setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        int notificationId = (int)System.currentTimeMillis();
+        notificationManager.notify(notificationId, mBuilder.build());
     }
 
     private void pendingBorrowerApproval(RemoteMessage remoteMessage) {
