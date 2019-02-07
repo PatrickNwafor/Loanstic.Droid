@@ -48,4 +48,26 @@ public class FormUtil {
         return false;
     }
 
+    public boolean doesFormContainDoublesOnly(EditText editText){
+        try {
+            Double.parseDouble(editText.getText().toString());
+            editText.setError(null);
+            return true;
+        } catch (NumberFormatException e) {
+            editText.setError("Only numbers are allowed");
+            return false;
+        }
+    }
+
+    public boolean doesFormContainIntegersOnly(EditText editText){
+        try {
+            Integer.parseInt(editText.getText().toString());
+            editText.setError(null);
+            return true;
+        } catch (NumberFormatException e) {
+            editText.setError("Only integer numbers are allowed");
+            return false;
+        }
+    }
+
 }

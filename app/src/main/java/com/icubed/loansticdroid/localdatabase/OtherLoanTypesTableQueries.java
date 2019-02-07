@@ -26,7 +26,7 @@ public class OtherLoanTypesTableQueries {
     /************Load all LoansQueries from local Storage********/
     public List<OtherLoanTypesTable> loadAllLoanTypesOrderByName(){
         return otherLoanTypesTableDao.queryBuilder()
-                .orderDesc(OtherLoanTypesTableDao.Properties.OtherloanTypeName)
+                .orderDesc(OtherLoanTypesTableDao.Properties.OtherLoanTypeName)
                 .build()
                 .list();
     }
