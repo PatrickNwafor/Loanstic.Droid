@@ -286,7 +286,7 @@ public class NewLoanWizard extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        getMenuInflater().inflate(R.menu.borrower_menu, menu);
+        getMenuInflater().inflate(R.menu.loanee_menu, menu);
 
         return true;
     }
@@ -296,10 +296,6 @@ public class NewLoanWizard extends AppCompatActivity {
 
 
         switch (item.getItemId()) {
-            case R.id.nav_new_borrower:
-                startAnotherActivity(AddSingleBorrower.class);
-                return true;
-
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -308,10 +304,6 @@ public class NewLoanWizard extends AppCompatActivity {
                 searchBorrowerEditText.setVisibility(View.VISIBLE);
                 searchBorrowerEditText.requestFocus();
                 showKeyboard();
-                return true;
-
-            case R.id.nav_new_group:
-                startAnotherActivity(AddGroupBorrower.class);
                 return true;
 
             default:
