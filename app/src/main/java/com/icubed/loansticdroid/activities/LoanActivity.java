@@ -77,7 +77,7 @@ public class LoanActivity extends AppCompatActivity {
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
         index = client.getIndex("Loan");
 
-        //getAllLoan();
+        getAllLoan();
     }
 
     private void searchLoanEditTextListener() {
