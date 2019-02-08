@@ -6,10 +6,10 @@
     android:id="@+id/folding_cell"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    folding-cell:animationDuration="1000"
+    folding-cell:animationDuration="800"
     folding-cell:backSideColor="@color/colorPrimary"
     folding-cell:additionalFlipsCount="2"
-    folding-cell:cameraHeight="30"
+    folding-cell:cameraHeight="20"
     android:clipChildren="false"
     android:clipToPadding="false">
     ​

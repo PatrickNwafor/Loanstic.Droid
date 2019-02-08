@@ -5,6 +5,8 @@
     android:id="@+id/linearLayout3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     tools:context=".activities.BorrowerActivity">
 
     <include
@@ -36,26 +38,33 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loan_toolbar"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         tools:ignore="UnknownId">
 
 
         <!-- Recycle from here-->
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swiperefresh"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
 
             <!--start of sample of what i want, i'll put the whole layout here  -->
@@ -65,12 +74,14 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:folding-cell="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/folding_cell"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                folding-cell:animationDuration="600"
+
+                folding-cell:animationDuration="800"
                 folding-cell:backSideColor="@color/colorPrimary"
                 folding-cell:additionalFlipsCount="2"
-                folding-cell:cameraHeight="30"
+                folding-cell:cameraHeight="20"
                 android:clipChildren="false"
                 android:clipToPadding="false">
                 ​
