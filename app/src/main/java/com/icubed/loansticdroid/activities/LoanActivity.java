@@ -26,9 +26,12 @@ import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.LoanRecyclerAdapter;
+import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
 import com.icubed.loansticdroid.models.Loan;
 import com.icubed.loansticdroid.util.AndroidUtils;
+import com.ramotion.foldingcell.FoldingCell;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +50,8 @@ public class LoanActivity extends AppCompatActivity {
     public RecyclerView loanRecyclerView;
     public LoanRecyclerAdapter loanRecyclerAdapter;
     public SwipeRefreshLayout swipeRefreshLayout;
+    public List<BorrowersTable> borrowersTables;
+    public List<GroupBorrowerTable> groupBorrowerTables;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +63,8 @@ public class LoanActivity extends AppCompatActivity {
         loanRecyclerView = findViewById(R.id.loan_list);
 
         loan = new Loan(this);
+        borrowersTables = new ArrayList<>();
+        groupBorrowerTables = new ArrayList<>();
 
         searchLoanEditTextListener();
 
@@ -77,7 +84,19 @@ public class LoanActivity extends AppCompatActivity {
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
         index = client.getIndex("Loan");
 
-        getAllLoan();
+        // get our folding cell
+        final FoldingCell fc = (FoldingCell) findViewById(R.id.folding_cell);
+
+        // attach click listener to folding cell
+        fc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fc.toggle(false);
+            }
+        });
+
+
+        //getAllLoan();
     }
 
     private void searchLoanEditTextListener() {
