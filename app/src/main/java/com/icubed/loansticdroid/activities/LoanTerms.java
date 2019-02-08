@@ -207,6 +207,7 @@ public class LoanTerms extends AppCompatActivity {
         loanTypeMap.put("otherLoanTypeName", loanTypeNameEditText.getText().toString());
         loanTypeMap.put("otherLoanTypeDescription", loanTypeDescEditText.getText().toString());
         loanTypeMap.put("timestamp", new Date());
+        loanTypeMap.put("lasUpdatedAt", new Date());
 
         otherLoanTypeQueries.saveOtherLoanType(loanTypeMap)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
@@ -251,6 +252,7 @@ public class LoanTerms extends AppCompatActivity {
         loanMap.put("loanDurationUnit", selectedDuration);
         loanMap.put("repaymentAmount", Double.parseDouble(repaymentCycleEditText.getText().toString()));
         loanMap.put("repaymentAmountUnit", selectedCycle);
+        loanMap.put("lasUpdatedAt", new Date());
 
         if(!formUtil.isSingleFormEmpty(loanFeesEditText) && formUtil.doesFormContainNumbersOnly(loanFeesEditText))
             loanMap.put("loanFees", Double.parseDouble(loanFeesEditText.getText().toString()));

@@ -23,18 +23,20 @@ public class LoanTypeTable implements Parcelable {
     private Long Id;
 
     private String loanTypeName;
+    private Date lastUpdatedAt;
     private String loanTypeDescription;
 
     private String loanTypeImageUri;
     private String loanTypeImageThumbUri;
     private Date timestamp;
     private byte[] loanTypeImageByteArray;
-    @Generated(hash = 851424644)
-    public LoanTypeTable(String loanTypeId, String branchId, Long Id, String loanTypeName, String loanTypeDescription, String loanTypeImageUri, String loanTypeImageThumbUri, Date timestamp, byte[] loanTypeImageByteArray) {
+    @Generated(hash = 1885994709)
+    public LoanTypeTable(String loanTypeId, String branchId, Long Id, String loanTypeName, Date lastUpdatedAt, String loanTypeDescription, String loanTypeImageUri, String loanTypeImageThumbUri, Date timestamp, byte[] loanTypeImageByteArray) {
         this.loanTypeId = loanTypeId;
         this.branchId = branchId;
         this.Id = Id;
         this.loanTypeName = loanTypeName;
+        this.lastUpdatedAt = lastUpdatedAt;
         this.loanTypeDescription = loanTypeDescription;
         this.loanTypeImageUri = loanTypeImageUri;
         this.loanTypeImageThumbUri = loanTypeImageThumbUri;
@@ -126,6 +128,12 @@ public class LoanTypeTable implements Parcelable {
                 this.loanTypeName,
                 this.loanTypeDescription,
                 this.branchId});
+    }
+    public Date getLastUpdatedAt() {
+        return this.lastUpdatedAt;
+    }
+    public void setLastUpdatedAt(Date lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

@@ -11,7 +11,8 @@
          <!--Statu bar tuff.-->
         <item name="android:statusBarColor">@color/whiteEnd</item>
         <item name="android:windowLightStatusBar">true</item>
-
+        <!--menu item-->
+        <item name="android:actionMenuTextColor">@color/colorAccent</item>
     </style>
 
     <style name="Widget.AppCompat.Button.Toggle" parent="android:Widget">

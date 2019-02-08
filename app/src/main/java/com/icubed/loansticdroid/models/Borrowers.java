@@ -251,17 +251,7 @@ public class Borrowers {
         BorrowersTable currentlySaved = borrowersTableQueries.loadSingleBorrower(doc.getId());
         borrowersTable.setId(currentlySaved.getId());
 
-        if(!borrowersTable.getFirstName().equals(currentlySaved.getFirstName()) ||
-                !borrowersTable.getLastName().equals(currentlySaved.getLastName()) ||
-                !borrowersTable.getMiddleName().equals(currentlySaved.getMiddleName()) ||
-                !borrowersTable.getAssignedBy().equals(currentlySaved.getAssignedBy()) ||
-                !borrowersTable.getProfileImageUri().equals(currentlySaved.getProfileImageUri()) ||
-                borrowersTable.getBelongsToGroup() != currentlySaved.getBelongsToGroup() ||
-                borrowersTable.getBorrowerLocationLatitude() != currentlySaved.getBorrowerLocationLatitude() ||
-                borrowersTable.getBorrowerLocationLongitude() != currentlySaved.getBorrowerLocationLongitude() ||
-                !borrowersTable.getLoanOfficerId().equals(currentlySaved.getLoanOfficerId()) ||
-                !borrowersTable.getSex().equals(currentlySaved.getSex()) ||
-                !borrowersTable.getBusinessName().equals(currentlySaved.getBusinessName())){
+        if(borrowersTable.getLastUpdatedAt().getTime() != currentlySaved.getLastUpdatedAt().getTime()){
 
             borrowersTableQueries.updateBorrowerDetails(borrowersTable);
             loadBorrowersToUI();

@@ -25,15 +25,12 @@ public class GroupBorrowerTable implements Parcelable {
     private Boolean isGroupApproved;
     private String approvedBy;
     private String assignedBy;
+    private Date lastUpdatedAt;
     private String meetingLocation;
     private double groupLocationLatitude, groupLocationLongitude;
     private Date timestamp;
-    @Generated(hash = 1002580946)
-    public GroupBorrowerTable(String groupId, Long id, String groupName,
-            String groupLeaderId, String loanOfficerId, int numberOfGroupMembers,
-            Boolean isGroupApproved, String approvedBy, String assignedBy,
-            String meetingLocation, double groupLocationLatitude,
-            double groupLocationLongitude, Date timestamp) {
+    @Generated(hash = 921088956)
+    public GroupBorrowerTable(String groupId, Long id, String groupName, String groupLeaderId, String loanOfficerId, int numberOfGroupMembers, Boolean isGroupApproved, String approvedBy, String assignedBy, Date lastUpdatedAt, String meetingLocation, double groupLocationLatitude, double groupLocationLongitude, Date timestamp) {
         this.groupId = groupId;
         this.id = id;
         this.groupName = groupName;
@@ -43,6 +40,7 @@ public class GroupBorrowerTable implements Parcelable {
         this.isGroupApproved = isGroupApproved;
         this.approvedBy = approvedBy;
         this.assignedBy = assignedBy;
+        this.lastUpdatedAt = lastUpdatedAt;
         this.meetingLocation = meetingLocation;
         this.groupLocationLatitude = groupLocationLatitude;
         this.groupLocationLongitude = groupLocationLongitude;
@@ -169,6 +167,12 @@ public class GroupBorrowerTable implements Parcelable {
                 this.assignedBy, String.valueOf(this.isGroupApproved),
                 this.approvedBy,
                 this.meetingLocation, String.valueOf(this.groupLocationLatitude), String.valueOf(this.groupLocationLongitude)});
+    }
+    public Date getLastUpdatedAt() {
+        return this.lastUpdatedAt;
+    }
+    public void setLastUpdatedAt(Date lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

@@ -33,6 +33,7 @@ public class PaymentTable {
     private Boolean isPaid;
 
     private Date actualPaymentDate;
+    private Date lastUpdatedAt;
 
     private double actualPaymentAmount;
 
@@ -44,14 +45,14 @@ public class PaymentTable {
 
     private String paymentMethod;
 
-    @Generated(hash = 15052619)
+    @Generated(hash = 1396621367)
     public PaymentTable(String paymentId, String loanId, Long id,
             String paymentScheduleOrder, String interestId, double interestAmount,
             double repaymentPrincipal, double totalRepaymentDue,
             Date repaymentDueDate, Boolean isPaid, Date actualPaymentDate,
-            double actualPaymentAmount, String paymentLocationId,
-            String paymentValidationPhotoUrl, String paymentValidationThumbPhotoUrl,
-            String paymentMethod) {
+            Date lastUpdatedAt, double actualPaymentAmount,
+            String paymentLocationId, String paymentValidationPhotoUrl,
+            String paymentValidationThumbPhotoUrl, String paymentMethod) {
         this.paymentId = paymentId;
         this.loanId = loanId;
         this.id = id;
@@ -63,6 +64,7 @@ public class PaymentTable {
         this.repaymentDueDate = repaymentDueDate;
         this.isPaid = isPaid;
         this.actualPaymentDate = actualPaymentDate;
+        this.lastUpdatedAt = lastUpdatedAt;
         this.actualPaymentAmount = actualPaymentAmount;
         this.paymentLocationId = paymentLocationId;
         this.paymentValidationPhotoUrl = paymentValidationPhotoUrl;
@@ -201,5 +203,13 @@ public class PaymentTable {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public Date getLastUpdatedAt() {
+        return this.lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt(Date lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 }

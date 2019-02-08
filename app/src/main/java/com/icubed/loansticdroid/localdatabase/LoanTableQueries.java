@@ -23,14 +23,10 @@ public class LoanTableQueries {
         return loansTableDao.loadAll();
     }
 
-    /*********Load all single loan from storage******************/
-    public List<LoansTable> loadAllSingleLoans(){
+    public List<LoansTable> loadAllLoansOrderByCreationDate(){
         return loansTableDao.queryBuilder()
-                .whereOr(LoansTableDao.Properties.BorrowerId.notEq(null),
-                        LoansTableDao.Properties.BorrowerId.notEq(""))
                 .orderDesc(LoansTableDao.Properties.LoanCreationDate)
-                .build()
-                .list();
+                .build().list();
     }
 
     /**********Load a single collection from local Storage*******/

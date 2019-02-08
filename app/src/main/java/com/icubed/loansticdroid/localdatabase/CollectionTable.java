@@ -23,21 +23,22 @@ public class CollectionTable {
     private Double collectionDueAmount;
 
     private String collectionDueDate;
-
+    private Date lastUpdatedAt;
     private Date timestamp;
 
     private Boolean isDueCollected;
 
-    @Generated(hash = 1288563364)
+    @Generated(hash = 1171022176)
     public CollectionTable(String collectionId, String loanId, int collectionNumber,
             Long id, Double collectionDueAmount, String collectionDueDate,
-            Date timestamp, Boolean isDueCollected) {
+            Date lastUpdatedAt, Date timestamp, Boolean isDueCollected) {
         this.collectionId = collectionId;
         this.loanId = loanId;
         this.collectionNumber = collectionNumber;
         this.id = id;
         this.collectionDueAmount = collectionDueAmount;
         this.collectionDueDate = collectionDueDate;
+        this.lastUpdatedAt = lastUpdatedAt;
         this.timestamp = timestamp;
         this.isDueCollected = isDueCollected;
     }
@@ -108,6 +109,14 @@ public class CollectionTable {
 
     public void setIsDueCollected(Boolean isDueCollected) {
         this.isDueCollected = isDueCollected;
+    }
+
+    public Date getLastUpdatedAt() {
+        return this.lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt(Date lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 
 }

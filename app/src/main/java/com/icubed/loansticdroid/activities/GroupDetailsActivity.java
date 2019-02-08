@@ -126,7 +126,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
             public void onNewLocationAvailable(LocationProviderUtil.GPSCoordinates location) {
                 if(!gottenLocation) {
                     local = location.getLocation;
-                    createBorrower();
+                    createGroup();
                     gottenLocation = true;
                 }
             }
@@ -146,7 +146,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
     }
 
-    private void createBorrower(){
+    private void createGroup(){
 
         Map<String, Object> groupMap = new HashMap<>();
         groupMap.put("groupName", groupNameEditText.getText().toString());
@@ -160,6 +160,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
         groupMap.put("groupLocationLatitude", local.getLatitude());
         groupMap.put("groupLocationLongitude", local.getLongitude());
         groupMap.put("timestamp", new Date());
+        groupMap.put("lasUpdatedAt", new Date());
 
         groupBorrowerQueries.createBorrowersGroup(groupMap)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {

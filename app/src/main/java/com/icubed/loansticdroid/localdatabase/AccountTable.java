@@ -19,13 +19,14 @@ public class AccountTable {
             ,homeAddress, nationality, state, accountType;
 
     private Date timestamp;
+    private Date lastUpdatedAt;
 
-    @Generated(hash = 1761453224)
+    @Generated(hash = 932989188)
     public AccountTable(String accountId, Long id, String firstName,
             String middleName, String lastName, String branchName,
             String profileImageUri, String profileImageThumbUri, String sex,
             String dateOfBirth, String homeAddress, String nationality,
-            String state, String accountType, Date timestamp) {
+            String state, String accountType, Date timestamp, Date lastUpdatedAt) {
         this.accountId = accountId;
         this.id = id;
         this.firstName = firstName;
@@ -41,6 +42,7 @@ public class AccountTable {
         this.state = state;
         this.accountType = accountType;
         this.timestamp = timestamp;
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 
     @Generated(hash = 528739196)
@@ -165,5 +167,13 @@ public class AccountTable {
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Date getLastUpdatedAt() {
+        return this.lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt(Date lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 }

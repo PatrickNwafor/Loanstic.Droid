@@ -186,12 +186,7 @@ public class Groups {
         GroupBorrowerTable currentlySaved = groupBorrowerTableQueries.loadSingleBorrowerGroup(doc.getId());
         groupBorrowerTable.setId(currentlySaved.getId());
 
-        if(!groupBorrowerTable.getGroupName().equals(currentlySaved.getGroupName()) ||
-                !groupBorrowerTable.getAssignedBy().equals(currentlySaved.getAssignedBy()) ||
-                groupBorrowerTable.getApprovedBy() != currentlySaved.getApprovedBy() ||
-                groupBorrowerTable.getGroupLocationLatitude() != currentlySaved.getGroupLocationLatitude() ||
-                groupBorrowerTable.getGroupLocationLongitude() != currentlySaved.getGroupLocationLongitude() ||
-                !groupBorrowerTable.getLoanOfficerId().equals(currentlySaved.getLoanOfficerId())){
+        if(groupBorrowerTable.getLastUpdatedAt().getTime() != currentlySaved.getLastUpdatedAt().getTime()){
 
             groupBorrowerTableQueries.updateGroupDetails(groupBorrowerTable);
             loadGroupsToUI();

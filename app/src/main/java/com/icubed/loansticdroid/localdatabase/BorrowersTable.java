@@ -26,20 +26,15 @@ public class BorrowersTable implements Parcelable {
     private Date timestamp;
     private Long phoneNumber, zipcode;
     private boolean belongsToGroup, isApproved;
+    private Date lastUpdatedAt;
 
     @Id(autoincrement = true)
     private Long id;
 
     private double borrowerLocationLatitude, borrowerLocationLongitude;
 
-    @Generated(hash = 557029862)
-    public BorrowersTable(String borrowersId, String loanOfficerId, String firstName, String middleName,
-            String lastName, String businessName, String assignedBy, String profileImageUri,
-            String profileImageThumbUri, String nationality, String workAddress, String sex, String approvedBy,
-            String homeAddress, String state, String city, String dateOfBirth, String email,
-            String businessDescription, String photovalidationId, Date timestamp, Long phoneNumber, Long zipcode,
-            boolean belongsToGroup, boolean isApproved, Long id, double borrowerLocationLatitude,
-            double borrowerLocationLongitude) {
+    @Generated(hash = 1637448575)
+    public BorrowersTable(String borrowersId, String loanOfficerId, String firstName, String middleName, String lastName, String businessName, String assignedBy, String profileImageUri, String profileImageThumbUri, String nationality, String workAddress, String sex, String approvedBy, String homeAddress, String state, String city, String dateOfBirth, String email, String businessDescription, String photovalidationId, Date timestamp, Long phoneNumber, Long zipcode, boolean belongsToGroup, boolean isApproved, Date lastUpdatedAt, Long id, double borrowerLocationLatitude, double borrowerLocationLongitude) {
         this.borrowersId = borrowersId;
         this.loanOfficerId = loanOfficerId;
         this.firstName = firstName;
@@ -65,6 +60,7 @@ public class BorrowersTable implements Parcelable {
         this.zipcode = zipcode;
         this.belongsToGroup = belongsToGroup;
         this.isApproved = isApproved;
+        this.lastUpdatedAt = lastUpdatedAt;
         this.id = id;
         this.borrowerLocationLatitude = borrowerLocationLatitude;
         this.borrowerLocationLongitude = borrowerLocationLongitude;
@@ -367,6 +363,14 @@ public class BorrowersTable implements Parcelable {
                 String.valueOf(this.belongsToGroup), String.valueOf(this.id),
                 String.valueOf(this.borrowerLocationLatitude), String.valueOf(this.borrowerLocationLongitude),
                 this.approvedBy, String.valueOf(this.isApproved)});
+    }
+
+    public Date getLastUpdatedAt() {
+        return this.lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt(Date lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 
 

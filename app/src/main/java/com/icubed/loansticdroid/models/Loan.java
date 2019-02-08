@@ -23,6 +23,7 @@ import com.icubed.loansticdroid.localdatabase.LoanTableQueries;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTableQueries;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
+import com.icubed.loansticdroid.localdatabase.OtherLoanTypesTable;
 import com.icubed.loansticdroid.localdatabase.OtherLoanTypesTableQueries;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class Loan {
     private LoanTypeQueries loanTypeQueries;
     private OtherLoanTypeQueries otherLoanTypeQueries;
     private OtherLoanTypesTableQueries otherLoanTypesTableQueries;
-    Activity activity;
+    private Activity activity;
 
     public Loan(Activity activity) {
         this.activity = activity;
@@ -44,10 +45,12 @@ public class Loan {
         loanTableQueries = new LoanTableQueries(activity.getApplication());
         loanTypeTableQueries = new LoanTypeTableQueries(activity.getApplication());
         loanTypeQueries = new LoanTypeQueries();
+        otherLoanTypeQueries = new OtherLoanTypeQueries();
+        otherLoanTypesTableQueries = new OtherLoanTypesTableQueries(activity.getApplication());
     }
 
-    public Boolean doesSingleLoansTableExistInLocalStorage(){
-        List<LoansTable> loansTable = loanTableQueries.loadAllSingleLoans();
+    public Boolean doesLoansTableExistInLocalStorage(){
+        List<LoansTable> loansTable = loanTableQueries.loadAllLoans();
         return !loansTable.isEmpty();
     }
 
@@ -57,49 +60,63 @@ public class Loan {
      * this is necessary so that only the borrowers assigned to a loan officer is seen on his borrowers page.
      * if the officers need to search for a non assigned borrower, he has to use the search field
      */
-    public void loadAllSingleLoan(){
-
-        if(doesSingleLoansTableExistInLocalStorage()){
-            loadAllBorrowersAndCompareToLocal();
-            return;
-        }
+    public void loadAllLoan(){
 
         loansQueries.retrieveAllLoans()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    if(!task.getResult().isEmpty()){
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            if(!task.getResult().isEmpty()){
 
-                        for(DocumentSnapshot doc : task.getResult().getDocuments()){
-                            LoansTable loansTable = doc.toObject(LoansTable.class);
-                            loansTable.setLoanId(doc.getId());
-                            
-                            if(loansTable.getBorrowerId() != null) {
-                                saveLoanToLocalStorage(loansTable);
-                                getLoanType(loansTable);
+                                for(DocumentSnapshot doc : task.getResult().getDocuments()){
+                                    LoansTable loansTable = doc.toObject(LoansTable.class);
+                                    loansTable.setLoanId(doc.getId());
+
+                                    saveLoanToLocalStorage(loansTable);
+                                    getLoanType(loansTable);
+                                }
+
+                                loadLoansToUI();
+                            }else{
+                                removeRefresher();
+                                ((LoanActivity) activity).loanProgressBar.setVisibility(View.GONE);
+                                Toast.makeText(activity, "Document is empty", Toast.LENGTH_SHORT).show();
                             }
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
                         }
-
-                        loadLoansToUI();
-                    }else{
-                        removeRefresher();
-                        ((LoanActivity) activity).loanProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(activity, "Document is empty", Toast.LENGTH_SHORT).show();
                     }
-                }else{
-                    Log.d(TAG, "onComplete: "+task.getException().getMessage());
-                }
-            }
-        });
+                });
     }
 
     private void getLoanType(LoansTable loansTable) {
-        LoanTypeTable loanTypeTable = loanTypeTableQueries.loadSingleLoanType(loansTable.getLoanTypeId());
 
-        if(loanTypeTable ==  null){
-            if(loansTable.getIsOtherLoanType()) getOtherLoanType(loansTable.getLoanTypeId());
-            else getNormalLoanType(loansTable.getLoanTypeId());
+        if(loansTable.getIsOtherLoanType()) {
+            List<OtherLoanTypesTable> otherLoanTypesTable = otherLoanTypesTableQueries.loadAllLoanTpes();
+
+            if(otherLoanTypesTable != null) {
+                for (OtherLoanTypesTable typesTable : otherLoanTypesTable) {
+                    if(typesTable.getOtherLoanTypeId().equals(loansTable.getLoanTypeId())){
+                        return;
+                    }
+                }
+
+                getOtherLoanType(loansTable.getLoanTypeId());
+            }
+        }
+        else{
+            List<LoanTypeTable> loanTypeTable = loanTypeTableQueries.loadAllLoanTpes();
+
+            if(loanTypeTable != null){
+                for (LoanTypeTable typeTable : loanTypeTable) {
+                    if(typeTable.getLoanTypeId().equals(loansTable.getLoanTypeId())){
+                        return;
+                    }
+                }
+
+                getNormalLoanType(loansTable.getLoanTypeId());
+            }
         }
     }
 
@@ -109,15 +126,40 @@ public class Loan {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if(task.isSuccessful()){
+                            LoanTypeTable loanTypeTable = task.getResult().toObject(LoanTypeTable.class);
+                            loanTypeTable.setLoanTypeId(task.getResult().getId());
 
+                            saveLoanTypeToLocalStorage(loanTypeTable);
                         }else{
-
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
                         }
                     }
                 });
     }
 
+    private void saveLoanTypeToLocalStorage(LoanTypeTable loanTypeTable) {
+        loanTypeQueries.saveLoanType(loanTypeTable);
+    }
+
     private void getOtherLoanType(String loanTypeId) {
+        otherLoanTypeQueries.retrieveSingleOtherLoanType(loanTypeId)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            OtherLoanTypesTable otherLoanTypesTable = task.getResult().toObject(OtherLoanTypesTable.class);
+                            otherLoanTypesTable.setOtherLoanTypeId(task.getResult().getId());
+
+                            saveOtherLoanTypeToLocalStorage(otherLoanTypesTable);
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void saveOtherLoanTypeToLocalStorage(OtherLoanTypesTable otherLoanTypesTable) {
+        otherLoanTypesTableQueries.insertLoanTypeToStorage(otherLoanTypesTable);
     }
 
     private void saveLoanToLocalStorage(LoansTable loansTable) {
@@ -125,7 +167,7 @@ public class Loan {
     }
 
     public void loadLoansToUI(){
-        List<LoansTable> loansTable = loanTableQueries.loadAllSingleLoans();
+        List<LoansTable> loansTable = loanTableQueries.loadAllLoansOrderByCreationDate();
 
         ((LoanActivity) activity).loanRecyclerAdapter = new LoanRecyclerAdapter(loansTable);
         ((LoanActivity) activity).loanRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
@@ -139,8 +181,8 @@ public class Loan {
      * this is necessary so that only the borrowers assigned to a loan officer is seen on his borrowers page.
      * if the officers need to search for a non assigned borrower, he has to use the search field
      */
-    public void loadAllBorrowersAndCompareToLocal() {
-        final List<LoansTable> loanList = loanTableQueries.loadAllSingleLoans();
+    public void loadAllLoansAndCompareToLocal() {
+        final List<LoansTable> loanList = loanTableQueries.loadAllLoans();
 
         loansQueries.retrieveAllLoans()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -152,40 +194,37 @@ public class Loan {
                                 Boolean isThereNewData = false;
                                 List<LoansTable> loansInStorage = loanList;
                                 for(DocumentSnapshot doc : task.getResult().getDocuments()) {
-                                    
-                                    if(doc.getString("borrowerId") != null) {
 
-                                        Boolean doesDataExist = false;
-                                        for (LoansTable loanTab : loanList) {
-                                            if (loanTab.getLoanId().equals(doc.getId())) {
-                                                doesDataExist = true;
-                                                loansInStorage.remove(loanTab);
-                                                Log.d(TAG, "onComplete: loan id of " + doc.getId() + " already exist");
-                                                break;
-                                            }
+                                    Boolean doesDataExist = false;
+                                    for (LoansTable loanTab : loanList) {
+                                        if (loanTab.getLoanId().equals(doc.getId())) {
+                                            doesDataExist = true;
+                                            loansInStorage.remove(loanTab);
+                                            Log.d(TAG, "onComplete: loan id of " + doc.getId() + " already exist");
+                                            break;
                                         }
+                                    }
 
-                                        if (!doesDataExist) {
-                                            Log.d(TAG, "onComplete: loan id of " + doc.getId() + " does not exist");
+                                    if (!doesDataExist) {
+                                        Log.d(TAG, "onComplete: loan id of " + doc.getId() + " does not exist");
 
-                                            LoansTable loansTable = doc.toObject(LoansTable.class);
-                                            loansTable.setLoanId(doc.getId());
-                                            isThereNewData = true;
+                                        LoansTable loansTable = doc.toObject(LoansTable.class);
+                                        loansTable.setLoanId(doc.getId());
+                                        isThereNewData = true;
 
-                                            saveLoanToLocalStorage(loansTable);
-                                        } else {
-                                            //Update local table if any changes
-                                            updateTable(doc);
-                                        }
-
-                                    }    
+                                        saveLoanToLocalStorage(loansTable);
+                                        getLoanType(loansTable);
+                                    } else {
+                                        //Update local table if any changes
+                                        updateTable(doc);
+                                    }
                                 }
 
                                 //to delete deleted borrower in cloud from storage
                                 if(!loansInStorage.isEmpty()){
-                                    for(LoansTable borowTab : loansInStorage){
-                                        deleteBorrowerFromLocalStorage(borowTab);
-                                        Log.d("Delete", "deleted "+borowTab.getLoanId()+ " from storage");
+                                    for(LoansTable loanTab : loansInStorage){
+                                        deleteBorrowerFromLocalStorage(loanTab);
+                                        Log.d("Delete", "deleted "+loanTab.getLoanId()+ " from storage");
                                     }
                                 }
 
@@ -222,11 +261,11 @@ public class Loan {
         LoansTable currentlySaved = loanTableQueries.loadSingleLoan(doc.getId());
         loansTable.setId(currentlySaved.getId());
 
-        if(!loansTable.getLastUpdatedAt().equals(currentlySaved.getLastUpdatedAt())){
+        if(loansTable.getLastUpdatedAt().getTime() != currentlySaved.getLastUpdatedAt().getTime()){
 
             loanTableQueries.updateLoanDetails(loansTable);
             loadLoansToUI();
-            Log.d("Borrower", "Borrower Detailed updated");
+            Log.d("Loan", "Loan Detailed updated");
 
         }
     }

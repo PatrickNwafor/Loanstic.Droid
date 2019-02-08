@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -67,6 +68,12 @@ public class OtherLoanTypeQueries {
     public Task<QuerySnapshot> retrieveAllOtherLoanType(){
         return firebaseFirestore.collection("Other_Loan_Type")
                 .whereEqualTo("branchId", "2s6biiTANBZ4VqTUDrtEsdwgc822")
+                .get();
+    }
+
+    public Task<DocumentSnapshot> retrieveSingleOtherLoanType(String loanTypeId){
+        return firebaseFirestore.collection("Other_Loan_Type")
+                .document(loanTypeId)
                 .get();
     }
 

@@ -14,14 +14,15 @@ public class GroupMembersTable {
     private String groupMemberId;
     @Id
     private Long id;
-
+    private Date lastUpdatedAt;
     private String groupId, borrowerId;
     private Date timestamp;
-    @Generated(hash = 509070409)
-    public GroupMembersTable(String groupMemberId, Long id, String groupId,
-            String borrowerId, Date timestamp) {
+    @Generated(hash = 1900504088)
+    public GroupMembersTable(String groupMemberId, Long id, Date lastUpdatedAt,
+            String groupId, String borrowerId, Date timestamp) {
         this.groupMemberId = groupMemberId;
         this.id = id;
+        this.lastUpdatedAt = lastUpdatedAt;
         this.groupId = groupId;
         this.borrowerId = borrowerId;
         this.timestamp = timestamp;
@@ -58,6 +59,12 @@ public class GroupMembersTable {
     }
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+    public Date getLastUpdatedAt() {
+        return this.lastUpdatedAt;
+    }
+    public void setLastUpdatedAt(Date lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 
 }

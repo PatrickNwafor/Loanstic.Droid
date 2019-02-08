@@ -20,18 +20,20 @@ public class OtherLoanTypesTable{
 
     private String otherLoanTypeName;
     private String otherLoanTypeDescription;
+    private Date lastUpdatedAt;
 
     private Date timestamp;
 
-    @Generated(hash = 636768430)
+    @Generated(hash = 1138701537)
     public OtherLoanTypesTable(String otherLoanTypeId, String branchId, Long Id,
             String otherLoanTypeName, String otherLoanTypeDescription,
-            Date timestamp) {
+            Date lastUpdatedAt, Date timestamp) {
         this.otherLoanTypeId = otherLoanTypeId;
         this.branchId = branchId;
         this.Id = Id;
         this.otherLoanTypeName = otherLoanTypeName;
         this.otherLoanTypeDescription = otherLoanTypeDescription;
+        this.lastUpdatedAt = lastUpdatedAt;
         this.timestamp = timestamp;
     }
 
@@ -85,5 +87,13 @@ public class OtherLoanTypesTable{
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Date getLastUpdatedAt() {
+        return this.lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt(Date lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 }
