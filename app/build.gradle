@@ -46,6 +46,7 @@ dependencies {
     implementation 'com.github.ceryle:SegmentedButton:v1.0'
     implementation 'com.google.maps:google-maps-services:0.1.20'
     implementation 'org.slf4j:slf4j-simple:1.7.25'
+    implementation 'com.ramotion.foldingcell:folding-cell:1.2.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

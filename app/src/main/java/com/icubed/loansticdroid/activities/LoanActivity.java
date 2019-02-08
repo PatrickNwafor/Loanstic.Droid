@@ -30,6 +30,7 @@ import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.LoanRecyclerAdapter;
 import com.icubed.loansticdroid.util.AndroidUtils;
+import com.ramotion.foldingcell.FoldingCell;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -42,6 +43,8 @@ public class LoanActivity extends AppCompatActivity {
     private EditText searchLoanEditText;
     Index index;
     private Toolbar toolbar;
+
+
 
     public RecyclerView loanRecyclerView;
     public LoanRecyclerAdapter loanRecyclerAdapter;
@@ -68,6 +71,19 @@ public class LoanActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Loans");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+// get our folding cell
+        final FoldingCell fc = (FoldingCell) findViewById(R.id.folding_cell);
+
+        // attach click listener to folding cell
+        fc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fc.toggle(false);
+            }
+        });
+
+
     }
 
     //Swipe down refresh lstener
