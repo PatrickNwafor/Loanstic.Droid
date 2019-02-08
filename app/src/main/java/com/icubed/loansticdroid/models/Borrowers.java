@@ -264,7 +264,7 @@ public class Borrowers {
                 !borrowersTable.getBusinessName().equals(currentlySaved.getBusinessName())){
 
             borrowersTableQueries.updateBorrowerDetails(borrowersTable);
-            loadAllBorrowers();
+            loadBorrowersToUI();
             Log.d("Borrower", "Borrower Detailed updated");
 
         }

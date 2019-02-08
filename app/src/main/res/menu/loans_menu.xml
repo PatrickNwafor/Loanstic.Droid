@@ -3,12 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <item
+        android:id="@+id/search_loan"
+        android:icon="@drawable/search"
+        android:title="Search Loan"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/add_loan"
-
         android:icon="@drawable/add_new_loan"
-
         android:title="Add Loan"
         app:showAsAction="always"/>
 

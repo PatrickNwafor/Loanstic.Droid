@@ -22,18 +22,18 @@ public class LoansTable {
     private double loanAmount, loanFees, repaymentAmount;
     private double loanInterestRate;
     private Date loanCreationDate, loanReleaseDate;
-    private Date loanApprovedDate;
+    private Date loanApprovedDate, lastUpdatedAt;
     private int loanDuration;
     private String loanTypeId, loanOfficerId, loanInterestRateUnit
             , loanDurationUnit, repaymentAmountUnit;
-    @Generated(hash = 2092021198)
+    @Generated(hash = 453351641)
     public LoansTable(String loanId, String borrowerId, String groupId, Long id,
             boolean isOtherLoanType, boolean isLoanApproved, double loanAmount,
             double loanFees, double repaymentAmount, double loanInterestRate,
             Date loanCreationDate, Date loanReleaseDate, Date loanApprovedDate,
-            int loanDuration, String loanTypeId, String loanOfficerId,
-            String loanInterestRateUnit, String loanDurationUnit,
-            String repaymentAmountUnit) {
+            Date lastUpdatedAt, int loanDuration, String loanTypeId,
+            String loanOfficerId, String loanInterestRateUnit,
+            String loanDurationUnit, String repaymentAmountUnit) {
         this.loanId = loanId;
         this.borrowerId = borrowerId;
         this.groupId = groupId;
@@ -47,6 +47,7 @@ public class LoansTable {
         this.loanCreationDate = loanCreationDate;
         this.loanReleaseDate = loanReleaseDate;
         this.loanApprovedDate = loanApprovedDate;
+        this.lastUpdatedAt = lastUpdatedAt;
         this.loanDuration = loanDuration;
         this.loanTypeId = loanTypeId;
         this.loanOfficerId = loanOfficerId;
@@ -170,5 +171,11 @@ public class LoansTable {
     }
     public void setRepaymentAmountUnit(String repaymentAmountUnit) {
         this.repaymentAmountUnit = repaymentAmountUnit;
+    }
+    public Date getLastUpdatedAt() {
+        return this.lastUpdatedAt;
+    }
+    public void setLastUpdatedAt(Date lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 }

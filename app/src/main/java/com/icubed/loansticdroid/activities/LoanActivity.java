@@ -1,17 +1,23 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -22,7 +28,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.cloudqueries.LoanTypeQueries;
+import com.icubed.loansticdroid.adapters.LoanRecyclerAdapter;
+import com.icubed.loansticdroid.util.AndroidUtils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -32,18 +39,13 @@ import co.ceryle.segmentedbutton.SegmentedButtonGroup;
 
 public class LoanActivity extends AppCompatActivity {
     public ProgressBar loanProgressBar;
-    private LoanTypeQueries loanTypeQueries;
     private EditText searchLoanEditText;
-    public SegmentedButtonGroup sbg;
     Index index;
-    Index groupIndex;
     private Toolbar toolbar;
-    private int searchPosition = 0;
 
-
-
-    public boolean isSearch = false;
-    public boolean isGroupSearch = false;
+    public RecyclerView loanRecyclerView;
+    public LoanRecyclerAdapter loanRecyclerAdapter;
+    public SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,32 +53,32 @@ public class LoanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_loan);
 
         searchLoanEditText = findViewById(R.id.searchEditText);
-
         loanProgressBar = findViewById(R.id.borrowerProgressBar);
-        loanTypeQueries = new LoanTypeQueries();
+        loanRecyclerView = findViewById(R.id.loan_list);
+
+        //Swipe down refresher initialization
+        swipeRefreshLayout = findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
+                android.R.color.holo_green_dark,
+                R.color.colorAccent);
+        swipeRefreshListener();
 
         toolbar = findViewById(R.id.loan_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Loans");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
 
-        //segmented control
-        sbg = findViewById(R.id.segmentedButtonGroup);
-        sbg.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition(){
+    //Swipe down refresh lstener
+    private void swipeRefreshListener() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClickedButtonPosition(int position){
-                if(position==0) {
-                    searchPosition = 0;
-                    // startFragment(singleBorrowerFragment, "single");
-                }
-                else if (position==1) {
-                    searchPosition = 1;
-                    // startFragment(groupBorrowerFragment, "group");
-                }
-                else if (position==1) {
-                    searchPosition = 2;
-                    // startFragment(groupBorrowerFragment, "group");
+            public void onRefresh() {
+                if(AndroidUtils.isMobileDataEnabled(getApplicationContext())) {
+                    swipeRefreshLayout.setRefreshing(true);
+                }else {
+                    Toast.makeText(getApplicationContext(), "Request failed, please try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -104,8 +106,23 @@ public class LoanActivity extends AppCompatActivity {
                 startAnotherActivity(NewLoanWizard.class);
                 return true;
 
+            case R.id.search_loan:
+                searchLoanEditText.setVisibility(View.VISIBLE);
+                searchLoanEditText.requestFocus();
+                showKeyboard();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void showKeyboard() {
+        View focuedView = getCurrentFocus();
+        if (focuedView != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            assert imm != null;
+            imm.showSoftInput(focuedView, 0);
         }
     }
 
@@ -116,10 +133,10 @@ public class LoanActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        /*if(searchBorrowerEditText.getVisibility() == View.VISIBLE){
-            searchBorrowerEditText.setVisibility(View.GONE);
+        if(searchLoanEditText.getVisibility() == View.VISIBLE){
+            searchLoanEditText.setVisibility(View.GONE);
             return;
-        }*/
+        }
 
         super.onBackPressed();
     }
