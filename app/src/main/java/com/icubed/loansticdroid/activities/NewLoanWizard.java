@@ -49,7 +49,6 @@ import co.ceryle.segmentedbutton.SegmentedButtonGroup;
 public class NewLoanWizard extends AppCompatActivity {
 
     private Toolbar toolbar;
-    public Button proceedBtn;
 
     public ProgressBar borrowerProgressBar;
     private EditText searchBorrowerEditText;
@@ -86,7 +85,6 @@ public class NewLoanWizard extends AppCompatActivity {
         //Views
         searchBorrowerEditText = findViewById(R.id.searchEditText);
         borrowerProgressBar = findViewById(R.id.borrowerProgressBar);
-        proceedBtn = findViewById(R.id.proceed);
 
         //Algolia search initiation
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
@@ -107,13 +105,6 @@ public class NewLoanWizard extends AppCompatActivity {
                     searchPosition = 1;
                     startFragment(groupLoanFragment, "group");
                 }
-            }
-        });
-
-        proceedBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startAnotherActivity(SelectLoanType.class);
             }
         });
     }
@@ -292,6 +283,19 @@ public class NewLoanWizard extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem register = menu.findItem(R.id.next_to_loan_terms);
+
+        if(selectedBorrower != null || selectedGroup !=  null || lastChecked != null){
+            register.setVisible(true);
+        }else{
+            register.setVisible(false);
+        }
+
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
 
@@ -305,6 +309,9 @@ public class NewLoanWizard extends AppCompatActivity {
                 searchBorrowerEditText.requestFocus();
                 showKeyboard();
                 return true;
+
+            case R.id.next_to_loan_terms:
+                startAnotherActivity(SelectLoanType.class);
 
             default:
                 return super.onOptionsItemSelected(item);

@@ -55,15 +55,15 @@ public class SingleLoanRecyclerAdapter extends RecyclerView.Adapter<SingleLoanRe
                     ((NewLoanWizard) context).lastChecked = holder.addCheckMark;
                     ((NewLoanWizard) context).selectedBorrower = borrowersTableList.get(position);
                     ((NewLoanWizard) context).selectedGroup = null;
-                    ((NewLoanWizard) context).proceedBtn.setVisibility(View.VISIBLE);
                     holder.addCheckMark.setVisibility(View.VISIBLE);
+                    ((NewLoanWizard) context).invalidateOptionsMenu();
 
                 }else{
                     ((NewLoanWizard) context).lastChecked = null;
                     ((NewLoanWizard) context).selectedBorrower = null;
                     ((NewLoanWizard) context).selectedGroup = null;
-                    ((NewLoanWizard) context).proceedBtn.setVisibility(View.GONE);
                     holder.addCheckMark.setVisibility(View.GONE);
+                    ((NewLoanWizard) context).invalidateOptionsMenu();
                 }
             }
         });

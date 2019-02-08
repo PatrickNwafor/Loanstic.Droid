@@ -309,7 +309,7 @@ public class BorrowerFilesFragment extends Fragment {
         borrowerMap.put("assignedBy",  "");
         borrowerMap.put("nationality", bundle.getString("nationality"));
         borrowerMap.put("timestamp", new Date());
-        borrowerMap.put("lasUpdatedAt", new Date());
+        borrowerMap.put("lastUpdatedAt", new Date());
 
         //Adding new borrower to database
         borrowersQueries.addNewBorrower(borrowerMap)
@@ -355,7 +355,7 @@ public class BorrowerFilesFragment extends Fragment {
         activityCycleMap.put("borrowerId", borrowerId);
         activityCycleMap.put("startCycleTime", new Date());
         activityCycleMap.put("endCycleTime", null);
-        activityCycleMap.put("lasUpdatedAt", new Date());
+        activityCycleMap.put("lastUpdatedAt", new Date());
 
         activityCycleQueries.createNewActivityCycle(activityCycleMap)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

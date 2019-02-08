@@ -81,6 +81,7 @@ public class Loan {
                             if(!task.getResult().isEmpty()){
 
                                 docSize = task.getResult().size();
+                                count = 0;
 
                                 for(DocumentSnapshot doc : task.getResult().getDocuments()){
                                     LoansTable loansTable = doc.toObject(LoansTable.class);
@@ -142,6 +143,11 @@ public class Loan {
     }
 
     private void saveGroupToLocalStorage(GroupBorrowerTable groupBorrowerTable) {
+        List<GroupBorrowerTable> groupBorrowerTable1 = groupBorrowerTableQueries.loadAllGroups();
+        for (GroupBorrowerTable table : groupBorrowerTable1) {
+            if(table.getGroupId().equals(groupBorrowerTable.getGroupId())) return;
+        }
+
         groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
     }
 
@@ -186,6 +192,11 @@ public class Loan {
     }
 
     private void saveBorrowerToLocalStorage(BorrowersTable borrowersTable) {
+        List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowers();
+        for (BorrowersTable table : borrowersTables) {
+            if(table.getBorrowersId().equals(borrowersTable.getBorrowersId())) return;
+        }
+
         borrowersTableQueries.insertBorrowersToStorage(borrowersTable);
     }
 
@@ -236,10 +247,10 @@ public class Loan {
                             LoanTypeTable loanTypeTable = task.getResult().toObject(LoanTypeTable.class);
                             loanTypeTable.setLoanTypeId(task.getResult().getId());
 
+                            saveLoanTypeToLocalStorage(loanTypeTable);
+
                             if(loansTable.getBorrowerId() != null) getBorrowerDetails(loansTable.getBorrowerId());
                             else getGroupDetails(loansTable.getGroupId());
-
-                            saveLoanTypeToLocalStorage(loanTypeTable);
                         }else{
                             Log.d(TAG, "onComplete: "+task.getException().getMessage());
                         }
@@ -248,8 +259,12 @@ public class Loan {
     }
 
     private void saveLoanTypeToLocalStorage(LoanTypeTable loanTypeTable) {
-        loanTypeTableQueries.insertLoanTypeToStorage(loanTypeTable);
+        List<LoanTypeTable> loanTypeTableList = loanTypeTableQueries.loadAllLoanTpes();
+        for (LoanTypeTable table : loanTypeTableList) {
+            if(table.getLoanTypeId().equals(loanTypeTable.getLoanTypeId())) return;
+        }
 
+        loanTypeTableQueries.insertLoanTypeToStorage(loanTypeTable);
     }
     private void getOtherLoanType(final LoansTable loansTable) {
         otherLoanTypeQueries.retrieveSingleOtherLoanType(loansTable.getLoanTypeId())
@@ -260,10 +275,10 @@ public class Loan {
                             OtherLoanTypesTable otherLoanTypesTable = task.getResult().toObject(OtherLoanTypesTable.class);
                             otherLoanTypesTable.setOtherLoanTypeId(task.getResult().getId());
 
+                            saveOtherLoanTypeToLocalStorage(otherLoanTypesTable);
+
                             if(loansTable.getBorrowerId() != null) getBorrowerDetails(loansTable.getBorrowerId());
                             else getGroupDetails(loansTable.getGroupId());
-
-                            saveOtherLoanTypeToLocalStorage(otherLoanTypesTable);
                         }else{
                             Log.d(TAG, "onComplete: "+task.getException().getMessage());
                         }
@@ -272,6 +287,11 @@ public class Loan {
     }
 
     private void saveOtherLoanTypeToLocalStorage(OtherLoanTypesTable otherLoanTypesTable) {
+        List<OtherLoanTypesTable> otherLoanTypesTableList = otherLoanTypesTableQueries.loadAllLoanTpes();
+        for (OtherLoanTypesTable table : otherLoanTypesTableList) {
+            if(table.getOtherLoanTypeId().equals(otherLoanTypesTable.getOtherLoanTypeId())) return;
+        }
+
         otherLoanTypesTableQueries.insertLoanTypeToStorage(otherLoanTypesTable);
     }
 
@@ -350,8 +370,10 @@ public class Loan {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful()){
                             if(!task.getResult().isEmpty()){
+
+                                docSize = task.getResult().size();
+                                count = 0;
                                 
-                                Boolean isThereNewData = false;
                                 List<LoansTable> loansInStorage = loanList;
                                 for(DocumentSnapshot doc : task.getResult().getDocuments()) {
 
@@ -370,14 +392,12 @@ public class Loan {
 
                                         LoansTable loansTable = doc.toObject(LoansTable.class);
                                         loansTable.setLoanId(doc.getId());
-                                        isThereNewData = true;
 
                                         saveLoanToLocalStorage(loansTable);
                                         getLoanType(loansTable);
-                                        if(loansTable.getBorrowerId() != null) getBorrowerDetails(loansTable.getBorrowerId());
-                                        else getGroupDetails(loansTable.getGroupId());
                                     } else {
                                         //Update local table if any changes
+                                        docSize--;
                                         updateTable(doc);
                                     }
                                 }
@@ -390,9 +410,6 @@ public class Loan {
                                     }
                                 }
 
-                                if(isThereNewData || !loansInStorage.isEmpty()) {
-                                    loadLoansToUI();
-                                }
                                 removeRefresher();
                             }else{
                                 Toast.makeText(activity, "Document is empty", Toast.LENGTH_SHORT).show();

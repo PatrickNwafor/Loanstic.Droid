@@ -110,25 +110,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/proceed"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/add_borower_button"
-
-
-            android:drawableLeft="@drawable/proceed"
-            android:drawableTint="@color/whiteEnd"
-            android:onClick="collectionLocation"
-
-            android:text="Proceed"
-            android:textAllCaps="false"
-            android:textColor="@color/whiteEnd"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
     </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

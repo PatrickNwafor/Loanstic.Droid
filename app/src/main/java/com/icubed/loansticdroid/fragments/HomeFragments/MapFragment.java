@@ -137,12 +137,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
          * to un comment the line of code below to load due collections
          * to remove the hide progress bar method
          */
-        if (!collection.doesCollectionExistInLocalStorage()) {
-            collection.retrieveNewDueCollectionData();
-        } else {
-            collection.getDueCollectionData();
-            collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
-        }
+//        if (!collection.doesCollectionExistInLocalStorage()) {
+//            collection.retrieveNewDueCollectionData();
+//        } else {
+//            collection.getDueCollectionData();
+//            collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
+//        }
         hideProgressBar();
     }
 

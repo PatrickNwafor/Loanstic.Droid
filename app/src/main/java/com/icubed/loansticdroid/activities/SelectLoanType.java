@@ -269,7 +269,7 @@ public class SelectLoanType extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                finish();
                 return true;
 
             case R.id.next_to_loan_terms:

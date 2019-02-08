@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -69,7 +70,6 @@ public class LoanTerms extends AppCompatActivity {
     private EditText loanTypeNameEditText, principlaAmountEditText, loanInterestEditText
             , loanDurationTextView, repaymentCycleEditText, loanFeesEditText, loanTypeDescEditText;
     private CardView otherLoanCardView;
-    private Button submitBtn;
     private ProgressBar progressBar;
 
     private LoanRequestNotificationQueries loanRequestNotificationQueries;
@@ -102,7 +102,6 @@ public class LoanTerms extends AppCompatActivity {
         loanFeesEditText = findViewById(R.id.loan_fees);
         loanTypeDescEditText = findViewById(R.id.loan_type_desc);
         otherLoanCardView = findViewById(R.id.other_loan_card);
-        submitBtn = findViewById(R.id.proceed);
         progressBar = findViewById(R.id.progressBar);
 
         loansQueries = new LoansQueries();
@@ -114,13 +113,6 @@ public class LoanTerms extends AppCompatActivity {
         //Algolia search initiation
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
         index = client.getIndex("Loan");
-
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitButtonListener();
-            }
-        });
 
         //checking if the type of loan is a registered loan or other loan
         if(loanTypeTable == null){
@@ -252,7 +244,7 @@ public class LoanTerms extends AppCompatActivity {
         loanMap.put("loanDurationUnit", selectedDuration);
         loanMap.put("repaymentAmount", Double.parseDouble(repaymentCycleEditText.getText().toString()));
         loanMap.put("repaymentAmountUnit", selectedCycle);
-        loanMap.put("lasUpdatedAt", new Date());
+        loanMap.put("lastUpdatedAt", new Date());
 
         if(!formUtil.isSingleFormEmpty(loanFeesEditText) && formUtil.doesFormContainNumbersOnly(loanFeesEditText))
             loanMap.put("loanFees", Double.parseDouble(loanFeesEditText.getText().toString()));
@@ -308,14 +300,37 @@ public class LoanTerms extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.select_loan_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem register = menu.findItem(R.id.next_to_loan_terms);
+        register.setTitle("Submit");
+        register.setVisible(true);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(item.getItemId() == android.R.id.home){
-            finish();
-            return true;
-        }
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
 
-        return super.onOptionsItemSelected(item);
+            case R.id.next_to_loan_terms:
+                submitButtonListener();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
 
     }
 

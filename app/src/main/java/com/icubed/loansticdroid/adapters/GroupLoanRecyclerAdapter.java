@@ -55,15 +55,15 @@ public class GroupLoanRecyclerAdapter extends RecyclerView.Adapter<GroupLoanRecy
                     ((NewLoanWizard) context).lastChecked = holder.addCheckMark;
                     ((NewLoanWizard) context).selectedGroup = groupBorrowerTables.get(position);
                     ((NewLoanWizard) context).selectedBorrower = null;
-                    ((NewLoanWizard) context).proceedBtn.setVisibility(View.VISIBLE);
                     holder.addCheckMark.setVisibility(View.VISIBLE);
+                    ((NewLoanWizard) context).invalidateOptionsMenu();
 
                 }else{
                     ((NewLoanWizard) context).lastChecked = null;
                     ((NewLoanWizard) context).selectedBorrower = null;
                     ((NewLoanWizard) context).selectedBorrower = null;
-                    ((NewLoanWizard) context).proceedBtn.setVisibility(View.GONE);
                     holder.addCheckMark.setVisibility(View.GONE);
+                    ((NewLoanWizard) context).invalidateOptionsMenu();
                 }
             }
         });

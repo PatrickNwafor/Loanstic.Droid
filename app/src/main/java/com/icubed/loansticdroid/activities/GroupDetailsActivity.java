@@ -160,7 +160,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
         groupMap.put("groupLocationLatitude", local.getLatitude());
         groupMap.put("groupLocationLongitude", local.getLongitude());
         groupMap.put("timestamp", new Date());
-        groupMap.put("lasUpdatedAt", new Date());
+        groupMap.put("lastUpdatedAt", new Date());
 
         groupBorrowerQueries.createBorrowersGroup(groupMap)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
