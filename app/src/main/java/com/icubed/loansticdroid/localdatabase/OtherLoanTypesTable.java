@@ -96,4 +96,9 @@ public class OtherLoanTypesTable{
     public void setLastUpdatedAt(Date lastUpdatedAt) {
         this.lastUpdatedAt = lastUpdatedAt;
     }
+
+    @Override
+    public String toString() {
+        return "OtherLoanTypesTable{" + "otherLoanTypeId='" + otherLoanTypeId + '\'' + ", branchId='" + branchId + '\'' + ", Id=" + Id + ", otherLoanTypeName='" + otherLoanTypeName + '\'' + ", otherLoanTypeDescription='" + otherLoanTypeDescription + '\'' + ", lastUpdatedAt=" + lastUpdatedAt + ", timestamp=" + timestamp + '}';
+    }
 }

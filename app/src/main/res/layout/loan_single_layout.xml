@@ -129,11 +129,13 @@
                         android:text="Principal"
                         android:textColor="@color/colorPrimary"
                         android:layout_marginLeft="16dp"/>
+
                     <TextView
+                        android:id="@+id/principal_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="48dp"
-                        android:text="2000"/>
+                        android:text="2000" />
 
                 </LinearLayout>
                 <LinearLayout
@@ -147,11 +149,13 @@
                         android:text="Released"
                         android:textColor="@color/colorPrimary"
                         android:layout_marginLeft="16dp"/>
+
                     <TextView
+                        android:id="@+id/released_date_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="47dp"
-                        android:text="10/08/2016"/>
+                        android:text="10/08/2016" />
 
                 </LinearLayout>
                 <LinearLayout
@@ -165,11 +169,13 @@
                         android:text="Maturity"
                         android:textColor="@color/colorPrimary"
                         android:layout_marginLeft="16dp"/>
+
                     <TextView
+                        android:id="@+id/maturity_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="54dp"
-                        android:text="22/08/2016"/>
+                        android:text="22/08/2016" />
 
                 </LinearLayout>
                 <LinearLayout
@@ -183,11 +189,13 @@
                         android:text="Collection"
                         android:textColor="@color/colorPrimary"
                         android:layout_marginLeft="16dp"/>
+
                     <TextView
+                        android:id="@+id/collection_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="44dp"
-                        android:text="Daily"/>
+                        android:text="Daily" />
 
                 </LinearLayout>
 
@@ -202,11 +210,13 @@
                         android:text="Due"
                         android:textColor="@color/colorPrimary"
                         android:layout_marginLeft="16dp"/>
+
                     <TextView
+                        android:id="@+id/collection_due_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="84dp"
-                        android:text="2000"/>
+                        android:text="2000" />
 
                 </LinearLayout>
                 <LinearLayout
@@ -220,11 +230,13 @@
                         android:text="Paid"
                         android:textColor="@color/colorPrimary"
                         android:layout_marginLeft="16dp"/>
+
                     <TextView
+                        android:id="@+id/amount_paid_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="82dp"
-                        android:text="0"/>
+                        android:text="0" />
 
                 </LinearLayout>
                 <LinearLayout
@@ -238,11 +250,13 @@
                         android:text="Balance"
                         android:textColor="@color/colorPrimary"
                         android:layout_marginLeft="16dp"/>
+
                     <TextView
+                        android:id="@+id/balance_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="60dp"
-                        android:text="2000"/>
+                        android:text="2000" />
 
                 </LinearLayout>
                 <LinearLayout
@@ -256,11 +270,13 @@
                         android:text="Last Collection"
                         android:textColor="@color/colorPrimary"
                         android:layout_marginLeft="16dp"/>
+
                     <TextView
+                        android:id="@+id/last_collection_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="18dp"
-                        android:text="22/08/2016"/>
+                        android:text="22/08/2016" />
 
                 </LinearLayout>
 

@@ -178,4 +178,9 @@ public class LoansTable {
     public void setLastUpdatedAt(Date lastUpdatedAt) {
         this.lastUpdatedAt = lastUpdatedAt;
     }
+
+    @Override
+    public String toString() {
+        return "LoansTable{" + "loanId='" + loanId + '\'' + ", borrowerId='" + borrowerId + '\'' + ", groupId='" + groupId + '\'' + ", id=" + id + ", isOtherLoanType=" + isOtherLoanType + ", isLoanApproved=" + isLoanApproved + ", loanAmount=" + loanAmount + ", loanFees=" + loanFees + ", repaymentAmount=" + repaymentAmount + ", loanInterestRate=" + loanInterestRate + ", loanCreationDate=" + loanCreationDate + ", loanReleaseDate=" + loanReleaseDate + ", loanApprovedDate=" + loanApprovedDate + ", lastUpdatedAt=" + lastUpdatedAt + ", loanDuration=" + loanDuration + ", loanTypeId='" + loanTypeId + '\'' + ", loanOfficerId='" + loanOfficerId + '\'' + ", loanInterestRateUnit='" + loanInterestRateUnit + '\'' + ", loanDurationUnit='" + loanDurationUnit + '\'' + ", repaymentAmountUnit='" + repaymentAmountUnit + '\'' + '}';
+    }
 }

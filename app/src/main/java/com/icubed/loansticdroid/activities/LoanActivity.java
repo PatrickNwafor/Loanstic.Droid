@@ -84,19 +84,7 @@ public class LoanActivity extends AppCompatActivity {
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
         index = client.getIndex("Loan");
 
-        // get our folding cell
-        final FoldingCell fc = (FoldingCell) findViewById(R.id.folding_cell);
-
-        // attach click listener to folding cell
-        fc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fc.toggle(false);
-            }
-        });
-
-
-        //getAllLoan();
+        getAllLoan();
     }
 
     private void searchLoanEditTextListener() {
@@ -168,9 +156,9 @@ public class LoanActivity extends AppCompatActivity {
                             list.add(loansTable);
                         }
 
-                        loanRecyclerAdapter = new LoanRecyclerAdapter(list);
-                        loanRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                        loanRecyclerView.setAdapter(loanRecyclerAdapter);
+//                        loanRecyclerAdapter = new LoanRecyclerAdapter(list);
+//                        loanRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+//                        loanRecyclerView.setAdapter(loanRecyclerAdapter);
 
                         //This is to check immediately after the search to know if string is empty
                         if(TextUtils.isEmpty(s.toString())){
