@@ -1,5 +1,6 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +8,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.LoanRecyclerAdapter;
 import com.icubed.loansticdroid.models.LoanDetails;
 import com.icubed.loansticdroid.models.SearchLoan;
+import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.EditTextExtension.CustomEditText;
 import com.icubed.loansticdroid.util.EditTextExtension.DrawableClickListener;
 
@@ -57,6 +60,8 @@ public class LoanSearchActivity extends AppCompatActivity {
         String searchString = getIntent().getStringExtra("search");
         searchEditText.setText(searchString);
 
+        loanRecyclerView.requestFocus();
+
         searchFieldListener();
         searchBackButtonListener();
 
@@ -92,6 +97,7 @@ public class LoanSearchActivity extends AppCompatActivity {
                         return false;
                     }
 
+                    AndroidUtils.hideKeyboard(LoanSearchActivity.this);
                     progressBar.setVisibility(View.VISIBLE);
                     loanRecyclerView.setVisibility(View.INVISIBLE);
                     searchEmptyLayout.setVisibility(View.GONE);

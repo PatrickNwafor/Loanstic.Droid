@@ -27,7 +27,7 @@
         android:drawablePadding="40dp"
         android:elevation="11dp"
         android:ems="10"
-        android:hint="Search borrower's name or business..."
+        android:hint="Search loan..."
         android:imeOptions="actionSearch"
         android:inputType="text"
         android:singleLine="true"
