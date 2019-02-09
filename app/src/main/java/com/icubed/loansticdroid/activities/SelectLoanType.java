@@ -1,5 +1,6 @@
 package com.icubed.loansticdroid.activities;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -74,6 +75,7 @@ public class SelectLoanType extends AppCompatActivity {
         loanTypeTableQueries = new LoanTypeTableQueries(getApplication());
 
         currentLoanTable = loanTypeTableQueries.loadAllLoanTpes();
+
 
         toolbar = findViewById(R.id.select_loan_toolbar);
         setSupportActionBar(toolbar);
@@ -273,7 +275,7 @@ public class SelectLoanType extends AppCompatActivity {
                 return true;
 
             case R.id.next_to_loan_terms:
-                startAnotherActivity(LoanTerms.class);
+                   startAnotherActivity(LoanTerms.class);
                 return true;
 
             default:

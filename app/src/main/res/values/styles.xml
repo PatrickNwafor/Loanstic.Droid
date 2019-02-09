@@ -8,9 +8,22 @@
          <item name="colorControlNormal">@color/colorPrimary</item>
          <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
          <item name="colorAccent">@color/colorAccent</item>
-         <!--Statu bar tuff.-->
-        <item name="android:statusBarColor">@color/whiteEnd</item>
+         <!--Statu bar tuff.
+        <item name="android:statusBarColor">@color/whiteEnd</item>-->
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/whiteEnd</item>
+
+        <item name="android:windowContentTransitions">true</item>
+
+        <!-- specify enter and exit transitions
+        <item name="android:windowEnterTransition">@transition/explode</item>
+        <item name="android:windowExitTransition">@transition/explode</item>-->
+
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">@transition/changebounds</item>
+        <item name="android:windowSharedElementExitTransition">@transition/changebounds</item>
+
+
         <!--menu item-->
         <item name="android:actionMenuTextColor">@color/colorAccent</item>
     </style>
