@@ -91,7 +91,9 @@
         <activity android:name=".activities.ReactivateBorrowerActivity" />
         <activity android:name=".activities.NewLoanWizard" />
         <activity android:name=".activities.SelectLoanType" />
-        <activity android:name=".activities.LoanTerms"></activity>
+        <activity android:name=".activities.LoanTerms" />
+        <activity android:name=".activities.LoanSearchActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
     </application>
 
 </manifest>

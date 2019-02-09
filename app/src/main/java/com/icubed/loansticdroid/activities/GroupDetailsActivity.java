@@ -246,8 +246,9 @@ public class GroupDetailsActivity extends AppCompatActivity {
                     //Going to business verification page to verify business location
                     Intent businessVerificationIntent = new Intent(getApplicationContext(), BusinessVerification.class);
                     businessVerificationIntent.putExtra("groupId", groupId);
+                    businessVerificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(businessVerificationIntent);
-                    finish();
+                    //finish();
                 }else{
                     hideProgressBar();
                     Toast.makeText(getApplicationContext(), "Failed to register group for search", Toast.LENGTH_SHORT).show();

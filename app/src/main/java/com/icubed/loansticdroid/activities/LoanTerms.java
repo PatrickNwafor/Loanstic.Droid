@@ -230,6 +230,10 @@ public class LoanTerms extends AppCompatActivity {
             loanMap.put("borrowerId", borrower.getBorrowersId());
         else loanMap.put("groupId", group.getGroupId());
 
+        selectedRate = spRate.getSelectedItem().toString();
+        selectedDuration = spDuration.getSelectedItem().toString();
+        selectedCycle = spCycle.getSelectedItem().toString();
+
         loanMap.put("isOtherLoanType", isOtherLoanType);
         loanMap.put("loanOfficerId", account.getCurrentUserId());
         loanMap.put("loanTypeId", loanTypeTable.getLoanTypeId());
@@ -370,8 +374,9 @@ public class LoanTerms extends AppCompatActivity {
                 if(e == null) {
                     Toast.makeText(LoanTerms.this, "Loan created", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(LoanTerms.this, LoanActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-                    finish();
+                    //finish();
                 }else{
                     Toast.makeText(getApplicationContext(), "Failed to register loan for search", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "requestCompleted: "+e.getMessage());

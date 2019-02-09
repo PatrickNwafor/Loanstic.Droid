@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.activities.NewLoanWizard;
 import com.icubed.loansticdroid.adapters.BorrowerRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.SingleLoanRecyclerAdapter;
 import com.icubed.loansticdroid.models.Borrowers;
@@ -48,6 +49,7 @@ public class SingleLoanFragment extends Fragment {
 
         borrowerRecyclerView = view.findViewById(R.id.borrower_list);
 
+        ((NewLoanWizard) getContext()).selectedGroup = null;
 
         //Swipe down refresher initialization
         swipeRefreshLayout = view.findViewById(R.id.swiperefresh);

@@ -285,7 +285,8 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
 
     public void done(View view) {
         Intent intent = new Intent(this, BorrowerActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        finish();
+        //finish();
     }
 }

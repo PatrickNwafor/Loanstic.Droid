@@ -50,6 +50,8 @@ public class GroupLoanFragment extends Fragment {
 
         groupRecyclerView = view.findViewById(R.id.group_list);
 
+        ((NewLoanWizard) getContext()).selectedBorrower = null;
+
         //Swipe down refresher initialization
         swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,

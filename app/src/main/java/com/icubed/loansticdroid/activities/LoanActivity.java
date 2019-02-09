@@ -11,12 +11,15 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.algolia.search.saas.AlgoliaException;
@@ -43,15 +46,12 @@ import java.util.List;
 public class LoanActivity extends AppCompatActivity {
     public ProgressBar loanProgressBar;
     private EditText searchLoanEditText;
-    Index index;
     private Toolbar toolbar;
     private Loan loan;
 
     public RecyclerView loanRecyclerView;
     public LoanRecyclerAdapter loanRecyclerAdapter;
     public SwipeRefreshLayout swipeRefreshLayout;
-    public List<BorrowersTable> borrowersTables;
-    public List<GroupBorrowerTable> groupBorrowerTables;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +63,6 @@ public class LoanActivity extends AppCompatActivity {
         loanRecyclerView = findViewById(R.id.loan_list);
 
         loan = new Loan(this);
-        borrowersTables = new ArrayList<>();
-        groupBorrowerTables = new ArrayList<>();
-
         searchLoanEditTextListener();
 
         //Swipe down refresher initialization
@@ -81,27 +78,25 @@ public class LoanActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
-        index = client.getIndex("Loan");
-
         getAllLoan();
     }
 
     private void searchLoanEditTextListener() {
-        searchLoanEditText.addTextChangedListener(new TextWatcher() {
+        searchLoanEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 
-            }
+                    if(TextUtils.isEmpty(searchLoanEditText.getText().toString())){
+                        return false;
+                    }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                searchLoans(s);
+                    Intent intent = new Intent(LoanActivity.this, LoanSearchActivity.class);
+                    intent.putExtra("search", searchLoanEditText.getText().toString());
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
             }
         });
     }
@@ -129,51 +124,6 @@ public class LoanActivity extends AppCompatActivity {
             loan.loadLoansToUI();
             loan.loadAllLoansAndCompareToLocal();
         }
-    }
-
-    private void searchLoans(final Editable s) {
-        if(!TextUtils.isEmpty(s.toString())) {
-            //Search for data from cloud storage
-            Query query = new Query(s.toString());
-            query.setAttributesToRetrieve("*");
-            query.setMinWordSizefor2Typos(3);
-            query.setHitsPerPage(50);
-
-            index.searchAsync(query, new CompletionHandler() {
-                @Override
-                public void requestCompleted(JSONObject content, AlgoliaException error) {
-                    try {
-                        JSONArray hits = content.getJSONArray("hits");
-                        List<LoansTable> list = new ArrayList<>();
-
-                        for (int i = 0; i < hits.length(); i++) {
-                            JSONObject jsonObject = hits.getJSONObject(i);
-                            String loanUser = jsonObject.getString("name");
-                            String loanId = jsonObject.getString("objectID");
-
-                            LoansTable loansTable = new LoansTable();
-                            loansTable.setLoanId(loanId);
-                            list.add(loansTable);
-                        }
-
-//                        loanRecyclerAdapter = new LoanRecyclerAdapter(list);
-//                        loanRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-//                        loanRecyclerView.setAdapter(loanRecyclerAdapter);
-
-                        //This is to check immediately after the search to know if string is empty
-                        if(TextUtils.isEmpty(s.toString())){
-                            loan.loadLoansToUI();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }else{
-            loan.loadLoansToUI();
-        }
-
     }
 
     @Override

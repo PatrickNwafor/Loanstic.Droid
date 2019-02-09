@@ -66,11 +66,19 @@ public class Loan {
         groupBorrowerTableQueries = new GroupBorrowerTableQueries(activity.getApplication());
     }
 
+    /**
+     * checks if loan data exist in local storage
+     * @return
+     */
     public Boolean doesLoansTableExistInLocalStorage(){
         List<LoansTable> loansTable = loanTableQueries.loadAllLoans();
         return !loansTable.isEmpty();
     }
 
+    /**
+     * this method retrieves all loans from the cloud
+     * @// TODO: 09/02/2019 remember to later change to loan query to have a limit of data returned at once and add lazy loading features to the recycler view
+     */
     public void loadAllLoan(){
 
         loansQueries.retrieveAllLoans()
@@ -102,6 +110,12 @@ public class Loan {
                 });
     }
 
+    /**
+     * this methods checks if group details already exist in local storage
+     * if it does exist, it does need to go to cloud to get the data all over again
+     * if it does exit it calls up getNewGroupDetails(groupId)
+     * @param groupId
+     */
     private void getGroupDetails(String groupId) {
         List<GroupBorrowerTable> groupBorrowerTables = groupBorrowerTableQueries.loadAllGroups();
 
@@ -121,6 +135,10 @@ public class Loan {
 
     }
 
+    /**
+     * this method gets group details from firebase firestore
+     * @param groupId
+     */
     private void getNewGroupDetails(String groupId) {
         groupBorrowerQueries.retrieveSingleBorrowerGroup(groupId)
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -142,6 +160,10 @@ public class Loan {
                 });
     }
 
+    /**
+     * this saves new group details data to local storage
+     * @param groupBorrowerTable
+     */
     private void saveGroupToLocalStorage(GroupBorrowerTable groupBorrowerTable) {
         List<GroupBorrowerTable> groupBorrowerTable1 = groupBorrowerTableQueries.loadAllGroups();
         for (GroupBorrowerTable table : groupBorrowerTable1) {
@@ -151,6 +173,12 @@ public class Loan {
         groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
     }
 
+    /**
+     * this methods checks if borrower details already exist in local storage
+     * if it does exist, it does need to go to cloud to get the data all over again
+     * if it does exit it calls up getNewBorrowerDetail(borrowerId)
+     * @param borrowerId
+     */
     private void getBorrowerDetails(String borrowerId) {
         List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowers();
 
@@ -170,6 +198,10 @@ public class Loan {
 
     }
 
+    /**
+     * gets new borrower details from firebase firestore
+     * @param borrowerId
+     */
     private void getNewBorrowerDetail(String borrowerId) {
         borrowersQueries.retrieveSingleBorrowers(borrowerId)
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -191,6 +223,10 @@ public class Loan {
                 });
     }
 
+    /**
+     * saves new borrower details to local storage
+     * @param borrowersTable
+     */
     private void saveBorrowerToLocalStorage(BorrowersTable borrowersTable) {
         List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowers();
         for (BorrowersTable table : borrowersTables) {
@@ -200,6 +236,14 @@ public class Loan {
         borrowersTableQueries.insertBorrowersToStorage(borrowersTable);
     }
 
+    /**
+     * this methods helps to decide if the loan is of a type registered initially by the branch manager
+     * or the loan type is a custom one created during the registration of the loan
+     * also it also checks if the loan type exist in local storage
+     * if it doesnt exist it calls up either  getOtherLoanType(loansTable) or getNormalLoanType(loansTable)
+     * the above depends on whether the loan type is registered or custom
+     * @param loansTable
+     */
     private void getLoanType(LoansTable loansTable) {
 
         if(loansTable.getIsOtherLoanType()) {
@@ -238,6 +282,10 @@ public class Loan {
         }
     }
 
+    /**
+     * gets registered loan type from firebase firestore
+     * @param loansTable
+     */
     private void getNormalLoanType(final LoansTable loansTable) {
         loanTypeQueries.retrieveSingleLoanType(loansTable.getLoanTypeId())
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -258,6 +306,10 @@ public class Loan {
                 });
     }
 
+    /**
+     * saves registered loan type to local storage
+     * @param loanTypeTable
+     */
     private void saveLoanTypeToLocalStorage(LoanTypeTable loanTypeTable) {
         List<LoanTypeTable> loanTypeTableList = loanTypeTableQueries.loadAllLoanTpes();
         for (LoanTypeTable table : loanTypeTableList) {
@@ -266,6 +318,11 @@ public class Loan {
 
         loanTypeTableQueries.insertLoanTypeToStorage(loanTypeTable);
     }
+
+    /**
+     * gets custom loan type created during loan registration from firebase firestore
+     * @param loansTable
+     */
     private void getOtherLoanType(final LoansTable loansTable) {
         otherLoanTypeQueries.retrieveSingleOtherLoanType(loansTable.getLoanTypeId())
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -286,6 +343,10 @@ public class Loan {
                 });
     }
 
+    /**
+     * saves custom loan type to local storage
+     * @param otherLoanTypesTable
+     */
     private void saveOtherLoanTypeToLocalStorage(OtherLoanTypesTable otherLoanTypesTable) {
         List<OtherLoanTypesTable> otherLoanTypesTableList = otherLoanTypesTableQueries.loadAllLoanTpes();
         for (OtherLoanTypesTable table : otherLoanTypesTableList) {
@@ -295,10 +356,17 @@ public class Loan {
         otherLoanTypesTableQueries.insertLoanTypeToStorage(otherLoanTypesTable);
     }
 
+    /**
+     * save loans to loan storage
+     * @param loansTable
+     */
     private void saveLoanToLocalStorage(LoansTable loansTable) {
         loanTableQueries.insertLoanToStorage(loansTable);
     }
 
+    /**
+     * loads all our loan data to UI for the user to see
+     */
     public void loadLoansToUI(){
         List<LoansTable> loansTable = loanTableQueries.loadAllLoansOrderByCreationDate();
 
@@ -361,6 +429,10 @@ public class Loan {
         ((LoanActivity) activity).loanProgressBar.setVisibility(View.GONE);
     }
 
+    /**
+     * this method is called if loans already exist in local storage
+     * this method helps to get data from cloud storage and compare to local storage to see if there is any update or an entirely new data has been created
+     */
     public void loadAllLoansAndCompareToLocal() {
         final List<LoansTable> loanList = loanTableQueries.loadAllLoans();
 
@@ -423,16 +495,28 @@ public class Loan {
                 });
     }
 
+    /**
+     * this method deletes a borrower from local storage
+     * @param loansTable
+     */
     private void deleteBorrowerFromLocalStorage(LoansTable loansTable) {
         loanTableQueries.deleteLoan(loansTable);
+        loadLoansToUI();
     }
 
+    /**
+     * removes refresher
+     */
     private void removeRefresher(){
         ((LoanActivity) activity).swipeRefreshLayout.setRefreshing(false);
         ((LoanActivity) activity).swipeRefreshLayout.destroyDrawingCache();
         ((LoanActivity) activity).swipeRefreshLayout.clearAnimation();
     }
 
+    /**
+     * updates any changes in the loan details from cloud in local storage
+     * @param doc
+     */
     private void updateTable(DocumentSnapshot doc) {
         LoansTable loansTable = doc.toObject(LoansTable.class);
         loansTable.setLoanId(doc.getId());

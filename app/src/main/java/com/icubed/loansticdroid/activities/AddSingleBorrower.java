@@ -97,8 +97,9 @@ public class AddSingleBorrower extends AppCompatActivity {
         Intent addBorrowerIntent = new Intent(this, BusinessVerification.class);
         addBorrowerIntent.putExtra("borrowerId", borrowerId);
         addBorrowerIntent.putExtra("activityCycleId", activityCycleId);
+        addBorrowerIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(addBorrowerIntent);
-        finish();
+        //finish();
     }
 
     public Boolean isAnyFormEmpty(EditText[] forms){
