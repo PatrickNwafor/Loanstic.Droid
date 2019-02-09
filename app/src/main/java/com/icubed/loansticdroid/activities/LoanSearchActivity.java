@@ -141,7 +141,7 @@ public class LoanSearchActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                     }
 
-                } catch (JSONException e) {
+                } catch (JSONException | NullPointerException e) {
                     e.printStackTrace();
                 }
             }

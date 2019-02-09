@@ -196,7 +196,7 @@ public class BorrowerActivity extends AppCompatActivity {
                             groupBorrowerFragment.groups.loadGroupsToUI();
                         }
 
-                    } catch (JSONException e) {
+                    } catch (JSONException | NullPointerException e) {
                         e.printStackTrace();
                     }
                 }
@@ -255,7 +255,7 @@ public class BorrowerActivity extends AppCompatActivity {
                             singleBorrowerFragment.borrowers.loadBorrowersToUI();
                         }
 
-                    } catch (JSONException e) {
+                    } catch (JSONException | NullPointerException e) {
                         e.printStackTrace();
                     }
                 }

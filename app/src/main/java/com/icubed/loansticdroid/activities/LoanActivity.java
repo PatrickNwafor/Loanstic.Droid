@@ -153,20 +153,11 @@ public class LoanActivity extends AppCompatActivity {
             case R.id.search_loan:
                 searchLoanEditText.setVisibility(View.VISIBLE);
                 searchLoanEditText.requestFocus();
-                showKeyboard();
+                AndroidUtils.showKeyboard(LoanActivity.this);
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    public void showKeyboard() {
-        View focuedView = getCurrentFocus();
-        if (focuedView != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            assert imm != null;
-            imm.showSoftInput(focuedView, 0);
         }
     }
 
