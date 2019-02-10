@@ -22,11 +22,12 @@ public class BorrowerPhotoValidationTable implements Parcelable {
     @Id(autoincrement = true)
     private Long id;
     private Date timestamp;
+    private byte[] imageByteArray;
 
-    @Generated(hash = 1794776537)
+    @Generated(hash = 117446336)
     public BorrowerPhotoValidationTable(String borrowerPhotoValidationId, String borrowerId, String photoUri,
             String photoThumbUri, String activityCycleId, double photoLatitude, double photoLongitude, Long id,
-            Date timestamp) {
+            Date timestamp, byte[] imageByteArray) {
         this.borrowerPhotoValidationId = borrowerPhotoValidationId;
         this.borrowerId = borrowerId;
         this.photoUri = photoUri;
@@ -36,6 +37,7 @@ public class BorrowerPhotoValidationTable implements Parcelable {
         this.photoLongitude = photoLongitude;
         this.id = id;
         this.timestamp = timestamp;
+        this.imageByteArray = imageByteArray;
     }
 
     @Generated(hash = 1299040209)
@@ -140,6 +142,14 @@ public class BorrowerPhotoValidationTable implements Parcelable {
                 this.borrowerId, this.photoUri,
                 this.photoThumbUri, String.valueOf(this.photoLatitude),
                 String.valueOf(this.photoLongitude), this.activityCycleId});
+    }
+
+    public byte[] getImageByteArray() {
+        return this.imageByteArray;
+    }
+
+    public void setImageByteArray(byte[] imageByteArray) {
+        this.imageByteArray = imageByteArray;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

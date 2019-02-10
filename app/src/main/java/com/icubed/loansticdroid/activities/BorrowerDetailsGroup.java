@@ -1,6 +1,8 @@
 package com.icubed.loansticdroid.activities;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -35,6 +39,7 @@ import com.icubed.loansticdroid.localdatabase.GroupMembersTableQueries;
 import com.icubed.loansticdroid.localdatabase.GroupPhotoValidationTable;
 import com.icubed.loansticdroid.localdatabase.GroupPhotoValidationTableQueries;
 import com.icubed.loansticdroid.models.Borrowers;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -180,8 +185,10 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
                                     groupPhotoValidationTables.add(groupPhotoValidationTable);
                                     groupBusinessVerificationRecyclerAdapter.notifyDataSetChanged();
 
-                                    if(groupId == null)
-                                    saveGroupVerificationPhotoToStorage(groupPhotoValidationTable);
+                                    if(groupId == null) {
+                                        saveGroupVerificationPhotoToStorage(groupPhotoValidationTable);
+                                        saveGroupVerifPhotoByte(groupPhotoValidationTable);
+                                    }
                                 }
 
                             }else{
@@ -193,6 +200,26 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void saveGroupVerifPhotoByte(final GroupPhotoValidationTable groupPhotoValidationTable) {
+        final GroupPhotoValidationTable table = groupPhotoValidationTableQueries.loadSingleGroupPhoto(groupPhotoValidationTable.getGroupPhotoValidationId());
+
+        BitmapUtil.getImageWithGlide(this, groupPhotoValidationTable.getPhotoUri())
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        saveVerifPhoto(resource, table);
+                    }
+                });
+    }
+
+    private void saveVerifPhoto(Bitmap resource, GroupPhotoValidationTable groupPhotoValidationTable) {
+        byte[] bytes = BitmapUtil.getBytesFromBitmapInJPG(resource, 100);
+        groupPhotoValidationTable.setImageByteArray(bytes);
+        groupPhotoValidationTableQueries.updateBorrowerDetails(groupPhotoValidationTable);
+
+        Log.d(TAG, "saveImage: group valid photo image byte[] saved");
     }
 
     private void saveGroupVerificationPhotoToStorage(GroupPhotoValidationTable groupPhotoValidationTable) {
@@ -233,6 +260,9 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
 
                                                     if(groupId == null) {
                                                         BorrowersTable bow = saveBorrowerToLocalIfNotExist(borrowersTable);
+
+                                                        //save borrower byte image
+                                                        saveBorrowerImage(bow);
 
                                                         //saving members to members table
                                                         GroupMembersTable groupMembersTable = task.getResult().getDocuments().get(0).toObject(GroupMembersTable.class);
@@ -308,6 +338,25 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
 
         borrowersTableQueries.insertBorrowersToStorage(borrowersTable);
         return borrowersTableQueries.loadSingleBorrower(borrowersTable.getBorrowersId());
+    }
+
+    private void saveBorrowerImage(final BorrowersTable borrowersTable) {
+        if(borrowersTable.getBorrowerImageByteArray() == null) {
+            BitmapUtil.getImageWithGlide(this, borrowersTable.getProfileImageUri()).into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                    saveImage(resource, borrowersTable);
+                }
+            });
+        }
+    }
+
+    private void saveImage(Bitmap resource, BorrowersTable borrowersTable) {
+        byte[] bytes = BitmapUtil.getBytesFromBitmapInJPG(resource, 100);
+        borrowersTable.setBorrowerImageByteArray(bytes);
+        borrowersTableQueries.updateBorrowerDetails(borrowersTable);
+
+        Log.d(TAG, "saveImage: borrower image byte[] saved");
     }
 
     @Override

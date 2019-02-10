@@ -19,19 +19,22 @@ public class GroupPhotoValidationTable implements Parcelable {
     private String groupId, photoUri, photoThumbUri;
     private double photoLatitude, photoLongitude;
 
+    private byte[] imageByteArray;
+
     @Id(autoincrement = true)
     private Long id;
     private Date timestamp;
-    @Generated(hash = 481843018)
-    public GroupPhotoValidationTable(String groupPhotoValidationId, String groupId,
-            String photoUri, String photoThumbUri, double photoLatitude,
-            double photoLongitude, Long id, Date timestamp) {
+    @Generated(hash = 1325425027)
+    public GroupPhotoValidationTable(String groupPhotoValidationId, String groupId, String photoUri,
+            String photoThumbUri, double photoLatitude, double photoLongitude, byte[] imageByteArray, Long id,
+            Date timestamp) {
         this.groupPhotoValidationId = groupPhotoValidationId;
         this.groupId = groupId;
         this.photoUri = photoUri;
         this.photoThumbUri = photoThumbUri;
         this.photoLatitude = photoLatitude;
         this.photoLongitude = photoLongitude;
+        this.imageByteArray = imageByteArray;
         this.id = id;
         this.timestamp = timestamp;
     }
@@ -111,6 +114,12 @@ public class GroupPhotoValidationTable implements Parcelable {
         dest.writeStringArray(new String[] {this.groupPhotoValidationId,
                 this.groupId, this.photoUri,
                 this.photoThumbUri, String.valueOf(this.photoLatitude), String.valueOf(this.photoLongitude)});
+    }
+    public byte[] getImageByteArray() {
+        return this.imageByteArray;
+    }
+    public void setImageByteArray(byte[] imageByteArray) {
+        this.imageByteArray = imageByteArray;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

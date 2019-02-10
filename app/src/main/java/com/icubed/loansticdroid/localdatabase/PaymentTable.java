@@ -45,14 +45,17 @@ public class PaymentTable {
 
     private String paymentMethod;
 
-    @Generated(hash = 1396621367)
+    private byte[] imageByteArray;
+
+    @Generated(hash = 1564763185)
     public PaymentTable(String paymentId, String loanId, Long id,
             String paymentScheduleOrder, String interestId, double interestAmount,
             double repaymentPrincipal, double totalRepaymentDue,
             Date repaymentDueDate, Boolean isPaid, Date actualPaymentDate,
             Date lastUpdatedAt, double actualPaymentAmount,
             String paymentLocationId, String paymentValidationPhotoUrl,
-            String paymentValidationThumbPhotoUrl, String paymentMethod) {
+            String paymentValidationThumbPhotoUrl, String paymentMethod,
+            byte[] imageByteArray) {
         this.paymentId = paymentId;
         this.loanId = loanId;
         this.id = id;
@@ -70,6 +73,7 @@ public class PaymentTable {
         this.paymentValidationPhotoUrl = paymentValidationPhotoUrl;
         this.paymentValidationThumbPhotoUrl = paymentValidationThumbPhotoUrl;
         this.paymentMethod = paymentMethod;
+        this.imageByteArray = imageByteArray;
     }
 
     @Generated(hash = 522700409)
@@ -211,5 +215,13 @@ public class PaymentTable {
 
     public void setLastUpdatedAt(Date lastUpdatedAt) {
         this.lastUpdatedAt = lastUpdatedAt;
+    }
+
+    public byte[] getImageByteArray() {
+        return this.imageByteArray;
+    }
+
+    public void setImageByteArray(byte[] imageByteArray) {
+        this.imageByteArray = imageByteArray;
     }
 }

@@ -2,7 +2,9 @@ package com.icubed.loansticdroid.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -39,6 +43,7 @@ import com.icubed.loansticdroid.localdatabase.BorrowerFilesTableQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTable;
 import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTableQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,6 +65,7 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     private boolean isDataFromSearch = false;
     private String borrowerId;
     private AlertDialog.Builder alert;
+    private byte[] borrowerImageByteArray;
 
     private RecyclerView docRecyclerView;
     private RecyclerView businessVerificationRecyclerView;
@@ -87,6 +93,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         
         borrower = getIntent().getParcelableExtra("borrower");
+        if(borrower != null){
+            borrowerImageByteArray = getIntent().getByteArrayExtra("borrowerImageByteArray");
+            borrower.setBorrowerImageByteArray(borrowerImageByteArray);
+        }
         borrowerId = getIntent().getStringExtra("borrowerId");
 
         borrowerFilesQueries = new BorrowerFilesQueries(this);
@@ -431,9 +441,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                                     borrowerPhotoValidationTables.add(borrowerPhotoValidationTable);
                                     borrowerBusinessVerificationRecyclerAdapter.notifyDataSetChanged();
 
-                                    if(!isDataFromSearch)
-                                    savePhotoVerifToStorage(borrowerPhotoValidationTable);
-
+                                    if(!isDataFromSearch) {
+                                        savePhotoVerifToStorage(borrowerPhotoValidationTable);
+                                        savePhotoVerifByteToStorage(borrowerPhotoValidationTable);
+                                    }
                                 }
 
                             }else{
@@ -445,6 +456,26 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void savePhotoVerifByteToStorage(final BorrowerPhotoValidationTable borrowerPhotoValidationTable) {
+        final BorrowerPhotoValidationTable table = borrowerPhotoValidationTableQueries.loadSinglePhotes(borrowerPhotoValidationTable.getBorrowerPhotoValidationId());
+
+        BitmapUtil.getImageWithGlide(this, table.getPhotoUri())
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        saveVerifPhoto(resource, table);
+                    }
+                });
+    }
+
+    private void saveVerifPhoto(Bitmap resource, BorrowerPhotoValidationTable borrowerPhotoValidationTable) {
+        byte[] bytes = BitmapUtil.getBytesFromBitmapInJPG(resource, 100);
+        borrowerPhotoValidationTable.setImageByteArray(bytes);
+        borrowerPhotoValidationTableQueries.updatePhoto(borrowerPhotoValidationTable);
+
+        Log.d(TAG, "saveImage: file image byte[] saved");
     }
 
     /**
@@ -479,7 +510,6 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         }
     }
 
-
     /**
      * this gets the borrower document from the server
      * @param borrowersId
@@ -505,8 +535,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                                     borrowerFilesTables.add(borrowerFilesTable);
                                     documentRecyclerAdapter.notifyDataSetChanged();
 
-                                    if(!isDataFromSearch)
-                                    saveFileToStorage(borrowerFilesTable);
+                                    if(!isDataFromSearch) {
+                                        saveFileToStorage(borrowerFilesTable);
+                                        saveFileImageToStorage(borrowerFilesTable);
+                                    }
                                 }
                             }else{
                                 Toast.makeText(BorrowerDetailsSingle.this, "No file saved", Toast.LENGTH_SHORT).show();
@@ -518,6 +550,36 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    /**
+     * this method get the bitmap of the file uri and them call up the saveImage method
+     * @param borrowerFilesTable
+     */
+    private void saveFileImageToStorage(final BorrowerFilesTable borrowerFilesTable) {
+        final BorrowerFilesTable table = borrowerFilesTableQueries.loadSingleBorrowerFile(borrowerFilesTable.getFilesId());
+
+        BitmapUtil.getImageWithGlide(this, borrowerFilesTable.getFileImageUri())
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        saveImage(resource, table);
+                    }
+                });
+    }
+
+    /**
+     * this method converts the file image into byte[]
+     * the byte[] of the bitmap is then saved in the local storage
+     * @param resource
+     * @param borrowerFilesTable
+     */
+    private void saveImage(Bitmap resource, BorrowerFilesTable borrowerFilesTable) {
+        byte[] bytes = BitmapUtil.getBytesFromBitmapInJPG(resource, 100);
+        borrowerFilesTable.setImageByteArray(bytes);
+        borrowerFilesTableQueries.updateBorrowerFileDetails(borrowerFilesTable);
+
+        Log.d(TAG, "saveImage: file image byte[] saved");
     }
 
     /**
@@ -537,12 +599,11 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
 
         getSupportActionBar().setSubtitle(borrower.getLastName()+" "+borrower.getMiddleName()+" "+borrower.getFirstName());
 
-        Glide.with(this)
-                .load(borrower.getProfileImageUri())
-                .thumbnail(
-                Glide.with(this)
-                        .load(borrower.getProfileImageThumbUri())
-        ).into(profileImageView);
+        if(borrower.getBorrowerImageByteArray() == null) {
+            BitmapUtil.getImageAndThumbnailWithGlide(this, borrower.getProfileImageUri(), borrower.getProfileImageThumbUri()).into(profileImageView);
+        }else{
+            profileImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrower.getBorrowerImageByteArray()));
+        }
 
         nameTextView.setText(borrower.getLastName()+" "+borrower.getMiddleName()+" "+borrower.getFirstName());
         numberTextView.setText(String.valueOf(borrower.getPhoneNumber()));

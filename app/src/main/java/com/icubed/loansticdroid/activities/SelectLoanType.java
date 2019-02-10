@@ -335,5 +335,6 @@ public class SelectLoanType extends AppCompatActivity {
         LoanTypeTable currentlySaved = loanTypeTableQueries.loadSingleLoanType(loanTypeTable.getLoanTypeId());
         currentlySaved.setLoanTypeImageByteArray(bytes);
         loanTypeTableQueries.updateLoanTypeDetails(currentlySaved);
+        Log.d(TAG, "saveImage: loan type image byte[] saved");
     }
 }

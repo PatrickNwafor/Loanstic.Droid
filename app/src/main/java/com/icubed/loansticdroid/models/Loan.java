@@ -266,6 +266,8 @@ public class Loan {
         byte[] bytes = BitmapUtil.getBytesFromBitmapInJPG(resource, 100);
         borrowersTable.setBorrowerImageByteArray(bytes);
         borrowersTableQueries.updateBorrowerDetails(borrowersTable);
+
+        Log.d(TAG, "saveImage: borrower image byte[] saved");
     }
 
     /**

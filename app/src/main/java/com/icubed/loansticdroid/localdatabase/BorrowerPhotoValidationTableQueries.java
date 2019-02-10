@@ -23,10 +23,23 @@ public class BorrowerPhotoValidationTableQueries {
         return borrowerPhotoValidationTableDao.loadAll();
     }
 
+    /************Load all Photos from local Storage********/
+    public void updatePhoto(BorrowerPhotoValidationTable borrowerPhotoValidationTable){
+        borrowerPhotoValidationTableDao.update(borrowerPhotoValidationTable);
+    }
+
     public List<BorrowerPhotoValidationTable> loadAllPhotes(String activityId) {
         return  borrowerPhotoValidationTableDao.queryBuilder()
                 .where(BorrowerPhotoValidationTableDao.Properties.ActivityCycleId.eq(activityId))
                 .build()
                 .list();
+    }
+
+    public BorrowerPhotoValidationTable loadSinglePhotes(String photoId) {
+        return  borrowerPhotoValidationTableDao.queryBuilder()
+                .where(BorrowerPhotoValidationTableDao.Properties.BorrowerPhotoValidationId.eq(photoId))
+                .build()
+                .list()
+                .get(0);
     }
 }

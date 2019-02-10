@@ -70,6 +70,7 @@ import co.ceryle.segmentedbutton.SegmentedButtonGroup;
 public class BorrowerActivity extends AppCompatActivity {
 
 
+    private static final String TAG = ".BorrowerActivity";
     public ProgressBar borrowerProgressBar;
     private EditText searchBorrowerEditText;
     public SegmentedButtonGroup sbg;
@@ -380,5 +381,7 @@ public class BorrowerActivity extends AppCompatActivity {
         byte[] bytes = BitmapUtil.getBytesFromBitmapInJPG(resource, 100);
         borrowersTable.setBorrowerImageByteArray(bytes);
         borrowersTableQueries.updateBorrowerDetails(borrowersTable);
+
+        Log.d(TAG, "saveImage: borrower image byte[] saved");
     }
 }

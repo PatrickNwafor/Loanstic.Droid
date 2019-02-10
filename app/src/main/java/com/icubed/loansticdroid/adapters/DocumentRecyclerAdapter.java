@@ -26,6 +26,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.PictureViewActivity;
 import com.icubed.loansticdroid.localdatabase.BorrowerFilesTable;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class DocumentRecyclerAdapter extends RecyclerView.Adapter<DocumentRecycl
             public void onClick(View v) {
                 Intent pictureIntent = new Intent(context, PictureViewActivity.class);
                 pictureIntent.putExtra("file", borrowerFilesTables.get(position));
+                pictureIntent.putExtra("file_byte", borrowerFilesTables.get(position).getImageByteArray());
                 context.startActivity(pictureIntent);
             }
         });
@@ -87,9 +89,11 @@ public class DocumentRecyclerAdapter extends RecyclerView.Adapter<DocumentRecycl
 
             fileDescTextView.setText(borrowerFilesTable.getFileDescription());
 
-            Glide.with(mView.getContext()).load(borrowerFilesTable.getFileImageUri()).thumbnail(
-                    Glide.with(mView.getContext()).load(borrowerFilesTable.getFileImageUriThumb())
-            ).into(fileImageView);
+            if(borrowerFilesTable.getImageByteArray() == null) {
+                BitmapUtil.getImageAndThumbnailWithGlide(mView.getContext(), borrowerFilesTable.getFileImageUri(), borrowerFilesTable.getFileImageUriThumb()).into(fileImageView);
+            }else{
+                fileImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowerFilesTable.getImageByteArray()));
+            }
 
         }
     }

@@ -16,6 +16,7 @@ import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.PictureViewActivity;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupPhotoValidationTable;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class GroupBusinessVerificationRecyclerAdapter extends RecyclerView.Adapt
             public void onClick(View v) {
                 Intent pictureIntent = new Intent(context, PictureViewActivity.class);
                 pictureIntent.putExtra("group_photo_valid", groupPhotoValidationTables.get(position));
+                pictureIntent.putExtra("group_photo_valid_byte", groupPhotoValidationTables.get(position).getImageByteArray());
                 context.startActivity(pictureIntent);
             }
         });
@@ -77,9 +79,11 @@ public class GroupBusinessVerificationRecyclerAdapter extends RecyclerView.Adapt
 
             verificationTextView.setVisibility(View.GONE);
 
-            Glide.with(mView.getContext()).load(groupPhotoValidationTable.getPhotoUri()).thumbnail(
-                    Glide.with(mView.getContext()).load(groupPhotoValidationTable.getPhotoThumbUri())
-            ).into(verificationImageView);
+            if(groupPhotoValidationTable.getImageByteArray() == null) {
+                BitmapUtil.getImageAndThumbnailWithGlide(mView.getContext(), groupPhotoValidationTable.getPhotoUri(), groupPhotoValidationTable.getPhotoThumbUri()).into(verificationImageView);
+            }else{
+                verificationImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(groupPhotoValidationTable.getImageByteArray()));
+            }
 
         }
     }

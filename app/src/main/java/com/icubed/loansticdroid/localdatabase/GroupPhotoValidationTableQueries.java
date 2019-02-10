@@ -36,6 +36,14 @@ public class GroupPhotoValidationTableQueries {
         return groupPhotoValidationTableDao.loadAll();
     }
 
+    public GroupPhotoValidationTable loadSingleGroupPhoto(String groupPhotoId) {
+        return groupPhotoValidationTableDao.queryBuilder()
+                .where(GroupPhotoValidationTableDao.Properties.GroupPhotoValidationId.eq(groupPhotoId))
+                .build()
+                .list()
+                .get(0);
+    }
+
     public void updateBorrowerDetails(GroupPhotoValidationTable borrowersTable){
         groupPhotoValidationTableDao.update(borrowersTable);
     }

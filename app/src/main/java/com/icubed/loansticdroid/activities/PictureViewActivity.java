@@ -13,6 +13,7 @@ import com.icubed.loansticdroid.localdatabase.BorrowerFilesTable;
 import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupPhotoValidationTable;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 public class PictureViewActivity extends AppCompatActivity {
 
@@ -21,6 +22,7 @@ public class PictureViewActivity extends AppCompatActivity {
     private BorrowerFilesTable borrowerFilesTable;
     private GroupPhotoValidationTable groupPhotoValidationTable;
     private BorrowerPhotoValidationTable borrowerPhotoValidationTable;
+    private byte[] fileByte, borrowerValidByte, groupValidByte = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +30,11 @@ public class PictureViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_picture_view);
 
         borrowerFilesTable = getIntent().getParcelableExtra("file");
+        fileByte = getIntent().getByteArrayExtra("file_byte");
         groupPhotoValidationTable = getIntent().getParcelableExtra("group_photo_valid");
+        groupValidByte = getIntent().getByteArrayExtra("group_photo_valid_byte");
         borrowerPhotoValidationTable = getIntent().getParcelableExtra("borrower_photo_valid");
+        borrowerValidByte = getIntent().getByteArrayExtra("borrower_photo_valid_byte");
 
         toolbar = findViewById(R.id.picture_toolbar);
         setSupportActionBar(toolbar);
@@ -40,18 +45,28 @@ public class PictureViewActivity extends AppCompatActivity {
 
         if(borrowerFilesTable != null) {
             getSupportActionBar().setTitle(borrowerFilesTable.getFileDescription());
-            loadImage(borrowerFilesTable.getFileImageUri(), borrowerFilesTable.getFileImageUriThumb());
+            borrowerFilesTable.setImageByteArray(fileByte);
+            if(borrowerFilesTable.getImageByteArray() == null) loadImage(borrowerFilesTable.getFileImageUri(), borrowerFilesTable.getFileImageUriThumb());
+            else loadImageFromByte(borrowerFilesTable.getImageByteArray());
         }else if(groupPhotoValidationTable != null){
             getSupportActionBar().setTitle("Business Verification Photo");
-            loadImage(groupPhotoValidationTable.getPhotoUri(), groupPhotoValidationTable.getPhotoThumbUri());
+            groupPhotoValidationTable.setImageByteArray(groupValidByte);
+            if(groupPhotoValidationTable.getImageByteArray() == null) loadImage(groupPhotoValidationTable.getPhotoUri(), groupPhotoValidationTable.getPhotoThumbUri());
+            else loadImageFromByte(groupPhotoValidationTable.getImageByteArray());
         }else if(borrowerPhotoValidationTable != null){
             getSupportActionBar().setTitle("Business Verification Photo");
-            loadImage(borrowerPhotoValidationTable.getPhotoUri(), borrowerPhotoValidationTable.getPhotoThumbUri());
+            borrowerPhotoValidationTable.setImageByteArray(borrowerValidByte);
+            if(borrowerPhotoValidationTable.getImageByteArray() == null) loadImage(borrowerPhotoValidationTable.getPhotoUri(), borrowerPhotoValidationTable.getPhotoThumbUri());
+            else loadImageFromByte(borrowerPhotoValidationTable.getImageByteArray());
         }
     }
 
     private void loadImage(String imageUri, String imageThumbUri){
-        Glide.with(this).load(imageUri).thumbnail(Glide.with(this).load(imageThumbUri)).into(imageView);
+        BitmapUtil.getImageAndThumbnailWithGlide(this, imageUri, imageThumbUri).into(imageView);
+    }
+
+    private void loadImageFromByte(byte[] bytes){
+        imageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(bytes));
     }
 
     @Override

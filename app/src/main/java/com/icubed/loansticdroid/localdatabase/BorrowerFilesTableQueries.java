@@ -25,20 +25,12 @@ public class BorrowerFilesTableQueries {
     }
 
     /**********Load a single borrower from local Storage*******/
-    public BorrowerFilesTable loadSingleBorrower(String fileId){
+    public BorrowerFilesTable loadSingleBorrowerFile(String fileId){
         return borrowerFilesTableDao.queryBuilder()
                 .where(BorrowerFilesTableDao.Properties.FilesId.eq(fileId))
                 .build()
                 .list()
                 .get(0);
-    }
-
-    /**********Load a single borrower from local Storage*******/
-    public List<BorrowerFilesTable> loadBorrowerFiles(String fileId){
-        return borrowerFilesTableDao.queryBuilder()
-                .where(BorrowerFilesTableDao.Properties.FilesId.eq(fileId))
-                .build()
-                .list();
     }
 
     public List<BorrowerFilesTable> loadAllBorrowersFile(String activityId) {

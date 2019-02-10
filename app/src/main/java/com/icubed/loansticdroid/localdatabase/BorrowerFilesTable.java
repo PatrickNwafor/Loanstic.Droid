@@ -22,10 +22,10 @@ public class BorrowerFilesTable implements Parcelable {
     private String fileImageUri, fileImageUriThumb, fileDescription, activityCycleId;
     private Date timestamp;
 
-    @Generated(hash = 2060090756)
-    public BorrowerFilesTable(String filesId, Long id, String fileImageUri,
-            String fileImageUriThumb, String fileDescription, String activityCycleId,
-            Date timestamp) {
+    private byte[] imageByteArray;
+
+    @Generated(hash = 1407793681)
+    public BorrowerFilesTable(String filesId, Long id, String fileImageUri, String fileImageUriThumb, String fileDescription, String activityCycleId, Date timestamp, byte[] imageByteArray) {
         this.filesId = filesId;
         this.id = id;
         this.fileImageUri = fileImageUri;
@@ -33,6 +33,7 @@ public class BorrowerFilesTable implements Parcelable {
         this.fileDescription = fileDescription;
         this.activityCycleId = activityCycleId;
         this.timestamp = timestamp;
+        this.imageByteArray = imageByteArray;
     }
 
     @Generated(hash = 1402127370)
@@ -124,6 +125,14 @@ public class BorrowerFilesTable implements Parcelable {
                 this.fileImageUri,
                 this.fileImageUriThumb,
                 this.filesId, this.activityCycleId});
+    }
+
+    public byte[] getImageByteArray() {
+        return this.imageByteArray;
+    }
+
+    public void setImageByteArray(byte[] imageByteArray) {
+        this.imageByteArray = imageByteArray;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

@@ -69,6 +69,7 @@ public class BorrowerRecyclerAdapter extends RecyclerView.Adapter<BorrowerRecycl
 
                 if(!((BorrowerActivity) context).isSearch) {
                     intent.putExtra("borrower", borrowersTableList.get(position));
+                    intent.putExtra("borrowerImageByteArray", borrowersTableList.get(position).getBorrowerImageByteArray());
                 }else {
                     intent.putExtra("borrowerId", borrowersTableList.get(position).getBorrowersId());
                 }

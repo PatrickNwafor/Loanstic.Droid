@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.BorrowerDetailsSingle;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class GroupMembersRecyclerAdapter extends RecyclerView.Adapter<GroupMembe
             public void onClick(View v) {
                 Intent pictureIntent = new Intent(context, BorrowerDetailsSingle.class);
                 pictureIntent.putExtra("borrower", borrowersTableList.get(position));
+                pictureIntent.putExtra("borrowerImageByteArray", borrowersTableList.get(position).getBorrowerImageByteArray());
                 context.startActivity(pictureIntent);
             }
         });
@@ -76,9 +78,11 @@ public class GroupMembersRecyclerAdapter extends RecyclerView.Adapter<GroupMembe
 
             memberNameTextView.setText(borrowersTable.getLastName() + " "+ borrowersTable.getFirstName());
 
-            Glide.with(mView.getContext()).load(borrowersTable.getProfileImageUri()).thumbnail(
-                    Glide.with(mView.getContext()).load(borrowersTable.getProfileImageThumbUri())
-            ).into(memberImageView);
+            if(borrowersTable.getBorrowerImageByteArray() == null) {
+                BitmapUtil.getImageAndThumbnailWithGlide(mView.getContext(), borrowersTable.getProfileImageUri(), borrowersTable.getProfileImageThumbUri()).into(memberImageView);
+            }else{
+                memberImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
+            }
 
         }
     }
