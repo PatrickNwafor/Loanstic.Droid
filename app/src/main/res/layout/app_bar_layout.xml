@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/whiteEnd"
-    android:elevation="10dp"
+    android:elevation="4dp"
     app:titleTextColor="@color/colorPrimary"
     app:subtitleTextColor="@color/colorPrimary"
 
