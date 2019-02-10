@@ -2,7 +2,9 @@ package com.icubed.loansticdroid.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -31,6 +33,9 @@ import com.algolia.search.saas.Client;
 import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,6 +52,9 @@ import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.models.Borrowers;
 import com.icubed.loansticdroid.models.Savings;
+import com.icubed.loansticdroid.util.AndroidUtils;
+import com.icubed.loansticdroid.util.BitmapUtil;
+import com.icubed.loansticdroid.util.KeyboardUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,6 +77,7 @@ public class BorrowerActivity extends AppCompatActivity {
     Index groupIndex;
     private Toolbar toolbar;
     private int searchPosition = 0;
+    private BorrowersTableQueries borrowersTableQueries;
 
     private SingleBorrowerFragment singleBorrowerFragment;
     private GroupBorrowerFragment groupBorrowerFragment;
@@ -83,6 +92,8 @@ public class BorrowerActivity extends AppCompatActivity {
 
         groupBorrowerFragment = new GroupBorrowerFragment();
         singleBorrowerFragment = new SingleBorrowerFragment();
+
+        borrowersTableQueries = new BorrowersTableQueries(getApplication());
 
         startFragment(singleBorrowerFragment, "single");
 
@@ -304,7 +315,7 @@ public class BorrowerActivity extends AppCompatActivity {
             case R.id.action_search:
                 searchBorrowerEditText.setVisibility(View.VISIBLE);
                 searchBorrowerEditText.requestFocus();
-                showKeyboard();
+                KeyboardUtil.showKeyboard(BorrowerActivity.this);
                 return true;
 
             case R.id.nav_new_group:
@@ -331,12 +342,43 @@ public class BorrowerActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    public void showKeyboard() {
-        View focuedView = getCurrentFocus();
-        if (focuedView != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            assert imm != null;
-            imm.showSoftInput(focuedView, 0);
+    public void getBorrowerImage(BorrowersTable borrowersTable) {
+        List<BorrowersTable> borrowersTableList = borrowersTableQueries.loadAllBorrowers();
+
+        for (final BorrowersTable table : borrowersTableList) {
+            if(borrowersTable.getBorrowersId().equals(table.getBorrowersId())
+                    && table.getBorrowerImageByteArray() == null){
+
+                BitmapUtil.getImageWithGlide(getApplicationContext(), borrowersTable.getProfileImageUri())
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                saveImage(resource, table);
+                            }
+                        });
+                return;
+
+            }else if(borrowersTable.getBorrowersId().equals(table.getBorrowersId())
+                    && table.getBorrowerImageByteArray() != null
+                    && !borrowersTable.getProfileImageUri().equals(table.getProfileImageUri())){
+
+                BitmapUtil.getImageWithGlide(getApplicationContext(), borrowersTable.getProfileImageUri())
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                saveImage(resource, table);
+                            }
+                        });
+                return;
+
+            }
         }
+
+    }
+
+    private void saveImage(Bitmap resource, BorrowersTable borrowersTable) {
+        byte[] bytes = BitmapUtil.getBytesFromBitmapInJPG(resource, 100);
+        borrowersTable.setBorrowerImageByteArray(bytes);
+        borrowersTableQueries.updateBorrowerDetails(borrowersTable);
     }
 }

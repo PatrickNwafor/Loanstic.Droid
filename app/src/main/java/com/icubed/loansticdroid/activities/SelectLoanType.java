@@ -1,11 +1,7 @@
 package com.icubed.loansticdroid.activities;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -23,11 +19,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.Request;
-import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -40,13 +33,9 @@ import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTableQueries;
-import com.icubed.loansticdroid.util.AndroidUtils;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class SelectLoanType extends AppCompatActivity {
     private static final String TAG = ".SelectLoanType";
@@ -312,9 +301,21 @@ public class SelectLoanType extends AppCompatActivity {
         for (LoanTypeTable typeTable : currentLoanTable) {
             if(typeTable.getLoanTypeId().equals(loanTypeTable.getLoanTypeId())
                     && typeTable.getLoanTypeImageByteArray() == null){
-                Glide.with(this)
-                        .asBitmap()
-                        .load(loanTypeTable.getLoanTypeImageUri())
+
+                BitmapUtil.getImageWithGlide(getApplicationContext(), loanTypeTable.getLoanTypeImageUri())
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                saveImage(resource, loanTypeTable);
+                            }
+                        });
+                return;
+
+            }else if(typeTable.getLoanTypeId().equals(loanTypeTable.getLoanTypeId()) &&
+                    typeTable.getLoanTypeImageByteArray() != null &&
+                    !typeTable.getLoanTypeImageUri().equals(loanTypeTable.getLoanTypeImageUri())){
+
+                BitmapUtil.getImageWithGlide(getApplicationContext(), loanTypeTable.getLoanTypeImageUri())
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -327,8 +328,9 @@ public class SelectLoanType extends AppCompatActivity {
 
     }
 
+
     public void saveImage(Bitmap bitmap, LoanTypeTable loanTypeTable){
-        byte[] bytes = AndroidUtils.getBytesFromBitmap(bitmap);
+        byte[] bytes = BitmapUtil.getBytesFromBitmapInPNG(bitmap, 100);
 
         LoanTypeTable currentlySaved = loanTypeTableQueries.loadSingleLoanType(loanTypeTable.getLoanTypeId());
         currentlySaved.setLoanTypeImageByteArray(bytes);

@@ -55,6 +55,7 @@ import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.notification.BorrowerPendingApprovalNotificationTable;
 import com.icubed.loansticdroid.notification.BorrowerPendingApprovalNotificationTableQueries;
 import com.icubed.loansticdroid.util.AndroidUtils;
+import com.icubed.loansticdroid.util.BitmapUtil;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
 
 import org.json.JSONObject;
@@ -220,14 +221,7 @@ public class BorrowerFilesFragment extends Fragment {
     }
 
     public Bitmap StringToBitMap(String encodedString){
-        try {
-            byte [] encodeByte= Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch(Exception e) {
-            e.getMessage();
-            return null;
-        }
+        return BitmapUtil.stringToBitMap(encodedString);
     }
 
     /********************Upload borrower profile image****************/

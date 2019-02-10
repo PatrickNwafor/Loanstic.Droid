@@ -11,6 +11,7 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -42,9 +43,7 @@ public class PaymentQueries {
 
         paymentImageStorageRef.child(paymentId+".jpg");
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
+        byte[] data = BitmapUtil.getBytesFromBitmapInJPG(bitmap, 100);
 
         return paymentImageStorageRef.putBytes(data);
     }
@@ -54,10 +53,7 @@ public class PaymentQueries {
 
         paymentImageThumbStorageRef.child(paymentId+".jpg");
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG,
-                10, baos);
-        byte[] data = baos.toByteArray();
+        byte[] data = BitmapUtil.getBytesFromBitmapInJPG(bitmap, 10);
 
         return paymentImageThumbStorageRef.putBytes(data);
     }

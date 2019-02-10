@@ -13,6 +13,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -49,9 +50,7 @@ public class BorrowersQueries {
     /************Upload PaymentQueries Validation Image***************/
     public UploadTask uploadBorrowerImage(Bitmap bitmap){
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
+        byte[] data = BitmapUtil.getBytesFromBitmapInJPG(bitmap, 100);
 
         return borrowerImageStorageRef.putBytes(data);
     }
@@ -59,10 +58,7 @@ public class BorrowersQueries {
     /***************Upload payment validation image thumb**********/
     public UploadTask uploadBorrowerImageThumb(Bitmap bitmap){
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG,
-                10, baos);
-        byte[] data = baos.toByteArray();
+        byte[] data = BitmapUtil.getBytesFromBitmapInJPG(bitmap, 10);
 
         return borrowerImageThumbStorageRef.putBytes(data);
     }
@@ -75,9 +71,7 @@ public class BorrowersQueries {
                 .getReference("borrower_files/")
                 .child(filesID+".jpg");
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
+        byte[] data = BitmapUtil.getBytesFromBitmapInJPG(bitmap, 100);
 
         return borrowerFilesStorageRef.putBytes(data);
     }
@@ -88,9 +82,7 @@ public class BorrowersQueries {
                 .getReference("borrower_files/thumb/")
                 .child(filesID+".jpg");
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-        byte[] data = baos.toByteArray();
+        byte[] data = BitmapUtil.getBytesFromBitmapInJPG(bitmap, 10);
 
         return borrowerFilesThumbStorageRef.putBytes(data);
     }

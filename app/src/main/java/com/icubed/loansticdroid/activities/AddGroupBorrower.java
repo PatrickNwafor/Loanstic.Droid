@@ -42,6 +42,7 @@ import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 import com.icubed.loansticdroid.models.Borrowers;
 import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
 import com.icubed.loansticdroid.util.AndroidUtils;
+import com.icubed.loansticdroid.util.KeyboardUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -253,7 +254,7 @@ public class AddGroupBorrower extends AppCompatActivity {
             case R.id.action_search:
                 searchEditText.setVisibility(View.VISIBLE);
                 searchEditText.requestFocus();
-                showKeyboard();
+                KeyboardUtil.showKeyboard(this);
                 return true;
 
             default:
@@ -408,20 +409,11 @@ public class AddGroupBorrower extends AppCompatActivity {
         if( searchEditText.getVisibility()==GONE){
             searchEditText.setVisibility(View.VISIBLE);
             searchEditText.requestFocus();
-            showKeyboard();
+            KeyboardUtil.showKeyboard(this);
         }else{searchEditText.setVisibility(View.GONE);
             searchEditText.setText("");
         }
 
-    }
-
-    public void showKeyboard() {
-        View focuedView = getCurrentFocus();
-        if (focuedView != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            assert imm != null;
-            imm.showSoftInput(focuedView, 0);
-        }
     }
 
     public void setUpWizard(View view) {

@@ -29,6 +29,7 @@ import com.icubed.loansticdroid.activities.BorrowerActivity;
 import com.icubed.loansticdroid.activities.BorrowerDetailsSingle;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -57,7 +58,9 @@ public class BorrowerRecyclerAdapter extends RecyclerView.Adapter<BorrowerRecycl
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.setBorrowerBusinessName(borrowersTableList.get(position).getBusinessName());
         holder.setBorrowerName(borrowersTableList.get(position).getFirstName(), borrowersTableList.get(position).getLastName());
-        holder.setBorrowerImage(borrowersTableList.get(position).getProfileImageUri(), borrowersTableList.get(position).getProfileImageThumbUri());
+        holder.setBorrowerImage(borrowersTableList.get(position));
+
+        if(!((BorrowerActivity) context).isSearch) ((BorrowerActivity) context).getBorrowerImage(borrowersTableList.get(position));
 
         holder.borrowerFrame.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,21 +102,26 @@ public class BorrowerRecyclerAdapter extends RecyclerView.Adapter<BorrowerRecycl
             borrowerNameTextView.setText(lastName +" "+firstName);
         }
 
-        public void setBorrowerImage(String imageUri, String imagethumbUri){
-            borrowerImageView = mView.findViewById(R.id.borrower_image);
-
-            RequestOptions placeholderOption = new RequestOptions();
-            placeholderOption.placeholder(R.drawable.person_image);
-
-            Glide.with(mView.getContext()).applyDefaultRequestOptions(placeholderOption).load(imageUri).thumbnail(
-                    Glide.with(mView.getContext()).load(imagethumbUri)
-            ).into(borrowerImageView);
-        }
-
         public void setBorrowerBusinessName(String businessName){
             businessNameTextView = mView.findViewById(R.id.borrower_business);
-
             businessNameTextView.setText(businessName);
+        }
+
+        public void setBorrowerImage(BorrowersTable borrowersTable) {
+            borrowerImageView = mView.findViewById(R.id.borrower_image);
+
+            if(borrowersTable.getBorrowerImageByteArray() ==  null) {
+                RequestOptions placeholderOption = new RequestOptions();
+                placeholderOption.placeholder(R.drawable.person_image);
+                BitmapUtil.getImageAndThumbnailWithRequestOptionsGlide(
+                        mView.getContext(),
+                        borrowersTable.getProfileImageUri(),
+                        borrowersTable.getProfileImageThumbUri(),
+                        placeholderOption)
+                        .into(borrowerImageView);
+            }else{
+                borrowerImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
+            }
         }
     }
 

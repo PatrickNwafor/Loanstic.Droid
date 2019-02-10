@@ -25,6 +25,7 @@ import com.icubed.loansticdroid.models.SearchLoan;
 import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.EditTextExtension.CustomEditText;
 import com.icubed.loansticdroid.util.EditTextExtension.DrawableClickListener;
+import com.icubed.loansticdroid.util.KeyboardUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,7 +98,7 @@ public class LoanSearchActivity extends AppCompatActivity {
                         return false;
                     }
 
-                    AndroidUtils.hideKeyboard(LoanSearchActivity.this);
+                    KeyboardUtil.hideKeyboard(LoanSearchActivity.this);
                     progressBar.setVisibility(View.VISIBLE);
                     loanRecyclerView.setVisibility(View.INVISIBLE);
                     searchEmptyLayout.setVisibility(View.GONE);

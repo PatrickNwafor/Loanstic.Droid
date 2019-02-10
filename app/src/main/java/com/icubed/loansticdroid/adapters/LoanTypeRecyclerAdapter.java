@@ -18,6 +18,7 @@ import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.SelectLoanType;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
 import com.icubed.loansticdroid.util.AndroidUtils;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.List;
 
@@ -44,8 +45,8 @@ public class LoanTypeRecyclerAdapter extends RecyclerView.Adapter<LoanTypeRecycl
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        holder.setViews(loanTypeTableList.get(position));
         ((SelectLoanType) context).getImage(loanTypeTableList.get(position));
+        holder.setViews(loanTypeTableList.get(position));
 
         holder.frameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +111,7 @@ public class LoanTypeRecyclerAdapter extends RecyclerView.Adapter<LoanTypeRecycl
             if(loanTypeTable.getLoanTypeImageByteArray() == null) {
                 Glide.with(mView.getContext()).load(loanTypeTable.getLoanTypeImageUri()).thumbnail(Glide.with(mView.getContext()).load(loanTypeTable.getLoanTypeImageThumbUri())).into(loanTypeImageView);
             }else{
-                Bitmap bitmap = AndroidUtils.getBitMapFromBytes(loanTypeTable.getLoanTypeImageByteArray());
+                Bitmap bitmap = BitmapUtil.getBitMapFromBytes(loanTypeTable.getLoanTypeImageByteArray());
                 loanTypeImageView.setImageBitmap(bitmap);
             }
         }

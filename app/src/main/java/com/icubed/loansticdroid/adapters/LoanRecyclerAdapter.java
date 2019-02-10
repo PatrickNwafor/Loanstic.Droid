@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
 import com.icubed.loansticdroid.models.LoanDetails;
+import com.icubed.loansticdroid.util.BitmapUtil;
 import com.icubed.loansticdroid.util.DateUtil;
 import com.ramotion.foldingcell.FoldingCell;
 
@@ -107,13 +108,16 @@ public class LoanRecyclerAdapter extends RecyclerView.Adapter<LoanRecyclerAdapte
                 borrowerNameTextView.setText(loanDetails.getBorrowersTable().getLastName()+" "+loanDetails.getBorrowersTable().getFirstName());
                 expandedBorrowerNameTextView.setText(loanDetails.getBorrowersTable().getLastName()+" "+loanDetails.getBorrowersTable().getFirstName());
 
-                Glide.with(mView.getContext()).load(loanDetails.getBorrowersTable().getProfileImageUri()).thumbnail(
-                        Glide.with(mView.getContext()).load(loanDetails.getBorrowersTable().getProfileImageThumbUri())
-                ).into(borrowerImageView);
 
-                Glide.with(mView.getContext()).load(loanDetails.getBorrowersTable().getProfileImageUri()).thumbnail(
-                        Glide.with(mView.getContext()).load(loanDetails.getBorrowersTable().getProfileImageThumbUri())
-                ).into(expandedImage);
+                if(loanDetails.getBorrowersTable().getBorrowerImageByteArray() == null) {
+                    Glide.with(mView.getContext()).load(loanDetails.getBorrowersTable().getProfileImageUri()).thumbnail(Glide.with(mView.getContext()).load(loanDetails.getBorrowersTable().getProfileImageThumbUri())).into(borrowerImageView);
+
+                    Glide.with(mView.getContext()).load(loanDetails.getBorrowersTable().getProfileImageUri()).thumbnail(Glide.with(mView.getContext()).load(loanDetails.getBorrowersTable().getProfileImageThumbUri())).into(expandedImage);
+                }else{
+                    borrowerImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(loanDetails.getBorrowersTable().getBorrowerImageByteArray()));
+                    expandedImage.setImageBitmap(BitmapUtil.getBitMapFromBytes(loanDetails.getBorrowersTable().getBorrowerImageByteArray()));
+                }
+
             }else {
                 borrowerNameTextView.setText(loanDetails.getGroupBorrowerTable().getGroupName());
                 expandedBorrowerNameTextView.setText(loanDetails.getGroupBorrowerTable().getGroupName());
@@ -128,7 +132,7 @@ public class LoanRecyclerAdapter extends RecyclerView.Adapter<LoanRecyclerAdapte
             }
 
             principalTextView.setText(String.valueOf(loanDetails.getLoansTable().getLoanAmount()));
-            releaseDateTextView.setText(dateString(loanDetails.getLoansTable().getLoanReleaseDate()));
+            releaseDateTextView.setText(DateUtil.dateString(loanDetails.getLoansTable().getLoanReleaseDate()));
             collection_text_view.setText(loanDetails.getLoansTable().getRepaymentAmountUnit());
             collectionDueTextView.setText(String.valueOf(loanDetails.getLoansTable().getRepaymentAmount()));
 
@@ -140,24 +144,17 @@ public class LoanRecyclerAdapter extends RecyclerView.Adapter<LoanRecyclerAdapte
         private String getMaturityDate(LoansTable loansTable) {
             if(loansTable.getLoanDurationUnit().equals("year")){
                 Date date = DateUtil.addYear(loansTable.getLoanCreationDate(), loansTable.getLoanDuration());
-                return dateString(date);
+                return DateUtil.dateString(date);
             }else if(loansTable.getLoanDurationUnit().equals("month")){
                 Date date = DateUtil.addMonth(loansTable.getLoanCreationDate(), loansTable.getLoanDuration());
-                return dateString(date);
+                return DateUtil.dateString(date);
             }else if(loansTable.getLoanDurationUnit().equals("week")){
                 Date date = DateUtil.addDay(loansTable.getLoanCreationDate(), loansTable.getLoanDuration()*7);
-                return dateString(date);
+                return DateUtil.dateString(date);
             }else{
                 Date date = DateUtil.addDay(loansTable.getLoanCreationDate(), loansTable.getLoanDuration());
-                return dateString(date);
+                return DateUtil.dateString(date);
             }
-        }
-
-        private String dateString(Date date) {
-            String myFormat = "MM/dd/yy";
-            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
-            return sdf.format(date.getTime());
         }
     }
 }

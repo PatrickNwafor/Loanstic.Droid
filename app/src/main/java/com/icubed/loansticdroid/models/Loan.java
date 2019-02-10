@@ -1,12 +1,16 @@
 package com.icubed.loansticdroid.models;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,6 +32,7 @@ import com.icubed.loansticdroid.localdatabase.LoanTypeTableQueries;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
 import com.icubed.loansticdroid.localdatabase.OtherLoanTypesTable;
 import com.icubed.loansticdroid.localdatabase.OtherLoanTypesTableQueries;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -212,6 +217,7 @@ public class Loan {
                             borrowersTable.setBorrowersId(task.getResult().getId());
 
                             saveBorrowerToLocalStorage(borrowersTable);
+                            saveBorrowerImage(borrowersTable);
                             count++;
                             if(count == docSize) {
                                 loadLoansToUI();
@@ -221,6 +227,45 @@ public class Loan {
                         }
                     }
                 });
+    }
+
+    private void saveBorrowerImage(BorrowersTable borrowersTable) {
+        List<BorrowersTable> borrowersTableList = borrowersTableQueries.loadAllBorrowers();
+
+        for (final BorrowersTable table : borrowersTableList) {
+            if(borrowersTable.getBorrowersId().equals(table.getBorrowersId())
+                    && table.getBorrowerImageByteArray() == null){
+
+                BitmapUtil.getImageWithGlide(activity, borrowersTable.getProfileImageUri())
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                saveImage(resource, table);
+                            }
+                        });
+                return;
+
+            }else if(borrowersTable.getBorrowersId().equals(table.getBorrowersId())
+                    && table.getBorrowerImageByteArray() != null
+                    && !borrowersTable.getProfileImageUri().equals(table.getProfileImageUri())){
+
+                BitmapUtil.getImageWithGlide(activity, borrowersTable.getProfileImageUri())
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                saveImage(resource, table);
+                            }
+                        });
+                return;
+
+            }
+        }
+    }
+
+    private void saveImage(Bitmap resource, BorrowersTable borrowersTable) {
+        byte[] bytes = BitmapUtil.getBytesFromBitmapInJPG(resource, 100);
+        borrowersTable.setBorrowerImageByteArray(bytes);
+        borrowersTableQueries.updateBorrowerDetails(borrowersTable);
     }
 
     /**
@@ -477,7 +522,7 @@ public class Loan {
                                 //to delete deleted borrower in cloud from storage
                                 if(!loansInStorage.isEmpty()){
                                     for(LoansTable loanTab : loansInStorage){
-                                        deleteBorrowerFromLocalStorage(loanTab);
+                                        deleteLoanFromLocalStorage(loanTab);
                                         Log.d("Delete", "deleted "+loanTab.getLoanId()+ " from storage");
                                     }
                                 }
@@ -499,7 +544,7 @@ public class Loan {
      * this method deletes a borrower from local storage
      * @param loansTable
      */
-    private void deleteBorrowerFromLocalStorage(LoansTable loansTable) {
+    private void deleteLoanFromLocalStorage(LoansTable loansTable) {
         loanTableQueries.deleteLoan(loansTable);
         loadLoansToUI();
     }

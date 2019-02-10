@@ -34,6 +34,7 @@ import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
 import com.icubed.loansticdroid.models.Loan;
 import com.icubed.loansticdroid.util.AndroidUtils;
+import com.icubed.loansticdroid.util.KeyboardUtil;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.json.JSONArray;
@@ -153,7 +154,7 @@ public class LoanActivity extends AppCompatActivity {
             case R.id.search_loan:
                 searchLoanEditText.setVisibility(View.VISIBLE);
                 searchLoanEditText.requestFocus();
-                AndroidUtils.showKeyboard(LoanActivity.this);
+                KeyboardUtil.showKeyboard(LoanActivity.this);
                 return true;
 
             default:

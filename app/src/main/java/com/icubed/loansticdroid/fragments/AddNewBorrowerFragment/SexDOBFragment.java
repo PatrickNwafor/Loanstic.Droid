@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.AddSingleBorrower;
 import com.icubed.loansticdroid.activities.LoanTerms;
+import com.icubed.loansticdroid.util.DateUtil;
 import com.icubed.loansticdroid.util.FormUtil;
 
 import java.text.SimpleDateFormat;
@@ -97,7 +98,8 @@ public class SexDOBFragment extends Fragment {
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
+                dateOfBirthTextView.setError(null);
+                dateOfBirthTextView.setText(DateUtil.dateString(myCalendar.getTime()));
             }
 
         };
@@ -115,12 +117,6 @@ public class SexDOBFragment extends Fragment {
 
 
 
-    }
-    private void updateLabel() {
-        String myFormat = "MM/dd/yy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
-        dateOfBirthTextView.setText(sdf.format(myCalendar.getTime()));
     }
 
     private void previous() {

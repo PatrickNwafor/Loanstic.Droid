@@ -35,6 +35,7 @@ import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
 import com.icubed.loansticdroid.notification.LoanRequestNotificationQueries;
 import com.icubed.loansticdroid.notification.LoanRequestNotificationTable;
+import com.icubed.loansticdroid.util.DateUtil;
 import com.icubed.loansticdroid.util.FormUtil;
 
 import org.json.JSONException;
@@ -162,7 +163,8 @@ public class LoanTerms extends AppCompatActivity {
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
+                loanReleaseDateEditText.setError(null);
+                loanReleaseDateEditText.setText(DateUtil.dateString(myCalendar.getTime()));
             }
        };
 
@@ -277,14 +279,6 @@ public class LoanTerms extends AppCompatActivity {
         loanRequestNotificationTable.setTimestamp(creationDate);
 
         loanRequestNotificationQueries.sendNotification(loanRequestNotificationTable, account.getCurrentUserId());
-    }
-
-    private void updateLabel() {
-        String myFormat = "MM/dd/yy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
-        loanReleaseDateEditText.setError(null);
-        loanReleaseDateEditText.setText(sdf.format(myCalendar.getTime()));
     }
 
     private boolean checkForm(){

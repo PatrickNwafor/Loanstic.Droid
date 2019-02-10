@@ -23,6 +23,8 @@ import android.widget.ProgressBar;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.GroupLeaderRecyclerAdapter;
 import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
+import com.icubed.loansticdroid.util.AndroidUtils;
+import com.icubed.loansticdroid.util.KeyboardUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,7 +157,7 @@ public class SelectGroupLeader extends AppCompatActivity {
             case R.id.action_search:
                 searchEditText.setVisibility(View.VISIBLE);
                 searchEditText.requestFocus();
-                showKeyboard();
+                KeyboardUtil.showKeyboard(this);
                 return true;
 
             default:
@@ -167,20 +169,11 @@ public class SelectGroupLeader extends AppCompatActivity {
         if( searchEditText.getVisibility()==GONE){
             searchEditText.setVisibility(View.VISIBLE);
             searchEditText.requestFocus();
-            showKeyboard();
+            KeyboardUtil.showKeyboard(this);
         }else{searchEditText.setVisibility(View.GONE);
             searchEditText.setText("");
         }
 
-    }
-
-    public void showKeyboard() {
-        View focuedView = getCurrentFocus();
-        if (focuedView != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            assert imm != null;
-            imm.showSoftInput(focuedView, 0);
-        }
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
+import com.icubed.loansticdroid.util.DateUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,7 +51,7 @@ public class CollectionQueries {
     public Task<QuerySnapshot> retrieveDueCollectionsDataForAllOfficer(){
 
         return firebaseFirestore.collection("Collection")
-                .whereEqualTo("collectionDueDate", dateString(new Date()))
+                .whereEqualTo("collectionDueDate", DateUtil.dateString(new Date()))
                 .get();
 
     }
@@ -65,12 +66,4 @@ public class CollectionQueries {
         return firebaseFirestore.collection("Collection").document(collectionId)
                 .update(dueCollectedMap);
     }
-
-    /****************Convert date to string format*****************/
-    private String dateString(Date date){
-        String myFormat = "MM/dd/yy";
-        SimpleDateFormat timeFormat = new SimpleDateFormat(myFormat, Locale.US);
-        return timeFormat.format(date);
-    }
-
 }

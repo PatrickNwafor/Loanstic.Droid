@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.io.ByteArrayOutputStream;
 
@@ -76,11 +77,7 @@ public class BorrrowerFileDriverLicense extends AppCompatActivity {
     }
 
     public String BitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-        byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
+        return BitmapUtil.bitMapJPGToString(bitmap, 100);
     }
 
     /***************Calls up Up Phone camera********************/

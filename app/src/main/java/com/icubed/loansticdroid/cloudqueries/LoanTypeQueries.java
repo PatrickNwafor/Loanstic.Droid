@@ -11,6 +11,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
@@ -35,9 +36,7 @@ public class LoanTypeQueries {
                 .getReference("loanTypes/")
                 .child(filesID+".jpg");
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] data = baos.toByteArray();
+        byte[] data = BitmapUtil.getBytesFromBitmapInPNG(bitmap, 100);
 
         return borrowerFilesStorageRef.putBytes(data);
     }
@@ -48,9 +47,7 @@ public class LoanTypeQueries {
                 .getReference("loanTypes/thumb/")
                 .child(filesID+".jpg");
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 10, baos);
-        byte[] data = baos.toByteArray();
+        byte[] data = BitmapUtil.getBytesFromBitmapInPNG(bitmap, 10);
 
         return borrowerFilesThumbStorageRef.putBytes(data);
     }

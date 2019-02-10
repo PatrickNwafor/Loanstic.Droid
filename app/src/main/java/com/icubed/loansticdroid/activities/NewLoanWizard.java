@@ -36,6 +36,8 @@ import com.icubed.loansticdroid.fragments.SelectLoanUser.GroupLoanFragment;
 import com.icubed.loansticdroid.fragments.SelectLoanUser.SingleLoanFragment;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
+import com.icubed.loansticdroid.util.AndroidUtils;
+import com.icubed.loansticdroid.util.KeyboardUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -307,7 +309,7 @@ public class NewLoanWizard extends AppCompatActivity {
             case R.id.action_search:
                 searchBorrowerEditText.setVisibility(View.VISIBLE);
                 searchBorrowerEditText.requestFocus();
-                showKeyboard();
+                KeyboardUtil.showKeyboard(this);
                 return true;
 
             case R.id.next_to_loan_terms:
@@ -326,14 +328,5 @@ public class NewLoanWizard extends AppCompatActivity {
         }
 
         super.onBackPressed();
-    }
-
-    public void showKeyboard() {
-        View focuedView = getCurrentFocus();
-        if (focuedView != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            assert imm != null;
-            imm.showSoftInput(focuedView, 0);
-        }
     }
 }

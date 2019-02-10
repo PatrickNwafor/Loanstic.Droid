@@ -12,6 +12,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTable;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
@@ -37,9 +38,7 @@ public class BorrowerPhotoValidationQueries {
                 .getReference("Business_Verification_Photos/")
                 .child(uniqueID+".jpg");
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
+        byte[] data = BitmapUtil.getBytesFromBitmapInJPG(bitmap, 100);
 
         return borrowerImageStorageRef.putBytes(data);
     }
@@ -86,9 +85,7 @@ public class BorrowerPhotoValidationQueries {
                 .getReference("Business_Verification_Photos/thumb/")
                 .child(uniqueID+".jpg");
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-        byte[] data = baos.toByteArray();
+        byte[] data = BitmapUtil.getBytesFromBitmapInJPG(bitmap, 10);
 
         return borrowerImageThumbStorageRef.putBytes(data);
     }
