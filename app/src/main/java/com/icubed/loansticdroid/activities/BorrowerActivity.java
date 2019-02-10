@@ -54,6 +54,8 @@ import com.icubed.loansticdroid.models.Borrowers;
 import com.icubed.loansticdroid.models.Savings;
 import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.BitmapUtil;
+import com.icubed.loansticdroid.util.EditTextExtension.CustomEditText;
+import com.icubed.loansticdroid.util.EditTextExtension.DrawableClickListener;
 import com.icubed.loansticdroid.util.KeyboardUtil;
 
 import org.json.JSONArray;
@@ -131,6 +133,8 @@ public class BorrowerActivity extends AppCompatActivity {
                 }
             }
         });
+
+
 
     }
 
