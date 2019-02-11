@@ -330,7 +330,7 @@ public class NewLoanWizard extends AppCompatActivity {
                 onBackPressed();
                 return true;
 
-            case R.id.action_search:
+            case R.id.search_loan:
                 searchBorrowerEditText.setVisibility(View.VISIBLE);
                 searchBorrowerEditText.requestFocus();
                 KeyboardUtil.showKeyboard(this);
