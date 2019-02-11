@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <com.icubed.loansticdroid.util.EditTextExtension.CustomEditText
         android:id="@+id/searchEditText"
         android:layout_width="0dp"
         android:layout_height="56dp"

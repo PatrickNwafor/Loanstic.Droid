@@ -24,6 +24,8 @@ import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.GroupLeaderRecyclerAdapter;
 import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
 import com.icubed.loansticdroid.util.AndroidUtils;
+import com.icubed.loansticdroid.util.EditTextExtension.CustomEditText;
+import com.icubed.loansticdroid.util.EditTextExtension.DrawableClickListener;
 import com.icubed.loansticdroid.util.KeyboardUtil;
 
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ import static android.view.View.GONE;
 public class SelectGroupLeader extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private EditText searchEditText;
+    private CustomEditText searchEditText;
     private List<SelectedBorrowerForGroup> groupList;
     private RecyclerView borrowerRecyclerView;
     private GroupLeaderRecyclerAdapter groupLeaderRecyclerAdapter;
@@ -54,6 +56,7 @@ public class SelectGroupLeader extends AppCompatActivity {
         proceedBtn = findViewById(R.id.proceed);
 
         searchEditTextTextChangeListener();
+        searchDrawableButtonListener();
 
         toolbar = findViewById(R.id.select_group_leader_toolbar);
         setSupportActionBar(toolbar);
@@ -69,6 +72,27 @@ public class SelectGroupLeader extends AppCompatActivity {
         borrowerRecyclerView.setAdapter(groupLeaderRecyclerAdapter);
         hideProgressBar();
         proceedBtnClickListener();
+    }
+
+    private void searchDrawableButtonListener() {
+        searchEditText.setDrawableClickListener(new DrawableClickListener() {
+            @Override
+            public void onClick(DrawablePosition target) {
+                switch (target) {
+                    case LEFT:
+                        KeyboardUtil.hideKeyboard(SelectGroupLeader.this);
+                        searchEditText.setVisibility(View.GONE);
+                        break;
+
+                    case RIGHT:
+                        searchEditText.setText("");
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
     }
 
     private void proceedBtnClickListener() {

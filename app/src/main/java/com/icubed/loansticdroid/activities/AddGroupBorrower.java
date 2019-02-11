@@ -42,6 +42,8 @@ import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 import com.icubed.loansticdroid.models.Borrowers;
 import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
 import com.icubed.loansticdroid.util.AndroidUtils;
+import com.icubed.loansticdroid.util.EditTextExtension.CustomEditText;
+import com.icubed.loansticdroid.util.EditTextExtension.DrawableClickListener;
 import com.icubed.loansticdroid.util.KeyboardUtil;
 
 import org.json.JSONArray;
@@ -56,7 +58,7 @@ import static android.view.View.GONE;
 
 public class AddGroupBorrower extends AppCompatActivity {
 
-    private EditText searchEditText;
+    private CustomEditText searchEditText;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView borrowerRecyclerView, selectedBorrowerRecyclerView;
     private ProgressBar progressBar;
@@ -111,7 +113,29 @@ public class AddGroupBorrower extends AppCompatActivity {
         index = client.getIndex("Borrowers");
 
         searchBorrowerListener();
+        searchDrawableButtonListener();
         getAllBorrowers();
+    }
+
+    private void searchDrawableButtonListener() {
+        searchEditText.setDrawableClickListener(new DrawableClickListener() {
+            @Override
+            public void onClick(DrawablePosition target) {
+                switch (target) {
+                    case LEFT:
+                        KeyboardUtil.hideKeyboard(AddGroupBorrower.this);
+                        searchEditText.setVisibility(View.GONE);
+                        break;
+
+                    case RIGHT:
+                        searchEditText.setText("");
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
     }
 
     private void searchBorrowerListener() {

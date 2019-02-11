@@ -74,7 +74,7 @@ public class BorrowerActivity extends AppCompatActivity {
 
     private static final String TAG = ".BorrowerActivity";
     public ProgressBar borrowerProgressBar;
-    private EditText searchBorrowerEditText;
+    private CustomEditText searchBorrowerEditText;
     public SegmentedButtonGroup sbg;
     Index index;
     Index groupIndex;
@@ -117,6 +117,7 @@ public class BorrowerActivity extends AppCompatActivity {
         groupIndex = client.getIndex("BORROWER_GROUP");
 
         searchBorrowerListener();
+        searchDrawableButtonListener();
 
         //segmented control
         sbg = findViewById(R.id.segmentedButtonGroup);
@@ -136,6 +137,27 @@ public class BorrowerActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void searchDrawableButtonListener() {
+        searchBorrowerEditText.setDrawableClickListener(new DrawableClickListener() {
+            @Override
+            public void onClick(DrawablePosition target) {
+                switch (target) {
+                    case LEFT:
+                        KeyboardUtil.hideKeyboard(BorrowerActivity.this);
+                        searchBorrowerEditText.setVisibility(View.GONE);
+                        break;
+
+                    case RIGHT:
+                        searchBorrowerEditText.setText("");
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
     }
 
     /************Instantiate fragment transactions**********/

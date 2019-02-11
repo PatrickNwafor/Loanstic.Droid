@@ -64,7 +64,7 @@ public class LoanSearchActivity extends AppCompatActivity {
         loanRecyclerView.requestFocus();
 
         searchFieldListener();
-        searchBackButtonListener();
+        searchDrawableButtonListener();
 
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
         index = client.getIndex("Loan");
@@ -72,13 +72,17 @@ public class LoanSearchActivity extends AppCompatActivity {
         searchLoans(searchString);
     }
 
-    private void searchBackButtonListener() {
+    private void searchDrawableButtonListener() {
         searchEditText.setDrawableClickListener(new DrawableClickListener() {
             @Override
             public void onClick(DrawablePosition target) {
                 switch (target) {
                     case LEFT:
                         finish();
+                        break;
+
+                    case RIGHT:
+                        searchEditText.setText("");
                         break;
 
                     default:

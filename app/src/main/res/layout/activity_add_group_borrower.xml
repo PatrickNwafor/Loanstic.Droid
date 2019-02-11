@@ -18,14 +18,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <EditText
+    <com.icubed.loansticdroid.util.EditTextExtension.CustomEditText
         android:id="@+id/searchEditText"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/searchtextstyle"
-        android:drawableLeft="@drawable/ic_fiber_manual_record_black_24dp"
-        android:drawablePadding="40dp"
-        android:elevation="11dp"
+        android:layout_height="56dp"
+        android:background="@color/whiteEnd"
+
+        android:drawableLeft="@drawable/ic_arrow_back_black_24dp"
+        android:drawableRight="@drawable/cancel_earch"
+        android:drawablePadding="10dp"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
+        android:elevation="4dp"
         android:ems="10"
         android:hint="Search borrower's name or business..."
         android:imeOptions="actionSearch"

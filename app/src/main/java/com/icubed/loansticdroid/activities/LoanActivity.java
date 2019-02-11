@@ -34,6 +34,8 @@ import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
 import com.icubed.loansticdroid.models.Loan;
 import com.icubed.loansticdroid.util.AndroidUtils;
+import com.icubed.loansticdroid.util.EditTextExtension.CustomEditText;
+import com.icubed.loansticdroid.util.EditTextExtension.DrawableClickListener;
 import com.icubed.loansticdroid.util.KeyboardUtil;
 import com.ramotion.foldingcell.FoldingCell;
 
@@ -46,7 +48,7 @@ import java.util.List;
 
 public class LoanActivity extends AppCompatActivity {
     public ProgressBar loanProgressBar;
-    private EditText searchLoanEditText;
+    private CustomEditText searchLoanEditText;
     private Toolbar toolbar;
     private Loan loan;
 
@@ -65,6 +67,7 @@ public class LoanActivity extends AppCompatActivity {
 
         loan = new Loan(this);
         searchLoanEditTextListener();
+        searchDrawableButtonListener();
 
         //Swipe down refresher initialization
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
@@ -80,6 +83,27 @@ public class LoanActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         getAllLoan();
+    }
+
+    private void searchDrawableButtonListener() {
+        searchLoanEditText.setDrawableClickListener(new DrawableClickListener() {
+            @Override
+            public void onClick(DrawablePosition target) {
+                switch (target) {
+                    case LEFT:
+                        KeyboardUtil.hideKeyboard(LoanActivity.this);
+                        searchLoanEditText.setVisibility(View.GONE);
+                        break;
+
+                    case RIGHT:
+                        searchLoanEditText.setText("");
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
     }
 
     private void searchLoanEditTextListener() {

@@ -37,6 +37,8 @@ import com.icubed.loansticdroid.fragments.SelectLoanUser.SingleLoanFragment;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.util.AndroidUtils;
+import com.icubed.loansticdroid.util.EditTextExtension.CustomEditText;
+import com.icubed.loansticdroid.util.EditTextExtension.DrawableClickListener;
 import com.icubed.loansticdroid.util.KeyboardUtil;
 
 import org.json.JSONArray;
@@ -53,7 +55,7 @@ public class NewLoanWizard extends AppCompatActivity {
     private Toolbar toolbar;
 
     public ProgressBar borrowerProgressBar;
-    private EditText searchBorrowerEditText;
+    private CustomEditText searchBorrowerEditText;
     public SegmentedButtonGroup sbg;
     Index index;
     Index groupIndex;
@@ -94,6 +96,7 @@ public class NewLoanWizard extends AppCompatActivity {
         groupIndex = client.getIndex("BORROWER_GROUP");
 
         searchBorrowerListener();
+        searchDrawableButtonListener();
 
         //segmented control
         sbg = findViewById(R.id.segmentedButtonGroup);
@@ -106,6 +109,27 @@ public class NewLoanWizard extends AppCompatActivity {
                 } else if (position == 1) {
                     searchPosition = 1;
                     startFragment(groupLoanFragment, "group");
+                }
+            }
+        });
+    }
+
+    private void searchDrawableButtonListener() {
+        searchBorrowerEditText.setDrawableClickListener(new DrawableClickListener() {
+            @Override
+            public void onClick(DrawablePosition target) {
+                switch (target) {
+                    case LEFT:
+                        KeyboardUtil.hideKeyboard(NewLoanWizard.this);
+                        searchBorrowerEditText.setVisibility(View.GONE);
+                        break;
+
+                    case RIGHT:
+                        searchBorrowerEditText.setText("");
+                        break;
+
+                    default:
+                        break;
                 }
             }
         });
