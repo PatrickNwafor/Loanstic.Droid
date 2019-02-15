@@ -1,6 +1,7 @@
 package com.icubed.loansticdroid.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.activities.AllBorrowerLoan;
+import com.icubed.loansticdroid.activities.LoginActivity;
+import com.icubed.loansticdroid.activities.ResetPasswordActivity;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
 import com.icubed.loansticdroid.models.LoanDetails;
 import com.icubed.loansticdroid.util.BitmapUtil;
@@ -51,7 +55,9 @@ public class LoanRecyclerAdapter extends RecyclerView.Adapter<LoanRecyclerAdapte
         holder.moreBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "You clicked me", Toast.LENGTH_SHORT).show();
+                Intent allLoan = new Intent(context, AllBorrowerLoan.class);
+               context.startActivity(allLoan);
+                //Toast.makeText(context, "You clicked me", Toast.LENGTH_SHORT).show();
             }
         });
     }
