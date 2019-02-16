@@ -189,24 +189,21 @@ public class LoansTable implements Parcelable {
 
     // Parcelling part
     public LoansTable(Parcel in){
-        String[] data = new String[19];
-
-        in.readStringArray(data);
-        this.loanId = data[0];
-        this.borrowerId = data[1];
-        this.groupId = data[2];
-        this.isOtherLoanType = Boolean.parseBoolean(data[3]);
-        this.isLoanApproved = Boolean.parseBoolean(data[4]);
-        this.loanAmount = Double.parseDouble(data[5]);
-        this.loanFees = Double.parseDouble(data[6]);
-        this.repaymentAmount = Double.parseDouble(data[7]);
-        this.loanInterestRate = Double.parseDouble(data[8]);
-        this.loanDuration = Integer.parseInt(data[13]);
-        this.loanTypeId = data[14];
-        this.loanOfficerId = data[15];
-        this.loanInterestRateUnit = data[16];
-        this.loanDurationUnit = data[17];
-        this.repaymentAmountUnit = data[18];
+        this.loanId = in.readString();
+        this.borrowerId = in.readString();
+        this.groupId = in.readString();
+        this.isOtherLoanType = Boolean.parseBoolean(in.readString());
+        this.isLoanApproved = Boolean.parseBoolean(in.readString());
+        this.loanAmount = in.readDouble();
+        this.loanFees = in.readDouble();
+        this.repaymentAmount = in.readDouble();
+        this.loanInterestRate = in.readDouble();
+        this.loanDuration = in.readInt();
+        this.loanTypeId = in.readString();
+        this.loanOfficerId = in.readString();
+        this.loanInterestRateUnit = in.readString();
+        this.loanDurationUnit = in.readString();
+        this.repaymentAmountUnit = in.readString();
     }
 
     @Override
@@ -216,14 +213,21 @@ public class LoansTable implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringArray(new String[] {this.loanId,
-        this.borrowerId,
-        this.groupId, String.valueOf(this.isOtherLoanType), String.valueOf(this.isLoanApproved), String.valueOf(this.loanAmount), String.valueOf(this.loanFees), String.valueOf(this.repaymentAmount), String.valueOf(this.loanInterestRate), String.valueOf(this.loanDuration),
-        this.loanTypeId,
-        this.loanOfficerId,
-        this.loanInterestRateUnit,
-        this.loanDurationUnit,
-        this.repaymentAmountUnit});
+        dest.writeString(this.loanId);
+        dest.writeString(this.borrowerId);
+        dest.writeString(this.groupId);
+        dest.writeString(String.valueOf(this.isOtherLoanType));
+        dest.writeString(String.valueOf(this.isLoanApproved));
+        dest.writeDouble(this.loanAmount);
+        dest.writeDouble(this.loanFees);
+        dest.writeDouble(this.repaymentAmount);
+        dest.writeDouble(this.loanInterestRate);
+        dest.writeInt(this.loanDuration);
+        dest.writeString(this.loanTypeId);
+        dest.writeString(this.loanOfficerId);
+        dest.writeString(this.loanInterestRateUnit);
+        dest.writeString(this.loanDurationUnit);
+        dest.writeString(this.repaymentAmountUnit);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
