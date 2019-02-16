@@ -94,6 +94,7 @@ public class SearchLoan {
                         if(task.isSuccessful()){
                             GroupBorrowerTable groupBorrowerTable = task.getResult().toObject(GroupBorrowerTable.class);
                             groupBorrowerTable.setGroupId(task.getResult().getId());
+                            groupBorrowerTable.setId((long) 4443);
 
                             LoanDetails loanDetails = new LoanDetails();
                             loanDetails.setBorrowersTable(null);
@@ -130,6 +131,7 @@ public class SearchLoan {
                         if(task.isSuccessful()){
                             BorrowersTable borrowersTable = task.getResult().toObject(BorrowersTable.class);
                             borrowersTable.setBorrowersId(task.getResult().getId());
+                            borrowersTable.setId((long) 443);
 
                             LoanDetails loanDetails = new LoanDetails();
                             loanDetails.setBorrowersTable(borrowersTable);
