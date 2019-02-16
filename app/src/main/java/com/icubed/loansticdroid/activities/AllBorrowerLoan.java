@@ -304,6 +304,8 @@ public class AllBorrowerLoan extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), LoanEditPage.class);
                 intent.putExtra("loan", loansTable);
+                intent.putExtra("borrower", borrower);
+                intent.putExtra("group", group);
                 startActivity(intent);
             }
         });
