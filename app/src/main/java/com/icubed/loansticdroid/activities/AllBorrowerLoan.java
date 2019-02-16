@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,8 +34,11 @@ import com.icubed.loansticdroid.util.DateUtil;
 import com.icubed.loansticdroid.util.KeyboardUtil;
 
 import java.util.Date;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class AllBorrowerLoan extends AppCompatActivity {
     private static final String TAG = ".AllBorrowerLoan";
@@ -70,13 +74,171 @@ public class AllBorrowerLoan extends AppCompatActivity {
         borrower = getIntent().getParcelableExtra("borrower");
         group = getIntent().getParcelableExtra("group");
 
+        createTableHeader();
+
         if(borrower != null){
             setProfileImage();
-            getLoanForBorrower();
+            List<LoansTable> loansTables = loanTableQueries.loadLoansForBorrowerOrderByCreationDate(borrower.getBorrowersId());
+            if(loansTables.isEmpty()){
+                getLoanForBorrower();
+            }else{
+                loadLoanFromStorage(loansTables);
+                getLoanForBorrowerAndCompareToCloud(loansTables);
+            }
         }
-        else getLoanForGroup();
+        else {
+            List<LoansTable> loansTables = loanTableQueries.loadLoansForGroupOrderByCreationDate(group.getGroupId());
+            if(loansTables.isEmpty()){
+                getLoanForGroup();
+            }else{
+                loadLoanFromStorage(loansTables);
+                getLoanForGroupAndCompareToCloud(loansTables);
+            }
+        }
+    }
 
-        createTableHeader();
+    private void getLoanForGroupAndCompareToCloud(final List<LoansTable> loansTables) {
+        loansQueries.retrieveLoanForGroup(group.getGroupId())
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            if(!task.getResult().isEmpty()){
+
+                                List<LoansTable> loansInStorage = loansTables;
+                                for(DocumentSnapshot doc : task.getResult().getDocuments()) {
+
+                                    Boolean doesDataExist = false;
+                                    for (LoansTable loanTab : loansTables) {
+                                        if (loanTab.getLoanId().equals(doc.getId())) {
+                                            doesDataExist = true;
+                                            loansInStorage.remove(loanTab);
+                                            Log.d(TAG, "onComplete: loan id of " + doc.getId() + " already exist");
+                                            break;
+                                        }
+                                    }
+
+                                    if (!doesDataExist) {
+                                        Log.d(TAG, "onComplete: loan id of " + doc.getId() + " does not exist");
+
+                                        LoansTable loansTable = doc.toObject(LoansTable.class);
+                                        loansTable.setLoanId(doc.getId());
+
+                                        saveLoanToLocalStorage(loansTable);
+                                        createTableBody(loansTable);
+                                    } else {
+                                        //Update local table if any changes
+                                        updateTable(doc);
+                                    }
+                                }
+
+                                //to delete deleted borrower in cloud from storage
+                                if(!loansInStorage.isEmpty()){
+                                    for(LoansTable loanTab : loansInStorage){
+                                        deleteLoanFromLocalStorage(loanTab);
+                                        Log.d("Delete", "deleted "+loanTab.getLoanId()+ " from storage");
+                                    }
+                                }
+
+                            }else{
+                                Toast.makeText(getApplicationContext(), "Document is empty", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Log.d("Loan", "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void getLoanForBorrowerAndCompareToCloud(final List<LoansTable> loansTables) {
+        loansQueries.retrieveLoanForBorrower(borrower.getBorrowersId())
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            if(!task.getResult().isEmpty()){
+
+                                List<LoansTable> loansInStorage = loansTables;
+                                for(DocumentSnapshot doc : task.getResult().getDocuments()) {
+
+                                    Boolean doesDataExist = false;
+                                    for (LoansTable loanTab : loansTables) {
+                                        if (loanTab.getLoanId().equals(doc.getId())) {
+                                            doesDataExist = true;
+                                            loansInStorage.remove(loanTab);
+                                            Log.d(TAG, "onComplete: loan id of " + doc.getId() + " already exist");
+                                            break;
+                                        }
+                                    }
+
+                                    if (!doesDataExist) {
+                                        Log.d(TAG, "onComplete: loan id of " + doc.getId() + " does not exist");
+
+                                        LoansTable loansTable = doc.toObject(LoansTable.class);
+                                        loansTable.setLoanId(doc.getId());
+
+                                        saveLoanToLocalStorage(loansTable);
+                                        createTableBody(loansTable);
+                                    } else {
+                                        //Update local table if any changes
+                                        updateTable(doc);
+                                    }
+                                }
+
+                                //to delete deleted borrower in cloud from storage
+                                if(!loansInStorage.isEmpty()){
+                                    for(LoansTable loanTab : loansInStorage){
+                                        deleteLoanFromLocalStorage(loanTab);
+                                        Log.d("Delete", "deleted "+loanTab.getLoanId()+ " from storage");
+                                    }
+                                }
+
+                            }else{
+                                Toast.makeText(getApplicationContext(), "Document is empty", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Log.d("Loan", "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void saveLoanToLocalStorage(LoansTable loansTable) {
+        loanTableQueries.insertLoanToStorage(loansTable);
+    }
+
+    /**
+     * this method deletes a borrower from local storage
+     * @param loansTable
+     */
+    private void deleteLoanFromLocalStorage(LoansTable loansTable) {
+        loanTableQueries.deleteLoan(loansTable);
+    }
+
+    /**
+     * updates any changes in the loan details from cloud in local storage
+     * @param doc
+     */
+    private void updateTable(DocumentSnapshot doc) {
+        LoansTable loansTable = doc.toObject(LoansTable.class);
+        loansTable.setLoanId(doc.getId());
+
+        LoansTable currentlySaved = loanTableQueries.loadSingleLoan(doc.getId());
+        loansTable.setId(currentlySaved.getId());
+
+        if(loansTable.getLastUpdatedAt().getTime() != currentlySaved.getLastUpdatedAt().getTime()){
+
+            loanTableQueries.updateLoanDetails(loansTable);
+            Log.d("Loan", "Loan Detailed updated");
+
+        }
+    }
+
+    private void loadLoanFromStorage(List<LoansTable> loansTables) {
+        for (LoansTable loansTable : loansTables) {
+            createTableBody(loansTable);
+        }
+
     }
 
     private void setProfileImage() {
@@ -131,11 +293,20 @@ public class AllBorrowerLoan extends AppCompatActivity {
                 });
     }
 
-    private void createTableBody(LoansTable loansTable){
+    private void createTableBody(final LoansTable loansTable){
         TableRow row = new TableRow(this);
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
         row.setLayoutParams(lp);
         TextView loanNumberHeader, releasedHeader, maturityHeader, repaymentHeader, principalHeader, paidHeader, dueHeader, balanceHeader, feesHeader, penaltyHeader, statusHeader;
+
+        row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), LoanEditPage.class);
+                intent.putExtra("loan", loansTable);
+                startActivity(intent);
+            }
+        });
 
         loanNumberHeader = new TextView(this);
         releasedHeader = new TextView(this);

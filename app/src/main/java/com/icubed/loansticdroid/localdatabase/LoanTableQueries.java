@@ -29,6 +29,20 @@ public class LoanTableQueries {
                 .build().list();
     }
 
+    public List<LoansTable> loadLoansForBorrowerOrderByCreationDate(String borrowerId){
+        return loansTableDao.queryBuilder()
+                .where(LoansTableDao.Properties.BorrowerId.eq(borrowerId))
+                .orderDesc(LoansTableDao.Properties.LoanCreationDate)
+                .build().list();
+    }
+
+    public List<LoansTable> loadLoansForGroupOrderByCreationDate(String groupId){
+        return loansTableDao.queryBuilder()
+                .where(LoansTableDao.Properties.GroupId.eq(groupId))
+                .orderDesc(LoansTableDao.Properties.LoanCreationDate)
+                .build().list();
+    }
+
     /**********Load a single collection from local Storage*******/
     public LoansTable loadSingleLoan(String loanId){
         return loansTableDao.queryBuilder()
