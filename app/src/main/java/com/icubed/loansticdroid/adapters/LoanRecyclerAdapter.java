@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.AllBorrowerLoan;
+import com.icubed.loansticdroid.activities.LoanSearchActivity;
 import com.icubed.loansticdroid.activities.LoginActivity;
 import com.icubed.loansticdroid.activities.ResetPasswordActivity;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
@@ -49,15 +50,16 @@ public class LoanRecyclerAdapter extends RecyclerView.Adapter<LoanRecyclerAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.setClosedView(loansTableList.get(position));
 
         holder.moreBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent allLoan = new Intent(context, AllBorrowerLoan.class);
-               context.startActivity(allLoan);
-                //Toast.makeText(context, "You clicked me", Toast.LENGTH_SHORT).show();
+                allLoan.putExtra("borrower", loansTableList.get(position).getBorrowersTable());
+                allLoan.putExtra("group", loansTableList.get(position).getGroupBorrowerTable());
+                context.startActivity(allLoan);
             }
         });
     }

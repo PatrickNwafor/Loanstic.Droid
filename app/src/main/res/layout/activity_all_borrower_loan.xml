@@ -102,9 +102,10 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <TableLayout
+                    android:id="@+id/table"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                    <TableRow>
+                    <!--<TableRow>
                         <TextView
                             android:text="Loan Number"
                             android:gravity="left"
@@ -163,59 +164,72 @@
                             android:gravity="left"
                             android:padding="10dp"
                             android:textColor="@color/colorPrimary"/>
-                    </TableRow>
+                    </TableRow>-->
 
 
-                    <TableRow>
+                    <!--<TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
                         <TextView
-                            android:text="Loan #100000000"
                             android:gravity="left"
-                            android:paddingTop="10dp"
-                            android:paddingRight="10dp"
                             android:paddingBottom="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingTop="10dp"
+                            android:text="Loan #100000000"
 
                             />
+
                         <TextView
-                            android:text="20/12/1999"
-                            android:gravity="left"
-                            android:padding="10dp"  />
-                        <TextView
-                            android:text="20/12/2000"
-                            android:gravity="left"
-                            android:padding="10dp"  />
-                        <TextView
-                            android:text="Monthly"
-                            android:gravity="left"
-                            android:padding="10dp"  />
-                        <TextView
-                            android:text="1000000"
-                            android:gravity="left"
-                            android:padding="10dp"  />
-                        <TextView
-                            android:text="500000"
-                            android:gravity="left"
-                            android:padding="10dp"  />
-                        <TextView
-                            android:text="1200000"
-                            android:gravity="left"
-                            android:padding="10dp"  />
-                        <TextView
-                            android:text="700000"
-                            android:gravity="left"
-                            android:padding="10dp"  />
-                        <TextView
-                            android:text="0"
-                            android:gravity="left"
-                            android:padding="10dp"  />
-                        <TextView
-                            android:text="0"
-                            android:gravity="left"
-                            android:padding="10dp"  />
-                        <TextView
-                            android:text="Open"
                             android:gravity="left"
                             android:padding="10dp"
-                            android:textColor="@color/green"/>
+                            android:text="20/12/1999" />
+
+                        <TextView
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:text="20/12/2000" />
+
+                        <TextView
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:text="Monthly" />
+
+                        <TextView
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:text="1000000" />
+
+                        <TextView
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:text="500000" />
+
+                        <TextView
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:text="1200000" />
+
+                        <TextView
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:text="700000" />
+
+                        <TextView
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:text="0" />
+
+                        <TextView
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:text="0" />
+
+                        <TextView
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:text="Open"
+                            android:textColor="@color/green" />
                     </TableRow>
 
                     <TableRow>
@@ -318,7 +332,7 @@
                             android:gravity="left"
                             android:padding="10dp"
                             android:textColor="@color/green"/>
-                    </TableRow>
+                    </TableRow>-->
 
                 </TableLayout>
             </LinearLayout>

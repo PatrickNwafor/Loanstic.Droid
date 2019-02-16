@@ -1,5 +1,8 @@
 package com.icubed.loansticdroid.localdatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
@@ -8,7 +11,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import java.util.Date;
 
 @Entity
-public class LoansTable {
+public class LoansTable implements Parcelable {
 
     @Unique
     private String loanId;
@@ -183,4 +186,53 @@ public class LoansTable {
     public String toString() {
         return "LoansTable{" + "loanId='" + loanId + '\'' + ", borrowerId='" + borrowerId + '\'' + ", groupId='" + groupId + '\'' + ", id=" + id + ", isOtherLoanType=" + isOtherLoanType + ", isLoanApproved=" + isLoanApproved + ", loanAmount=" + loanAmount + ", loanFees=" + loanFees + ", repaymentAmount=" + repaymentAmount + ", loanInterestRate=" + loanInterestRate + ", loanCreationDate=" + loanCreationDate + ", loanReleaseDate=" + loanReleaseDate + ", loanApprovedDate=" + loanApprovedDate + ", lastUpdatedAt=" + lastUpdatedAt + ", loanDuration=" + loanDuration + ", loanTypeId='" + loanTypeId + '\'' + ", loanOfficerId='" + loanOfficerId + '\'' + ", loanInterestRateUnit='" + loanInterestRateUnit + '\'' + ", loanDurationUnit='" + loanDurationUnit + '\'' + ", repaymentAmountUnit='" + repaymentAmountUnit + '\'' + '}';
     }
+
+    // Parcelling part
+    public LoansTable(Parcel in){
+        String[] data = new String[19];
+
+        in.readStringArray(data);
+        this.loanId = data[0];
+        this.borrowerId = data[1];
+        this.groupId = data[2];
+        this.isOtherLoanType = Boolean.parseBoolean(data[3]);
+        this.isLoanApproved = Boolean.parseBoolean(data[4]);
+        this.loanAmount = Double.parseDouble(data[5]);
+        this.loanFees = Double.parseDouble(data[6]);
+        this.repaymentAmount = Double.parseDouble(data[7]);
+        this.loanInterestRate = Double.parseDouble(data[8]);
+        this.loanDuration = Integer.parseInt(data[13]);
+        this.loanTypeId = data[14];
+        this.loanOfficerId = data[15];
+        this.loanInterestRateUnit = data[16];
+        this.loanDurationUnit = data[17];
+        this.repaymentAmountUnit = data[18];
+    }
+
+    @Override
+    public int describeContents(){
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(new String[] {this.loanId,
+        this.borrowerId,
+        this.groupId, String.valueOf(this.isOtherLoanType), String.valueOf(this.isLoanApproved), String.valueOf(this.loanAmount), String.valueOf(this.loanFees), String.valueOf(this.repaymentAmount), String.valueOf(this.loanInterestRate), String.valueOf(this.loanDuration),
+        this.loanTypeId,
+        this.loanOfficerId,
+        this.loanInterestRateUnit,
+        this.loanDurationUnit,
+        this.repaymentAmountUnit});
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public LoansTable createFromParcel(Parcel in) {
+            return new LoansTable(in);
+        }
+
+        public LoansTable[] newArray(int size) {
+            return new LoansTable[size];
+        }
+    };
 }

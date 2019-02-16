@@ -45,4 +45,16 @@ public class LoansQueries {
                 .get();
     }
 
+    public Task<QuerySnapshot> retrieveLoanForBorrower(String borrowerId){
+        return firebaseFirestore.collection("Loan")
+                .whereEqualTo("borrowerId", borrowerId)
+                .get();
+    }
+
+    public Task<QuerySnapshot> retrieveLoanForGroup(String groupId){
+        return firebaseFirestore.collection("Loan")
+                .whereEqualTo("groupId", groupId)
+                .get();
+    }
+
 }

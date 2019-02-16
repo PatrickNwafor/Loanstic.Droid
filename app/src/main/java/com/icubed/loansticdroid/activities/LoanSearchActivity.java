@@ -46,6 +46,8 @@ public class LoanSearchActivity extends AppCompatActivity {
     private LinearLayout searchEmptyLayout;
     private SearchLoan searchLoan;
 
+    public int search = 99393;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

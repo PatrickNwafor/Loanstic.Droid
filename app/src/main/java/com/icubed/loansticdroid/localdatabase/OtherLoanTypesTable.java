@@ -1,5 +1,8 @@
 package com.icubed.loansticdroid.localdatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
@@ -8,7 +11,7 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class OtherLoanTypesTable{
+public class OtherLoanTypesTable implements Parcelable {
 
     @Unique
     private String otherLoanTypeId;
@@ -101,4 +104,39 @@ public class OtherLoanTypesTable{
     public String toString() {
         return "OtherLoanTypesTable{" + "otherLoanTypeId='" + otherLoanTypeId + '\'' + ", branchId='" + branchId + '\'' + ", Id=" + Id + ", otherLoanTypeName='" + otherLoanTypeName + '\'' + ", otherLoanTypeDescription='" + otherLoanTypeDescription + '\'' + ", lastUpdatedAt=" + lastUpdatedAt + ", timestamp=" + timestamp + '}';
     }
+
+
+    // Parcelling part
+    public OtherLoanTypesTable(Parcel in){
+        String[] data = new String[4];
+
+        in.readStringArray(data);
+        this.otherLoanTypeId = data[0];
+        this.otherLoanTypeName = data[1];
+        this.otherLoanTypeDescription = data[2];
+        this.branchId = data[3];
+    }
+
+    @Override
+    public int describeContents(){
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(new String[] {this.otherLoanTypeId,
+                this.otherLoanTypeName,
+                this.otherLoanTypeDescription,
+                this.branchId});
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public OtherLoanTypesTable createFromParcel(Parcel in) {
+            return new OtherLoanTypesTable(in);
+        }
+
+        public OtherLoanTypesTable[] newArray(int size) {
+            return new OtherLoanTypesTable[size];
+        }
+    };
 }
