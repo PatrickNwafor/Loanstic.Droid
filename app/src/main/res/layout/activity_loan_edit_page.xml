@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="10dp"
-            android:text="Collections"
+            android:text="Repayment"
             android:textAllCaps="false" />
 
         <Button
@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="10dp"
-            android:text="Loan Terms"
+            android:text="LoanTerms"
             android:textAllCaps="false" />
         <Button
             android:id="@+id/LoanSchedule"
@@ -68,27 +68,27 @@
             android:minHeight="10dp"
             android:text="Loan Schedule"
             android:textAllCaps="false" />
-        <Button
-            android:id="@+id/LoanColateral"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="10dp"
-            android:text="Loan Collateral"
-            android:textAllCaps="false" />
-        <Button
-            android:id="@+id/LoanFiles"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="10dp"
-            android:text="Loan Files"
-            android:textAllCaps="false" />
-        <Button
-            android:id="@+id/LoanComments"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="10dp"
-            android:text="Loan Comments"
-            android:textAllCaps="false" />
+        <!--  <Button
+             android:id="@+id/LoanColateral"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:minHeight="10dp"
+             android:text="Collateral"
+             android:textAllCaps="false" />
+         <Button
+              android:id="@+id/LoanFiles"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:minHeight="10dp"
+              android:text="Loan Files"
+              android:textAllCaps="false" />
+          <Button
+              android:id="@+id/LoanComments"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:minHeight="10dp"
+              android:text="Loan Comments"
+              android:textAllCaps="false" />-->
 
 
     </co.ceryle.segmentedbutton.SegmentedButtonGroup>

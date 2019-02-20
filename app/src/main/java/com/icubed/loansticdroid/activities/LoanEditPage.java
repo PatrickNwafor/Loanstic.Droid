@@ -5,7 +5,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.fragments.EditLoanPageFragments.CollectionFragment;
@@ -17,6 +19,7 @@ import com.icubed.loansticdroid.fragments.EditLoanPageFragments.LoanTermFragment
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
+import com.icubed.loansticdroid.util.KeyboardUtil;
 
 import co.ceryle.segmentedbutton.SegmentedButtonGroup;
 
@@ -71,6 +74,7 @@ public class LoanEditPage extends AppCompatActivity {
             public void onClickedButtonPosition(int position){
                 if(position == 0){
                     startFragment(collectionFragment, "collection_frag");
+
                 }else if(position == 1){
                     startFragment(loanTermFragment, "loan_terms_frag");
                 }else if(position == 2){
@@ -92,17 +96,48 @@ public class LoanEditPage extends AppCompatActivity {
         transaction.replace(R.id.content, fragment, fragmentTag);
         transaction.commit();
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.repayment_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+       /* MenuItem register = menu.findItem(R.id.next_to_loan_terms);
+
+        if(selectedBorrower != null || selectedGroup !=  null || lastChecked != null){
+            register.setVisible(true);
+        }else{
+            register.setVisible(false);
+        }*/
+
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
 
+            case R.id.add_repayment:
+               // startAnotherActivity(PaymentActivity.class);
+                return true;
+
+            case R.id.edit_loan_terms:
+                //startAnotherActivity(LoanTerms.class);
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
 }

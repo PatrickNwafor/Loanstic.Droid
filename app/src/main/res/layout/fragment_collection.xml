@@ -6,9 +6,151 @@
     tools:context=".fragments.EditLoanPageFragments.CollectionFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Collection" />
+        android:orientation="vertical">
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        >
 
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fadingEdge="horizontal"
+            android:requiresFadingEdge="horizontal"
+            android:fadingEdgeLength="30dp"
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TableLayout
+                    android:id="@+id/table"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TableRow>
+                        <TextView
+                            android:text="Name"
+                            android:gravity="left"
+                            android:textColor="@color/colorPrimary"
+                            android:paddingTop="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="10dp"
+                              />
+                        <TextView
+                            android:text="Loan Number"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimary"/>
+                        <TextView
+                            android:text="Method"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimary"/>
+                        <TextView
+                            android:text="Collected By"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimary"/>
+                        <TextView
+                            android:text="Collection Date"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimary"/>
+                        <TextView
+                            android:text="Principal"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimary"/>
+                        <TextView
+                            android:text="Interest"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimary"/>
+                        <TextView
+                            android:text="Extra"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimary"/>
+                        <TextView
+                            android:text="Paid Amount"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimary"/>
+
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:text="Patrick"
+                            android:gravity="left"
+
+                            android:paddingTop="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="10dp"
+                            />
+                        <TextView
+                            android:text="100000073"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            />
+                        <TextView
+                            android:text="Cash"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            />
+                        <TextView
+                            android:text="Emasco"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            />
+                        <TextView
+                            android:text="10/10/2020"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            />
+                        <TextView
+                            android:text="20000"
+                            android:gravity="left"
+                            android:padding="10dp"
+                           />
+                        <TextView
+                            android:text="2000"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            />
+                        <TextView
+                            android:text="100"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            />
+                        <TextView
+                            android:text="22100"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            />
+                        <TextView
+                            android:text="Edit"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimary"/>
+                        <TextView
+                            android:text="Delete"
+                            android:gravity="left"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimary"/>
+                    </TableRow>
+
+
+                </TableLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>
 </FrameLayout>
