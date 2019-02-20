@@ -24,11 +24,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.cloudqueries.LoanTypeQueries;
 import com.icubed.loansticdroid.cloudqueries.LoansQueries;
+import com.icubed.loansticdroid.cloudqueries.OtherLoanTypeQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoanTableQueries;
+import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
+import com.icubed.loansticdroid.localdatabase.LoanTypeTableQueries;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
+import com.icubed.loansticdroid.localdatabase.OtherLoanTypesTable;
+import com.icubed.loansticdroid.localdatabase.OtherLoanTypesTableQueries;
 import com.icubed.loansticdroid.util.BitmapUtil;
 import com.icubed.loansticdroid.util.DateUtil;
 import com.icubed.loansticdroid.util.KeyboardUtil;
@@ -47,6 +53,10 @@ public class AllBorrowerLoan extends AppCompatActivity {
     private CircleImageView profileImage;
     Button ProfileButton;
 
+    private LoanTypeQueries loanTypeQueries;
+    private OtherLoanTypeQueries otherLoanTypeQueries;
+    private LoanTypeTableQueries loanTypeTableQueries;
+    private OtherLoanTypesTableQueries otherLoanTypesTableQueries;
     private BorrowersTable borrower;
     private GroupBorrowerTable group;
     private LoansQueries loansQueries;
@@ -70,6 +80,10 @@ public class AllBorrowerLoan extends AppCompatActivity {
 
         loansQueries = new LoansQueries();
         loanTableQueries = new LoanTableQueries(getApplication());
+        loanTypeQueries = new LoanTypeQueries();
+        loanTypeTableQueries = new LoanTypeTableQueries(getApplication());
+        otherLoanTypesTableQueries = new OtherLoanTypesTableQueries(getApplication());
+        otherLoanTypeQueries = new OtherLoanTypeQueries();
 
         borrower = getIntent().getParcelableExtra("borrower");
         group = getIntent().getParcelableExtra("group");
@@ -125,7 +139,7 @@ public class AllBorrowerLoan extends AppCompatActivity {
                                         loansTable.setLoanId(doc.getId());
 
                                         saveLoanToLocalStorage(loansTable);
-                                        createTableBody(loansTable);
+                                        getLoanType(loansTable);
                                     } else {
                                         //Update local table if any changes
                                         updateTable(doc);
@@ -178,7 +192,7 @@ public class AllBorrowerLoan extends AppCompatActivity {
                                         loansTable.setLoanId(doc.getId());
 
                                         saveLoanToLocalStorage(loansTable);
-                                        createTableBody(loansTable);
+                                        getLoanType(loansTable);
                                     } else {
                                         //Update local table if any changes
                                         updateTable(doc);
@@ -236,7 +250,13 @@ public class AllBorrowerLoan extends AppCompatActivity {
 
     private void loadLoanFromStorage(List<LoansTable> loansTables) {
         for (LoansTable loansTable : loansTables) {
-            createTableBody(loansTable);
+            if(loansTable.getIsOtherLoanType()){
+                OtherLoanTypesTable otherLoanTypesTable = otherLoanTypesTableQueries.loadSingleLoanType(loansTable.getLoanTypeId());
+                createTableBody(loansTable, null, otherLoanTypesTable);
+            }else{
+                LoanTypeTable loanTypeTable = loanTypeTableQueries.loadSingleLoanType(loansTable.getLoanTypeId());
+                createTableBody(loansTable, loanTypeTable, null);
+            }
         }
 
     }
@@ -262,7 +282,7 @@ public class AllBorrowerLoan extends AppCompatActivity {
                                     LoansTable loansTable = doc.toObject(LoansTable.class);
                                     loansTable.setLoanId(doc.getId());
 
-                                    createTableBody(loansTable);
+                                    getLoanType(loansTable);
                                 }
                             }
                         }else{
@@ -270,6 +290,121 @@ public class AllBorrowerLoan extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    /**
+     * this methods helps to decide if the loan is of a type registered initially by the branch manager
+     * or the loan type is a custom one created during the registration of the loan
+     * also it also checks if the loan type exist in local storage
+     * if it doesnt exist it calls up either  getOtherLoanType(loansTable) or getNormalLoanType(loansTable)
+     * the above depends on whether the loan type is registered or custom
+     * @param loansTable
+     */
+    private void getLoanType(LoansTable loansTable) {
+
+        if(loansTable.getIsOtherLoanType()) {
+            List<OtherLoanTypesTable> otherLoanTypesTable = otherLoanTypesTableQueries.loadAllLoanTpes();
+
+            Boolean doesDataExist = false;
+            if(otherLoanTypesTable != null) {
+                for (OtherLoanTypesTable typesTable : otherLoanTypesTable) {
+                    if(typesTable.getOtherLoanTypeId().equals(loansTable.getLoanTypeId())){
+                        doesDataExist = true;
+                        createTableBody(loansTable, null, typesTable);
+                        break;
+                    }
+                }
+
+                if(!doesDataExist) getOtherLoanType(loansTable);
+            }
+        }
+        else{
+            List<LoanTypeTable> loanTypeTable = loanTypeTableQueries.loadAllLoanTpes();
+
+            Boolean doesDataExist = false;
+            if(loanTypeTable != null){
+                for (LoanTypeTable typeTable : loanTypeTable) {
+                    if(typeTable.getLoanTypeId().equals(loansTable.getLoanTypeId())){
+                        doesDataExist = true;
+                        createTableBody(loansTable, typeTable, null);
+                        break;
+                    }
+                }
+
+                if(!doesDataExist) getNormalLoanType(loansTable);
+            }
+        }
+    }
+
+    /**
+     * gets registered loan type from firebase firestore
+     * @param loansTable
+     */
+    private void getNormalLoanType(final LoansTable loansTable) {
+        loanTypeQueries.retrieveSingleLoanType(loansTable.getLoanTypeId())
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            LoanTypeTable loanTypeTable = task.getResult().toObject(LoanTypeTable.class);
+                            loanTypeTable.setLoanTypeId(task.getResult().getId());
+
+                            saveLoanTypeToLocalStorage(loanTypeTable);
+                            createTableBody(loansTable, loanTypeTable, null);
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * saves registered loan type to local storage
+     * @param loanTypeTable
+     */
+    private void saveLoanTypeToLocalStorage(LoanTypeTable loanTypeTable) {
+        List<LoanTypeTable> loanTypeTableList = loanTypeTableQueries.loadAllLoanTpes();
+        for (LoanTypeTable table : loanTypeTableList) {
+            if(table.getLoanTypeId().equals(loanTypeTable.getLoanTypeId())) return;
+        }
+
+        loanTypeTableQueries.insertLoanTypeToStorage(loanTypeTable);
+    }
+
+    /**
+     * gets custom loan type created during loan registration from firebase firestore
+     * @param loansTable
+     */
+    private void getOtherLoanType(final LoansTable loansTable) {
+        otherLoanTypeQueries.retrieveSingleOtherLoanType(loansTable.getLoanTypeId())
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            OtherLoanTypesTable otherLoanTypesTable = task.getResult().toObject(OtherLoanTypesTable.class);
+                            otherLoanTypesTable.setOtherLoanTypeId(task.getResult().getId());
+
+                            saveOtherLoanTypeToLocalStorage(otherLoanTypesTable);
+
+                            createTableBody(loansTable, null, otherLoanTypesTable);
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * saves custom loan type to local storage
+     * @param otherLoanTypesTable
+     */
+    private void saveOtherLoanTypeToLocalStorage(OtherLoanTypesTable otherLoanTypesTable) {
+        List<OtherLoanTypesTable> otherLoanTypesTableList = otherLoanTypesTableQueries.loadAllLoanTpes();
+        for (OtherLoanTypesTable table : otherLoanTypesTableList) {
+            if(table.getOtherLoanTypeId().equals(otherLoanTypesTable.getOtherLoanTypeId())) return;
+        }
+
+        otherLoanTypesTableQueries.insertLoanTypeToStorage(otherLoanTypesTable);
     }
 
     private void getLoanForGroup() {
@@ -283,7 +418,7 @@ public class AllBorrowerLoan extends AppCompatActivity {
                                     LoansTable loansTable = doc.toObject(LoansTable.class);
                                     loansTable.setLoanId(doc.getId());
 
-                                    createTableBody(loansTable);
+                                    getLoanType(loansTable);
                                 }
                             }
                         }else{
@@ -293,7 +428,7 @@ public class AllBorrowerLoan extends AppCompatActivity {
                 });
     }
 
-    private void createTableBody(final LoansTable loansTable){
+    private void createTableBody(final LoansTable loansTable, final LoanTypeTable loanTypeTable, final OtherLoanTypesTable otherLoanTypesTable){
         TableRow row = new TableRow(this);
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
         row.setLayoutParams(lp);
@@ -304,8 +439,14 @@ public class AllBorrowerLoan extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), LoanEditPage.class);
                 intent.putExtra("loan", loansTable);
+                intent.putExtra("update", loansTable.getLastUpdatedAt());
+                intent.putExtra("create", loansTable.getLoanCreationDate());
+                intent.putExtra("approved", loansTable.getLoanApprovedDate());
+                intent.putExtra("release", loansTable.getLoanReleaseDate());
                 intent.putExtra("borrower", borrower);
                 intent.putExtra("group", group);
+                intent.putExtra("loanType", loanTypeTable);
+                intent.putExtra("otherLoanType", otherLoanTypesTable);
                 startActivity(intent);
             }
         });
