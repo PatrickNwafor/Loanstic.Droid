@@ -1,5 +1,6 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -77,12 +78,12 @@ public class LoanEditPage extends AppCompatActivity {
         sbg.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition(){
             @Override
             public void onClickedButtonPosition(int position){
-                if(position == 0){
+                if(position == 2){
                     startFragment(collectionFragment, "collection_frag");
 
-                }else if(position == 1){
+                }else if(position == 0){
                     startFragment(loanTermFragment, "loan_terms_frag");
-                }else if(position == 2){
+                }else if(position == 1){
                     startFragment(loanScheduleFragment, "loan_schedule_frag");
                 }
             }
@@ -104,18 +105,7 @@ public class LoanEditPage extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-       /* MenuItem register = menu.findItem(R.id.next_to_loan_terms);
 
-        if(selectedBorrower != null || selectedGroup !=  null || lastChecked != null){
-            register.setVisible(true);
-        }else{
-            register.setVisible(false);
-        }*/
-
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -127,16 +117,18 @@ public class LoanEditPage extends AppCompatActivity {
                 return true;
 
             case R.id.add_repayment:
-               // startAnotherActivity(PaymentActivity.class);
+               startAnotherActivity(PaymentActivity.class);
                 return true;
 
-            case R.id.edit_loan_terms:
-                //startAnotherActivity(LoanTerms.class);
+
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    private void startAnotherActivity(Class newActivity){
+        Intent newActivityIntent = new Intent(this, newActivity);
+        startActivity(newActivityIntent);
+    }
 
 }

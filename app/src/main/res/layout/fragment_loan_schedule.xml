@@ -85,7 +85,9 @@
             android:textColor="@color/colorPrimary"/>
             </TableRow>
 
-        <TableRow>
+        <TableRow
+
+            >
             <TextView
                 android:text="1"
                 android:gravity="left"
