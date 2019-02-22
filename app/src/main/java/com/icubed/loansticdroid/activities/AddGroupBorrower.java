@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,15 +31,19 @@ import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.BorrowerRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.GroupBorrowerListRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.SelectedBorrowerForGroupRecyclerAdapter;
+import com.icubed.loansticdroid.cloudqueries.BorrowerGroupsQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
+import com.icubed.loansticdroid.cloudqueries.GroupBorrowerQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
+import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.models.Borrowers;
 import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
 import com.icubed.loansticdroid.util.AndroidUtils;
@@ -51,7 +56,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.support.constraint.Constraints.TAG;
 import static android.view.View.GONE;
@@ -65,13 +73,19 @@ public class AddGroupBorrower extends AppCompatActivity {
 
     public List<SelectedBorrowerForGroup> selectedBorrowerList;
     private List<BorrowersTable> borrowersTables;
+    public List<BorrowersTable> alreadyAddedBorrower;
     public GroupBorrowerListRecyclerAdapter groupBorrowerListRecyclerAdapter;
     public SelectedBorrowerForGroupRecyclerAdapter selectedBorrowerForGroupRecyclerAdapter;
     private BorrowersTableQueries borrowersTableQueries;
     private BorrowersQueries borrowersQueries;
+    GroupBorrowerQueries groupBorrowerQueries;
     private Index index;
+    private GroupBorrowerTable group;
     private Toolbar toolbar;
     public Button proceed;
+    private BorrowerGroupsQueries borrowerGroupsQueries;
+    int count = 0;
+    private Index groupIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +94,7 @@ public class AddGroupBorrower extends AppCompatActivity {
 
         borrowersTableQueries = new BorrowersTableQueries(getApplication());
         borrowersQueries = new BorrowersQueries(this);
+        groupBorrowerQueries = new GroupBorrowerQueries();
 
         searchEditText = findViewById(R.id.searchEditText);
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
@@ -87,6 +102,22 @@ public class AddGroupBorrower extends AppCompatActivity {
         selectedBorrowerRecyclerView = findViewById(R.id.busiVerifRecyclerView);
         progressBar = findViewById(R.id.borrowerProgressBar);
         proceed = findViewById(R.id.proceed);
+
+        borrowerGroupsQueries = new BorrowerGroupsQueries();
+
+        alreadyAddedBorrower = getIntent().getParcelableArrayListExtra("already_added_borrowers");
+        group = getIntent().getParcelableExtra("group");
+
+        proceed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(alreadyAddedBorrower == null){
+                    createNewGroup();
+                }else{
+                    updateBorrowerProfile();
+                }
+            }
+        });
 
         toolbar = findViewById(R.id.new_group_toolbar);
         setSupportActionBar(toolbar);
@@ -112,9 +143,107 @@ public class AddGroupBorrower extends AppCompatActivity {
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
         index = client.getIndex("Borrowers");
 
+        groupIndex = client.getIndex("BORROWER_GROUP");
+
         searchBorrowerListener();
         searchDrawableButtonListener();
         getAllBorrowers();
+    }
+
+    private void createNewGroup() {
+        Intent mainActivityIntent = new Intent(AddGroupBorrower.this, SelectGroupLeader.class);
+        mainActivityIntent.putParcelableArrayListExtra("selectedBorrowers", (ArrayList<? extends Parcelable>) selectedBorrowerList);
+        startActivity(mainActivityIntent);
+    }
+
+    private void updateBorrowerProfile() {
+
+        for(final SelectedBorrowerForGroup borrower : selectedBorrowerList){
+
+            if(borrower.isBelongsToGroup()){
+                registerBorrowerGroups(borrower.getBorrowersId());
+            }else{
+                borrowersQueries.updateBorrowerWhenAddedToGroup(borrower.getBorrowersId())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    registerBorrowerGroups(borrower.getBorrowersId());
+                                }else{
+                                    Toast.makeText(getApplicationContext(), "Failed updating borrower details", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                                    hideProgressBar();
+                                }
+                            }
+                        });
+            }
+
+        }
+
+    }
+
+    private void registerBorrowerGroups(String borrowersId) {
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("groupId", group.getGroupId());
+        objectMap.put("timestamp", new Date());
+
+        borrowerGroupsQueries.saveNewGroupForBorrower(borrowersId, objectMap)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if(task.isSuccessful()){
+                            count++;
+
+                            if(count == selectedBorrowerList.size())
+                                updateGroupSize();
+                        }else{
+                            Toast.makeText(getApplicationContext(), "Failed updating borrower details", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                            hideProgressBar();
+                        }
+                    }
+                });
+    }
+
+    private void updateGroupSize() {
+        final int newGroupSize = group.getNumberOfGroupMembers()+selectedBorrowerList.size();
+
+        Date date = new Date();
+        group.setLastUpdatedAt(date);
+        group.setNumberOfGroupMembers(newGroupSize);
+
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("numberOfGroupMembers", newGroupSize);
+        objectMap.put("lastUpdatedAt", date);
+
+        groupBorrowerQueries.updateGroupAfterAddingNewMembers(group.getGroupId(), objectMap)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            updateSearch(newGroupSize);
+                        }
+                    }
+                });
+    }
+
+    private void updateSearch(int newGroupSize){
+        try {
+            groupIndex.partialUpdateObjectAsync(new JSONObject("{\"groupMembersCount\": \"/" + newGroupSize + "/\"}"), group.getGroupId(), new CompletionHandler() {
+                @Override
+                public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
+                    if(e==null){
+                        Intent intent = new Intent(getApplicationContext(), BorrowerDetailsGroup.class);
+                        intent.putExtra("group", group);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void searchDrawableButtonListener() {
@@ -438,12 +567,6 @@ public class AddGroupBorrower extends AppCompatActivity {
             searchEditText.setText("");
         }
 
-    }
-
-    public void setUpWizard(View view) {
-        Intent mainActivityIntent = new Intent(AddGroupBorrower.this, SelectGroupLeader.class);
-        mainActivityIntent.putParcelableArrayListExtra("selectedBorrowers", (ArrayList<? extends Parcelable>) selectedBorrowerList);
-        startActivity(mainActivityIntent);
     }
 
     @Override

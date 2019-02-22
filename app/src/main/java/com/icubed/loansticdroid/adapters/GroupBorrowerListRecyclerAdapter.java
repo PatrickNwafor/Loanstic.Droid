@@ -46,6 +46,20 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+
+        if(((AddGroupBorrower) context).alreadyAddedBorrower == null) {
+            loadUI(holder, position);
+        }else{
+            for (BorrowersTable borrowersTable : ((AddGroupBorrower) context).alreadyAddedBorrower) {
+                if(borrowersTableList.get(position).getBorrowersId().equals(borrowersTable.getBorrowersId())){
+                    return;
+                }
+            }
+            loadUI(holder, position);
+        }
+    }
+
+    private void loadUI(final ViewHolder holder, final int position){
         holder.setViews(borrowersTableList.get(position));
 
         //to check if borrower is already added incase the user uses the search field to find the borrower
@@ -66,19 +80,19 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
                 selectedBorrowerForGroup.setSelectedImageView(holder.addCheckMark);
 
                 Boolean isBorrowerAlreadyAdded = false;
-                for(SelectedBorrowerForGroup borrowerForGroup : ((AddGroupBorrower) context).selectedBorrowerList){
-                    if(borrowerForGroup.getBorrowersId().equals(borrowersTableList.get(position).getBorrowersId())){
+                for (SelectedBorrowerForGroup borrowerForGroup : ((AddGroupBorrower) context).selectedBorrowerList) {
+                    if (borrowerForGroup.getBorrowersId().equals(borrowersTableList.get(position).getBorrowersId())) {
                         isBorrowerAlreadyAdded = true;
                         selectedBorrower = borrowerForGroup;
                         break;
                     }
                 }
 
-                if(!isBorrowerAlreadyAdded) {
+                if (!isBorrowerAlreadyAdded) {
                     holder.addCheckMark.setVisibility(View.VISIBLE);
                     ((AddGroupBorrower) context).selectedBorrowerList.add(0, selectedBorrowerForGroup);
                     ((AddGroupBorrower) context).selectedBorrowerForGroupRecyclerAdapter.notifyDataSetChanged();
-                }else{
+                } else {
                     holder.addCheckMark.setVisibility(View.GONE);
                     ((AddGroupBorrower) context).selectedBorrowerList.remove(selectedBorrower);
                     ((AddGroupBorrower) context).selectedBorrowerForGroupRecyclerAdapter.notifyDataSetChanged();
@@ -86,7 +100,6 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
             }
         });
     }
-
 
     @Override
     public int getItemCount() {

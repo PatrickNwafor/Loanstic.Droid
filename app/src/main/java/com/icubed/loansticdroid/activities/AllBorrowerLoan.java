@@ -2,6 +2,7 @@ package com.icubed.loansticdroid.activities;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -61,7 +62,7 @@ public class AllBorrowerLoan extends AppCompatActivity {
     private GroupBorrowerTable group;
     private LoansQueries loansQueries;
     private LoanTableQueries loanTableQueries;
-    private int tableRowIndex = 1;
+    private boolean isGrey = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -429,10 +430,22 @@ public class AllBorrowerLoan extends AppCompatActivity {
     }
 
     private void createTableBody(final LoansTable loansTable, final LoanTypeTable loanTypeTable, final OtherLoanTypesTable otherLoanTypesTable){
+
         TableRow row = new TableRow(this);
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
         row.setLayoutParams(lp);
-        TextView loanNumberHeader, releasedHeader, maturityHeader, repaymentHeader, principalHeader, paidHeader, dueHeader, balanceHeader, feesHeader, penaltyHeader, statusHeader;
+
+        //row color alternates between grey and white
+        if(isGrey) {
+            row.setBackgroundColor(Color.GRAY);
+            isGrey = false;
+        }
+        else {
+            row.setBackgroundColor(Color.WHITE);
+            isGrey = true;
+        }
+
+        TextView releasedHeader, maturityHeader, repaymentHeader, principalHeader, paidHeader, dueHeader, balanceHeader, feesHeader, penaltyHeader, statusHeader;
 
         row.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -451,7 +464,6 @@ public class AllBorrowerLoan extends AppCompatActivity {
             }
         });
 
-        loanNumberHeader = new TextView(this);
         releasedHeader = new TextView(this);
         maturityHeader = new TextView(this);
         repaymentHeader = new TextView(this);
@@ -463,8 +475,6 @@ public class AllBorrowerLoan extends AppCompatActivity {
         penaltyHeader = new TextView(this);
         statusHeader = new TextView(this);
 
-        loanNumberHeader.setText(String.valueOf(tableRowIndex));
-        loanNumberHeader.setGravity(Gravity.CENTER);
         releasedHeader.setText(DateUtil.dateString(loansTable.getLoanReleaseDate()));
         releasedHeader.setGravity(Gravity.CENTER);
         maturityHeader.setText(getMaturityDate(loansTable));
@@ -486,7 +496,6 @@ public class AllBorrowerLoan extends AppCompatActivity {
         statusHeader.setText("Active");
         statusHeader.setGravity(Gravity.CENTER);
 
-        row.addView(loanNumberHeader,100,70);
         row.addView(releasedHeader,200,70);
         row.addView(maturityHeader,200,70);
         row.addView(repaymentHeader,200,70);
@@ -497,17 +506,17 @@ public class AllBorrowerLoan extends AppCompatActivity {
         row.addView(feesHeader,200,70);
         row.addView(penaltyHeader,200,70);
         row.addView(statusHeader,200,70);
-        tableLayout.addView(row, tableRowIndex);
-        tableRowIndex++;
+
+        tableLayout.addView(row);
+        addHorizontalSeparator(tableLayout);
     }
 
     private void createTableHeader(){
         TableRow row = new TableRow(this);
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
         row.setLayoutParams(lp);
-        TextView loanNumberHeader, releasedHeader, maturityHeader, repaymentHeader, principalHeader, paidHeader, dueHeader, balanceHeader, feesHeader, penaltyHeader, statusHeader;
+        TextView releasedHeader, maturityHeader, repaymentHeader, principalHeader, paidHeader, dueHeader, balanceHeader, feesHeader, penaltyHeader, statusHeader;
 
-        loanNumberHeader = new TextView(this);
         releasedHeader = new TextView(this);
         maturityHeader = new TextView(this);
         repaymentHeader = new TextView(this);
@@ -519,8 +528,6 @@ public class AllBorrowerLoan extends AppCompatActivity {
         penaltyHeader = new TextView(this);
         statusHeader = new TextView(this);
 
-        loanNumberHeader.setText("S/N");
-        loanNumberHeader.setGravity(Gravity.CENTER);
         releasedHeader.setText("Released");
         releasedHeader.setGravity(Gravity.CENTER);
         maturityHeader.setText("Maturity");
@@ -542,7 +549,6 @@ public class AllBorrowerLoan extends AppCompatActivity {
         statusHeader.setText("Status");
         statusHeader.setGravity(Gravity.CENTER);
 
-        row.addView(loanNumberHeader,100,70);
         row.addView(releasedHeader,200,70);
         row.addView(maturityHeader,200,70);
         row.addView(repaymentHeader,200,70);
@@ -553,8 +559,27 @@ public class AllBorrowerLoan extends AppCompatActivity {
         row.addView(feesHeader,200,70);
         row.addView(penaltyHeader,200,70);
         row.addView(statusHeader,200,70);
-        tableLayout.addView(row, 0);
+
+        tableLayout.addView(row);
+        addHorizontalSeparator(tableLayout);
     }
+
+    private void addVerticalSeparator(TableRow row){
+        // Add vertical separator
+        View v = new View(this);
+        v.setLayoutParams(new TableRow.LayoutParams(1, TableRow.LayoutParams.MATCH_PARENT));
+        v.setBackgroundColor(Color.rgb(50, 50, 50));
+        row.addView(v);
+    }
+
+    private void addHorizontalSeparator(TableLayout tableLayout){
+        // Added Horizontal line as
+        View view = new View(this);
+        view.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 1));
+        view.setBackgroundColor(Color.rgb(50, 50, 50));
+        tableLayout.addView(view);
+    }
+
 
     private String getMaturityDate(LoansTable loansTable) {
         if(loansTable.getLoanDurationUnit().equals("year")){

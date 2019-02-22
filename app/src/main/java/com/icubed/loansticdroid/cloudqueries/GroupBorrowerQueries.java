@@ -5,9 +5,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class GroupBorrowerQueries {
@@ -42,6 +42,14 @@ public class GroupBorrowerQueries {
                 .document(groupId)
                 .get();
 
+    }
+
+    /*****************Retrieve Sinlge Borrower Group*******************/
+    public Task<Void> updateGroupAfterAddingNewMembers(String groupId, Map<String, Object> groupMap){
+
+        return firebaseFirestore.collection("Borrowers_Group")
+                .document(groupId)
+                .set(groupMap, SetOptions.merge());
     }
 
     /**************Retrieve a borrower"s borrower group***********/
