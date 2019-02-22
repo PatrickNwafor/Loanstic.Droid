@@ -96,7 +96,8 @@
             android:name=".activities.LoanSearchActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".activities.AllBorrowerLoan" />
-        <activity android:name=".activities.LoanEditPage"></activity>
+        <activity android:name=".activities.LoanEditPage" />
+        <activity android:name=".activities.AddBorrowerToExistingGroupActivity"></activity>
     </application>
 
 </manifest>

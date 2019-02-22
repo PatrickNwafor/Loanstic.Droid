@@ -45,8 +45,8 @@
                     android:id="@+id/profileImageView"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:src="@drawable/add_another_borrower"
-                     />
+                    android:src="@drawable/add_another_borrower" />
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/busiVerifRecyclerView"
 

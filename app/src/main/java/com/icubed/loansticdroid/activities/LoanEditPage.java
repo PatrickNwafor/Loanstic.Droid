@@ -71,7 +71,7 @@ public class LoanEditPage extends AppCompatActivity {
         loanScheduleFragment = new LoanScheduleFragment();
         loanTermFragment = new LoanTermFragment();
 
-        startFragment(collectionFragment, "collection_frag");
+        startFragment(loanTermFragment, "collection_frag");
 
         //segmented control
         sbg = findViewById(R.id.segmentedButtonGroup);

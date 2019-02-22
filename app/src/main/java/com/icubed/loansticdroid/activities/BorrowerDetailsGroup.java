@@ -324,7 +324,87 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
 
             }
 
+            getGroupMembersFromCloudAndCompareToLocal(groupMembersTables);
+
         }
+    }
+
+    private void getGroupMembersFromCloudAndCompareToLocal(final List<GroupMembersTable> groupMembersTables) {
+        borrowersQueries.retrieveBorrowersBelongingToGroup()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            if(!task.getResult().isEmpty()){
+
+                                for (final DocumentSnapshot doc : task.getResult()){
+
+                                    borrowerGroupsQueries.retrieveSingleGroupOfBorrower(
+                                            doc.getId(), group.getGroupId()
+                                    ).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                            if(task.isSuccessful()){
+
+                                                if(!task.getResult().isEmpty()){
+
+                                                    BorrowersTable borrowersTable = doc.toObject(BorrowersTable.class);
+                                                    borrowersTable.setBorrowersId(doc.getId());
+
+                                                    if(groupId == null) {
+                                                        BorrowersTable bow = saveBorrowerToLocalIfNotExist(borrowersTable);
+
+                                                        //save borrower byte image
+                                                        saveBorrowerImage(bow);
+
+                                                        //saving members to members table
+                                                        GroupMembersTable groupMembersTable = task.getResult().getDocuments().get(0).toObject(GroupMembersTable.class);
+                                                        groupMembersTable.setGroupMemberId(task.getResult().getDocuments().get(0).getId());
+                                                        groupMembersTable.setBorrowerId(doc.getId());
+
+                                                        for (GroupMembersTable membersTable : groupMembersTables) {
+                                                            if(membersTable.getBorrowerId().equals(groupMembersTable.getBorrowerId())){
+                                                                return;
+                                                            }
+                                                        }
+
+                                                        saveGroupMembersToTable(groupMembersTable);
+                                                        borrowersTableList.add(bow);
+                                                        groupMembersRecyclerAdapter.notifyDataSetChanged();
+                                                    }else{
+                                                        borrowersTable.setId((long) 464);
+                                                        borrowersTableList.add(borrowersTable);
+                                                        groupMembersRecyclerAdapter.notifyDataSetChanged();
+                                                    }
+
+                                                }else{
+                                                    //Toast.makeText(BorrowerDetailsGroup.this, "No borrower has a group yet", Toast.LENGTH_SHORT).show();
+                                                    Log.d(TAG, "onComplete: no borrower has a group yet");
+                                                }
+
+                                            }else{
+                                                Toast.makeText(BorrowerDetailsGroup.this, "Failed to retrieve group members", Toast.LENGTH_SHORT).show();
+                                                Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                                            }
+
+                                        }
+                                    });
+
+                                }
+
+                            }else{
+                                //Toast.makeText(BorrowerDetailsGroup.this, "No borrower has a group yet", Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, "onComplete: no borrower has a group yet");
+                            }
+
+                        }else{
+                            Toast.makeText(BorrowerDetailsGroup.this, "Failed to retrieve group members", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
     }
 
     private BorrowersTable saveBorrowerToLocalIfNotExist(BorrowersTable borrowersTable){
