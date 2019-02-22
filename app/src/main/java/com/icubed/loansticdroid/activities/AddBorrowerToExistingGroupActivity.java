@@ -276,6 +276,7 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
     }
 
     private void submitButtonListener() {
+        addBorrowerProg.setVisibility(View.VISIBLE);
         updateBorrowerProfile();
     }
 
