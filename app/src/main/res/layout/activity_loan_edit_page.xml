@@ -45,7 +45,20 @@
         app:sbg_shadowElevation="3dp"
         app:sbg_shadowMargin="4dp"
         tools:ignore="MissingConstraints">
-
+        <Button
+            android:id="@+id/LoanTerms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="10dp"
+            android:text="Loan Terms"
+            android:textAllCaps="false" />
+        <Button
+            android:id="@+id/LoanSchedule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="10dp"
+            android:text="Payment Schedule"
+            android:textAllCaps="false" />
         <Button
             android:id="@+id/Collections"
             android:layout_width="wrap_content"
@@ -54,20 +67,8 @@
             android:text="Repayment"
             android:textAllCaps="false" />
 
-        <Button
-            android:id="@+id/LoanTerms"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="10dp"
-            android:text="LoanTerms"
-            android:textAllCaps="false" />
-        <Button
-            android:id="@+id/LoanSchedule"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="10dp"
-            android:text="Loan Schedule"
-            android:textAllCaps="false" />
+
+
         <!--  <Button
              android:id="@+id/LoanColateral"
              android:layout_width="wrap_content"
