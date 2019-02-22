@@ -20,6 +20,8 @@ import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class GroupBusinessVerificationRecyclerAdapter extends RecyclerView.Adapter<GroupBusinessVerificationRecyclerAdapter.ViewHolder> {
     
     List<GroupPhotoValidationTable> groupPhotoValidationTables;
@@ -63,7 +65,7 @@ public class GroupBusinessVerificationRecyclerAdapter extends RecyclerView.Adapt
 
         View mView;
         public TextView verificationTextView;
-        public ImageView verificationImageView;
+        public CircleImageView verificationImageView;
         public FrameLayout frameLayout;
 
         public ViewHolder(View itemView) {

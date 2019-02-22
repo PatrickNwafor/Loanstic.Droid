@@ -19,6 +19,8 @@ import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class GroupMembersRecyclerAdapter extends RecyclerView.Adapter<GroupMembersRecyclerAdapter.ViewHolder> {
     
     List<BorrowersTable> borrowersTableList;
@@ -62,7 +64,7 @@ public class GroupMembersRecyclerAdapter extends RecyclerView.Adapter<GroupMembe
 
         View mView;
         public TextView memberNameTextView;
-        public ImageView memberImageView;
+        public CircleImageView memberImageView;
         public FrameLayout frameLayout;
 
         public ViewHolder(View itemView) {

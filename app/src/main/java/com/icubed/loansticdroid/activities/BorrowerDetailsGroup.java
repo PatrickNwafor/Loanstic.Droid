@@ -1,6 +1,8 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
@@ -12,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +69,7 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
     private Toolbar toolbar;
     private ProgressBar progressBar;
     private NestedScrollView content;
+    private ImageView addBorrower;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +101,26 @@ public class BorrowerDetailsGroup extends AppCompatActivity {
         groupMembersRecyclerView = findViewById(R.id.membersRecyclerView);
         content = findViewById(R.id.content_frame);
         progressBar = findViewById(R.id.group_progressbar);
+        addBorrower = findViewById(R.id.addBorrower);
+
+        addBorrower.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                List<BorrowersTable> borrowersTableList = new ArrayList<>();
+                List<GroupMembersTable> groupMembersTables = groupMembersTableQueries.loadGroupMembers(group.getGroupId());
+                for (GroupMembersTable membersTable : groupMembersTables) {
+                    BorrowersTable borrower = borrowersTableQueries.loadSingleBorrower(membersTable.getBorrowerId());
+                    borrowersTableList.add(borrower);
+                }
+
+                Intent intent = new Intent(getApplicationContext(), AddGroupBorrower.class);
+                intent.putParcelableArrayListExtra("already_added_borrowers", (ArrayList<? extends Parcelable>) borrowersTableList);
+                intent.putExtra("group", group);
+                startActivity(intent);
+
+            }
+        });
 
 
         groupPhotoValidationTables = new ArrayList<>();

@@ -69,7 +69,7 @@ public class AddGroupBorrower extends AppCompatActivity {
     private CustomEditText searchEditText;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView borrowerRecyclerView, selectedBorrowerRecyclerView;
-    private ProgressBar progressBar;
+    private ProgressBar progressBar, addBorrowerProg;
 
     public List<SelectedBorrowerForGroup> selectedBorrowerList;
     private List<BorrowersTable> borrowersTables;
@@ -102,6 +102,7 @@ public class AddGroupBorrower extends AppCompatActivity {
         selectedBorrowerRecyclerView = findViewById(R.id.busiVerifRecyclerView);
         progressBar = findViewById(R.id.borrowerProgressBar);
         proceed = findViewById(R.id.proceed);
+        addBorrowerProg = findViewById(R.id.add_borrower_prog);
 
         borrowerGroupsQueries = new BorrowerGroupsQueries();
 
@@ -114,6 +115,7 @@ public class AddGroupBorrower extends AppCompatActivity {
                 if(alreadyAddedBorrower == null){
                     createNewGroup();
                 }else{
+                    addBorrowerProg.setVisibility(View.VISIBLE);
                     updateBorrowerProfile();
                 }
             }
@@ -121,7 +123,9 @@ public class AddGroupBorrower extends AppCompatActivity {
 
         toolbar = findViewById(R.id.new_group_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("New group");
+
+        if(alreadyAddedBorrower != null) getSupportActionBar().setTitle("Select borrower to add");
+        else getSupportActionBar().setTitle("New group");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -172,7 +176,7 @@ public class AddGroupBorrower extends AppCompatActivity {
                                 }else{
                                     Toast.makeText(getApplicationContext(), "Failed updating borrower details", Toast.LENGTH_SHORT).show();
                                     Log.d(TAG, "onComplete: "+task.getException().getMessage());
-                                    hideProgressBar();
+                                    addBorrowerProg.setVisibility(View.GONE);
                                 }
                             }
                         });
@@ -199,7 +203,7 @@ public class AddGroupBorrower extends AppCompatActivity {
                         }else{
                             Toast.makeText(getApplicationContext(), "Failed updating borrower details", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "onComplete: "+task.getException().getMessage());
-                            hideProgressBar();
+                            addBorrowerProg.setVisibility(View.GONE);
                         }
                     }
                 });
@@ -222,6 +226,9 @@ public class AddGroupBorrower extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
                             updateSearch(newGroupSize);
+                        }else{
+                            addBorrowerProg.setVisibility(View.VISIBLE);
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
                         }
                     }
                 });
@@ -237,6 +244,9 @@ public class AddGroupBorrower extends AppCompatActivity {
                         intent.putExtra("group", group);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
+                    }else{
+                        addBorrowerProg.setVisibility(View.VISIBLE);
+                        Log.d(TAG, "requestCompleted: "+e.getMessage());
                     }
                 }
             });
@@ -454,6 +464,22 @@ public class AddGroupBorrower extends AppCompatActivity {
         borrowersTables = borrowersTableQueries.loadAllBorrowersOrderByLastName();
 
         //For vertical recycler Adapter
+        List<BorrowersTable> valuesToRemove = new ArrayList<>();
+        if(alreadyAddedBorrower != null){
+            for (BorrowersTable table : borrowersTables) {
+                for (BorrowersTable added : alreadyAddedBorrower) {
+                    if(table.getBorrowersId().equals(added.getBorrowersId())){
+                        valuesToRemove.add(table);
+                        break;
+                    }
+                }
+
+            }
+
+            if(!valuesToRemove.isEmpty()){
+                borrowersTables.removeAll(valuesToRemove);
+            }
+        }
         groupBorrowerListRecyclerAdapter = new GroupBorrowerListRecyclerAdapter(borrowersTables);
         borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         borrowerRecyclerView.setAdapter(groupBorrowerListRecyclerAdapter);

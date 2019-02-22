@@ -133,6 +133,15 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
 
         alert = new AlertDialog.Builder(this);
 
+        profileImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), AddBorrowerToExistingGroupActivity.class);
+                intent.putExtra("borrower", borrower);
+                startActivity(intent);
+            }
+        });
+
         statusSwitch.setChecked(true);
         statusSwitchChangeListener();
 

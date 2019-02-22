@@ -30,6 +30,8 @@ import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class DocumentRecyclerAdapter extends RecyclerView.Adapter<DocumentRecyclerAdapter.ViewHolder> {
 
     List<BorrowerFilesTable> borrowerFilesTables;
@@ -73,7 +75,7 @@ public class DocumentRecyclerAdapter extends RecyclerView.Adapter<DocumentRecycl
 
         View mView;
         public TextView fileDescTextView;
-        public ImageView fileImageView;
+        public CircleImageView fileImageView;
         public FrameLayout frameLayout;
 
         public ViewHolder(View itemView) {

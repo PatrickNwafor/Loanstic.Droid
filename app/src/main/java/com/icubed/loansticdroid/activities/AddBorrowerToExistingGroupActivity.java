@@ -1,6 +1,8 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,15 +28,19 @@ import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.GroupLoanRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.SelectGroupToAddBorrowerRecyclerAdapter;
+import com.icubed.loansticdroid.cloudqueries.BorrowerGroupsQueries;
+import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.cloudqueries.GroupBorrowerQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTableQueries;
+import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
 import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.EditTextExtension.CustomEditText;
 import com.icubed.loansticdroid.util.EditTextExtension.DrawableClickListener;
@@ -45,7 +51,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -64,6 +73,10 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
     private GroupBorrowerQueries groupBorrowerQueries;
     private SelectGroupToAddBorrowerRecyclerAdapter selectGroupToAddBorrowerRecyclerAdapter;
     private Index groupIndex;
+    private BorrowerGroupsQueries borrowerGroupsQueries;
+    private List<String> groupIds;
+    private BorrowersQueries borrowersQueries;
+    private ProgressBar addBorrowerProg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,21 +93,53 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
         groupRecyclerView = findViewById(R.id.group_list);
         progressBar = findViewById(R.id.groupProgressBar);
+        addBorrowerProg = findViewById(R.id.add_borrower_prog);
 
         searchDrawableButtonListener();
         searchGroupListener();
 
+        borrowersQueries = new BorrowersQueries(this);
+
+        groupIds = new ArrayList<>();
+
         groupBorrowerQueries = new GroupBorrowerQueries();
         groupBorrowerTableQueries = new GroupBorrowerTableQueries(getApplication());
+        borrowerGroupsQueries = new BorrowerGroupsQueries();
         
         borrower = getIntent().getParcelableExtra("borrower");
+        Log.d("ddd", borrower.toString());
 
         //Algolia search initiation
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
         groupIndex = client.getIndex("BORROWER_GROUP");
         
         swipeRefreshListener();
-        getAllGroups();
+        getBorrowerGroup();
+    }
+
+    private void getBorrowerGroup() {
+        if(borrower.getBelongsToGroup()){
+            borrowerGroupsQueries.retrieveGroupsOfBorrower(borrower.getBorrowersId())
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                if(!task.getResult().isEmpty()){
+                                    for(DocumentSnapshot doc: task.getResult()){
+                                        groupIds.add(doc.getString("groupId"));
+                                    }
+
+                                    getAllGroups();
+                                }
+                            }else{
+                                progressBar.setVisibility(View.GONE);
+                                Log.d("Failed", "failed to retrieve borrower group");
+                            }
+                        }
+                    });
+        }else{
+            getAllGroups();
+        }
     }
 
     private void searchGroupListener() {
@@ -231,9 +276,100 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
     }
 
     private void submitButtonListener() {
+        updateBorrowerProfile();
     }
 
-    //Swipe down refresh lstener
+    private void updateBorrowerProfile() {
+
+        if(borrower.getBelongsToGroup()){
+            registerBorrowerGroups(borrower.getBorrowersId());
+        }else{
+            borrowersQueries.updateBorrowerWhenAddedToGroup(borrower.getBorrowersId())
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                registerBorrowerGroups(borrower.getBorrowersId());
+                            }else{
+                                Toast.makeText(getApplicationContext(), "Failed updating borrower details", Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                                addBorrowerProg.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+        }
+    }
+
+    private void registerBorrowerGroups(String borrowersId) {
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("groupId", selectedGroup.getGroupId());
+        objectMap.put("timestamp", new Date());
+
+        borrowerGroupsQueries.saveNewGroupForBorrower(borrowersId, objectMap)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if(task.isSuccessful()){
+                            updateGroupSize();
+                        }else{
+                            Toast.makeText(getApplicationContext(), "Failed updating borrower details", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                            addBorrowerProg.setVisibility(View.GONE);
+                        }
+                    }
+                });
+    }
+
+    private void updateGroupSize() {
+        int newGroupSize = selectedGroup.getNumberOfGroupMembers();
+        newGroupSize++;
+
+        Date date = new Date();
+        selectedGroup.setLastUpdatedAt(date);
+        selectedGroup.setNumberOfGroupMembers(newGroupSize);
+
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("numberOfGroupMembers", newGroupSize);
+        objectMap.put("lastUpdatedAt", date);
+
+        final int finalNewGroupSize = newGroupSize;
+        groupBorrowerQueries.updateGroupAfterAddingNewMembers(selectedGroup.getGroupId(), objectMap)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            updateSearch(finalNewGroupSize);
+                        }else{
+                            addBorrowerProg.setVisibility(View.VISIBLE);
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void updateSearch(int newGroupSize){
+        try {
+            groupIndex.partialUpdateObjectAsync(new JSONObject("{\"groupMembersCount\": \"/" + newGroupSize + "/\"}"), selectedGroup.getGroupId(), new CompletionHandler() {
+                @Override
+                public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
+                    if(e==null){
+                        Intent intent = new Intent(getApplicationContext(), BorrowerDetailsGroup.class);
+                        intent.putExtra("group", selectedGroup);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }else{
+                        addBorrowerProg.setVisibility(View.VISIBLE);
+                        Log.d(TAG, "requestCompleted: "+e.getMessage());
+                    }
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //Swipe down refresh listener
     private void swipeRefreshListener() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -271,11 +407,6 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
      */
     public void loadAllGroups(){
 
-        if(doesGroupTableExistInLocalStorage()){
-            loadAllGroupsAndCompareToLocal();
-            return;
-        }
-
         groupBorrowerQueries.retrieveAllBorrowersGroup().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -308,6 +439,21 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
 
     public void loadGroupsToUI(){
         List<GroupBorrowerTable> groupBorrowerTables = groupBorrowerTableQueries.loadAllGroupsOrderByLastName();
+
+        List<GroupBorrowerTable> groupToRemove = new ArrayList<>();
+
+        if(!groupIds.isEmpty()){
+            for (GroupBorrowerTable table : groupBorrowerTables) {
+                for (String groupId : groupIds) {
+                    if(table.getGroupId().equals(groupId)){
+                        groupToRemove.add(table);
+                        break;
+                    }
+                }
+            }
+
+            groupBorrowerTables.removeAll(groupToRemove);
+        }
 
         selectGroupToAddBorrowerRecyclerAdapter = new SelectGroupToAddBorrowerRecyclerAdapter(groupBorrowerTables);
         groupRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));

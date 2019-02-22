@@ -15,7 +15,7 @@
 
         >
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/file_image"
 
             android:layout_width="100dp"
