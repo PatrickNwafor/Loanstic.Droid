@@ -4,6 +4,7 @@ package com.icubed.loansticdroid.fragments.HomeFragments;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,6 +22,10 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.Account;
@@ -50,7 +55,7 @@ import java.util.List;
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     MapView mMapView;
-    GoogleMap mGoogleMap;
+    public GoogleMap mGoogleMap;
     private SlidingUpPanelLayout slidingLayout;
     private RecyclerView slideUpRecyclerView;
     private ImageView btnShow;
@@ -61,15 +66,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Collection collection;
     private Account account;
     private BorrowersQueries borrowersQueries;
+    public MarkerOptions markerOptions;
 
     public List<DueCollectionDetails> dueCollectionList;
     public SlideUpPanelRecyclerAdapter slideUpPanelRecyclerAdapter;
+    private RecyclerView overDueRecyclerView;
+    public  SlideUpPanelRecyclerAdapter overDueAdapter;
+    public List<DueCollectionDetails> overDueCollectionList;
 
     private static final String TAG = "MapFragment";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
 
     private LocationProviderUtil locationProviderUtil;
     private PlayServiceUtil playServiceUtil;
+    private boolean isLocationAvailable = false;
 
     public MapFragment() {
         // Required empty public constructor
@@ -90,6 +100,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         slideUp = v.findViewById(R.id.slideUp);
         search = v.findViewById(R.id.searchEditText);
         slideUpRecyclerView = v.findViewById(R.id.collection_list);
+        overDueRecyclerView = v.findViewById(R.id.overdue_list);
 
         bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
         blink = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
@@ -108,6 +119,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         slideUpRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(dueCollectionList);
         slideUpRecyclerView.setAdapter(slideUpPanelRecyclerAdapter);
+
+        overDueCollectionList = new ArrayList<>();
+        overDueRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        overDueAdapter = new SlideUpPanelRecyclerAdapter(overDueCollectionList);
+        overDueRecyclerView.setAdapter(overDueAdapter);
 
         mMapView = v.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -137,13 +153,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
          * to un comment the line of code below to load due collections
          * to remove the hide progress bar method
          */
-//        if (!collection.doesCollectionExistInLocalStorage()) {
-//            collection.retrieveNewDueCollectionData();
-//        } else {
-//            collection.getDueCollectionData();
-//            collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
-//        }
-        hideProgressBar();
+        //hideProgressBar();
     }
 
     /**
@@ -167,8 +177,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
+        mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
         mapOnClickListener();
         initMap();
+    }
+
+    public void moveCamera(ArrayList<Marker> markers){
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+        for (Marker marker : markers) {
+
+            builder.include(marker.getPosition());
+
+        }
+        LatLngBounds bounds = builder.build();
+
+        //Then obtain a movement description object by using the factory: CameraUpdateFactory:
+
+        int padding = 100; // offset from edges of the map in pixels
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+
+        //Finally move the map:
+        //Or if you want an animation:
+
+        mGoogleMap.animateCamera(cu);
+
     }
 
     private void mapOnClickListener() {
@@ -207,20 +241,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onNewLocationAvailable(LocationProviderUtil.GPSCoordinates location) {
                 drawMarker(location.getLocation);
+
+                if(!isLocationAvailable) {
+                    if (!collection.doesCollectionExistInLocalStorage()) {
+                        collection.retrieveNewDueCollectionData();
+                    } else {
+                        collection.getDueCollectionData();
+                        collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
+                    }
+                    isLocationAvailable = true;
+                }
             }
         });
     }
 
     /****************************set marker on map******************************/
     private void drawMarker(Location location) {
-        if (mGoogleMap != null) {
-            mGoogleMap.clear();
-            LatLng gps = new LatLng(location.getLatitude(), location.getLongitude());
-            mGoogleMap.addMarker(new MarkerOptions()
-                    .position(gps)
-                    .title("Current Position"));
-            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(gps, 15));
-        }
+        markerOptions = new MarkerOptions();
+
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //adding markerOptions properties for driver
+        markerOptions.position(latLng);
+        markerOptions.title("Your Location");
+        markerOptions.anchor(0.5f, 0.5f);
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
 
     }
 

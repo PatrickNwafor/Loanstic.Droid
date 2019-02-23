@@ -45,7 +45,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
 
         String firstName = collectionList.get(position).getFirstName();
         String lastName = collectionList.get(position).getLastName();
-        holder.setCollectionName(firstName, lastName, position);
+        holder.setCollectionName(firstName, lastName);
         holder.setCollectionAmount(collectionList.get(position).getDueAmount());
         holder.setBusiness(collectionList.get(position).getBusinessName());
 
@@ -81,7 +81,6 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
         private TextView collectionNameTextView;
         private TextView amountTextView;
         public TextView detailsTextView;
-        private TextView dateTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -89,18 +88,10 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
             mView = itemView;
         }
 
-        public void setCollectionName(String firstName, String lastName, int position){
+        public void setCollectionName(String firstName, String lastName){
 
             collectionNameTextView = mView.findViewById(R.id.collectionNameTextView);
-            dateTextView = mView.findViewById(R.id.dateTextView);
             detailsTextView = mView.findViewById(R.id.detailsTextView);
-
-            if(position != 0) {
-                dateTextView.setVisibility(View.GONE);
-                collectionNameTextView.setText(lastName + " " + firstName);
-
-                return;
-            }
 
             collectionNameTextView.setText(lastName + " " + firstName);
 

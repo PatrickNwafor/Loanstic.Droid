@@ -1,5 +1,6 @@
 package com.icubed.loansticdroid.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,5 +31,16 @@ public class DateUtil {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         return sdf.format(date);
+    }
+
+    public static Date stringDate(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy", Locale.US);
+        try {
+            return sdf.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

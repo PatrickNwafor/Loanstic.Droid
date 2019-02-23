@@ -3,6 +3,7 @@ package com.icubed.loansticdroid.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -20,6 +21,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class CollectionDetailsActivity extends AppCompatActivity {
+    private static final String TAG = ".CollectionDetailsActivity";
     Animation bounce;
     CardView CD1,CD2,CD3,CD4,CD5,CD6;
 
@@ -87,6 +89,7 @@ public class CollectionDetailsActivity extends AppCompatActivity {
         dueCollectionDetails.setDueCollectionDate(collectionDueDate);
 
         //UpdatesUI
+        Log.d(TAG, "onCreate: "+dueCollectionDetails.toString());
         updateUI(dueCollectionDetails);
 
     }
@@ -117,7 +120,7 @@ public class CollectionDetailsActivity extends AppCompatActivity {
     private String monthYearDate(String date){
 
         SimpleDateFormat month_date = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
 
         Date newDate = null;
         try {
@@ -126,9 +129,7 @@ public class CollectionDetailsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String month_name = month_date.format(newDate);
-
-        return month_name;
+        return month_date.format(newDate);
     }
 
     private void loadProfileImage(String profileImageUri){

@@ -2,7 +2,10 @@ package com.icubed.loansticdroid.localdatabase;
 
 import android.app.Application;
 
+import com.icubed.loansticdroid.util.DateUtil;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -36,11 +39,29 @@ public class CollectionTableQueries {
     }
 
     /**********Load All Due Collections from local Storage***********/
-    public List<CollectionTable> loadAllDueCollections(){
-        return collectionTableDao.queryBuilder()
-                .where(CollectionTableDao.Properties.CollectionDueDate.eq(dateString(new Date())))
-                .build()
-                .list();
+    public List<CollectionTable>[] loadAllDueCollections(){
+        // the list array, the zero index contains the dueCollection
+        // the one index contains the overdueCollection
+        List<CollectionTable> list = collectionTableDao.queryBuilder().build().list();
+
+        List<CollectionTable>[] lists = new List[2];
+
+        List<CollectionTable> dueCollectionList = new ArrayList<>();
+        List<CollectionTable> overDueCollectionList = new ArrayList<>();
+
+        for (CollectionTable collectionTable : list) {
+            if(DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date()))){
+                dueCollectionList.add(collectionTable);
+            }else if(collectionTable.getCollectionDueDate().before(new Date())){
+                overDueCollectionList.add(collectionTable);
+            }
+        }
+
+        lists[0] = dueCollectionList;
+        lists[1] = overDueCollectionList;
+
+        return lists;
+
     }
 
     /**********Load All Due Collections from local Storage***********/
