@@ -18,7 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.algolia.search.saas.AlgoliaException;
@@ -77,6 +79,8 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
     private List<String> groupIds;
     private BorrowersQueries borrowersQueries;
     private ProgressBar addBorrowerProg;
+    private LinearLayout searchEmptyLayout;
+    private TextView errorTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +98,8 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
         groupRecyclerView = findViewById(R.id.group_list);
         progressBar = findViewById(R.id.groupProgressBar);
         addBorrowerProg = findViewById(R.id.add_borrower_prog);
+        searchEmptyLayout = findViewById(R.id.search_empty_layout);
+        errorTextView = findViewById(R.id.errorTextView);
 
         searchDrawableButtonListener();
         searchGroupListener();
@@ -194,9 +200,34 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
                             list.add(groupBorrowerTable);
                         }
 
+                        if(list.isEmpty()){
+                            errorTextView.setText("Sorry, cannot find group");
+                            searchEmptyLayout.setVisibility(View.VISIBLE);
+                            return;
+                        }
+
+                        List<GroupBorrowerTable> groupToRemove = new ArrayList<>();
+
+                        if(!groupIds.isEmpty()){
+                            for (GroupBorrowerTable table : list) {
+                                for (String groupId : groupIds) {
+                                    if(table.getGroupId().equals(groupId)){
+                                        groupToRemove.add(table);
+                                        break;
+                                    }
+                                }
+                            }
+
+                            list.removeAll(groupToRemove);
+                        }
+
                         selectGroupToAddBorrowerRecyclerAdapter = new SelectGroupToAddBorrowerRecyclerAdapter(list);
                         groupRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                         groupRecyclerView.setAdapter((selectGroupToAddBorrowerRecyclerAdapter));
+
+                        if(list.isEmpty()){
+                            searchEmptyLayout.setVisibility(View.VISIBLE);
+                        }
 
                         //This is to check immediately after the search to know if string is empty
                         if (TextUtils.isEmpty(s.toString())) {
@@ -350,7 +381,11 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
 
     private void updateSearch(int newGroupSize){
         try {
-            groupIndex.partialUpdateObjectAsync(new JSONObject("{\"groupMembersCount\": \"/" + newGroupSize + "/\"}"), selectedGroup.getGroupId(), new CompletionHandler() {
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("groupMembersCount", newGroupSize);
+
+            groupIndex.partialUpdateObjectAsync(jsonObject, selectedGroup.getGroupId(), new CompletionHandler() {
                 @Override
                 public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
                     if(e==null){
@@ -459,6 +494,10 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
         selectGroupToAddBorrowerRecyclerAdapter = new SelectGroupToAddBorrowerRecyclerAdapter(groupBorrowerTables);
         groupRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         groupRecyclerView.setAdapter((selectGroupToAddBorrowerRecyclerAdapter));
+
+        if(groupBorrowerTables.isEmpty()){
+            searchEmptyLayout.setVisibility(View.VISIBLE);
+        }
 
         progressBar.setVisibility(View.GONE);
     }

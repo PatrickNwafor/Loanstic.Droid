@@ -236,7 +236,11 @@ public class AddGroupBorrower extends AppCompatActivity {
 
     private void updateSearch(int newGroupSize){
         try {
-            groupIndex.partialUpdateObjectAsync(new JSONObject("{\"groupMembersCount\": \"/" + newGroupSize + "/\"}"), group.getGroupId(), new CompletionHandler() {
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("groupMembersCount", newGroupSize);
+
+            groupIndex.partialUpdateObjectAsync(jsonObject, group.getGroupId(), new CompletionHandler() {
                 @Override
                 public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
                     if(e==null){
