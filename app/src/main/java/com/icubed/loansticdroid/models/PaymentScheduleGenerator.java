@@ -96,7 +96,6 @@ public class PaymentScheduleGenerator {
 
     private double decimalFormat(double d){
         DecimalFormat df = new DecimalFormat("#.###");
-        df.setRoundingMode(RoundingMode.CEILING);
         return Double.parseDouble(df.format(d));
     }
 
