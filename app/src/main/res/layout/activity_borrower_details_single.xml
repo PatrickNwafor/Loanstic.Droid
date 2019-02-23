@@ -27,9 +27,13 @@
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/borrower_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/borrower_profile_toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,16 +41,16 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
                 android:orientation="vertical">
 
-                <ImageView
-
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profileImageView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/Black" />
+                    android:layout_gravity="center" />
 
             </LinearLayout>
 
@@ -69,7 +73,6 @@
                         android:layout_width="61dp"
                         android:layout_height="28dp"
                         android:layout_marginBottom="8dp"
-                        android:transitionName="blue_name"
                         android:layout_marginEnd="8dp"
                         android:layout_marginTop="8dp"
                         android:background="@drawable/loan_button_back"
@@ -78,7 +81,8 @@
                         android:textAlignment="center"
                         android:textAllCaps="false"
                         android:textColor="@color/whiteEnd"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:transitionName="blue_name" />
 
                     <Button
                         android:id="@+id/savings_button"

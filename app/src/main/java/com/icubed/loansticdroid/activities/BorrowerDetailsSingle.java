@@ -56,11 +56,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class BorrowerDetailsSingle extends AppCompatActivity {
     private static final String TAG = ".BorrowerDetailsSingle";
     private Toolbar toolbar;
     private BorrowersTable borrower;
-    private ImageView profileImageView, statusIndicator, addGroupBtn;
+    private CircleImageView profileImageView;
+    private ImageView statusIndicator, addGroupBtn;
     private TextView nameTextView, numberTextView, emailTextView, numberOfBizVerifTextView
             , businessNameTextView, businessLocationTextView, businessDescriptionTextView
             , genderTextView, dobTextView, homeAddressTextView, countryTextView, groupCountTextView

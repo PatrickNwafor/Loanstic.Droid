@@ -44,7 +44,7 @@ public class BorrowersGroupRecyclerAdapter extends RecyclerView.Adapter<Borrower
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, BorrowerDetailsGroup.class);
-                intent.putExtra("borrower", groupBorrowerTables.get(position));
+                intent.putExtra("group", groupBorrowerTables.get(position));
                 context.startActivity(intent);
             }
         });
