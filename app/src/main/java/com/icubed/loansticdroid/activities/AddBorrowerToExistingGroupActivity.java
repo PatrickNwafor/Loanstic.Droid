@@ -393,6 +393,7 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
                         intent.putExtra("group", selectedGroup);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
+                        finish();
                     }else{
                         addBorrowerProg.setVisibility(View.VISIBLE);
                         Log.d(TAG, "requestCompleted: "+e.getMessage());
