@@ -32,6 +32,15 @@ public class GroupBorrowerTableQueries {
                 .get(0);
     }
 
+    /**********Load a single collection from local Storage*******/
+    public List<GroupBorrowerTable> loadSingleBorrowerGroupList(String groupId){
+        return groupBorrowerTableDao.queryBuilder()
+                .where(GroupBorrowerTableDao.Properties.GroupId.eq(groupId))
+                .build()
+                .list();
+    }
+
+
     /***************Delete Group from local Storage*********/
     public void deleteGroupFromStorage(GroupBorrowerTable groupBorrowerTable){
         groupBorrowerTableDao.delete(groupBorrowerTable);

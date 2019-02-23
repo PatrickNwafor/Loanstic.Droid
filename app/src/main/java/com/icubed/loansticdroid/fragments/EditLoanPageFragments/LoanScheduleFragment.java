@@ -46,7 +46,7 @@ public class LoanScheduleFragment extends Fragment {
     private CollectionTableQueries collectionTableQueries;
     private LoansTable loan;
     private boolean isGrey = true;
-    private double currentBalance;
+    private double currentBalance = 0;
     private ProgressBar scheduleProgressBar;
 
     public LoanScheduleFragment() {
@@ -108,7 +108,6 @@ public class LoanScheduleFragment extends Fragment {
                                     saveCollectionToLocalStorage(collectionTable);
                                 }
 
-                                currentBalance = loan.getLoanAmount();
                                 loadAllCollections();
 
                                 scheduleProgressBar.setVisibility(View.GONE);
@@ -135,7 +134,7 @@ public class LoanScheduleFragment extends Fragment {
             createTableBody(collectionTable);
         }
 
-        totalDueCollectedTextView.setText(String.valueOf(loan.getLoanAmount() - currentBalance));
+        totalDueCollectedTextView.setText(String.valueOf(currentBalance));
 
     }
 
@@ -165,7 +164,7 @@ public class LoanScheduleFragment extends Fragment {
                                 }
 
                                 scheduleProgressBar.setVisibility(View.GONE);
-                                totalDueCollectedTextView.setText(String.valueOf(loan.getLoanAmount() - currentBalance));
+                                totalDueCollectedTextView.setText(String.valueOf(currentBalance));
                             }else {
                                 scheduleProgressBar.setVisibility(View.GONE);
                                 Toast.makeText(getActivity(), "Collection is empty", Toast.LENGTH_SHORT).show();
@@ -217,9 +216,9 @@ public class LoanScheduleFragment extends Fragment {
         dueAmountHeader.setPadding(10,10,10,10);
 
         if(collectionTable.getIsDueCollected()) {
-            currentBalance = currentBalance - collectionTable.getCollectionDueAmount();
-            totalBalanceHeader.setText(String.valueOf(0 - currentBalance));
-        } else totalBalanceHeader.setText(String.valueOf(0 - currentBalance));
+            currentBalance = currentBalance + collectionTable.getCollectionDueAmount();
+            totalBalanceHeader.setText(String.valueOf(currentBalance));
+        } else totalBalanceHeader.setText(String.valueOf(currentBalance));
         totalBalanceHeader.setGravity(Gravity.CENTER);
         totalBalanceHeader.setPadding(10,10,10,10);
 

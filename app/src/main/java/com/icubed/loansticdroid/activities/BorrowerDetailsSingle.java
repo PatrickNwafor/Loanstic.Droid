@@ -31,18 +31,25 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.BorrowerBusinessVerificationRecyclerAdapter;
+import com.icubed.loansticdroid.adapters.BorrowersGroupRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.DocumentRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.ActivityCycleQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowerFilesQueries;
+import com.icubed.loansticdroid.cloudqueries.BorrowerGroupsQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowerPhotoValidationQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
+import com.icubed.loansticdroid.cloudqueries.GroupBorrowerQueries;
 import com.icubed.loansticdroid.localdatabase.ActivityCycleTable;
 import com.icubed.loansticdroid.localdatabase.ActivityCycleTableQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowerFilesTable;
 import com.icubed.loansticdroid.localdatabase.BorrowerFilesTableQueries;
+import com.icubed.loansticdroid.localdatabase.BorrowerGroupsTable;
+import com.icubed.loansticdroid.localdatabase.BorrowerGroupsTableQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTable;
 import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTableQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
+import com.icubed.loansticdroid.localdatabase.GroupBorrowerTableQueries;
 import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.ArrayList;
@@ -53,10 +60,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     private static final String TAG = ".BorrowerDetailsSingle";
     private Toolbar toolbar;
     private BorrowersTable borrower;
-    private ImageView profileImageView, statusIndicator;
+    private ImageView profileImageView, statusIndicator, addGroupBtn;
     private TextView nameTextView, numberTextView, emailTextView, numberOfBizVerifTextView
             , businessNameTextView, businessLocationTextView, businessDescriptionTextView
-            , genderTextView, dobTextView, homeAddressTextView, countryTextView
+            , genderTextView, dobTextView, homeAddressTextView, countryTextView, groupCountTextView
             , stateTextView, cityTextView, numberOfDocTextView, borrowerLocationTextView, statusText;
     private Switch statusSwitch;
     private ProgressBar progressBar;
@@ -67,7 +74,7 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     private AlertDialog.Builder alert;
     private byte[] borrowerImageByteArray;
 
-    private RecyclerView docRecyclerView;
+    private RecyclerView docRecyclerView, borrowerGroupRecyclerView;
     private RecyclerView businessVerificationRecyclerView;
     private DocumentRecyclerAdapter documentRecyclerAdapter;
     private List<BorrowerFilesTable> borrowerFilesTables;
@@ -80,6 +87,12 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     private BorrowerFilesTableQueries borrowerFilesTableQueries;
     private BorrowersQueries borrowersQueries;
     private ActivityCycleQueries activityCycleQueries;
+    private BorrowersGroupRecyclerAdapter borrowersGroupRecyclerAdapter;
+    private List<GroupBorrowerTable> groupBorrowerTableList;
+    private BorrowerGroupsQueries borrowerGroupsQueries;
+    private BorrowerGroupsTableQueries borrowerGroupsTableQueries;
+    private GroupBorrowerQueries groupBorrowerQueries;
+    private GroupBorrowerTableQueries groupBorrowerTableQueries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +119,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         borrowerPhotoValidationTableQueries = new BorrowerPhotoValidationTableQueries(getApplication());
         activityCycleQueries = new ActivityCycleQueries();
         borrowersQueries = new BorrowersQueries(this);
+        borrowerGroupsQueries = new BorrowerGroupsQueries();
+        borrowerGroupsTableQueries = new BorrowerGroupsTableQueries(getApplication());
+        groupBorrowerQueries = new GroupBorrowerQueries();
+        groupBorrowerTableQueries = new GroupBorrowerTableQueries(getApplication());
 
         statusSwitch = findViewById(R.id.active_switch);
         statusIndicator = findViewById(R.id.indicator);
@@ -130,10 +147,13 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         docRecyclerView = findViewById(R.id.documentRecyclerView);
         borrowerLocationTextView = findViewById(R.id.borrower_location);
         content = findViewById(R.id.borrower_content);
+        addGroupBtn = findViewById(R.id.addGroup);
+        borrowerGroupRecyclerView = findViewById(R.id.groupsRecyclerView);
+        groupCountTextView = findViewById(R.id.number_of_group);
 
         alert = new AlertDialog.Builder(this);
 
-        profileImageView.setOnClickListener(new View.OnClickListener() {
+        addGroupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AddBorrowerToExistingGroupActivity.class);
@@ -154,6 +174,12 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
             }
         });
 
+        groupBorrowerTableList = new ArrayList<>();
+        LinearLayoutManager layoutManager3 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        borrowerGroupRecyclerView.setLayoutManager(layoutManager3);
+        borrowersGroupRecyclerAdapter = new BorrowersGroupRecyclerAdapter(groupBorrowerTableList);
+        borrowerGroupRecyclerView.setAdapter(borrowersGroupRecyclerAdapter);
+
         borrowerFilesTables = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         docRecyclerView.setLayoutManager(layoutManager);
@@ -169,6 +195,12 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         if(borrower != null){
 
             ActivityCycleTable activityCycleTable = activityCycleTableQueries.loadLastCreatedCycle(borrower.getBorrowersId());
+
+            if(activityCycleTable == null){
+                getActivityCycleData(borrower.getBorrowersId());
+                return;
+            }
+
             activityCycleId = activityCycleTable.getActivityCycleId();
 
             if (!activityCycleTable.getIsActive()) {
@@ -178,11 +210,129 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
             setBorrowerDetailsOnUi();
             getFiles();
             getBusinessVerificationPhotos();
+            getBorrowerGroups();
         }else{
             getActivityCycleData(borrowerId);
             isDataFromSearch = true;
         }
 
+    }
+
+    private void getBorrowerGroups() {
+        List<BorrowerGroupsTable> borrowerGroupsTableList = borrowerGroupsTableQueries.loadBorrowerGroups(borrower.getBorrowersId());
+
+        if(borrowerGroupsTableList.isEmpty()){
+            getBorrowersGroupsOnline();
+        }else{
+            groupCountTextView.setText(String.valueOf(borrowerGroupsTableList.size()));
+
+            for (BorrowerGroupsTable borrowerGroupsTable : borrowerGroupsTableList) {
+                List<GroupBorrowerTable> groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroupList(borrowerGroupsTable.getGroupId());
+
+                if(groupBorrowerTable == null || groupBorrowerTable.isEmpty()){
+                    getGroupDetails(borrowerGroupsTable.getGroupId());
+                }else {
+                    groupBorrowerTableList.add(groupBorrowerTable.get(0));
+                    borrowersGroupRecyclerAdapter.notifyDataSetChanged();
+                }
+
+                getGroupAndCompareToCloud(borrowerGroupsTableList);
+            }
+        }
+    }
+
+    private void getGroupAndCompareToCloud(final List<BorrowerGroupsTable> borrowerGroupsTableList) {
+        borrowerGroupsQueries.retrieveGroupsOfBorrower(borrower.getBorrowersId())
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            if(!task.getResult().isEmpty()){
+                                for(DocumentSnapshot doc : task.getResult()){
+                                    BorrowerGroupsTable borrowerGroupsTable = doc.toObject(BorrowerGroupsTable.class);
+                                    borrowerGroupsTable.setDocumentId(doc.getId());
+                                    borrowerGroupsTable.setBorrowerId(borrower.getBorrowersId());
+
+                                    for (BorrowerGroupsTable groupsTable : borrowerGroupsTableList) {
+                                        if(groupsTable.getGroupId().equals(borrowerGroupsTable.getGroupId())){
+                                            return;
+                                        }
+                                    }
+
+                                    saveBorrowerGroupsToStorage(borrowerGroupsTable);
+                                    getGroup(borrowerGroupsTable);
+                                }
+
+                                groupCountTextView.setText(String.valueOf(task.getResult().size()));
+                            }
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void getBorrowersGroupsOnline() {
+        borrowerGroupsQueries.retrieveGroupsOfBorrower(borrower.getBorrowersId())
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            if(!task.getResult().isEmpty()){
+                                for(DocumentSnapshot doc : task.getResult()){
+                                    BorrowerGroupsTable borrowerGroupsTable = doc.toObject(BorrowerGroupsTable.class);
+                                    borrowerGroupsTable.setDocumentId(doc.getId());
+                                    borrowerGroupsTable.setBorrowerId(borrower.getBorrowersId());
+
+                                    saveBorrowerGroupsToStorage(borrowerGroupsTable);
+                                    getGroup(borrowerGroupsTable);
+                                }
+
+                                groupCountTextView.setText(String.valueOf(task.getResult().size()));
+                            }
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void getGroup(BorrowerGroupsTable borrowerGroupsTable) {
+        List<GroupBorrowerTable> groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroupList(borrowerGroupsTable.getGroupId());
+
+        if(groupBorrowerTable == null ||  groupBorrowerTable.isEmpty()){
+            getGroupDetails(borrowerGroupsTable.getGroupId());
+        }else {
+            groupBorrowerTableList.add(groupBorrowerTable.get(0));
+            borrowersGroupRecyclerAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void saveBorrowerGroupsToStorage(BorrowerGroupsTable borrowerGroupsTable) {
+        borrowerGroupsTableQueries.insertGroupMemberToStorage(borrowerGroupsTable);
+    }
+
+    private void getGroupDetails(final String groupId) {
+        groupBorrowerQueries.retrieveSingleBorrowerGroup(groupId)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            GroupBorrowerTable groupBorrowerTable = task.getResult().toObject(GroupBorrowerTable.class);
+                            groupBorrowerTable.setGroupId(groupId);
+
+                            saveGroupToStorage(groupBorrowerTable);
+                            groupBorrowerTableList.add(groupBorrowerTable);
+                            borrowersGroupRecyclerAdapter.notifyDataSetChanged();
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void saveGroupToStorage(GroupBorrowerTable groupBorrowerTable) {
+        groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
     }
 
     /**
@@ -353,6 +503,15 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                                     inActiveIndicators();
                                 }
 
+                                saveActivityCycleData(activityCycleTable);
+
+                                if(!isDataFromSearch){
+                                    setBorrowerDetailsOnUi();
+                                    getFiles();
+                                    getBusinessVerificationPhotos();
+                                    getBorrowerGroups();
+                                }
+
                                 retrieveBorrowerDetailsFromCloud();
                                 getNewFiles(borrowerId, activityCycleTable.getActivityCycleId());
                                 getNewBusinessVerificationPhotos(borrowerId, activityCycleTable.getActivityCycleId());
@@ -364,6 +523,14 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void saveActivityCycleData(ActivityCycleTable activityCycleTable) {
+        ActivityCycleTable table = activityCycleTableQueries.loadSingleActivityCycle(activityCycleTable.getActivityCycleId());
+
+        if(table == null){
+            activityCycleTableQueries.insertActivityCycleToStorage(activityCycleTable);
+        }
     }
 
     /**
@@ -384,6 +551,7 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
                             borrower = borrowersTable;
                             borrowersTable.setId((long) 23);
                             setBorrowerDetailsOnUi();
+                            getBorrowerGroups();
 
                         }else{
                             hideProgressBar();
