@@ -43,6 +43,15 @@ public class CollectionTableQueries {
                 .list();
     }
 
+    /**********Load All Due Collections from local Storage***********/
+    public List<CollectionTable> loadCollectionsForLoan(String loanId){
+        return collectionTableDao.queryBuilder()
+                .where(CollectionTableDao.Properties.LoanId.eq(loanId))
+                .orderAsc(CollectionTableDao.Properties.CollectionNumber)
+                .build()
+                .list();
+    }
+
     public List<CollectionTable> loadAllOverDueCollection(){
         return collectionTableDao.queryBuilder()
                 .where(CollectionTableDao.Properties.IsDueCollected.eq(false))

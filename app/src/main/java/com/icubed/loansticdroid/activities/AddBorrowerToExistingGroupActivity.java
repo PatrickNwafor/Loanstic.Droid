@@ -81,6 +81,7 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
     private ProgressBar addBorrowerProg;
     private LinearLayout searchEmptyLayout;
     private TextView errorTextView;
+    private boolean submission = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -278,12 +279,15 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem register = menu.findItem(R.id.next_to_loan_terms);
         register.setTitle("Submit");
+        register.setEnabled(true);
 
         if(selectedGroup != null){
             register.setVisible(true);
         }else{
             register.setVisible(false);
         }
+
+        if(submission) register.setEnabled(false);
 
         return true;
     }
@@ -298,6 +302,8 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
 
             case R.id.next_to_loan_terms:
                 submitButtonListener();
+                submission = true;
+                invalidateOptionsMenu();
                 return true;
 
             default:
@@ -326,6 +332,8 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "Failed updating borrower details", Toast.LENGTH_SHORT).show();
                                 Log.d(TAG, "onComplete: "+task.getException().getMessage());
                                 addBorrowerProg.setVisibility(View.GONE);
+                                submission = false;
+                                invalidateOptionsMenu();
                             }
                         }
                     });
@@ -347,6 +355,8 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Failed updating borrower details", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "onComplete: "+task.getException().getMessage());
                             addBorrowerProg.setVisibility(View.GONE);
+                            submission = false;
+                            invalidateOptionsMenu();
                         }
                     }
                 });
@@ -374,6 +384,8 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
                         }else{
                             addBorrowerProg.setVisibility(View.VISIBLE);
                             Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                            submission = false;
+                            invalidateOptionsMenu();
                         }
                     }
                 });
@@ -397,6 +409,8 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
                     }else{
                         addBorrowerProg.setVisibility(View.VISIBLE);
                         Log.d(TAG, "requestCompleted: "+e.getMessage());
+                        submission = false;
+                        invalidateOptionsMenu();
                     }
                 }
             });

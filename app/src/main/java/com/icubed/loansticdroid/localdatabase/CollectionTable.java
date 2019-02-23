@@ -20,23 +20,22 @@ public class CollectionTable {
     @Id(autoincrement = true)
     private Long id;
 
-    private Double collectionDueAmount;
+    private Double collectionDueAmount, penalty;
 
-    private String collectionDueDate;
+    private Date collectionDueDate;
     private Date lastUpdatedAt;
     private Date timestamp;
 
     private Boolean isDueCollected;
 
-    @Generated(hash = 1171022176)
-    public CollectionTable(String collectionId, String loanId, int collectionNumber,
-            Long id, Double collectionDueAmount, String collectionDueDate,
-            Date lastUpdatedAt, Date timestamp, Boolean isDueCollected) {
+    @Generated(hash = 1851244840)
+    public CollectionTable(String collectionId, String loanId, int collectionNumber, Long id, Double collectionDueAmount, Double penalty, Date collectionDueDate, Date lastUpdatedAt, Date timestamp, Boolean isDueCollected) {
         this.collectionId = collectionId;
         this.loanId = loanId;
         this.collectionNumber = collectionNumber;
         this.id = id;
         this.collectionDueAmount = collectionDueAmount;
+        this.penalty = penalty;
         this.collectionDueDate = collectionDueDate;
         this.lastUpdatedAt = lastUpdatedAt;
         this.timestamp = timestamp;
@@ -87,12 +86,20 @@ public class CollectionTable {
         this.collectionDueAmount = collectionDueAmount;
     }
 
-    public String getCollectionDueDate() {
+    public Date getCollectionDueDate() {
         return this.collectionDueDate;
     }
 
-    public void setCollectionDueDate(String collectionDueDate) {
+    public void setCollectionDueDate(Date collectionDueDate) {
         this.collectionDueDate = collectionDueDate;
+    }
+
+    public Date getLastUpdatedAt() {
+        return this.lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt(Date lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 
     public Date getTimestamp() {
@@ -111,12 +118,16 @@ public class CollectionTable {
         this.isDueCollected = isDueCollected;
     }
 
-    public Date getLastUpdatedAt() {
-        return this.lastUpdatedAt;
+    @Override
+    public String toString() {
+        return "CollectionTable{" + "collectionId='" + collectionId + '\'' + ", loanId='" + loanId + '\'' + ", collectionNumber=" + collectionNumber + ", id=" + id + ", collectionDueAmount=" + collectionDueAmount + ", collectionDueDate=" + collectionDueDate + ", lastUpdatedAt=" + lastUpdatedAt + ", timestamp=" + timestamp + ", isDueCollected=" + isDueCollected + '}';
     }
 
-    public void setLastUpdatedAt(Date lastUpdatedAt) {
-        this.lastUpdatedAt = lastUpdatedAt;
+    public Double getPenalty() {
+        return this.penalty;
     }
 
+    public void setPenalty(Double penalty) {
+        this.penalty = penalty;
+    }
 }

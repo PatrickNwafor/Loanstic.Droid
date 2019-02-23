@@ -20,6 +20,7 @@ import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.localdatabase.CollectionTableQueries;
 import com.icubed.loansticdroid.localdatabase.LoanTableQueries;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
+import com.icubed.loansticdroid.util.DateUtil;
 
 import java.util.List;
 
@@ -230,7 +231,7 @@ public class Collection {
             DueCollectionDetails dueCollectionDetails = new DueCollectionDetails();
             dueCollectionDetails.setDueAmount(collectionTable.getCollectionDueAmount());
             dueCollectionDetails.setCollectionNumber(collectionTable.getCollectionNumber());
-            dueCollectionDetails.setDueCollectionDate(collectionTable.getCollectionDueDate());
+            dueCollectionDetails.setDueCollectionDate(DateUtil.dateString(collectionTable.getCollectionDueDate()));
             dueCollectionDetails.setIsDueCollected(collectionTable.getIsDueCollected());
 
             LoansTable loan = loanTableQueries.loadSingleLoan(collectionTable.getLoanId());
@@ -260,7 +261,7 @@ public class Collection {
         DueCollectionDetails dueCollectionDetails = new DueCollectionDetails();
         dueCollectionDetails.setDueAmount(collectionTable.getCollectionDueAmount());
         dueCollectionDetails.setCollectionNumber(collectionTable.getCollectionNumber());
-        dueCollectionDetails.setDueCollectionDate(collectionTable.getCollectionDueDate());
+        dueCollectionDetails.setDueCollectionDate(DateUtil.dateString(collectionTable.getCollectionDueDate()));
         dueCollectionDetails.setIsDueCollected(collectionTable.getIsDueCollected());
 
         LoansTable loan = loanTableQueries.loadSingleLoan(collectionTable.getLoanId());

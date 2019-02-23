@@ -6,6 +6,13 @@
     tools:context=".fragments.EditLoanPageFragments.LoanScheduleFragment">
 
     <!-- TODO: Update blank fragment layout -->
+    <ProgressBar
+        android:id="@+id/schedule_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -33,163 +40,7 @@
     <TableLayout
         android:id="@+id/table"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <TableRow>
-        <TextView
-            android:text="S/N"
-            android:gravity="left"
-            android:textColor="@color/colorPrimary"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
-            />
-        <TextView
-            android:text="Date"
-            android:gravity="left"
-            android:padding="10dp"
-            android:textColor="@color/colorPrimary"/>
-        <TextView
-            android:text="Descrption"
-            android:gravity="left"
-            android:padding="10dp"
-            android:textColor="@color/colorPrimary"/>
-        <TextView
-            android:text="Principal"
-            android:gravity="left"
-            android:padding="10dp"
-            android:textColor="@color/colorPrimary"/>
-        <TextView
-            android:text="Interest"
-            android:gravity="left"
-            android:padding="10dp"
-            android:textColor="@color/colorPrimary"/>
-        <TextView
-            android:text="Fees"
-            android:gravity="left"
-            android:padding="10dp"
-            android:textColor="@color/colorPrimary"/>
-        <TextView
-            android:text="Penalty"
-            android:gravity="left"
-            android:padding="10dp"
-            android:textColor="@color/colorPrimary"/>
-        <TextView
-            android:text="Total Due Amount"
-            android:gravity="left"
-            android:padding="10dp"
-            android:textColor="@color/colorPrimary"/>
-        <TextView
-            android:text="Total Due Balance Amount"
-            android:gravity="left"
-            android:padding="10dp"
-            android:textColor="@color/colorPrimary"/>
-            </TableRow>
-
-        <TableRow
-
-            >
-            <TextView
-                android:text="1"
-                android:gravity="left"
-                android:paddingTop="10dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="10dp"
-                />
-            <TextView
-                android:text="10/06/2016"
-                android:gravity="left"
-                android:paddingTop="10dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="10dp"
-                />
-            <TextView
-                android:text="Repayment"
-                android:gravity="left"
-                android:padding="10dp"
-                />
-            <TextView
-                android:text="400"
-                android:gravity="left"
-                android:padding="10dp"
-               />
-            <TextView
-                android:text="40"
-                android:gravity="left"
-                android:padding="10dp"
-                />
-            <TextView
-                android:text="0"
-                android:gravity="left"
-                android:padding="10dp"
-               />
-            <TextView
-                android:text="0"
-                android:gravity="left"
-                android:padding="10dp"
-                />
-            <TextView
-                android:text="440"
-                android:gravity="left"
-                android:padding="10dp"
-                />
-            <TextView
-                android:text="440"
-                android:gravity="left"
-                android:padding="10dp"
-               />
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                android:text="2"
-                android:gravity="left"
-                android:paddingTop="10dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="10dp"
-                />
-            <TextView
-                android:text="20/07/2016"
-                android:gravity="left"
-                android:paddingTop="10dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="10dp"
-                />
-            <TextView
-                android:text="Repayment"
-                android:gravity="left"
-                android:padding="10dp"
-                />
-            <TextView
-                android:text="400"
-                android:gravity="left"
-                android:padding="10dp"
-                />
-            <TextView
-                android:text="40"
-                android:gravity="left"
-                android:padding="10dp"
-                />
-            <TextView
-                android:text="0"
-                android:gravity="left"
-                android:padding="10dp"
-                />
-            <TextView
-                android:text="0"
-                android:gravity="left"
-                android:padding="10dp"
-                />
-            <TextView
-                android:text="440"
-                android:gravity="left"
-                android:padding="10dp"
-                />
-            <TextView
-                android:text="440"
-                android:gravity="left"
-                android:padding="10dp"
-                />
-        </TableRow>
+        android:layout_height="wrap_content">
 
     </TableLayout>
     </LinearLayout>
@@ -206,12 +57,12 @@
        android:text="Total Collection Due"
        android:textColor="@color/Black"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2200"
-            android:layout_marginLeft="60dp"
-            android:textColor="@color/Black"/>
+      <TextView
+          android:id="@+id/total_due_collected_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="60dp"
+          android:textColor="@color/Black" />
   </LinearLayout>
     </LinearLayout>
 </FrameLayout>

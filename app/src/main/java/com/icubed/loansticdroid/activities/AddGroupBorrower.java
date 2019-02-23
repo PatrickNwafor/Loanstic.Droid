@@ -115,6 +115,7 @@ public class AddGroupBorrower extends AppCompatActivity {
                 if(alreadyAddedBorrower == null){
                     createNewGroup();
                 }else{
+                    proceed.setEnabled(false);
                     addBorrowerProg.setVisibility(View.VISIBLE);
                     updateBorrowerProfile();
                 }
@@ -177,6 +178,7 @@ public class AddGroupBorrower extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Failed updating borrower details", Toast.LENGTH_SHORT).show();
                                     Log.d(TAG, "onComplete: "+task.getException().getMessage());
                                     addBorrowerProg.setVisibility(View.GONE);
+                                    proceed.setEnabled(true);
                                 }
                             }
                         });
@@ -204,6 +206,7 @@ public class AddGroupBorrower extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Failed updating borrower details", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "onComplete: "+task.getException().getMessage());
                             addBorrowerProg.setVisibility(View.GONE);
+                            proceed.setEnabled(true);
                         }
                     }
                 });
@@ -229,6 +232,7 @@ public class AddGroupBorrower extends AppCompatActivity {
                         }else{
                             addBorrowerProg.setVisibility(View.VISIBLE);
                             Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                            proceed.setEnabled(true);
                         }
                     }
                 });
@@ -252,6 +256,7 @@ public class AddGroupBorrower extends AppCompatActivity {
                     }else{
                         addBorrowerProg.setVisibility(View.VISIBLE);
                         Log.d(TAG, "requestCompleted: "+e.getMessage());
+                        proceed.setEnabled(true);
                     }
                 }
             });

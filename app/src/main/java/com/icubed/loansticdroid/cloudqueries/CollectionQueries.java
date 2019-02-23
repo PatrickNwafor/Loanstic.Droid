@@ -3,6 +3,7 @@ package com.icubed.loansticdroid.cloudqueries;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.util.DateUtil;
@@ -43,6 +44,7 @@ public class CollectionQueries {
 
         return firebaseFirestore.collection("Collection")
                 .whereEqualTo("loanId", loanId)
+                .orderBy("collectionNumber", Query.Direction.ASCENDING)
                 .get();
 
     }

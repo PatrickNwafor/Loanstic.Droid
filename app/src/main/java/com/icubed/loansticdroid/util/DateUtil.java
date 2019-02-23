@@ -26,7 +26,7 @@ public class DateUtil {
     }
 
     public static String dateString(Date date) {
-        String myFormat = "MM/dd/yy";
+        String myFormat = "dd/MM/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         return sdf.format(date);

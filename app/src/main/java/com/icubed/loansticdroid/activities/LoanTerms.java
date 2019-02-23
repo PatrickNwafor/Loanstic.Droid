@@ -33,6 +33,8 @@ import com.icubed.loansticdroid.cloudqueries.OtherLoanTypeQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
+import com.icubed.loansticdroid.localdatabase.LoansTable;
+import com.icubed.loansticdroid.models.PaymentScheduleGenerator;
 import com.icubed.loansticdroid.notification.LoanRequestNotificationQueries;
 import com.icubed.loansticdroid.notification.LoanRequestNotificationTable;
 import com.icubed.loansticdroid.util.DateUtil;
@@ -221,7 +223,7 @@ public class LoanTerms extends AppCompatActivity {
                 });
     }
 
-    private void submitLoan(Boolean isOtherLoanType){
+    private void submitLoan(final Boolean isOtherLoanType){
         if(!checkForm()) return;
 
         progressBar.setVisibility(View.VISIBLE);
@@ -263,6 +265,7 @@ public class LoanTerms extends AppCompatActivity {
 
                             registerLoanForSearch(task.getResult().getId());
                             sendNotification(task.getResult().getId());
+                            generateRepaymentSchedule(task.getResult().getId(), isOtherLoanType);
 
                         }else{
                             progressBar.setVisibility(View.GONE);
@@ -271,6 +274,29 @@ public class LoanTerms extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void generateRepaymentSchedule(String id, Boolean isOtherLoanType) {
+        PaymentScheduleGenerator paymentScheduleGenerator = new PaymentScheduleGenerator();
+
+        LoansTable loansTable = new LoansTable();
+        loansTable.setLoanId(id);
+        loansTable.setIsOtherLoanType(isOtherLoanType);
+        loansTable.setLoanOfficerId(account.getCurrentUserId());
+        loansTable.setLoanTypeId(loanTypeTable.getLoanTypeId());
+        loansTable.setLoanCreationDate(creationDate);
+        loansTable.setLoanAmount(Double.parseDouble(principlaAmountEditText.getText().toString()));
+        loansTable.setLoanInterestRate(Double.parseDouble(loanInterestEditText.getText().toString()));
+        loansTable.setIsLoanApproved(false);
+        loansTable.setLoanReleaseDate(myCalendar.getTime());
+        loansTable.setLoanDuration(Integer.parseInt(loanDurationTextView.getText().toString()));
+        loansTable.setLoanApprovedDate(null);
+        loansTable.setLoanInterestRateUnit(selectedRate);
+        loansTable.setLoanDurationUnit(selectedDuration);
+        loansTable.setRepaymentAmount(Double.parseDouble(repaymentCycleEditText.getText().toString()));
+        loansTable.setRepaymentAmountUnit(selectedCycle);
+
+        paymentScheduleGenerator.generateRepaymentSchedule(loansTable);
     }
 
     private void sendNotification(String loanId){
