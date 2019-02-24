@@ -341,6 +341,7 @@ public class Collection {
                     dueCollectionDetails.setFirstName(groupBorrowerTable.getGroupName());
                     dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
                     dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
+                    dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
                 }
 
                 fragment.dueCollectionList.add(dueCollectionDetails);
@@ -378,6 +379,7 @@ public class Collection {
                     dueCollectionDetails.setFirstName(groupBorrowerTable.getGroupName());
                     dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
                     dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
+                    dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
                 }
 
                 fragment.overDueCollectionList.add(dueCollectionDetails);
@@ -475,6 +477,7 @@ public class Collection {
             dueCollectionDetails.setGroupName(groupBorrowerTable.getGroupName());
             dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
             dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
+            dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
         }
 
         if(DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date()))){

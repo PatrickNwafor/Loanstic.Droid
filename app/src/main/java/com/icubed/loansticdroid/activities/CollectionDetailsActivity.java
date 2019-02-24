@@ -3,7 +3,9 @@ package com.icubed.loansticdroid.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -21,26 +23,36 @@ import java.util.Date;
 import java.util.Locale;
 
 public class CollectionDetailsActivity extends AppCompatActivity {
-    private static final String TAG = ".CollectionDetailsActivity";
+    private static final String TAG = ".CollectionDetActivity";
     Animation bounce;
     CardView CD1,CD2,CD3,CD4,CD5,CD6;
 
-    private TextView borrowerUsernameView, businessNameView,
+    private TextView businessNameView,
             collectionDueDateView, collectionAmountView, collectionNumberView,
             collectionAddressView, collectionStatusView;
 
-    private ImageView borrowerImageView;
 
     private String businessName, collectionDueDate;
     private double collectionAmount;
     private int colelctionNumber;
     private Boolean collectionStatus;
     private String firstName, workAddress, lastName;
+    private Toolbar toolbar;
+    private CardView CD7;
+    private ImageView iconUser;
+    private TextView userNameTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.collection_details);
+
+        toolbar = findViewById(R.id.collection_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Collection Details");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         bounce = AnimationUtils.loadAnimation( CollectionDetailsActivity.this,R.anim.bounce);
         CD1 = findViewById(R.id.CD1);
         CD2 = findViewById(R.id.CD2);
@@ -48,7 +60,9 @@ public class CollectionDetailsActivity extends AppCompatActivity {
         CD4 = findViewById(R.id.CD4);
         CD5 = findViewById(R.id.CD5);
         CD6 = findViewById(R.id.CD6);
+        CD7 = findViewById(R.id.CD7);
 
+        CD7.setAnimation(bounce);
         CD1.setAnimation(bounce);
         CD2.setAnimation(bounce);
         CD3.setAnimation(bounce);
@@ -57,14 +71,14 @@ public class CollectionDetailsActivity extends AppCompatActivity {
         CD6.setAnimation(bounce);
 
         //TextViews
-        borrowerUsernameView = findViewById(R.id.borrower_username);
         businessNameView = findViewById(R.id.business_name);
         collectionDueDateView = findViewById(R.id.collection_due_date);
         collectionAmountView = findViewById(R.id.collection_amount);
         collectionNumberView = findViewById(R.id.collection_number);
         collectionAddressView = findViewById(R.id.collection_address);
         collectionStatusView = findViewById(R.id.collection_status);
-        borrowerImageView = findViewById(R.id.borrower_image);
+        iconUser = findViewById(R.id.icon_user);
+        userNameTextView = findViewById(R.id.user_name);
 
         //getting collection details value
         firstName = getIntent().getStringExtra("firstName");
@@ -95,9 +109,17 @@ public class CollectionDetailsActivity extends AppCompatActivity {
     }
 
     private void updateUI(DueCollectionDetails dueCollectionDetails) {
-        borrowerUsernameView.setText(dueCollectionDetails.getLastName() + " " + dueCollectionDetails.getFirstName());
-        businessNameView.setText(dueCollectionDetails.getBusinessName());
+        if(dueCollectionDetails.getGroupName() == null) {
+            userNameTextView.setText(dueCollectionDetails.getLastName() + " " + dueCollectionDetails.getFirstName());
+            businessNameView.setText(dueCollectionDetails.getBusinessName());
+        }else {
+            userNameTextView.setText(dueCollectionDetails.getGroupName());
+            iconUser.setImageResource(R.drawable.new_group);
+            CD1.setVisibility(View.GONE);
+        }
+
         collectionNumberView.setText(String.valueOf(dueCollectionDetails.getCollectionNumber()));
+        collectionAddressView.setText(dueCollectionDetails.getWorkAddress());
 
         if(dueCollectionDetails.getIsDueCollected()){
             collectionStatusView.setText("Collected");
@@ -106,14 +128,9 @@ public class CollectionDetailsActivity extends AppCompatActivity {
         }
 
         collectionAmountView.setText(String.valueOf(dueCollectionDetails.getDueAmount()));
-        collectionAddressView.setText(dueCollectionDetails.getWorkAddress());
 
         String dueDate = monthYearDate(dueCollectionDetails.getDueCollectionDate());
         collectionDueDateView.setText(dueDate);
-    }
-
-    public void backButton(View view) {
-        finish();
     }
 
     /****************Convert date to string format*****************/
@@ -132,7 +149,14 @@ public class CollectionDetailsActivity extends AppCompatActivity {
         return month_date.format(newDate);
     }
 
-    private void loadProfileImage(String profileImageUri){
-        Glide.with(this).load(profileImageUri).into(borrowerImageView);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(item.getItemId() == android.R.id.home){
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
