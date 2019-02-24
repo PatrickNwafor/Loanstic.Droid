@@ -41,6 +41,14 @@ public class LoanTypeTableQueries {
     }
 
     /**********Load a single collection from local Storage*******/
+    public List<LoanTypeTable> loadSingleLoanTypeList(String loanTypeId){
+        return loanTypeTableDao.queryBuilder()
+                .where(LoanTypeTableDao.Properties.LoanTypeId.eq(loanTypeId))
+                .build()
+                .list();
+    }
+
+    /**********Load a single collection from local Storage*******/
     public LoanTypeTable loadSingleLoanTypeUsingUri(String imageUri){
         return loanTypeTableDao.queryBuilder()
                 .where(LoanTypeTableDao.Properties.LoanTypeImageUri.eq(imageUri))

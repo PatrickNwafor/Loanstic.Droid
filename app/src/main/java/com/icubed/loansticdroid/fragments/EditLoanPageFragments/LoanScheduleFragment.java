@@ -73,8 +73,6 @@ public class LoanScheduleFragment extends Fragment {
         collectionQueries = new CollectionQueries();
         collectionTableQueries = new CollectionTableQueries(getActivity().getApplication());
 
-        currentBalance = loan.getLoanAmount();
-
         createTableHeader();
         List<CollectionTable> collectionTableList = collectionTableQueries.loadCollectionsForLoan(loan.getLoanId());
         
@@ -111,7 +109,7 @@ public class LoanScheduleFragment extends Fragment {
                                 loadAllCollections();
 
                                 scheduleProgressBar.setVisibility(View.GONE);
-                                totalDueCollectedTextView.setText(String.valueOf(loan.getLoanAmount() - currentBalance));
+                                totalDueCollectedTextView.setText(String.valueOf(currentBalance));
                             }else {
                                 scheduleProgressBar.setVisibility(View.GONE);
                                 Toast.makeText(getActivity(), "Collection is empty", Toast.LENGTH_SHORT).show();
@@ -144,7 +142,7 @@ public class LoanScheduleFragment extends Fragment {
         }
 
         scheduleProgressBar.setVisibility(View.GONE);
-        totalDueCollectedTextView.setText(String.valueOf(loan.getLoanAmount() - currentBalance));
+        totalDueCollectedTextView.setText(String.valueOf(currentBalance));
     }
 
     private void getCollectionFromCloud() {

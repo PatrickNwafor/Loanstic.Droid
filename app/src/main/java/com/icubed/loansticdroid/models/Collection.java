@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.cloudqueries.CollectionQueries;
 import com.icubed.loansticdroid.cloudqueries.GroupBorrowerQueries;
@@ -330,9 +331,16 @@ public class Collection {
                     dueCollectionDetails.setLastName(borrowersTable.getLastName());
                     dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
                     dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
+                    dueCollectionDetails.setImageUri(borrowersTable.getProfileImageUri());
+                    dueCollectionDetails.setImageUriThumb(borrowersTable.getProfileImageThumbUri());
+                    dueCollectionDetails.setImageByteArray(borrowersTable.getBorrowerImageByteArray());
+                    dueCollectionDetails.setLatitude(borrowersTable.getBorrowerLocationLatitude());
+                    dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
                 }else{
                     GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
                     dueCollectionDetails.setFirstName(groupBorrowerTable.getGroupName());
+                    dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
+                    dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
                 }
 
                 fragment.dueCollectionList.add(dueCollectionDetails);
@@ -360,9 +368,16 @@ public class Collection {
                     dueCollectionDetails.setLastName(borrowersTable.getLastName());
                     dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
                     dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
+                    dueCollectionDetails.setImageUri(borrowersTable.getProfileImageUri());
+                    dueCollectionDetails.setImageUriThumb(borrowersTable.getProfileImageThumbUri());
+                    dueCollectionDetails.setImageByteArray(borrowersTable.getBorrowerImageByteArray());
+                    dueCollectionDetails.setLatitude(borrowersTable.getBorrowerLocationLatitude());
+                    dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
                 }else{
                     GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
                     dueCollectionDetails.setFirstName(groupBorrowerTable.getGroupName());
+                    dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
+                    dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
                 }
 
                 fragment.overDueCollectionList.add(dueCollectionDetails);
@@ -424,6 +439,8 @@ public class Collection {
             });
 
 
+        }else{
+            fragment.drawMarker(fragment.markerOptions);
         }
     }
 
@@ -448,9 +465,16 @@ public class Collection {
             dueCollectionDetails.setLastName(borrowersTable.getLastName());
             dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
             dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
+            dueCollectionDetails.setImageUri(borrowersTable.getProfileImageUri());
+            dueCollectionDetails.setImageUriThumb(borrowersTable.getProfileImageThumbUri());
+            dueCollectionDetails.setImageByteArray(borrowersTable.getBorrowerImageByteArray());
+            dueCollectionDetails.setLatitude(borrowersTable.getBorrowerLocationLatitude());
+            dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
         }else{
             GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
-            dueCollectionDetails.setFirstName(groupBorrowerTable.getGroupName());
+            dueCollectionDetails.setGroupName(groupBorrowerTable.getGroupName());
+            dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
+            dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
         }
 
         if(DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date()))){

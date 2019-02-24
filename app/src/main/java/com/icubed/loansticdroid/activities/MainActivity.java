@@ -21,6 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.fragments.HomeFragments.DashboardFragment;
 import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
@@ -179,6 +181,19 @@ public class MainActivity extends AppCompatActivity {
     public void hideProgressBar(){
         contentFrame.setVisibility(View.VISIBLE);
         mainProgrressBar.setVisibility(View.GONE);
+    }
+
+    public void drawMarker(MarkerOptions markerOptions){
+
+        FragmentManager fm = getSupportFragmentManager();
+        //hides slide up panel if already up
+        MapFragment fragment = (MapFragment) fm.findFragmentByTag("home");
+
+        if(fragment != null) {
+            fragment.mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerOptions.getPosition(), 10));
+            fragment.mGoogleMap.addMarker(markerOptions);
+            fragment.hidePanel();
+        }
     }
 
     @Override

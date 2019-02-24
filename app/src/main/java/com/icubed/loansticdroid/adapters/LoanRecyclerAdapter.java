@@ -129,6 +129,8 @@ public class LoanRecyclerAdapter extends RecyclerView.Adapter<LoanRecyclerAdapte
             }else {
                 borrowerNameTextView.setText(loanDetails.getGroupBorrowerTable().getGroupName());
                 expandedBorrowerNameTextView.setText(loanDetails.getGroupBorrowerTable().getGroupName());
+                borrowerImageView.setImageResource(R.drawable.new_group);
+                expandedImage.setImageResource(R.drawable.new_group);
             }
 
             if(loanDetails.getLoanTypeTable() != null) {

@@ -240,7 +240,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         locationProviderUtil.requestSingleUpdate(new LocationProviderUtil.LocationCallback() {
             @Override
             public void onNewLocationAvailable(LocationProviderUtil.GPSCoordinates location) {
-                drawMarker(location.getLocation);
+                getCurrentLocationMarker(location.getLocation);
 
                 if(!isLocationAvailable) {
                     if (!collection.doesCollectionExistInLocalStorage()) {
@@ -256,7 +256,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     /****************************set marker on map******************************/
-    private void drawMarker(Location location) {
+    private void getCurrentLocationMarker(Location location) {
         markerOptions = new MarkerOptions();
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -266,6 +266,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         markerOptions.anchor(0.5f, 0.5f);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
 
+    }
+
+    public void drawMarker(MarkerOptions markerOptions){
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerOptions.getPosition(), 10));
+        mGoogleMap.addMarker(markerOptions);
     }
 
     /***************************Accepting Permission***********************/

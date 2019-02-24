@@ -8,13 +8,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.CollectionDetailsActivity;
 import com.icubed.loansticdroid.activities.LoginActivity;
+import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.activities.ResetPasswordActivity;
+import com.icubed.loansticdroid.models.Collection;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -43,11 +51,13 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
-        String firstName = collectionList.get(position).getFirstName();
-        String lastName = collectionList.get(position).getLastName();
-        holder.setCollectionName(firstName, lastName);
+        final String firstName = collectionList.get(position).getFirstName();
+        final String lastName = collectionList.get(position).getLastName();
+        final String groupName = collectionList.get(position).getGroupName();
+        holder.setCollectionName(firstName, lastName,groupName);
         holder.setCollectionAmount(collectionList.get(position).getDueAmount());
-        holder.setBusiness(collectionList.get(position).getBusinessName());
+        holder.setBusiness(collectionList.get(position).getBusinessName(), groupName);
+        holder.setImage(collectionList.get(position));
 
         holder.detailsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +71,29 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
                 intent.putExtra("collectionDueDate", collectionList.get(position).getDueCollectionDate());
                 intent.putExtra("collectionNumber", collectionList.get(position).getCollectionNumber());
                 intent.putExtra("workAddress", collectionList.get(position).getWorkAddress());
+                intent.putExtra("groupName", collectionList.get(position).getGroupName());
                 context.startActivity(intent);
+            }
+        });
+
+        holder.frameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MarkerOptions markerOptions = new MarkerOptions();
+
+                LatLng latLng = new LatLng(collectionList.get(position).getLatitude(), collectionList.get(position).getLongitude());
+                //adding markerOptions properties for driver
+                markerOptions.position(latLng);
+                markerOptions.anchor(0.5f, 0.5f);
+                if(collectionList.get(position).getGroupName() == null){
+                    markerOptions.title(lastName + " " + firstName);
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                }else {
+                    markerOptions.title(groupName);
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                }
+
+                ((MainActivity) context).drawMarker(markerOptions);
             }
         });
 
@@ -81,30 +113,45 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
         private TextView collectionNameTextView;
         private TextView amountTextView;
         public TextView detailsTextView;
+        public FrameLayout frameLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             mView = itemView;
+            collectionNameTextView = mView.findViewById(R.id.collectionNameTextView);
+            amountTextView = mView.findViewById(R.id.amountTextView);
+            jobTextView = mView.findViewById(R.id.jobTextView);
+            collectionImageView = mView.findViewById(R.id.circleImageView);
+            detailsTextView = mView.findViewById(R.id.detailsTextView);
+            frameLayout = mView.findViewById(R.id.frame);
         }
 
-        public void setCollectionName(String firstName, String lastName){
-
-            collectionNameTextView = mView.findViewById(R.id.collectionNameTextView);
-            detailsTextView = mView.findViewById(R.id.detailsTextView);
-
-            collectionNameTextView.setText(lastName + " " + firstName);
-
+        public void setCollectionName(String firstName, String lastName, String groupName){
+            if(groupName == null) collectionNameTextView.setText(lastName + " " + firstName);
+            else collectionNameTextView.setText(groupName);
         }
 
         public void setCollectionAmount(double collectionAmount){
-            amountTextView = mView.findViewById(R.id.amountTextView);
             amountTextView.setText(String.valueOf(collectionAmount));
         }
 
-        public void setBusiness(String businessName) {
-            jobTextView = mView.findViewById(R.id.jobTextView);
-            jobTextView.setText(businessName);
+        public void setBusiness(String businessName, String groupName) {
+            if(groupName == null) jobTextView.setText(businessName);
+            else jobTextView.setText("Group");
+        }
+
+        public void setImage(DueCollectionDetails dueCollectionDetails) {
+
+            if(dueCollectionDetails.getGroupName() == null) {
+                if (dueCollectionDetails.getImageByteArray() == null) {
+                    BitmapUtil.getImageAndThumbnailWithGlide(mView.getContext(), dueCollectionDetails.getImageUri(), dueCollectionDetails.getImageUriThumb()).into(collectionImageView);
+                } else {
+                    collectionImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(dueCollectionDetails.getImageByteArray()));
+                }
+            }else{
+                collectionImageView.setVisibility(View.GONE);
+            }
         }
     }
 

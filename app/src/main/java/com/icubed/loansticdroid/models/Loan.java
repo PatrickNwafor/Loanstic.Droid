@@ -56,6 +56,8 @@ public class Loan {
     private GroupBorrowerTableQueries groupBorrowerTableQueries;
     private int count = 0;
     private int docSize = 0;
+    private int secondCount = 0;
+    private int size = 0;
 
     public Loan(Activity activity) {
         this.activity = activity;
@@ -417,63 +419,125 @@ public class Loan {
     public void loadLoansToUI(){
         List<LoansTable> loansTable = loanTableQueries.loadAllLoansOrderByCreationDate();
 
-        List<LoanDetails> loanDetailsList = new ArrayList<>();
-
+        ((LoanActivity) activity).loanDetailsList.clear();
+        size = loansTable.size();
         for(LoansTable table : loansTable){
 
             if(table.getBorrowerId() != null) {
                 BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(table.getBorrowerId());
 
                 if(table.getIsOtherLoanType()){
-                    OtherLoanTypesTable otherLoanTypesTable = otherLoanTypesTableQueries.loadSingleLoanType(table.getLoanTypeId());
+                    List<OtherLoanTypesTable> otherLoanTypesTable = otherLoanTypesTableQueries.loadSingleLoanTypeList(table.getLoanTypeId());
 
                     LoanDetails loanDetails = new LoanDetails();
                     loanDetails.setBorrowersTable(borrowersTable);
                     loanDetails.setLoansTable(table);
-                    loanDetails.setOtherLoanTypesTable(otherLoanTypesTable);
+                    if(!otherLoanTypesTable.isEmpty()){
+                        loanDetails.setOtherLoanTypesTable(otherLoanTypesTable.get(0));
+                        ((LoanActivity) activity).loanDetailsList.add(loanDetails);
+                        secondCount++;
+                        ((LoanActivity) activity).loanRecyclerAdapter.notifyDataSetChanged();
+                    }
+                    else getOtherLoanTypeForWhenDueCollection(table, loanDetails);
 
-                    loanDetailsList.add(loanDetails);
                 }else{
-                    LoanTypeTable loanTypeTable = loanTypeTableQueries.loadSingleLoanType(table.getLoanTypeId());
+                    List<LoanTypeTable> loanTypeTable = loanTypeTableQueries.loadSingleLoanTypeList(table.getLoanTypeId());
 
                     LoanDetails loanDetails = new LoanDetails();
                     loanDetails.setBorrowersTable(borrowersTable);
                     loanDetails.setLoansTable(table);
-                    loanDetails.setLoanTypeTable(loanTypeTable);
-
-                    loanDetailsList.add(loanDetails);
+                    if(!loanTypeTable.isEmpty()){
+                        loanDetails.setLoanTypeTable(loanTypeTable.get(0));
+                        ((LoanActivity) activity).loanDetailsList.add(loanDetails);
+                        secondCount++;
+                        ((LoanActivity) activity).loanRecyclerAdapter.notifyDataSetChanged();
+                    }
+                    else getLoanTypeForWhenDueCollection(table, loanDetails);
                 }
             }else{
                 GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(table.getGroupId());
 
                 if(table.getIsOtherLoanType()){
-                    OtherLoanTypesTable otherLoanTypesTable = otherLoanTypesTableQueries.loadSingleLoanType(table.getLoanTypeId());
+                    List<OtherLoanTypesTable> otherLoanTypesTable = otherLoanTypesTableQueries.loadSingleLoanTypeList(table.getLoanTypeId());
 
                     LoanDetails loanDetails = new LoanDetails();
                     loanDetails.setGroupBorrowerTable(groupBorrowerTable);
                     loanDetails.setLoansTable(table);
-                    loanDetails.setOtherLoanTypesTable(otherLoanTypesTable);
+                    if(!otherLoanTypesTable.isEmpty()){
+                        loanDetails.setOtherLoanTypesTable(otherLoanTypesTable.get(0));
+                        ((LoanActivity) activity).loanDetailsList.add(loanDetails);
+                        secondCount++;
+                        ((LoanActivity) activity).loanRecyclerAdapter.notifyDataSetChanged();
+                    }
+                    else getOtherLoanTypeForWhenDueCollection(table, loanDetails);
 
-                    loanDetailsList.add(loanDetails);
+                    ((LoanActivity) activity).loanDetailsList.add(loanDetails);
                 }else{
-                    LoanTypeTable loanTypeTable = loanTypeTableQueries.loadSingleLoanType(table.getLoanTypeId());
+                    List<LoanTypeTable> loanTypeTable = loanTypeTableQueries.loadSingleLoanTypeList(table.getLoanTypeId());
 
                     LoanDetails loanDetails = new LoanDetails();
                     loanDetails.setGroupBorrowerTable(groupBorrowerTable);
                     loanDetails.setLoansTable(table);
-                    loanDetails.setLoanTypeTable(loanTypeTable);
+                    if(!loanTypeTable.isEmpty()){
+                        loanDetails.setLoanTypeTable(loanTypeTable.get(0));
+                        ((LoanActivity) activity).loanDetailsList.add(loanDetails);
+                        secondCount++;
+                        ((LoanActivity) activity).loanRecyclerAdapter.notifyDataSetChanged();
+                    }
+                    else getLoanTypeForWhenDueCollection(table, loanDetails);
 
-                    loanDetailsList.add(loanDetails);
+                    ((LoanActivity) activity).loanDetailsList.add(loanDetails);
                 }
             }
         }
 
-        Log.d(TAG, "loadLoansToUI: "+loanDetailsList.toString());
+        if(secondCount == size) ((LoanActivity) activity).loanProgressBar.setVisibility(View.GONE);
+    }
 
-        ((LoanActivity) activity).loanRecyclerAdapter = new LoanRecyclerAdapter(loanDetailsList);
-        ((LoanActivity) activity).loanRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
-        ((LoanActivity) activity).loanRecyclerView.setAdapter((((LoanActivity) activity).loanRecyclerAdapter));
-        ((LoanActivity) activity).loanProgressBar.setVisibility(View.GONE);
+    private void getOtherLoanTypeForWhenDueCollection(LoansTable table, final LoanDetails loanDetails) {
+        otherLoanTypeQueries.retrieveSingleOtherLoanType(table.getLoanTypeId())
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            OtherLoanTypesTable otherLoanTypesTable = task.getResult().toObject(OtherLoanTypesTable.class);
+                            otherLoanTypesTable.setOtherLoanTypeId(task.getResult().getId());
+
+                            saveOtherLoanTypeToLocalStorage(otherLoanTypesTable);
+                            loanDetails.setOtherLoanTypesTable(otherLoanTypesTable);
+                            ((LoanActivity) activity).loanDetailsList.add(loanDetails);
+                            secondCount++;
+                            ((LoanActivity) activity).loanRecyclerAdapter.notifyDataSetChanged();
+
+                            if(secondCount==size) ((LoanActivity) activity).loanProgressBar.setVisibility(View.GONE);
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void getLoanTypeForWhenDueCollection(LoansTable table, final LoanDetails loanDetails) {
+        loanTypeQueries.retrieveSingleLoanType(table.getLoanTypeId())
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            LoanTypeTable loanTypeTable = task.getResult().toObject(LoanTypeTable.class);
+                            loanTypeTable.setLoanTypeId(task.getResult().getId());
+
+                            saveLoanTypeToLocalStorage(loanTypeTable);
+                            loanDetails.setLoanTypeTable(loanTypeTable);
+                            ((LoanActivity) activity).loanDetailsList.add(loanDetails);
+                            secondCount++;
+                            ((LoanActivity) activity).loanRecyclerAdapter.notifyDataSetChanged();
+
+                            if(secondCount==size) ((LoanActivity) activity).loanProgressBar.setVisibility(View.GONE);
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
     }
 
     /**

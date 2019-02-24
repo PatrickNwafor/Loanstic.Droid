@@ -33,6 +33,7 @@ import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
 import com.icubed.loansticdroid.models.Loan;
+import com.icubed.loansticdroid.models.LoanDetails;
 import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.EditTextExtension.CustomEditText;
 import com.icubed.loansticdroid.util.EditTextExtension.DrawableClickListener;
@@ -55,6 +56,7 @@ public class LoanActivity extends AppCompatActivity {
     public RecyclerView loanRecyclerView;
     public LoanRecyclerAdapter loanRecyclerAdapter;
     public SwipeRefreshLayout swipeRefreshLayout;
+    public List<LoanDetails> loanDetailsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,11 @@ public class LoanActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Loans");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        loanDetailsList = new ArrayList<>();
+        loanRecyclerAdapter = new LoanRecyclerAdapter(loanDetailsList);
+        loanRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        loanRecyclerView.setAdapter((loanRecyclerAdapter));
 
         getAllLoan();
     }
