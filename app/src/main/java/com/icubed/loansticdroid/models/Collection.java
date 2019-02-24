@@ -312,6 +312,8 @@ public class Collection {
         FragmentManager fm = fragmentActivity.getSupportFragmentManager();
         MapFragment fragment = (MapFragment) fm.findFragmentByTag("home");
 
+        fragment.dueCollectionList.clear();
+        fragment.overDueCollectionList.clear();
         drawCollectionMarker(collectionTables[0]);
 
         if(!collectionTables[0].isEmpty()) {
@@ -338,7 +340,7 @@ public class Collection {
                     dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
                 }else{
                     GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
-                    dueCollectionDetails.setFirstName(groupBorrowerTable.getGroupName());
+                    dueCollectionDetails.setGroupName(groupBorrowerTable.getGroupName());
                     dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
                     dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
                     dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
@@ -376,7 +378,7 @@ public class Collection {
                     dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
                 }else{
                     GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
-                    dueCollectionDetails.setFirstName(groupBorrowerTable.getGroupName());
+                    dueCollectionDetails.setGroupName(groupBorrowerTable.getGroupName());
                     dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
                     dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
                     dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
@@ -521,6 +523,8 @@ public class Collection {
 
                                         saveNewCollectionToLocalStorage(collectionTable);
                                         getLoansData(collectionTable.getLoanId(), collectionTable.getCollectionId());
+                                    }else {
+                                        updateTable(documentSnapshot);
                                     }
                                 }
 
@@ -532,5 +536,21 @@ public class Collection {
                         }
                     }
                 });
+    }
+
+    private void updateTable(DocumentSnapshot doc) {
+        CollectionTable collectionTable = doc.toObject(CollectionTable.class);
+        collectionTable.setCollectionId(doc.getId());
+
+        CollectionTable currentlySaved = collectionTableQueries.loadSingleCollection(doc.getId());
+        collectionTable.setId(currentlySaved.getId());
+
+        if(collectionTable.getLastUpdatedAt().getTime() != currentlySaved.getLastUpdatedAt().getTime()){
+
+            collectionTableQueries.updateCollection(collectionTable);
+            getDueCollectionData();
+            Log.d("Collection", "Collection Detailed updated");
+
+        }
     }
 }

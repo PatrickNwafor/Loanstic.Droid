@@ -41,6 +41,7 @@ public class CollectionDetailsActivity extends AppCompatActivity {
     private CardView CD7;
     private ImageView iconUser;
     private TextView userNameTextView;
+    private String groupName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,7 @@ public class CollectionDetailsActivity extends AppCompatActivity {
         firstName = getIntent().getStringExtra("firstName");
         lastName = getIntent().getStringExtra("lastName");
         workAddress = getIntent().getStringExtra("workAddress");
+        groupName = getIntent().getStringExtra("groupName");
         businessName = getIntent().getStringExtra("businessName");
         collectionAmount = getIntent().getDoubleExtra("collectionAmount", 0.0);
         collectionStatus = getIntent().getBooleanExtra("isDueCollected", false);
@@ -101,6 +103,7 @@ public class CollectionDetailsActivity extends AppCompatActivity {
         dueCollectionDetails.setCollectionNumber(colelctionNumber);
         dueCollectionDetails.setDueAmount(collectionAmount);
         dueCollectionDetails.setDueCollectionDate(collectionDueDate);
+        dueCollectionDetails.setGroupName(groupName);
 
         //UpdatesUI
         Log.d(TAG, "onCreate: "+dueCollectionDetails.toString());

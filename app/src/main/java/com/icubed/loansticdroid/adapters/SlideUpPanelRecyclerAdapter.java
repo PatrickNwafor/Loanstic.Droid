@@ -150,7 +150,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
                     collectionImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(dueCollectionDetails.getImageByteArray()));
                 }
             }else{
-                collectionImageView.setVisibility(View.GONE);
+                collectionImageView.setImageResource(R.drawable.new_group);
             }
         }
     }

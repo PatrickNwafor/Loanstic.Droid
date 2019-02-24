@@ -162,6 +162,7 @@
                     android:elevation="4dp"
                     android:foreground="?attr/selectableItemBackground"
                     android:padding="10dp"
+                    android:visibility="visible"
                     app:cardCornerRadius="10dp">
 
                     <android.support.constraint.ConstraintLayout

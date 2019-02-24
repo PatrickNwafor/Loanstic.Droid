@@ -410,6 +410,11 @@ public class Loan {
      * @param loansTable
      */
     private void saveLoanToLocalStorage(LoansTable loansTable) {
+        List<LoansTable> loansTables = loanTableQueries.loadAllLoans();
+        for (LoansTable table : loansTables) {
+            if(table.getLoanId().equals(loansTable.getLoanTypeId())) return;
+        }
+
         loanTableQueries.insertLoanToStorage(loansTable);
     }
 
@@ -421,6 +426,7 @@ public class Loan {
 
         ((LoanActivity) activity).loanDetailsList.clear();
         size = loansTable.size();
+
         for(LoansTable table : loansTable){
 
             if(table.getBorrowerId() != null) {
@@ -470,8 +476,6 @@ public class Loan {
                         ((LoanActivity) activity).loanRecyclerAdapter.notifyDataSetChanged();
                     }
                     else getOtherLoanTypeForWhenDueCollection(table, loanDetails);
-
-                    ((LoanActivity) activity).loanDetailsList.add(loanDetails);
                 }else{
                     List<LoanTypeTable> loanTypeTable = loanTypeTableQueries.loadSingleLoanTypeList(table.getLoanTypeId());
 
@@ -485,8 +489,6 @@ public class Loan {
                         ((LoanActivity) activity).loanRecyclerAdapter.notifyDataSetChanged();
                     }
                     else getLoanTypeForWhenDueCollection(table, loanDetails);
-
-                    ((LoanActivity) activity).loanDetailsList.add(loanDetails);
                 }
             }
         }
@@ -557,14 +559,14 @@ public class Loan {
                                 docSize = task.getResult().size();
                                 count = 0;
                                 
-                                List<LoansTable> loansInStorage = loanList;
+                                List<LoansTable> loansInStorageToRemove = new ArrayList<>();
                                 for(DocumentSnapshot doc : task.getResult().getDocuments()) {
 
                                     Boolean doesDataExist = false;
                                     for (LoansTable loanTab : loanList) {
                                         if (loanTab.getLoanId().equals(doc.getId())) {
                                             doesDataExist = true;
-                                            loansInStorage.remove(loanTab);
+                                            loansInStorageToRemove.add(loanTab);
                                             Log.d(TAG, "onComplete: loan id of " + doc.getId() + " already exist");
                                             break;
                                         }
@@ -585,9 +587,11 @@ public class Loan {
                                     }
                                 }
 
+                                loanList.removeAll(loansInStorageToRemove);
+
                                 //to delete deleted borrower in cloud from storage
-                                if(!loansInStorage.isEmpty()){
-                                    for(LoansTable loanTab : loansInStorage){
+                                if(!loanList.isEmpty()){
+                                    for(LoansTable loanTab : loanList){
                                         deleteLoanFromLocalStorage(loanTab);
                                         Log.d("Delete", "deleted "+loanTab.getLoanId()+ " from storage");
                                     }

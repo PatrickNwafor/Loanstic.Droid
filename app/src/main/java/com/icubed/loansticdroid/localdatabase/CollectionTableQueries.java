@@ -50,9 +50,11 @@ public class CollectionTableQueries {
         List<CollectionTable> overDueCollectionList = new ArrayList<>();
 
         for (CollectionTable collectionTable : list) {
-            if(DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date()))){
+            if(DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date())) &&
+                    !collectionTable.getIsDueCollected()){
                 dueCollectionList.add(collectionTable);
-            }else if(collectionTable.getCollectionDueDate().before(new Date())){
+            }else if(collectionTable.getCollectionDueDate().before(new Date()) &&
+                    !collectionTable.getIsDueCollected()){
                 overDueCollectionList.add(collectionTable);
             }
         }
@@ -82,9 +84,7 @@ public class CollectionTableQueries {
     }
 
     /********Update Table When Due Collection is Confirmed*********/
-    public void updateStorageAfterCollection(CollectionTable collectionTable, Date timestamp){
-        collectionTable.setIsDueCollected(true);
-        collectionTable.setTimestamp(timestamp);
+    public void updateCollection(CollectionTable collectionTable){
         collectionTableDao.update(collectionTable);
     }
 
