@@ -108,10 +108,10 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
                 }
 
+                fragment.hidePanel();
                 markers.add(fragment.mGoogleMap.addMarker(markerOptions));
                 markers.add(fragment.mGoogleMap.addMarker(fragment.markerOptions));
                 fragment.getRoute(fragment.markerOptions.getPosition(), markerOptions.getPosition(), markers);
-                fragment.hidePanel();
                 fragment.selectedUserLatLng = latLng;
                 fragment.navButton.setVisibility(View.VISIBLE);
             }
