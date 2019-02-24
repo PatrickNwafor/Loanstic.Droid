@@ -3,6 +3,8 @@ package com.icubed.loansticdroid.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,16 +16,19 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.CollectionDetailsActivity;
 import com.icubed.loansticdroid.activities.LoginActivity;
 import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.activities.ResetPasswordActivity;
+import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
 import com.icubed.loansticdroid.models.Collection;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
 import com.icubed.loansticdroid.util.BitmapUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -31,9 +36,15 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
 
     List<DueCollectionDetails> collectionList;
     Context context;
+    MapFragment fragment;
 
-    public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList) {
+    private FragmentActivity fragmentActivity;
+
+    public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList, FragmentActivity activity) {
         this.collectionList = collectionList;
+        fragmentActivity = activity;
+        FragmentManager fm = fragmentActivity.getSupportFragmentManager();
+        fragment = (MapFragment) fm.findFragmentByTag("home");
     }
 
 
@@ -79,6 +90,10 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
         holder.frameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                fragment.mGoogleMap.clear();
+                ArrayList<Marker> markers = new ArrayList<>();
+
                 MarkerOptions markerOptions = new MarkerOptions();
 
                 LatLng latLng = new LatLng(collectionList.get(position).getLatitude(), collectionList.get(position).getLongitude());
@@ -93,7 +108,12 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
                 }
 
-                ((MainActivity) context).drawMarker(markerOptions);
+                markers.add(fragment.mGoogleMap.addMarker(markerOptions));
+                markers.add(fragment.mGoogleMap.addMarker(fragment.markerOptions));
+                fragment.getRoute(fragment.markerOptions.getPosition(), markerOptions.getPosition(), markers);
+                fragment.hidePanel();
+                fragment.selectedUserLatLng = latLng;
+                fragment.navButton.setVisibility(View.VISIBLE);
             }
         });
 
