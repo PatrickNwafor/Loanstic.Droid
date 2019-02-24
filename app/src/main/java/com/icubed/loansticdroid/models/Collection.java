@@ -393,59 +393,58 @@ public class Collection {
 
     }
 
-    private void drawCollectionMarker(List<CollectionTable> collectionTable) {
+    private void drawCollectionMarker(final List<CollectionTable> collectionTable) {
         FragmentManager fm = fragmentActivity.getSupportFragmentManager();
         final MapFragment fragment = (MapFragment) fm.findFragmentByTag("home");
 
         final ArrayList<Marker> markers = new ArrayList<>();
-        fragment.mGoogleMap.clear();
+        fragment.mGoogleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                fragment.mGoogleMap.clear();
 
-        if(!collectionTable.isEmpty()){
-            for (CollectionTable table : collectionTable) {
-                LoansTable loan = loanTableQueries.loadSingleLoan(table.getLoanId());
-                if(loan.getBorrowerId() != null) {
-                    BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
-                    String markerTitle = borrowersTable.getLastName() +" "+borrowersTable.getFirstName();
-                    LatLng latLng = new LatLng(borrowersTable.getBorrowerLocationLatitude(), borrowersTable.getBorrowerLocationLongitude());
+                if(!collectionTable.isEmpty()){
+                    for (CollectionTable table : collectionTable) {
+                        LoansTable loan = loanTableQueries.loadSingleLoan(table.getLoanId());
+                        if(loan.getBorrowerId() != null) {
+                            BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
+                            String markerTitle = borrowersTable.getLastName() +" "+borrowersTable.getFirstName();
+                            LatLng latLng = new LatLng(borrowersTable.getBorrowerLocationLatitude(), borrowersTable.getBorrowerLocationLongitude());
 
-                    MarkerOptions markerOptions = new MarkerOptions();
+                            MarkerOptions markerOptions = new MarkerOptions();
 
-                    //adding markerOptions properties for driver
-                    markerOptions.position(latLng);
-                    markerOptions.title(markerTitle);
-                    markerOptions.anchor(0.5f, 0.5f);
-                    if(borrowersTable.getBorrowerImageByteArray() == null) markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-                    else markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray())));
-                    markers.add(fragment.mGoogleMap.addMarker(markerOptions));
-                }else {
-                    GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
-                    String markerTitle = groupBorrowerTable.getGroupName();
-                    LatLng latLng = new LatLng(groupBorrowerTable.getGroupLocationLatitude(), groupBorrowerTable.getGroupLocationLongitude());
-                    //markers.clear();
+                            //adding markerOptions properties for driver
+                            markerOptions.position(latLng);
+                            markerOptions.title(markerTitle);
+                            markerOptions.anchor(0.5f, 0.5f);
+                            if(borrowersTable.getBorrowerImageByteArray() == null) markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                            else markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray())));
+                            markers.add(fragment.mGoogleMap.addMarker(markerOptions));
+                        }else {
+                            GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
+                            String markerTitle = groupBorrowerTable.getGroupName();
+                            LatLng latLng = new LatLng(groupBorrowerTable.getGroupLocationLatitude(), groupBorrowerTable.getGroupLocationLongitude());
+                            //markers.clear();
 
-                    MarkerOptions markerOptions = new MarkerOptions();
+                            MarkerOptions markerOptions = new MarkerOptions();
 
-                    //adding markerOptions properties for driver
-                    markerOptions.position(latLng);
-                    markerOptions.title(markerTitle);
-                    markerOptions.anchor(0.5f, 0.5f);
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-                    markers.add(fragment.mGoogleMap.addMarker(markerOptions));
+                            //adding markerOptions properties for driver
+                            markerOptions.position(latLng);
+                            markerOptions.title(markerTitle);
+                            markerOptions.anchor(0.5f, 0.5f);
+                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                            markers.add(fragment.mGoogleMap.addMarker(markerOptions));
+                        }
+                    }
+
+                    markers.add(fragment.mGoogleMap.addMarker(fragment.markerOptions));
+                    fragment.moveCamera(markers);
+
+                }else{
+                    fragment.drawMarker(fragment.markerOptions);
                 }
             }
-
-            markers.add(fragment.mGoogleMap.addMarker(fragment.markerOptions));
-            fragment.mGoogleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-                @Override
-                public void onMapLoaded() {
-                    fragment.moveCamera(markers);
-                }
-            });
-
-
-        }else{
-            fragment.drawMarker(fragment.markerOptions);
-        }
+        });
     }
 
     public void getSingleDueCollectionData(String collectionId){

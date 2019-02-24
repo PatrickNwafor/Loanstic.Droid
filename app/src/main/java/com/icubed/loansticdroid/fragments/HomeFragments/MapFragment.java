@@ -232,7 +232,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 //Add Maps code here
                 mGoogleMap.getUiSettings().setCompassEnabled(false);
                 getCurrentLocation();
+                getDueCollections();
             }
+        }
+    }
+
+    private void getDueCollections() {
+        if (!collection.doesCollectionExistInLocalStorage()) {
+            collection.retrieveNewDueCollectionData();
+        } else {
+            collection.getDueCollectionData();
+            collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
         }
     }
 
@@ -241,16 +251,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onNewLocationAvailable(LocationProviderUtil.GPSCoordinates location) {
                 getCurrentLocationMarker(location.getLocation);
-
-                if(!isLocationAvailable) {
-                    if (!collection.doesCollectionExistInLocalStorage()) {
-                        collection.retrieveNewDueCollectionData();
-                    } else {
-                        collection.getDueCollectionData();
-                        collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
-                    }
-                    isLocationAvailable = true;
-                }
             }
         });
     }
