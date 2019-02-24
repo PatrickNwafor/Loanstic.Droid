@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
     ToggleButton viewSwitch1;
-    private ProgressBar mainProgrressBar;
     private FrameLayout contentFrame;
 
     //Fragments
@@ -55,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         account = new Account();
         ImageView menuBtn = findViewById(R.id.menu_btn);
         viewSwitch1 = findViewById(R.id.toggleButton);
-        mainProgrressBar = findViewById(R.id.mainProgressBar);
         contentFrame = findViewById(R.id.content_frame);
 
 
@@ -176,24 +174,6 @@ public class MainActivity extends AppCompatActivity {
         Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(loginIntent);
         finish();
-    }
-
-    public void hideProgressBar(){
-        contentFrame.setVisibility(View.VISIBLE);
-        mainProgrressBar.setVisibility(View.GONE);
-    }
-
-    public void drawMarker(MarkerOptions markerOptions){
-
-        FragmentManager fm = getSupportFragmentManager();
-        //hides slide up panel if already up
-        MapFragment fragment = (MapFragment) fm.findFragmentByTag("home");
-
-        if(fragment != null) {
-            fragment.mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerOptions.getPosition(), 10));
-            fragment.mGoogleMap.addMarker(markerOptions);
-            fragment.hidePanel();
-        }
     }
 
     @Override

@@ -52,6 +52,14 @@ public class LoanTableQueries {
                 .get(0);
     }
 
+    /**********Load a single collection from local Storage*******/
+    public List<LoansTable> loadSingleLoanList(String loanId){
+        return loansTableDao.queryBuilder()
+                .where(LoansTableDao.Properties.LoanId.eq(loanId))
+                .build()
+                .list();
+    }
+
     public void updateLoanDetails(LoansTable loansTable){
         loansTableDao.update(loansTable);
     }

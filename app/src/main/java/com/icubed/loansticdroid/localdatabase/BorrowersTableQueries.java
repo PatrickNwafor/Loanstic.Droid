@@ -42,6 +42,14 @@ public class BorrowersTableQueries {
                 .get(0);
     }
 
+    /**********Load a single borrower from local Storage*******/
+    public List<BorrowersTable> loadSingleBorrowerList(String borrowersId){
+        return borrowersTableDao.queryBuilder()
+                .where(BorrowersTableDao.Properties.BorrowersId.eq(borrowersId))
+                .build()
+                .list();
+    }
+
     public List<BorrowersTable> loadAllBorrowers() {
         return borrowersTableDao.loadAll();
     }

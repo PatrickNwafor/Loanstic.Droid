@@ -96,14 +96,16 @@ public class LoanScheduleFragment extends Fragment {
                                     CollectionTable collectionTable = doc.toObject(CollectionTable.class);
                                     collectionTable.setCollectionId(doc.getId());
 
+                                    boolean newData = true;
                                     Log.d(TAG, "onComplete: "+collectionTable.toString());
                                     for (CollectionTable table : collectionTableList) {
                                         if(table.getCollectionId().equals(collectionTable.getCollectionId())){
-                                            return;
+                                            newData = false;
+                                            break;
                                         }
                                     }
 
-                                    saveCollectionToLocalStorage(collectionTable);
+                                    if(newData) saveCollectionToLocalStorage(collectionTable);
                                 }
 
                                 loadAllCollections();
@@ -146,7 +148,7 @@ public class LoanScheduleFragment extends Fragment {
     }
 
     private void getCollectionFromCloud() {
-        collectionQueries.retrieveCollectionsDataForALoan(loan.getLoanId())
+        collectionQueries.retrieveCollectionsDataForALoanAcending(loan.getLoanId())
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {

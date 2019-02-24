@@ -87,80 +87,96 @@ public class Collection {
     /***************retrieve new due collection****************/
     public void retrieveNewDueCollectionData(){
 
-        if(!doesCollectionExistInLocalStorage()){
+        collectionQueries.retrieveAllCollection()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            Log.d(TAG, "onComplete: Success in retrieving data from server");
+                            if(!task.getResult().isEmpty()){
+                                count = 0;
+                                collectionSize = task.getResult().size();
 
-            collectionQueries.retrieveAllCollection()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()){
-                                Log.d(TAG, "onComplete: Success in retrieving data from server");
-                                if(!task.getResult().isEmpty()){
-                                    count = 0;
-                                    collectionSize = task.getResult().size();
+                                for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
+                                    CollectionTable collectionTable = documentSnapshot.toObject(CollectionTable.class);
+                                    collectionTable.setCollectionId(documentSnapshot.getId());
 
-                                    for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
-                                        CollectionTable collectionTable = documentSnapshot.toObject(CollectionTable.class);
-                                        collectionTable.setCollectionId(documentSnapshot.getId());
-
+                                    if((DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date())) &&
+                                            !collectionTable.getIsDueCollected()) || collectionTable.getCollectionDueDate().before(new Date())) {
+                                        Log.d(TAG, "onComplete: "+collectionTable.toString());
                                         getLoansData(collectionTable.getLoanId(), collectionTable.getCollectionId());
                                         saveNewCollectionToLocalStorage(collectionTable);
-                                    }
-
-                                }else{
-                                    Log.d(TAG, "onComplete: No due collections for today");
+                                    }else collectionSize--;
                                 }
+
                             }else{
-                                Log.d(TAG, "onComplete: Failed to retrieve new due collections");
+                                Log.d(TAG, "onComplete: No due collections for today");
                             }
+                        }else{
+                            Log.d(TAG, "onComplete: Failed to retrieve new due collections");
                         }
-                    });
-        }
+                    }
+                });
     }
 
     private void getLoansData(String loanId, final String collectionId) {
-        loansQueries.retrieveSingleLoan(loanId)
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            Log.d(TAG, "onComplete: Loan retrieved");
-                            if(task.getResult().exists()){
+        List<LoansTable> loan = loanTableQueries.loadSingleLoanList(loanId);
+        if(!loan.isEmpty()){
+            if (loan.get(0).getBorrowerId() != null) getBorrowersDetails(loan.get(0).getBorrowerId(), collectionId);
+            else getGroupDetails(loan.get(0).getGroupId(), collectionId);
+        }else {
+            loansQueries.retrieveSingleLoan(loanId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "onComplete: Loan retrieved");
+                        if (task.getResult().exists()) {
 
-                                LoansTable loansTable = task.getResult().toObject(LoansTable.class);
-                                loansTable.setLoanId(task.getResult().getId());
+                            LoansTable loansTable = task.getResult().toObject(LoansTable.class);
+                            loansTable.setLoanId(task.getResult().getId());
 
-                                saveLoanToLocalStorage(loansTable);
-                                if(loansTable.getBorrowerId() != null) getBorrowersDetails(loansTable.getBorrowerId(), collectionId);
-                                else getGroupDetails(loansTable.getGroupId(), collectionId);
-                            }
-                        }else{
-                            Log.d(TAG, "onComplete: Loan retrieved Failed");
+                            saveLoanToLocalStorage(loansTable);
+                            if (loansTable.getBorrowerId() != null) getBorrowersDetails(loansTable.getBorrowerId(), collectionId);
+                            else getGroupDetails(loansTable.getGroupId(), collectionId);
                         }
+                    } else {
+                        Log.d(TAG, "onComplete: Loan retrieved Failed");
                     }
-                });
+                }
+            });
+        }
     }
 
     private void getGroupDetails(final String groupId, final String collectionId) {
-        groupBorrowerQueries.retrieveSingleBorrowerGroup(groupId)
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            count++;
-                            GroupBorrowerTable groupBorrowerTable = task.getResult().toObject(GroupBorrowerTable.class);
-                            groupBorrowerTable.setGroupId(groupId);
+        List<GroupBorrowerTable> group = groupBorrowerTableQueries.loadSingleBorrowerGroupList(groupId);
 
-                            if(!isDueCollectionSingle) {
-                                saveGroupToLocalStorage(groupBorrowerTable);
-                            }else{
-                                saveSingleGroupToLocalStorage(groupBorrowerTable, collectionId);
-                            }
-                        }else{
-                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+        if(!group.isEmpty()){
+            count++;
+            if (!isDueCollectionSingle) {
+                saveGroupToLocalStorage(group.get(0));
+            } else {
+                saveSingleGroupToLocalStorage(group.get(0), collectionId);
+            }
+        }else {
+            groupBorrowerQueries.retrieveSingleBorrowerGroup(groupId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        count++;
+                        GroupBorrowerTable groupBorrowerTable = task.getResult().toObject(GroupBorrowerTable.class);
+                        groupBorrowerTable.setGroupId(groupId);
+
+                        if (!isDueCollectionSingle) {
+                            saveGroupToLocalStorage(groupBorrowerTable);
+                        } else {
+                            saveSingleGroupToLocalStorage(groupBorrowerTable, collectionId);
                         }
+                    } else {
+                        Log.d(TAG, "onComplete: " + task.getException().getMessage());
                     }
-                });
+                }
+            });
+        }
     }
 
     private void saveSingleGroupToLocalStorage(GroupBorrowerTable groupBorrowerTable, String collectionId) {
@@ -189,31 +205,41 @@ public class Collection {
     }
 
     private void getBorrowersDetails(String borrowerId, final String collectionId) {
-        borrowersQueries.retrieveSingleBorrowers(borrowerId)
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            Log.d(TAG, "onComplete: BorrowersQueries retrieved");
-                            if(task.getResult().exists()){
-                                count++;
-                                //Set local storage table
-                                BorrowersTable borrowersTable = task.getResult().toObject(BorrowersTable.class);
-                                borrowersTable.setBorrowersId(task.getResult().getId());
 
-                                if(!isDueCollectionSingle) {
-                                    saveBorrowerToLocalStorage(borrowersTable);
-                                }else{
-                                    saveSingleBorrowerToLocalStorage(borrowersTable, collectionId);
-                                }
+        List<BorrowersTable> borrower = borrowersTableQueries.loadSingleBorrowerList(borrowerId);
 
-                                getBorrowerImage(borrowersTable);
+        if(!borrower.isEmpty()){
+            count++;
+            if (!isDueCollectionSingle) {
+                saveBorrowerToLocalStorage(borrower.get(0));
+            } else {
+                saveSingleBorrowerToLocalStorage(borrower.get(0), collectionId);
+            }
+        }else {
+            borrowersQueries.retrieveSingleBorrowers(borrowerId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "onComplete: BorrowersQueries retrieved");
+                        if (task.getResult().exists()) {
+                            count++;
+                            //Set local storage table
+                            BorrowersTable borrowersTable = task.getResult().toObject(BorrowersTable.class);
+                            borrowersTable.setBorrowersId(task.getResult().getId());
+
+                            if (!isDueCollectionSingle) {
+                                saveBorrowerToLocalStorage(borrowersTable);
+                            } else {
+                                saveSingleBorrowerToLocalStorage(borrowersTable, collectionId);
                             }
-                        }else{
-                            Log.d(TAG, "onComplete: BorrowersQueries retrieved Failed");
+                            getBorrowerImage(borrowersTable);
                         }
+                    } else {
+                        Log.d(TAG, "onComplete: BorrowersQueries retrieved Failed");
                     }
-                });
+                }
+            });
+        }
     }
 
     private void getBorrowerImage(BorrowersTable borrowersTable) {
@@ -520,8 +546,11 @@ public class Collection {
                                         CollectionTable collectionTable = documentSnapshot.toObject(CollectionTable.class);
                                         collectionTable.setCollectionId(documentSnapshot.getId());
 
-                                        saveNewCollectionToLocalStorage(collectionTable);
-                                        getLoansData(collectionTable.getLoanId(), collectionTable.getCollectionId());
+                                        if((DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date())) &&
+                                                !collectionTable.getIsDueCollected()) || collectionTable.getCollectionDueDate().before(new Date())) {
+                                            saveNewCollectionToLocalStorage(collectionTable);
+                                            getLoansData(collectionTable.getLoanId(), collectionTable.getCollectionId());
+                                        }
                                     }else {
                                         updateTable(documentSnapshot);
                                     }

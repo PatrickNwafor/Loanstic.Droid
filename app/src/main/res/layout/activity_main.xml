@@ -17,7 +17,7 @@
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:visibility="visible">
 
     </FrameLayout>
 
@@ -51,14 +51,6 @@
             android:layout_margin="10dp"
             style="@style/toggleButton"
             android:background="@drawable/ic_toggle_bg"/>
-
-        <ProgressBar
-            android:id="@+id/mainProgressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="visible" />
 
 
     </FrameLayout>

@@ -40,11 +40,20 @@ public class CollectionQueries {
     }
 
     /*****************Retrieve CollectionTable for loan*******************/
-    public Task<QuerySnapshot> retrieveCollectionsDataForALoan(String loanId){
+    public Task<QuerySnapshot> retrieveCollectionsDataForALoanAcending(String loanId){
 
         return firebaseFirestore.collection("Collection")
                 .whereEqualTo("loanId", loanId)
                 .orderBy("collectionNumber", Query.Direction.ASCENDING)
+                .get();
+
+    }
+
+    /*****************Retrieve CollectionTable for loan*******************/
+    public Task<QuerySnapshot> retrieveCollectionsDataForALoan(String loanId){
+
+        return firebaseFirestore.collection("Collection")
+                .whereEqualTo("loanId", loanId)
                 .get();
 
     }

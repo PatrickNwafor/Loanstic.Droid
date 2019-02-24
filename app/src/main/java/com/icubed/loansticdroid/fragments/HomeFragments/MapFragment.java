@@ -86,6 +86,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private RecyclerView overDueRecyclerView;
     public  SlideUpPanelRecyclerAdapter overDueAdapter;
     public List<DueCollectionDetails> overDueCollectionList;
+    public LinearLayout progressLayout, collectionLayout;
 
     private static final String TAG = "MapFragment";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -115,6 +116,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         search = v.findViewById(R.id.searchEditText);
         slideUpRecyclerView = v.findViewById(R.id.collection_list);
         overDueRecyclerView = v.findViewById(R.id.overdue_list);
+        progressLayout = v.findViewById(R.id.progress_layout);
+        collectionLayout = v.findViewById(R.id.collection_layout);
 
         bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
         blink = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
@@ -197,15 +200,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void hideProgressBar() {
-        ((MainActivity) getActivity()).hideProgressBar();
+        progressLayout.setVisibility(GONE);
+        collectionLayout.setVisibility(VISIBLE);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
         mapOnClickListener();
         initMap();
+        getDueCollections();
     }
 
     public void moveCamera(ArrayList<Marker> markers){
@@ -332,7 +336,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 //Add Maps code here
                 mGoogleMap.getUiSettings().setCompassEnabled(false);
                 getCurrentLocation();
-                getDueCollections();
             }
         }
     }
