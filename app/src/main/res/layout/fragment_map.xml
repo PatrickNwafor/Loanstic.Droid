@@ -12,6 +12,7 @@
     android:gravity="bottom"
     android:clickable="true"
     android:focusable="true"
+
     sothree:umanoScrollableView="@id/collection_layout"
     sothree:umanoPanelHeight="120dp"
     sothree:umanoShadowHeight="4dp"
