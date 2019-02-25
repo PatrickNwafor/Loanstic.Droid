@@ -95,6 +95,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private PlayServiceUtil playServiceUtil;
     public ImageButton navButton;
     public LatLng selectedUserLatLng = null;
+    private GeoApiContext geoApiContext;
 
     public MapFragment() {
         // Required empty public constructor
@@ -125,6 +126,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         btnShow.setAnimation(blink);
         slideUp.setAnimation(blink);
         search.setAnimation(bounce1);
+
+        geoApiContext = new GeoApiContext()
+                .setApiKey("AIzaSyDljIVWu1Pi1RO1Gl9DQrYpoXfKQ5TnHC8");
 
         collection = new Collection(getActivity().getApplication(), getActivity());
         account = new Account();
@@ -243,11 +247,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         String destination = bor.latitude +","+bor.longitude;
 
         //Execute Directions API request
-        GeoApiContext context = new GeoApiContext()
-                .setApiKey("AIzaSyDljIVWu1Pi1RO1Gl9DQrYpoXfKQ5TnHC8");
-
-
-        DirectionsApiRequest req = DirectionsApi.newRequest(context)
+        DirectionsApiRequest req = DirectionsApi.newRequest(geoApiContext)
                 .origin(origin)
                 .destination(destination)
                 .mode(TravelMode.DRIVING);
@@ -305,7 +305,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
 
         moveCamera(markers);
-        mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
 
     }
 
@@ -334,7 +333,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
 
                 //Add Maps code here
-                mGoogleMap.getUiSettings().setCompassEnabled(false);
                 getCurrentLocation();
             }
         }
