@@ -123,12 +123,12 @@ public class DueCollection {
                                 }
 
                             }else{
-                                fragment.hideProgressBar();
+                                hideProgressBar();
                                 removeRefresher();
                                 Log.d(TAG, "onComplete: No due collections for today");
                             }
                         }else{
-                            fragment.hideProgressBar();
+                            hideProgressBar();
                             removeRefresher();
                             Log.d(TAG, "onComplete: Failed to retrieve new due collections");
                         }
@@ -157,7 +157,7 @@ public class DueCollection {
                             else getGroupDetails(loansTable.getGroupId(), collectionId);
                         }
                     } else {
-                        fragment.hideProgressBar();
+                        hideProgressBar();
                         removeRefresher();
                         Log.d(TAG, "onComplete: Loan retrieved Failed");
                     }
@@ -191,13 +191,18 @@ public class DueCollection {
                             saveSingleGroupToLocalStorage(groupBorrowerTable, collectionId);
                         }
                     } else {
-                        fragment.hideProgressBar();
+                        hideProgressBar();
                         removeRefresher();
                         Log.d(TAG, "onComplete: " + task.getException().getMessage());
                     }
                 }
             });
         }
+    }
+    
+    private void hideProgressBar(){
+        if(fragment != null)
+            fragment.hideProgressBar();
     }
 
     private void saveSingleGroupToLocalStorage(GroupBorrowerTable groupBorrowerTable, String collectionId) {
@@ -256,7 +261,7 @@ public class DueCollection {
                             getBorrowerImage(borrowersTable);
                         }
                     } else {
-                        fragment.hideProgressBar();
+                        hideProgressBar();
                         removeRefresher();
                         Log.d(TAG, "onComplete: BorrowersQueries retrieved Failed");
                     }
@@ -330,6 +335,7 @@ public class DueCollection {
     public void getDueCollectionData(){
         List<CollectionTable> collectionTables = collectionTableQueries.loadAllDueCollections();
 
+        if(fragment != null)
         fragment.dueCollectionList.clear();
         drawCollectionMarker(collectionTables);
 
@@ -363,14 +369,18 @@ public class DueCollection {
                     dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
                 }
 
-                fragment.dueCollectionList.add(dueCollectionDetails);
-                fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+                if(fragment != null) {
+                    fragment.dueCollectionList.add(dueCollectionDetails);
+                    fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+                }
             }
         }else{
+            if(fragment != null)
             fragment.emptyCollection.setVisibility(View.VISIBLE);
         }
 
-        fragment.hideProgressBar();
+        if(fragment != null)
+        hideProgressBar();
         removeRefresher();
 
     }
@@ -382,56 +392,60 @@ public class DueCollection {
         final CircleImageView circleImageView = view.findViewById(R.id.user_dp);
 
         final ArrayList<Marker> markers = new ArrayList<>();
-        mapFragment.mGoogleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-            @Override
-            public void onMapLoaded() {
-                mapFragment.mGoogleMap.clear();
+        
+        if(mapFragment.mGoogleMap != null) {
+            mapFragment.mGoogleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                @Override
+                public void onMapLoaded() {
+                    mapFragment.mGoogleMap.clear();
 
-                if(!collectionTable.isEmpty()){
-                    for (CollectionTable table : collectionTable) {
-                        LoansTable loan = loanTableQueries.loadSingleLoan(table.getLoanId());
-                        if(loan.getBorrowerId() != null) {
-                            BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
-                            String markerTitle = borrowersTable.getLastName() +" "+borrowersTable.getFirstName();
-                            LatLng latLng = new LatLng(borrowersTable.getBorrowerLocationLatitude(), borrowersTable.getBorrowerLocationLongitude());
+                    if (!collectionTable.isEmpty()) {
+                        for (CollectionTable table : collectionTable) {
+                            LoansTable loan = loanTableQueries.loadSingleLoan(table.getLoanId());
+                            if (loan.getBorrowerId() != null) {
+                                BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
+                                String markerTitle = borrowersTable.getLastName() + " " + borrowersTable.getFirstName();
+                                LatLng latLng = new LatLng(borrowersTable.getBorrowerLocationLatitude(), borrowersTable.getBorrowerLocationLongitude());
 
-                            MarkerOptions markerOptions = new MarkerOptions();
+                                MarkerOptions markerOptions = new MarkerOptions();
 
-                            //adding markerOptions properties for driver
-                            markerOptions.position(latLng);
-                            markerOptions.title(markerTitle);
-                            markerOptions.anchor(0.5f, 0.5f);
-                            // sorting marker icon
-                            if(borrowersTable.getBorrowerImageByteArray() == null) circleImageView.setImageResource(R.drawable.new_borrower);
-                            else circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
-                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
-                            markers.add(mapFragment.mGoogleMap.addMarker(markerOptions));
-                        }else {
-                            GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
-                            String markerTitle = groupBorrowerTable.getGroupName();
-                            LatLng latLng = new LatLng(groupBorrowerTable.getGroupLocationLatitude(), groupBorrowerTable.getGroupLocationLongitude());
-                            //markers.clear();
+                                //adding markerOptions properties for driver
+                                markerOptions.position(latLng);
+                                markerOptions.title(markerTitle);
+                                markerOptions.anchor(0.5f, 0.5f);
+                                // sorting marker icon
+                                if (borrowersTable.getBorrowerImageByteArray() == null)
+                                    circleImageView.setImageResource(R.drawable.new_borrower);
+                                else circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
+                                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
+                                markers.add(mapFragment.mGoogleMap.addMarker(markerOptions));
+                            } else {
+                                GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
+                                String markerTitle = groupBorrowerTable.getGroupName();
+                                LatLng latLng = new LatLng(groupBorrowerTable.getGroupLocationLatitude(), groupBorrowerTable.getGroupLocationLongitude());
+                                //markers.clear();
 
-                            MarkerOptions markerOptions = new MarkerOptions();
+                                MarkerOptions markerOptions = new MarkerOptions();
 
-                            //adding markerOptions properties for driver
-                            markerOptions.position(latLng);
-                            markerOptions.title(markerTitle);
-                            markerOptions.anchor(0.5f, 0.5f);
-                            circleImageView.setImageResource(R.drawable.new_group);
-                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
-                            markers.add(mapFragment.mGoogleMap.addMarker(markerOptions));
+                                //adding markerOptions properties for driver
+                                markerOptions.position(latLng);
+                                markerOptions.title(markerTitle);
+                                markerOptions.anchor(0.5f, 0.5f);
+                                circleImageView.setImageResource(R.drawable.new_group);
+                                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
+                                markers.add(mapFragment.mGoogleMap.addMarker(markerOptions));
+                            }
                         }
+
+                        markers.add(mapFragment.mGoogleMap.addMarker(mapFragment.markerOptions));
+                        mapFragment.moveCamera(markers);
+
+                    } else {
+                        mapFragment.drawMarker(mapFragment.markerOptions);
                     }
-
-                    markers.add(mapFragment.mGoogleMap.addMarker(mapFragment.markerOptions));
-                    mapFragment.moveCamera(markers);
-
-                }else{
-                    mapFragment.drawMarker(mapFragment.markerOptions);
                 }
-            }
-        });
+            });
+        }
     }
 
     public void getSingleDueCollectionData(String collectionId){
@@ -468,9 +482,11 @@ public class DueCollection {
             dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
         }
 
-        fragment.emptyCollection.setVisibility(View.GONE);
-        fragment.dueCollectionList.add(dueCollectionDetails);
-        fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+        if(fragment != null) {
+            fragment.emptyCollection.setVisibility(View.GONE);
+            fragment.dueCollectionList.add(dueCollectionDetails);
+            fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+        }
     }
 
     /***********************retrieve all collection and comparing to local***********/
