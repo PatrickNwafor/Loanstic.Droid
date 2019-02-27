@@ -85,6 +85,10 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
             @Override
             public void onClick(View v) {
 
+                LayoutInflater layoutInflater = (LayoutInflater) fragmentActivity.getSystemService(fragmentActivity.LAYOUT_INFLATER_SERVICE);
+                final View view = layoutInflater.inflate(R.layout.custom_marker_layout_collection, null);
+                final CircleImageView circleImageView = view.findViewById(R.id.user_dp);
+
                 fragment.mGoogleMap.clear();
                 ArrayList<Marker> markers = new ArrayList<>();
 
@@ -96,11 +100,16 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
                 markerOptions.anchor(0.5f, 0.5f);
                 if(collectionList.get(position).getGroupName() == null){
                     markerOptions.title(lastName + " " + firstName);
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                    if(collectionList.get(position).getImageByteArray() == null)
+                        circleImageView.setImageResource(R.drawable.new_borrower);
+                    else
+                        circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(collectionList.get(position).getImageByteArray()));
                 }else {
                     markerOptions.title(groupName);
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                    circleImageView.setImageResource(R.drawable.new_group);
                 }
+
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
 
                 fragment.hidePanel();
                 markers.add(fragment.mGoogleMap.addMarker(markerOptions));
