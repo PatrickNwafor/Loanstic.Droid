@@ -127,15 +127,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:elevation="4dp"
+
                 sothree:layout_constraintEnd_toEndOf="parent"
                 sothree:layout_constraintStart_toStartOf="parent"
                 sothree:layout_constraintTop_toTopOf="parent" >
+                <ImageView
+                    android:id="@+id/collection_image"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/change_icon_later"
+                    android:layout_marginLeft="16dp"
+                    />
 
                 <TextView
-                    android:gravity="center"
+                    android:gravity="center_vertical"
                     android:text="Collections"
-                    android:textSize="18sp"
+                    android:layout_marginStart="70dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                     android:layout_width="match_parent"
+                    android:textColor="@color/colorPrimary"
+
                     android:layout_height="match_parent" />
             </android.support.v7.widget.CardView>
 

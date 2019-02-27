@@ -16,8 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.*;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,7 +76,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     MapView mMapView;
     public GoogleMap mGoogleMap;
     private SlidingUpPanelLayout slidingLayout;
-    private ImageView btnShow,btnShow1;
+    private ImageView btnShow,btnShow1,collectionImage;
     TextView slideUp;
     Animation bounce, bounce1, blink;
     EditText search;
@@ -112,6 +111,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
+
+
+        collectionImage = v.findViewById(R.id.collection_image);
 
         btnShow = v.findViewById(R.id.btn_show);
         btnShow1 = v.findViewById(R.id.btn_show1);
@@ -158,12 +160,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 btnShow.setVisibility(View.GONE);
                 slideUp.setVisibility(View.GONE);
+                collectionImage.setVisibility(View.GONE);
             }
+
 
             @Override
             public void onPanelStateChanged(View panel, PanelState previousState, PanelState newState) {
 
             }
+
         });
 
         dueCollectionFragment = new DueCollectionFragment();
@@ -189,6 +194,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 //show sliding layout in bottom of screen (not expand it)
                 slidingLayout.setPanelState(PanelState.EXPANDED);
+                collectionImage.setVisibility(View.GONE);
             }
         };
     }
@@ -367,6 +373,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         markerOptions.position(latLng);
         markerOptions.title("Your Location");
         markerOptions.anchor(0.5f, 0.5f);
+
 
         LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.custom_marker_layout_user, null);
