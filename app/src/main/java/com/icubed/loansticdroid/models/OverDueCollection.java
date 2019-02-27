@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.View;
 
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -359,6 +360,8 @@ public class OverDueCollection {
                 fragment.overDueCollectionList.add(dueCollectionDetails);
                 fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
             }
+        }else {
+            fragment.emptyCollection.setVisibility(View.VISIBLE);
         }
         fragment.hideProgressBar();
         removeRefresher();
@@ -395,6 +398,7 @@ public class OverDueCollection {
             dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
         }
 
+        fragment.emptyCollection.setVisibility(View.GONE);
         fragment.overDueCollectionList.add(dueCollectionDetails);
         fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
     }

@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class DueCollectionFragment extends Fragment {
     public ProgressBar progressBar;
     private DueCollection dueCollection;
     public SwipeRefreshLayout swipeRefreshLayout;
+    public LinearLayout emptyCollection;
 
     public DueCollectionFragment() {
         // Required empty public constructor
@@ -53,6 +55,7 @@ public class DueCollectionFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.collection_list);
         progressBar = view.findViewById(R.id.progressBar);
+        emptyCollection = view.findViewById(R.id.search_empty_layout);
 
         dueCollection = new DueCollection(getActivity().getApplication(), getActivity());
 

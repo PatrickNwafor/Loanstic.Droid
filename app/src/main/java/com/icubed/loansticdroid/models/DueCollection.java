@@ -366,6 +366,8 @@ public class DueCollection {
                 fragment.dueCollectionList.add(dueCollectionDetails);
                 fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
             }
+        }else{
+            fragment.emptyCollection.setVisibility(View.VISIBLE);
         }
 
         fragment.hideProgressBar();
@@ -466,6 +468,7 @@ public class DueCollection {
             dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
         }
 
+        fragment.emptyCollection.setVisibility(View.GONE);
         fragment.dueCollectionList.add(dueCollectionDetails);
         fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
     }
