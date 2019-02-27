@@ -117,17 +117,22 @@ public class OverDueCollection {
                                 }
 
                             }else{
-                                fragment.hideProgressBar();
+                                hideProgressBar();
                                 removeRefresher();
                                 Log.d(TAG, "onComplete: No due collections for today");
                             }
                         }else{
-                            fragment.hideProgressBar();
+                            hideProgressBar();
                             removeRefresher();
                             Log.d(TAG, "onComplete: Failed to retrieve new due collections");
                         }
                     }
                 });
+    }
+    
+    private void hideProgressBar(){
+        if(fragment != null)
+            fragment.hideProgressBar();
     }
 
     private void getLoansData(String loanId, final String collectionId) {
@@ -151,7 +156,7 @@ public class OverDueCollection {
                             else getGroupDetails(loansTable.getGroupId(), collectionId);
                         }
                     } else {
-                        fragment.hideProgressBar();
+                        hideProgressBar();
                         removeRefresher();
                         Log.d(TAG, "onComplete: Loan retrieved Failed");
                     }
@@ -185,7 +190,7 @@ public class OverDueCollection {
                             saveSingleGroupToLocalStorage(groupBorrowerTable, collectionId);
                         }
                     } else {
-                        fragment.hideProgressBar();
+                        hideProgressBar();
                         removeRefresher();
                         Log.d(TAG, "onComplete: " + task.getException().getMessage());
                     }
@@ -250,7 +255,7 @@ public class OverDueCollection {
                             getBorrowerImage(borrowersTable);
                         }
                     } else {
-                        fragment.hideProgressBar();
+                       hideProgressBar();
                         removeRefresher();
                         Log.d(TAG, "onComplete: BorrowersQueries retrieved Failed");
                     }
@@ -324,8 +329,8 @@ public class OverDueCollection {
     public void getDueCollectionData(){
         List<CollectionTable> collectionTables = collectionTableQueries.loadAllOverDueCollection();
 
+        if(fragment != null)
         fragment.overDueCollectionList.clear();
-        //drawCollectionMarker(collectionTables);
 
         if(!collectionTables.isEmpty()) {
             for (CollectionTable collectionTable : collectionTables) {
@@ -357,13 +362,17 @@ public class OverDueCollection {
                     dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
                 }
 
-                fragment.overDueCollectionList.add(dueCollectionDetails);
-                fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+                if(fragment != null) {
+                    fragment.overDueCollectionList.add(dueCollectionDetails);
+                    fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+                }
             }
         }else {
+            if(fragment != null)
             fragment.emptyCollection.setVisibility(View.VISIBLE);
         }
-        fragment.hideProgressBar();
+        
+        hideProgressBar();
         removeRefresher();
 
     }
@@ -398,9 +407,11 @@ public class OverDueCollection {
             dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
         }
 
-        fragment.emptyCollection.setVisibility(View.GONE);
-        fragment.overDueCollectionList.add(dueCollectionDetails);
-        fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+        if(fragment != null) {
+            fragment.emptyCollection.setVisibility(View.GONE);
+            fragment.overDueCollectionList.add(dueCollectionDetails);
+            fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+        }
     }
 
     /***********************retrieve all collection and comparing to local***********/
