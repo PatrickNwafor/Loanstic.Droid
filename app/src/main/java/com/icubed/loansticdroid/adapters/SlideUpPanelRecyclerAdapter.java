@@ -90,9 +90,9 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
                 final CircleImageView circleImageView = view.findViewById(R.id.user_dp);
 
                 fragment.mGoogleMap.clear();
-                ArrayList<Marker> markers = new ArrayList<>();
+                final ArrayList<Marker> markers = new ArrayList<>();
 
-                MarkerOptions markerOptions = new MarkerOptions();
+                final MarkerOptions markerOptions = new MarkerOptions();
 
                 LatLng latLng = new LatLng(collectionList.get(position).getLatitude(), collectionList.get(position).getLongitude());
                 //adding markerOptions properties for driver
@@ -114,7 +114,12 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
                 fragment.hidePanel();
                 markers.add(fragment.mGoogleMap.addMarker(markerOptions));
                 markers.add(fragment.mGoogleMap.addMarker(fragment.markerOptions));
-                fragment.getRoute(fragment.markerOptions.getPosition(), markerOptions.getPosition(), markers);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run(){
+                        fragment.getRoute(fragment.markerOptions.getPosition(), markerOptions.getPosition(), markers);
+                    }
+                }).start();
                 fragment.selectedUserLatLng = latLng;
                 fragment.navButton.setVisibility(View.VISIBLE);
             }
