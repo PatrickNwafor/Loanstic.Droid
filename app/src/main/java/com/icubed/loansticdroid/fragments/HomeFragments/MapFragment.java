@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
+import com.google.maps.PendingResult;
 import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
@@ -92,7 +93,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private PlayServiceUtil playServiceUtil;
     public ImageButton navButton;
     public LatLng selectedUserLatLng = null;
-    private GeoApiContext geoApiContext;
     private DueCollectionFragment dueCollectionFragment;
     private OverDueCollectionFragment overDueCollectionFragment;
 
@@ -128,9 +128,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         btnShow1.setAnimation(blink);
         slideUp.setAnimation(blink);
         search.setAnimation(bounce1);
-
-        geoApiContext = new GeoApiContext()
-                .setApiKey("AIzaSyDljIVWu1Pi1RO1Gl9DQrYpoXfKQ5TnHC8");
 
         playServiceUtil = new PlayServiceUtil(getContext());
         locationProviderUtil = new LocationProviderUtil(getContext());
@@ -256,54 +253,73 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-    public void getRoute(LatLng user, LatLng bor, ArrayList<Marker> markers){
+    public void getRoute(LatLng user, LatLng bor, final ArrayList<Marker> markers){
 
         //Define list to get all latlng for the route
-        List<LatLng> path = new ArrayList<>();
         String origin = user.latitude +","+user.longitude;
         String destination = bor.latitude +","+bor.longitude;
 
+        GeoApiContext geoApiContext = new GeoApiContext().setApiKey("AIzaSyDljIVWu1Pi1RO1Gl9DQrYpoXfKQ5TnHC8");
+
         //Execute Directions API request
-        DirectionsApiRequest req = DirectionsApi.newRequest(geoApiContext)
+        final DirectionsApiRequest req = DirectionsApi.newRequest(geoApiContext)
                 .origin(origin)
                 .destination(destination)
                 .mode(TravelMode.DRIVING);
 
-        try {
-            DirectionsResult res = req.await();
+        req.setCallback(new PendingResult.Callback<DirectionsResult>() {
+            @Override
+            public void onResult(final DirectionsResult res) {
+                Log.d("Directions", res.toString());
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        drawRoute(res, markers);
+                    }
+                });
+            }
 
-            Log.d("Directions", res.toString());
+            @Override
+            public void onFailure(Throwable e) {
+                Log.d(TAG, "onFailure: "+e.getMessage());
+            }
+        });
 
-            //Loop through legs and steps to get encoded polylines of each step
-            if (res.routes != null && res.routes.length > 0) {
-                DirectionsRoute route = res.routes[0];
+    }
 
-                if (route.legs !=null) {
-                    for(int i=0; i<route.legs.length; i++) {
-                        DirectionsLeg leg = route.legs[i];
-                        if (leg.steps != null) {
-                            for (int j=0; j<leg.steps.length;j++){
-                                DirectionsStep step = leg.steps[j];
-                                if (step.steps != null && step.steps.length >0) {
-                                    for (int k=0; k<step.steps.length;k++){
-                                        DirectionsStep step1 = step.steps[k];
-                                        EncodedPolyline points1 = step1.polyline;
-                                        if (points1 != null) {
-                                            //Decode polyline and add points to list of route coordinates
-                                            List<com.google.maps.model.LatLng> coords1 = points1.decodePath();
-                                            for (com.google.maps.model.LatLng coord1 : coords1) {
-                                                path.add(new LatLng(coord1.lat, coord1.lng));
-                                            }
+    private void drawRoute(DirectionsResult res, ArrayList<Marker> markers) {
+
+        final List<LatLng> path = new ArrayList<>();
+
+        //Loop through legs and steps to get encoded polylines of each step
+        if (res.routes != null && res.routes.length > 0) {
+            DirectionsRoute route = res.routes[0];
+
+            if (route.legs !=null) {
+                for(int i=0; i<route.legs.length; i++) {
+                    DirectionsLeg leg = route.legs[i];
+                    if (leg.steps != null) {
+                        for (int j=0; j<leg.steps.length;j++){
+                            DirectionsStep step = leg.steps[j];
+                            if (step.steps != null && step.steps.length >0) {
+                                for (int k=0; k<step.steps.length;k++){
+                                    DirectionsStep step1 = step.steps[k];
+                                    EncodedPolyline points1 = step1.polyline;
+                                    if (points1 != null) {
+                                        //Decode polyline and add points to list of route coordinates
+                                        List<com.google.maps.model.LatLng> coords1 = points1.decodePath();
+                                        for (com.google.maps.model.LatLng coord1 : coords1) {
+                                            path.add(new LatLng(coord1.lat, coord1.lng));
                                         }
                                     }
-                                } else {
-                                    EncodedPolyline points = step.polyline;
-                                    if (points != null) {
-                                        //Decode polyline and add points to list of route coordinates
-                                        List<com.google.maps.model.LatLng> coords = points.decodePath();
-                                        for (com.google.maps.model.LatLng coord : coords) {
-                                            path.add(new LatLng(coord.lat, coord.lng));
-                                        }
+                                }
+                            } else {
+                                EncodedPolyline points = step.polyline;
+                                if (points != null) {
+                                    //Decode polyline and add points to list of route coordinates
+                                    List<com.google.maps.model.LatLng> coords = points.decodePath();
+                                    for (com.google.maps.model.LatLng coord : coords) {
+                                        path.add(new LatLng(coord.lat, coord.lng));
                                     }
                                 }
                             }
@@ -311,8 +327,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     }
                 }
             }
-        } catch(Exception ex) {
-            Log.e(TAG, ex.getLocalizedMessage());
         }
 
         //Draw the polyline
@@ -322,7 +336,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
 
         moveCamera(markers);
-
     }
 
     private void mapOnClickListener() {
