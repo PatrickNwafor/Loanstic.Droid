@@ -89,6 +89,21 @@
             android:foreground="?attr/selectableItemBackground"
             android:padding="10dp"
             android:src="@drawable/ic_expand_less_black_24dp" />
+        <ImageView
+            android:id="@+id/btn_show1"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+
+
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="52dp"
+            android:clickable="true"
+            android:elevation="10dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="10dp"
+            android:src="@drawable/ic_expand_less_black_24dp" />
+
 
         <TextView
             android:id="@+id/slideUp"
@@ -100,6 +115,7 @@
             android:layout_marginBottom="67dp"
             android:elevation="4dp"
             android:text="Slide Up"
+            android:visibility="gone"
             android:textColor="@color/colorPrimary" />
 
     </RelativeLayout>

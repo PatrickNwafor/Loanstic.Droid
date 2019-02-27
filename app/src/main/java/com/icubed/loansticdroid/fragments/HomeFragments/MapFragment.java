@@ -73,7 +73,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public GoogleMap mGoogleMap;
     private SlidingUpPanelLayout slidingLayout;
     private RecyclerView slideUpRecyclerView;
-    private ImageView btnShow;
+    private ImageView btnShow,btnShow1;
     TextView slideUp;
     Animation bounce, bounce1, blink;
     EditText search;
@@ -131,6 +131,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 
         btnShow = v.findViewById(R.id.btn_show);
+        btnShow1 = v.findViewById(R.id.btn_show1);
         slideUp = v.findViewById(R.id.slideUp);
         search = v.findViewById(R.id.searchEditText);
         slideUpRecyclerView = v.findViewById(R.id.collection_list);
@@ -142,6 +143,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         blink = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
         bounce1 = AnimationUtils.loadAnimation(getContext(), R.anim.bounce1);
         btnShow.setAnimation(blink);
+        btnShow1.setAnimation(blink);
         slideUp.setAnimation(blink);
         search.setAnimation(bounce1);
 
