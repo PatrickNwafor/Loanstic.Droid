@@ -114,12 +114,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
                 fragment.hidePanel();
                 markers.add(fragment.mGoogleMap.addMarker(markerOptions));
                 markers.add(fragment.mGoogleMap.addMarker(fragment.markerOptions));
-                new Thread(new Runnable() {
-                    @Override
-                    public void run(){
-                        fragment.getRoute(fragment.markerOptions.getPosition(), markerOptions.getPosition(), markers);
-                    }
-                }).start();
+                fragment.getRoute(fragment.markerOptions.getPosition(), markerOptions.getPosition(), markers);
                 fragment.selectedUserLatLng = latLng;
                 fragment.navButton.setVisibility(View.VISIBLE);
             }
