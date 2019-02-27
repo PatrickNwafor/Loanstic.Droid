@@ -5,7 +5,9 @@ import android.app.Application;
 import com.icubed.loansticdroid.util.DateUtil;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -73,8 +75,14 @@ public class CollectionTableQueries {
 
         List<CollectionTable> overDueCollectionList = new ArrayList<>();
 
+        Calendar midnight = Calendar.getInstance();
+        midnight.set(Calendar.HOUR_OF_DAY, 0);
+        midnight.set(Calendar.MINUTE, 0);
+        midnight.set(Calendar.SECOND, 0);
+        midnight.set(Calendar.MILLISECOND, 0);
+
         for (CollectionTable collectionTable : list) {
-            if(collectionTable.getCollectionDueDate().before(new Date()) &&
+            if(collectionTable.getCollectionDueDate().before(midnight.getTime()) &&
                     !collectionTable.getIsDueCollected()){
                 overDueCollectionList.add(collectionTable);
             }
@@ -86,12 +94,5 @@ public class CollectionTableQueries {
     /********Update Table When Due DueCollection is Confirmed*********/
     public void updateCollection(CollectionTable collectionTable){
         collectionTableDao.update(collectionTable);
-    }
-
-    /****************Convert date to string format*****************/
-    private String dateString(Date date){
-        String myFormat = "MM/dd/yy";
-        SimpleDateFormat timeFormat = new SimpleDateFormat(myFormat, Locale.US);
-        return timeFormat.format(date);
     }
 }

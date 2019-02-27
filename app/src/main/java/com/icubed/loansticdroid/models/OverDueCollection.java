@@ -397,8 +397,6 @@ public class OverDueCollection {
 
         fragment.overDueCollectionList.add(dueCollectionDetails);
         fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
-
-        removeRefresher();
     }
 
     /***********************retrieve all collection and comparing to local***********/
@@ -436,15 +434,16 @@ public class OverDueCollection {
                                             getLoansData(collectionTable.getLoanId(), collectionTable.getCollectionId());
                                         }
                                     }else {
-                                        removeRefresher();
                                         updateTable(documentSnapshot);
                                     }
                                 }
-
+                                removeRefresher();
                             }else{
+                                removeRefresher();
                                 Log.d(TAG, "onComplete: No New due collections for today");
                             }
                         }else{
+                            removeRefresher();
                             Log.d(TAG, "onComplete: Failed to retrieve new due collections");
                         }
                     }

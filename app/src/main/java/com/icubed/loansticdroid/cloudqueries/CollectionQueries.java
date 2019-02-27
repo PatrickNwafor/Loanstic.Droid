@@ -26,23 +26,23 @@ public class CollectionQueries {
 
     /*****************Create new CollectionTable ****************/
     public Task<DocumentReference> createCollection(CollectionTable collectionTable){
-        return firebaseFirestore.collection("DueCollection").add(collectionTable);
+        return firebaseFirestore.collection("Collection").add(collectionTable);
     }
 
     /*****************Create new CollectionTable ****************/
     public Task<DocumentReference> createCollection(Map<String, Object> collectionMap){
-        return firebaseFirestore.collection("DueCollection").add(collectionMap);
+        return firebaseFirestore.collection("Collection").add(collectionMap);
     }
 
     /*****************Retrieve CollectionTable*********************/
     public Task<QuerySnapshot> retrieveAllCollection(){
-        return firebaseFirestore.collection("DueCollection").get();
+        return firebaseFirestore.collection("Collection").get();
     }
 
     /*****************Retrieve CollectionTable for loan*******************/
     public Task<QuerySnapshot> retrieveCollectionsDataForALoanAcending(String loanId){
 
-        return firebaseFirestore.collection("DueCollection")
+        return firebaseFirestore.collection("Collection")
                 .whereEqualTo("loanId", loanId)
                 .orderBy("collectionNumber", Query.Direction.ASCENDING)
                 .get();
@@ -52,29 +52,29 @@ public class CollectionQueries {
     /*****************Retrieve CollectionTable for loan*******************/
     public Task<QuerySnapshot> retrieveCollectionsDataForALoan(String loanId){
 
-        return firebaseFirestore.collection("DueCollection")
+        return firebaseFirestore.collection("Collection")
                 .whereEqualTo("loanId", loanId)
                 .get();
 
     }
 
     /*****************Retrieve Due CollectionTable for all officers*******************/
-    public Task<QuerySnapshot> retrieveDueCollectionsDataForAllOfficer(){
+    public Task<QuerySnapshot> retrieveCollectionsDataForAllOfficer(){
 
-        return firebaseFirestore.collection("DueCollection")
+        return firebaseFirestore.collection("Collection")
                 .whereEqualTo("collectionDueDate", DateUtil.dateString(new Date()))
                 .get();
 
     }
 
     /*****************Confirm Due CollectionTable*************************/
-    public Task<Void> confrimDueCollection(String collectionId, Date timestamp){
+    public Task<Void> confrimCollection(String collectionId, Date timestamp){
         Map<String, Object> dueCollectedMap = new HashMap<>();
 
         dueCollectedMap.put("timestamp", timestamp);
         dueCollectedMap.put("isDueCollected", true);
 
-        return firebaseFirestore.collection("DueCollection").document(collectionId)
+        return firebaseFirestore.collection("Collection").document(collectionId)
                 .update(dueCollectedMap);
     }
 }

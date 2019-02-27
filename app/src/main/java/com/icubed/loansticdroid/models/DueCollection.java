@@ -403,7 +403,6 @@ public class DueCollection {
                             if(borrowersTable.getBorrowerImageByteArray() == null) circleImageView.setImageResource(R.drawable.new_borrower);
                             else circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
                             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
-                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.layout.custom_marker_layout_collection));
                             markers.add(mapFragment.mGoogleMap.addMarker(markerOptions));
                         }else {
                             GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
@@ -469,7 +468,6 @@ public class DueCollection {
 
         fragment.dueCollectionList.add(dueCollectionDetails);
         fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
-        removeRefresher();
     }
 
     /***********************retrieve all collection and comparing to local***********/
@@ -508,15 +506,16 @@ public class DueCollection {
                                             getLoansData(collectionTable.getLoanId(), collectionTable.getCollectionId());
                                         }
                                     }else {
-                                        removeRefresher();
                                         updateTable(documentSnapshot);
                                     }
                                 }
-
+                                removeRefresher();
                             }else{
+                                removeRefresher();
                                 Log.d(TAG, "onComplete: No New due collections for today");
                             }
                         }else{
+                            removeRefresher();
                             Log.d(TAG, "onComplete: Failed to retrieve new due collections");
                         }
                     }
