@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     //Navigation Drawer Layout
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
-    ToggleButton viewSwitch1;
+    public ToggleButton viewSwitch1;
     private FrameLayout contentFrame;
 
     //Fragments

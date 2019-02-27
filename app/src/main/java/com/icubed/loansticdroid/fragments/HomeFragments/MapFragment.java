@@ -41,6 +41,7 @@ import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
+import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.Account;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
@@ -49,6 +50,7 @@ import com.icubed.loansticdroid.fragments.CollectionFragments.OverDueCollectionF
 import com.icubed.loansticdroid.models.DueCollection;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
 import com.icubed.loansticdroid.util.BitmapUtil;
+import com.icubed.loansticdroid.util.KeyboardUtil;
 import com.icubed.loansticdroid.util.PlayServiceUtil;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -154,16 +156,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         slidingLayout.addPanelSlideListener(new PanelSlideListener() {
             @Override
             public void onPanelSlide(View view, float v) {
-
                 btnShow.setVisibility(View.GONE);
                 slideUp.setVisibility(View.GONE);
                 collectionImage.setVisibility(View.GONE);
             }
 
-
             @Override
             public void onPanelStateChanged(View panel, PanelState previousState, PanelState newState) {
-
+                if(newState == PanelState.EXPANDED){
+                    btnShow.setVisibility(View.GONE);
+                    collectionImage.setVisibility(View.GONE);
+                    ((MainActivity) getContext()).viewSwitch1.setVisibility(GONE);
+                }else if(newState == PanelState.COLLAPSED){
+                    btnShow.setVisibility(View.VISIBLE);
+                    collectionImage.setVisibility(View.VISIBLE);
+                    ((MainActivity) getContext()).viewSwitch1.setVisibility(VISIBLE);
+                }
             }
 
         });
@@ -343,7 +351,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                hideKeyboardFrom();
+                KeyboardUtil.hideKeyboard(getActivity());
 
                 if (slidingLayout.getPanelState() == PanelState.EXPANDED) {
                     slidingLayout.setPanelState(PanelState.COLLAPSED);
@@ -419,15 +427,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     //initialize our map
                 }
             }
-        }
-    }
-
-    public void hideKeyboardFrom() {
-        View focuedView = getActivity().getCurrentFocus();
-        if (focuedView != null) {
-            InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            assert imm != null;
-            imm.hideSoftInputFromWindow(focuedView.getWindowToken(), 0);
         }
     }
 
