@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,12 +41,14 @@ import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
-import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.Account;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
-import com.icubed.loansticdroid.models.Collection;
+import com.icubed.loansticdroid.fragments.CollectionFragments.DueCollectionFragment;
+import com.icubed.loansticdroid.fragments.CollectionFragments.OverDueCollectionFragment;
+import com.icubed.loansticdroid.models.DueCollection;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
+import com.icubed.loansticdroid.util.BitmapUtil;
 import com.icubed.loansticdroid.util.PlayServiceUtil;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -63,6 +67,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.ceryle.segmentedbutton.SegmentedButtonGroup;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,22 +77,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     MapView mMapView;
     public GoogleMap mGoogleMap;
     private SlidingUpPanelLayout slidingLayout;
-    private RecyclerView slideUpRecyclerView;
     private ImageView btnShow,btnShow1;
     TextView slideUp;
     Animation bounce, bounce1, blink;
     EditText search;
 
-    private Collection collection;
-    private Account account;
-    private BorrowersQueries borrowersQueries;
     public MarkerOptions markerOptions;
     public SegmentedButtonGroup sbg;
-    public List<DueCollectionDetails> dueCollectionList;
-    public SlideUpPanelRecyclerAdapter slideUpPanelRecyclerAdapter;
-    private RecyclerView overDueRecyclerView;
-    public  SlideUpPanelRecyclerAdapter overDueAdapter;
-    public List<DueCollectionDetails> overDueCollectionList;
     public LinearLayout progressLayout, collectionLayout;
 
     private static final String TAG = "MapFragment";
@@ -98,6 +94,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public ImageButton navButton;
     public LatLng selectedUserLatLng = null;
     private GeoApiContext geoApiContext;
+    private DueCollectionFragment dueCollectionFragment;
+    private OverDueCollectionFragment overDueCollectionFragment;
 
     public MapFragment() {
         // Required empty public constructor
@@ -114,30 +112,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
-        //segmented control
-        sbg = v.findViewById(R.id.segmentedButtonGroup);
-        sbg.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition(){
-            @Override
-            public void onClickedButtonPosition(int position){
-                if(position==0) {
-
-                    //startFragment(singleBorrowerFragment, "single");
-                }
-                else if (position==1) {
-
-                   // startFragment(groupBorrowerFragment, "group");
-                }
-            }
-        });
 
         btnShow = v.findViewById(R.id.btn_show);
         btnShow1 = v.findViewById(R.id.btn_show1);
         slideUp = v.findViewById(R.id.slideUp);
+        sbg = v.findViewById(R.id.segmentedButtonGroup);
         search = v.findViewById(R.id.searchEditText);
-        slideUpRecyclerView = v.findViewById(R.id.collection_list);
-        overDueRecyclerView = v.findViewById(R.id.overdue_list);
-        progressLayout = v.findViewById(R.id.progress_layout);
-        collectionLayout = v.findViewById(R.id.collection_layout);
 
         bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
         blink = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
@@ -150,21 +130,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         geoApiContext = new GeoApiContext()
                 .setApiKey("AIzaSyDljIVWu1Pi1RO1Gl9DQrYpoXfKQ5TnHC8");
 
-        collection = new Collection(getActivity().getApplication(), getActivity());
-        account = new Account();
-        borrowersQueries = new BorrowersQueries(getContext());
         playServiceUtil = new PlayServiceUtil(getContext());
         locationProviderUtil = new LocationProviderUtil(getContext());
-
-        dueCollectionList = new ArrayList<>();
-        slideUpRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(dueCollectionList, getActivity());
-        slideUpRecyclerView.setAdapter(slideUpPanelRecyclerAdapter);
-
-        overDueCollectionList = new ArrayList<>();
-        overDueRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        overDueAdapter = new SlideUpPanelRecyclerAdapter(overDueCollectionList, getActivity());
-        overDueRecyclerView.setAdapter(overDueAdapter);
 
         navButton = v.findViewById(R.id.nav_button);
         mMapView = v.findViewById(R.id.mapView);
@@ -199,6 +166,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        dueCollectionFragment = new DueCollectionFragment();
+        overDueCollectionFragment = new OverDueCollectionFragment();
+
         btnShow.setOnClickListener(onShowListener());
 
         /*****
@@ -223,6 +193,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         };
     }
 
+    /************Instantiate fragment transactions**********/
+    private void startFragment(Fragment fragment, String fragmentTag){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content, fragment, fragmentTag);
+        transaction.commit();
+    }
+
     public void hideProgressBar() {
         progressLayout.setVisibility(GONE);
         collectionLayout.setVisibility(VISIBLE);
@@ -233,7 +210,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mGoogleMap = googleMap;
         mapOnClickListener();
         initMap();
-        getDueCollections();
+        startFragment(dueCollectionFragment, "due");
+        //segmented control
+        sbg.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition(){
+            @Override
+            public void onClickedButtonPosition(int position){
+                if(position==0) {
+
+                    startFragment(dueCollectionFragment, "due");
+                }
+                else if (position==1) {
+
+                    startFragment(overDueCollectionFragment, "overdue");
+                }
+            }
+        });
     }
 
     public void moveCamera(ArrayList<Marker> markers){
@@ -358,15 +349,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void getDueCollections() {
-        if (!collection.doesCollectionExistInLocalStorage()) {
-            collection.retrieveNewDueCollectionData();
-        } else {
-            collection.getDueCollectionData();
-            collection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
-        }
-    }
-
     private void getCurrentLocation() {
         locationProviderUtil.requestSingleUpdate(new LocationProviderUtil.LocationCallback() {
             @Override
@@ -385,7 +367,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         markerOptions.position(latLng);
         markerOptions.title("Your Location");
         markerOptions.anchor(0.5f, 0.5f);
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+
+        LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.custom_marker_layout_user, null);
+        CircleImageView circleImageView = view.findViewById(R.id.user_dp);
+        circleImageView.setImageResource(R.drawable.new_borrower);
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
 
     }
 

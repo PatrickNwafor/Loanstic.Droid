@@ -19,7 +19,7 @@ public class CollectionTableQueries {
         collectionTableDao = daoSession.getCollectionTableDao();
     }
 
-    /***************Save Collection to local Storage*********/
+    /***************Save DueCollection to local Storage*********/
     public void insertCollectionToStorage(CollectionTable collectionTable){
         collectionTableDao.insert(collectionTable);
     }
@@ -39,30 +39,21 @@ public class CollectionTableQueries {
     }
 
     /**********Load All Due Collections from local Storage***********/
-    public List<CollectionTable>[] loadAllDueCollections(){
+    public List<CollectionTable> loadAllDueCollections(){
         // the list array, the zero index contains the dueCollection
         // the one index contains the overdueCollection
         List<CollectionTable> list = collectionTableDao.queryBuilder().build().list();
 
-        List<CollectionTable>[] lists = new List[2];
-
         List<CollectionTable> dueCollectionList = new ArrayList<>();
-        List<CollectionTable> overDueCollectionList = new ArrayList<>();
 
         for (CollectionTable collectionTable : list) {
             if(DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date())) &&
                     !collectionTable.getIsDueCollected()){
                 dueCollectionList.add(collectionTable);
-            }else if(collectionTable.getCollectionDueDate().before(new Date()) &&
-                    !collectionTable.getIsDueCollected()){
-                overDueCollectionList.add(collectionTable);
             }
         }
 
-        lists[0] = dueCollectionList;
-        lists[1] = overDueCollectionList;
-
-        return lists;
+        return dueCollectionList;
 
     }
 
@@ -76,14 +67,23 @@ public class CollectionTableQueries {
     }
 
     public List<CollectionTable> loadAllOverDueCollection(){
-        return collectionTableDao.queryBuilder()
-                .where(CollectionTableDao.Properties.IsDueCollected.eq(false))
-                .where(CollectionTableDao.Properties.Timestamp.le(new Date()))
-                .build()
-                .list();
+        // the list array, the zero index contains the dueCollection
+        // the one index contains the overdueCollection
+        List<CollectionTable> list = collectionTableDao.queryBuilder().build().list();
+
+        List<CollectionTable> overDueCollectionList = new ArrayList<>();
+
+        for (CollectionTable collectionTable : list) {
+            if(collectionTable.getCollectionDueDate().before(new Date()) &&
+                    !collectionTable.getIsDueCollected()){
+                overDueCollectionList.add(collectionTable);
+            }
+        }
+
+        return overDueCollectionList;
     }
 
-    /********Update Table When Due Collection is Confirmed*********/
+    /********Update Table When Due DueCollection is Confirmed*********/
     public void updateCollection(CollectionTable collectionTable){
         collectionTableDao.update(collectionTable);
     }

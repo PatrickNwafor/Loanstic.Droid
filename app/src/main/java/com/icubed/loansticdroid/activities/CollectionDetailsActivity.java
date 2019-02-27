@@ -50,7 +50,7 @@ public class CollectionDetailsActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.collection_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Collection Details");
+        getSupportActionBar().setTitle("DueCollection Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

@@ -27,10 +27,8 @@ import com.icubed.loansticdroid.cloudqueries.CollectionQueries;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.localdatabase.CollectionTableQueries;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
-import com.icubed.loansticdroid.models.Collection;
 import com.icubed.loansticdroid.util.DateUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static android.support.constraint.Constraints.TAG;
@@ -114,7 +112,7 @@ public class LoanScheduleFragment extends Fragment {
                                 totalDueCollectedTextView.setText(String.valueOf(currentBalance));
                             }else {
                                 scheduleProgressBar.setVisibility(View.GONE);
-                                Toast.makeText(getActivity(), "Collection is empty", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "DueCollection is empty", Toast.LENGTH_SHORT).show();
                             }
                         }else{
                             scheduleProgressBar.setVisibility(View.GONE);
@@ -167,7 +165,7 @@ public class LoanScheduleFragment extends Fragment {
                                 totalDueCollectedTextView.setText(String.valueOf(currentBalance));
                             }else {
                                 scheduleProgressBar.setVisibility(View.GONE);
-                                Toast.makeText(getActivity(), "Collection is empty", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "DueCollection is empty", Toast.LENGTH_SHORT).show();
                             }
                         }else{
                             scheduleProgressBar.setVisibility(View.GONE);
@@ -255,15 +253,15 @@ public class LoanScheduleFragment extends Fragment {
         isCollectedHeader = new TextView(getContext());
         penaltyHeader = new TextView(getContext());
 
-        collectionNumberHeader.setText("Collection Number");
+        collectionNumberHeader.setText("DueCollection Number");
         collectionNumberHeader.setGravity(Gravity.CENTER);
         collectionNumberHeader.setTextColor(Color.RED);
         collectionNumberHeader.setPadding(10,10,10,10);
-        collectionDateHeader.setText("Collection Date");
+        collectionDateHeader.setText("DueCollection Date");
         collectionDateHeader.setGravity(Gravity.CENTER);
         collectionDateHeader.setTextColor(Color.RED);
         collectionDateHeader.setPadding(10,10,10,10);
-        dueAmountHeader.setText("Collection Amount");
+        dueAmountHeader.setText("DueCollection Amount");
         dueAmountHeader.setGravity(Gravity.CENTER);
         dueAmountHeader.setTextColor(Color.RED);
         dueAmountHeader.setPadding(10,10,10,10);
@@ -271,7 +269,7 @@ public class LoanScheduleFragment extends Fragment {
         totalBalanceHeader.setGravity(Gravity.CENTER);
         totalBalanceHeader.setTextColor(Color.RED);
         totalBalanceHeader.setPadding(10,10,10,10);
-        isCollectedHeader.setText("Collection State");
+        isCollectedHeader.setText("DueCollection State");
         isCollectedHeader.setGravity(Gravity.CENTER);
         isCollectedHeader.setTextColor(Color.RED);
         isCollectedHeader.setPadding(10,10,10,10);

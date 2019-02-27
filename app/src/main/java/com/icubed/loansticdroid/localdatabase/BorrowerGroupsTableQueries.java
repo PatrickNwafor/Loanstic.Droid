@@ -12,7 +12,7 @@ public class BorrowerGroupsTableQueries {
         borrowerGroupsTableDao = daoSession.getBorrowerGroupsTableDao();
     }
 
-    /***************Save Collection to local Storage*********/
+    /***************Save DueCollection to local Storage*********/
     public void insertGroupMemberToStorage(BorrowerGroupsTable borrowerGroupsTable){
         borrowerGroupsTableDao.insert(borrowerGroupsTable);
     }

@@ -26,23 +26,23 @@ public class CollectionQueries {
 
     /*****************Create new CollectionTable ****************/
     public Task<DocumentReference> createCollection(CollectionTable collectionTable){
-        return firebaseFirestore.collection("Collection").add(collectionTable);
+        return firebaseFirestore.collection("DueCollection").add(collectionTable);
     }
 
     /*****************Create new CollectionTable ****************/
     public Task<DocumentReference> createCollection(Map<String, Object> collectionMap){
-        return firebaseFirestore.collection("Collection").add(collectionMap);
+        return firebaseFirestore.collection("DueCollection").add(collectionMap);
     }
 
     /*****************Retrieve CollectionTable*********************/
     public Task<QuerySnapshot> retrieveAllCollection(){
-        return firebaseFirestore.collection("Collection").get();
+        return firebaseFirestore.collection("DueCollection").get();
     }
 
     /*****************Retrieve CollectionTable for loan*******************/
     public Task<QuerySnapshot> retrieveCollectionsDataForALoanAcending(String loanId){
 
-        return firebaseFirestore.collection("Collection")
+        return firebaseFirestore.collection("DueCollection")
                 .whereEqualTo("loanId", loanId)
                 .orderBy("collectionNumber", Query.Direction.ASCENDING)
                 .get();
@@ -52,7 +52,7 @@ public class CollectionQueries {
     /*****************Retrieve CollectionTable for loan*******************/
     public Task<QuerySnapshot> retrieveCollectionsDataForALoan(String loanId){
 
-        return firebaseFirestore.collection("Collection")
+        return firebaseFirestore.collection("DueCollection")
                 .whereEqualTo("loanId", loanId)
                 .get();
 
@@ -61,7 +61,7 @@ public class CollectionQueries {
     /*****************Retrieve Due CollectionTable for all officers*******************/
     public Task<QuerySnapshot> retrieveDueCollectionsDataForAllOfficer(){
 
-        return firebaseFirestore.collection("Collection")
+        return firebaseFirestore.collection("DueCollection")
                 .whereEqualTo("collectionDueDate", DateUtil.dateString(new Date()))
                 .get();
 
@@ -74,7 +74,7 @@ public class CollectionQueries {
         dueCollectedMap.put("timestamp", timestamp);
         dueCollectedMap.put("isDueCollected", true);
 
-        return firebaseFirestore.collection("Collection").document(collectionId)
+        return firebaseFirestore.collection("DueCollection").document(collectionId)
                 .update(dueCollectedMap);
     }
 }

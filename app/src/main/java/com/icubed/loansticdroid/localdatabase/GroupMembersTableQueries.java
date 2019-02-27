@@ -13,7 +13,7 @@ public class GroupMembersTableQueries {
         groupMembersTableDao = daoSession.getGroupMembersTableDao();
     }
 
-    /***************Save Collection to local Storage*********/
+    /***************Save DueCollection to local Storage*********/
     public void insertGroupMemberToStorage(GroupMembersTable groupMembersTable){
         groupMembersTableDao.insert(groupMembersTable);
     }
