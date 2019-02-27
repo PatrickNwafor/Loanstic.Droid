@@ -219,7 +219,8 @@ public class AllBorrowerLoan extends AppCompatActivity {
     }
 
     private void saveLoanToLocalStorage(LoansTable loansTable) {
-        loanTableQueries.insertLoanToStorage(loansTable);
+        LoansTable loansTable1 = loanTableQueries.loadSingleLoan(loansTable.getLoanId());
+        if(loansTable1 == null) loanTableQueries.insertLoanToStorage(loansTable);
     }
 
     /**
@@ -304,36 +305,16 @@ public class AllBorrowerLoan extends AppCompatActivity {
     private void getLoanType(LoansTable loansTable) {
 
         if(loansTable.getIsOtherLoanType()) {
-            List<OtherLoanTypesTable> otherLoanTypesTable = otherLoanTypesTableQueries.loadAllLoanTpes();
+            OtherLoanTypesTable otherLoanTypesTable = otherLoanTypesTableQueries.loadSingleLoanType(loansTable.getLoanTypeId());
 
-            Boolean doesDataExist = false;
-            if(otherLoanTypesTable != null) {
-                for (OtherLoanTypesTable typesTable : otherLoanTypesTable) {
-                    if(typesTable.getOtherLoanTypeId().equals(loansTable.getLoanTypeId())){
-                        doesDataExist = true;
-                        createTableBody(loansTable, null, typesTable);
-                        break;
-                    }
-                }
-
-                if(!doesDataExist) getOtherLoanType(loansTable);
-            }
+            if(otherLoanTypesTable != null) createTableBody(loansTable, null, otherLoanTypesTable);
+            else getOtherLoanType(loansTable);
         }
         else{
-            List<LoanTypeTable> loanTypeTable = loanTypeTableQueries.loadAllLoanTpes();
+            LoanTypeTable loanTypeTable = loanTypeTableQueries.loadSingleLoanType(loansTable.getLoanTypeId());
 
-            Boolean doesDataExist = false;
-            if(loanTypeTable != null){
-                for (LoanTypeTable typeTable : loanTypeTable) {
-                    if(typeTable.getLoanTypeId().equals(loansTable.getLoanTypeId())){
-                        doesDataExist = true;
-                        createTableBody(loansTable, typeTable, null);
-                        break;
-                    }
-                }
-
-                if(!doesDataExist) getNormalLoanType(loansTable);
-            }
+            if(loanTypeTable != null) createTableBody(loansTable, loanTypeTable, null);
+            else getNormalLoanType(loansTable);
         }
     }
 
@@ -364,13 +345,10 @@ public class AllBorrowerLoan extends AppCompatActivity {
      * @param loanTypeTable
      */
     private void saveLoanTypeToLocalStorage(LoanTypeTable loanTypeTable) {
-        List<LoanTypeTable> loanTypeTableList = loanTypeTableQueries.loadAllLoanTpes();
-        for (LoanTypeTable table : loanTypeTableList) {
-            if(table.getLoanTypeId().equals(loanTypeTable.getLoanTypeId())) return;
-        }
-
-        loanTypeTableQueries.insertLoanTypeToStorage(loanTypeTable);
+        LoanTypeTable loanTypeTableList = loanTypeTableQueries.loadSingleLoanType(loanTypeTable.getLoanTypeId());
+        if(loanTypeTableList == null) loanTypeTableQueries.insertLoanTypeToStorage(loanTypeTable);
     }
+
 
     /**
      * gets custom loan type created during loan registration from firebase firestore
@@ -400,12 +378,8 @@ public class AllBorrowerLoan extends AppCompatActivity {
      * @param otherLoanTypesTable
      */
     private void saveOtherLoanTypeToLocalStorage(OtherLoanTypesTable otherLoanTypesTable) {
-        List<OtherLoanTypesTable> otherLoanTypesTableList = otherLoanTypesTableQueries.loadAllLoanTpes();
-        for (OtherLoanTypesTable table : otherLoanTypesTableList) {
-            if(table.getOtherLoanTypeId().equals(otherLoanTypesTable.getOtherLoanTypeId())) return;
-        }
-
-        otherLoanTypesTableQueries.insertLoanTypeToStorage(otherLoanTypesTable);
+        OtherLoanTypesTable otherLoanTypesTableList = otherLoanTypesTableQueries.loadSingleLoanType(otherLoanTypesTable.getOtherLoanTypeId());
+        if(otherLoanTypesTableList == null) otherLoanTypesTableQueries.insertLoanTypeToStorage(otherLoanTypesTable);
     }
 
     private void getLoanForGroup() {

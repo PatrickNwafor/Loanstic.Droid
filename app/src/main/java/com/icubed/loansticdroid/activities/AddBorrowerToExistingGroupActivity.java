@@ -485,7 +485,8 @@ public class AddBorrowerToExistingGroupActivity extends AppCompatActivity {
     }
 
     private void saveBorrowersToLocalStorage(GroupBorrowerTable groupBorrowerTable) {
-        groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
+        GroupBorrowerTable groupBorrowerTable1 = groupBorrowerTableQueries.loadSingleBorrowerGroup(groupBorrowerTable.getGroupId());
+        if(groupBorrowerTable1 == null) groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
     }
 
     public void loadGroupsToUI(){

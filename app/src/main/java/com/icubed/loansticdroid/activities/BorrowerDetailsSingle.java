@@ -230,12 +230,12 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
             groupCountTextView.setText(String.valueOf(borrowerGroupsTableList.size()));
 
             for (BorrowerGroupsTable borrowerGroupsTable : borrowerGroupsTableList) {
-                List<GroupBorrowerTable> groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroupList(borrowerGroupsTable.getGroupId());
+                GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(borrowerGroupsTable.getGroupId());
 
-                if(groupBorrowerTable == null || groupBorrowerTable.isEmpty()){
+                if(groupBorrowerTable == null){
                     getGroupDetails(borrowerGroupsTable.getGroupId());
                 }else {
-                    groupBorrowerTableList.add(groupBorrowerTable.get(0));
+                    groupBorrowerTableList.add(groupBorrowerTable);
                     borrowersGroupRecyclerAdapter.notifyDataSetChanged();
                 }
 
@@ -301,12 +301,12 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     }
 
     private void getGroup(BorrowerGroupsTable borrowerGroupsTable) {
-        List<GroupBorrowerTable> groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroupList(borrowerGroupsTable.getGroupId());
+        GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(borrowerGroupsTable.getGroupId());
 
-        if(groupBorrowerTable == null ||  groupBorrowerTable.isEmpty()){
+        if(groupBorrowerTable == null){
             getGroupDetails(borrowerGroupsTable.getGroupId());
         }else {
-            groupBorrowerTableList.add(groupBorrowerTable.get(0));
+            groupBorrowerTableList.add(groupBorrowerTable);
             borrowersGroupRecyclerAdapter.notifyDataSetChanged();
         }
     }
@@ -335,7 +335,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     }
 
     private void saveGroupToStorage(GroupBorrowerTable groupBorrowerTable) {
-        groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
+        GroupBorrowerTable groupBorrowerTable1 = groupBorrowerTableQueries.loadSingleBorrowerGroup(groupBorrowerTable.getGroupId());
+        if(groupBorrowerTable1 == null) groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
     }
 
     /**
@@ -663,7 +664,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
      * @param borrowerPhotoValidationTable
      */
     private void savePhotoVerifToStorage(BorrowerPhotoValidationTable borrowerPhotoValidationTable) {
-        borrowerPhotoValidationTableQueries.insertPhototsToStorage(borrowerPhotoValidationTable);
+        BorrowerPhotoValidationTable borrowerPhotoValidationTable1 = borrowerPhotoValidationTableQueries.loadSinglePhotes(borrowerPhotoValidationTable.getBorrowerPhotoValidationId());
+        if(borrowerPhotoValidationTable1 == null) borrowerPhotoValidationTableQueries.insertPhototsToStorage(borrowerPhotoValidationTable);
     }
 
     /**
@@ -767,7 +769,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
      * @param borrowerFilesTable
      */
     private void saveFileToStorage(BorrowerFilesTable borrowerFilesTable) {
-        borrowerFilesTableQueries.insertBorrowersFileToStorage(borrowerFilesTable);
+        BorrowerFilesTable borrowerFilesTable1 = borrowerFilesTableQueries.loadSingleBorrowerFile(borrowerFilesTable.getFilesId());
+        if(borrowerFilesTable1 == null) borrowerFilesTableQueries.insertBorrowersFileToStorage(borrowerFilesTable);
         Log.d(TAG, "saveFileToStorage: files saved");
     }
 

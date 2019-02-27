@@ -33,19 +33,11 @@ public class OtherLoanTypesTableQueries {
 
     /**********Load a single collection from local Storage*******/
     public OtherLoanTypesTable loadSingleLoanType(String loanTypeId){
-        return otherLoanTypesTableDao.queryBuilder()
-                .where(OtherLoanTypesTableDao.Properties.OtherLoanTypeId.eq(loanTypeId))
-                .build()
-                .list()
-                .get(0);
-    }
+        List<OtherLoanTypesTable> list = otherLoanTypesTableDao.queryBuilder().where(OtherLoanTypesTableDao.Properties.OtherLoanTypeId.eq(loanTypeId)).build().list();
 
-    /**********Load a single collection from local Storage*******/
-    public List<OtherLoanTypesTable> loadSingleLoanTypeList(String loanTypeId){
-        return otherLoanTypesTableDao.queryBuilder()
-                .where(OtherLoanTypesTableDao.Properties.OtherLoanTypeId.eq(loanTypeId))
-                .build()
-                .list();
+        if(list.isEmpty()) return null;
+
+        return list.get(0);
     }
 
     /**********Load a single collection from local Storage*******/

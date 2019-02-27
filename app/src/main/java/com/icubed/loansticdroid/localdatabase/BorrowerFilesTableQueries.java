@@ -26,11 +26,11 @@ public class BorrowerFilesTableQueries {
 
     /**********Load a single borrower from local Storage*******/
     public BorrowerFilesTable loadSingleBorrowerFile(String fileId){
-        return borrowerFilesTableDao.queryBuilder()
-                .where(BorrowerFilesTableDao.Properties.FilesId.eq(fileId))
-                .build()
-                .list()
-                .get(0);
+        List<BorrowerFilesTable> list = borrowerFilesTableDao.queryBuilder().where(BorrowerFilesTableDao.Properties.FilesId.eq(fileId)).build().list();
+
+        if(list.isEmpty()) return null;
+
+        return list.get(0);
     }
 
     public List<BorrowerFilesTable> loadAllBorrowersFile(String activityId) {

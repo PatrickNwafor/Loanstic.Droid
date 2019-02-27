@@ -55,11 +55,6 @@ public class GroupLoan {
      */
     public void loadAllGroups(){
 
-        if(doesGroupTableExistInLocalStorage()){
-            loadAllGroupsAndCompareToLocal();
-            return;
-        }
-
         groupBorrowerQueries.retrieveAllBorrowersGroup().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -87,7 +82,8 @@ public class GroupLoan {
     }
 
     private void saveBorrowersToLocalStorage(GroupBorrowerTable groupBorrowerTable) {
-        groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
+        GroupBorrowerTable groupBorrowerTable1 = groupBorrowerTableQueries.loadSingleBorrowerGroup(groupBorrowerTable.getGroupId());
+        if(groupBorrowerTable1 == null) groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
     }
 
     public void loadGroupsToUI(){

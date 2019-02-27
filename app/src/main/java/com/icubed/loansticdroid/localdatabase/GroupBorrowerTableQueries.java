@@ -25,19 +25,13 @@ public class GroupBorrowerTableQueries {
 
     /**********Load a single collection from local Storage*******/
     public GroupBorrowerTable loadSingleBorrowerGroup(String groupId){
-        return groupBorrowerTableDao.queryBuilder()
-                .where(GroupBorrowerTableDao.Properties.GroupId.eq(groupId))
-                .build()
-                .list()
-                .get(0);
-    }
+        List<GroupBorrowerTable> list = groupBorrowerTableDao.queryBuilder().where(GroupBorrowerTableDao.Properties.GroupId.eq(groupId)).build().list();
 
-    /**********Load a single collection from local Storage*******/
-    public List<GroupBorrowerTable> loadSingleBorrowerGroupList(String groupId){
-        return groupBorrowerTableDao.queryBuilder()
-                .where(GroupBorrowerTableDao.Properties.GroupId.eq(groupId))
-                .build()
-                .list();
+        if(list.isEmpty()){
+            return null;
+        }
+
+        return list.get(0);
     }
 
 

@@ -35,19 +35,13 @@ public class BorrowersTableQueries {
 
     /**********Load a single borrower from local Storage*******/
     public BorrowersTable loadSingleBorrower(String borrowersId){
-        return borrowersTableDao.queryBuilder()
-                .where(BorrowersTableDao.Properties.BorrowersId.eq(borrowersId))
-                .build()
-                .list()
-                .get(0);
-    }
+        List<BorrowersTable> list = borrowersTableDao.queryBuilder().where(BorrowersTableDao.Properties.BorrowersId.eq(borrowersId)).build().list();
 
-    /**********Load a single borrower from local Storage*******/
-    public List<BorrowersTable> loadSingleBorrowerList(String borrowersId){
-        return borrowersTableDao.queryBuilder()
-                .where(BorrowersTableDao.Properties.BorrowersId.eq(borrowersId))
-                .build()
-                .list();
+        if(list.isEmpty()){
+            return null;
+        }
+
+        return list.get(0);
     }
 
     public List<BorrowersTable> loadAllBorrowers() {

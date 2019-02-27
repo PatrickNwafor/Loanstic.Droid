@@ -31,11 +31,11 @@ public class CollectionTableQueries {
 
     /**********Load a single collection from local Storage*******/
     public CollectionTable loadSingleCollection(String collectionId){
-        return collectionTableDao.queryBuilder()
-                .where(CollectionTableDao.Properties.CollectionId.eq(collectionId))
-                .build()
-                .list()
-                .get(0);
+        List<CollectionTable> list = collectionTableDao.queryBuilder().where(CollectionTableDao.Properties.CollectionId.eq(collectionId)).build().list();
+
+        if(list.isEmpty()) return null;
+
+        return list.get(0);
     }
 
     /**********Load All Due Collections from local Storage***********/

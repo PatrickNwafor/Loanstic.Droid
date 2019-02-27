@@ -45,19 +45,13 @@ public class LoanTableQueries {
 
     /**********Load a single collection from local Storage*******/
     public LoansTable loadSingleLoan(String loanId){
-        return loansTableDao.queryBuilder()
-                .where(LoansTableDao.Properties.LoanId.eq(loanId))
-                .build()
-                .list()
-                .get(0);
-    }
+        List<LoansTable> list = loansTableDao.queryBuilder().where(LoansTableDao.Properties.LoanId.eq(loanId)).build().list();
 
-    /**********Load a single collection from local Storage*******/
-    public List<LoansTable> loadSingleLoanList(String loanId){
-        return loansTableDao.queryBuilder()
-                .where(LoansTableDao.Properties.LoanId.eq(loanId))
-                .build()
-                .list();
+        if(list.isEmpty()){
+            return null;
+        }
+
+        return list.get(0);
     }
 
     public void updateLoanDetails(LoansTable loansTable){

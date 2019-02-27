@@ -32,11 +32,11 @@ public class ActivityCycleTableQueries {
 
     /**********Load a single collection from local Storage*******/
     public ActivityCycleTable loadSingleActivityCycle(String activityCycleId){
-        return activityCycleTableDao.queryBuilder()
-                .where(ActivityCycleTableDao.Properties.ActivityCycleId.eq(activityCycleId))
-                .build()
-                .list()
-                .get(0);
+        List<ActivityCycleTable> list = activityCycleTableDao.queryBuilder().where(ActivityCycleTableDao.Properties.ActivityCycleId.eq(activityCycleId)).build().list();
+
+        if(list.isEmpty())return null;
+
+        return list.get(0);
     }
 
     public ActivityCycleTable loadLastCreatedCycle(String borrowerId){

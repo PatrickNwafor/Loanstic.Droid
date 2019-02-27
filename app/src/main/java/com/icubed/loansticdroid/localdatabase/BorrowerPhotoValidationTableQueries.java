@@ -36,10 +36,10 @@ public class BorrowerPhotoValidationTableQueries {
     }
 
     public BorrowerPhotoValidationTable loadSinglePhotes(String photoId) {
-        return  borrowerPhotoValidationTableDao.queryBuilder()
-                .where(BorrowerPhotoValidationTableDao.Properties.BorrowerPhotoValidationId.eq(photoId))
-                .build()
-                .list()
-                .get(0);
+        List<BorrowerPhotoValidationTable> list = borrowerPhotoValidationTableDao.queryBuilder().where(BorrowerPhotoValidationTableDao.Properties.BorrowerPhotoValidationId.eq(photoId)).build().list();
+
+        if(list.isEmpty()) return null;
+
+        return list.get(0);
     }
 }

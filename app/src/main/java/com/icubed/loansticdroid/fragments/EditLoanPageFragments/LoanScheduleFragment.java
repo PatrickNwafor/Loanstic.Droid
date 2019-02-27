@@ -178,7 +178,8 @@ public class LoanScheduleFragment extends Fragment {
     }
 
     private void saveCollectionToLocalStorage(CollectionTable collectionTable) {
-        collectionTableQueries.insertCollectionToStorage(collectionTable);
+        CollectionTable collectionTable1 = collectionTableQueries.loadSingleCollection(collectionTable.getCollectionId());
+        if(collectionTable1 == null) collectionTableQueries.insertCollectionToStorage(collectionTable);
     }
 
     private void createTableBody(CollectionTable collectionTable) {

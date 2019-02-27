@@ -70,11 +70,6 @@ public class Borrowers {
      */
     public void loadAllBorrowers(){
 
-        if(doesBorrowersTableExistInLocalStorage()){
-           loadAllBorrowersAndCompareToLocal();
-           return;
-        }
-
         borrowersQueries.retrieveAllBorrowers().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -137,11 +132,13 @@ public class Borrowers {
     }
 
     private void saveActivityCycleToLocalStorage(ActivityCycleTable activityCycleTable) {
-        activityCycleTableQueries.insertActivityCycleToStorage(activityCycleTable);
+        ActivityCycleTable activityCycleTable1 = activityCycleTableQueries.loadSingleActivityCycle(activityCycleTable.getActivityCycleId());
+        if(activityCycleTable1 == null) activityCycleTableQueries.insertActivityCycleToStorage(activityCycleTable);
     }
 
     private void saveBorrowersToLocalStorage(BorrowersTable borrowersTable) {
-        borrowersTableQueries.insertBorrowersToStorage(borrowersTable);
+        BorrowersTable borrowersTable1 = borrowersTableQueries.loadSingleBorrower(borrowersTable.getBorrowersId());
+        if(borrowersTable1 == null) borrowersTableQueries.insertBorrowersToStorage(borrowersTable);
     }
 
     public void loadBorrowersToUI(){

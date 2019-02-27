@@ -56,6 +56,7 @@ public class Collection {
     private Boolean isDueCollectionSingle;
 
     private FragmentActivity fragmentActivity;
+    private MapFragment fragment;
 
     private static final String TAG = ".collection";
 
@@ -72,6 +73,9 @@ public class Collection {
         isDueCollectionSingle = false;
 
         fragmentActivity = activity;
+        //Updates UI
+        FragmentManager fm = fragmentActivity.getSupportFragmentManager();
+        fragment = (MapFragment) fm.findFragmentByTag("home");
     }
 
     /***********check if collection exist in storage********/
@@ -120,10 +124,10 @@ public class Collection {
     }
 
     private void getLoansData(String loanId, final String collectionId) {
-        List<LoansTable> loan = loanTableQueries.loadSingleLoanList(loanId);
-        if(!loan.isEmpty()){
-            if (loan.get(0).getBorrowerId() != null) getBorrowersDetails(loan.get(0).getBorrowerId(), collectionId);
-            else getGroupDetails(loan.get(0).getGroupId(), collectionId);
+        LoansTable loan = loanTableQueries.loadSingleLoan(loanId);
+        if(loan != null){
+            if (loan.getBorrowerId() != null) getBorrowersDetails(loan.getBorrowerId(), collectionId);
+            else getGroupDetails(loan.getGroupId(), collectionId);
         }else {
             loansQueries.retrieveSingleLoan(loanId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -148,14 +152,14 @@ public class Collection {
     }
 
     private void getGroupDetails(final String groupId, final String collectionId) {
-        List<GroupBorrowerTable> group = groupBorrowerTableQueries.loadSingleBorrowerGroupList(groupId);
+        GroupBorrowerTable group = groupBorrowerTableQueries.loadSingleBorrowerGroup(groupId);
 
-        if(!group.isEmpty()){
+        if(group != null){
             count++;
             if (!isDueCollectionSingle) {
-                saveGroupToLocalStorage(group.get(0));
+                saveGroupToLocalStorage(group);
             } else {
-                saveSingleGroupToLocalStorage(group.get(0), collectionId);
+                saveSingleGroupToLocalStorage(group, collectionId);
             }
         }else {
             groupBorrowerQueries.retrieveSingleBorrowerGroup(groupId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -181,9 +185,9 @@ public class Collection {
 
     private void saveSingleGroupToLocalStorage(GroupBorrowerTable groupBorrowerTable, String collectionId) {
 
-        List<GroupBorrowerTable> allGroups = groupBorrowerTableQueries.loadSingleBorrowerGroupList(groupBorrowerTable.getGroupId());
+        GroupBorrowerTable allGroups = groupBorrowerTableQueries.loadSingleBorrowerGroup(groupBorrowerTable.getGroupId());
 
-        if(allGroups.isEmpty()){
+        if(allGroups == null){
             groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
         }
 
@@ -192,9 +196,9 @@ public class Collection {
     }
 
     private void saveGroupToLocalStorage(GroupBorrowerTable groupBorrowerTable) {
-        List<GroupBorrowerTable> allGroups = groupBorrowerTableQueries.loadSingleBorrowerGroupList(groupBorrowerTable.getGroupId());
+        GroupBorrowerTable allGroups = groupBorrowerTableQueries.loadSingleBorrowerGroup(groupBorrowerTable.getGroupId());
 
-        if(allGroups.isEmpty()){
+        if(allGroups == null){
             groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
         }
 
@@ -206,14 +210,14 @@ public class Collection {
 
     private void getBorrowersDetails(String borrowerId, final String collectionId) {
 
-        List<BorrowersTable> borrower = borrowersTableQueries.loadSingleBorrowerList(borrowerId);
+        BorrowersTable borrower = borrowersTableQueries.loadSingleBorrower(borrowerId);
 
-        if(!borrower.isEmpty()){
+        if(borrower != null){
             count++;
             if (!isDueCollectionSingle) {
-                saveBorrowerToLocalStorage(borrower.get(0));
+                saveBorrowerToLocalStorage(borrower);
             } else {
-                saveSingleBorrowerToLocalStorage(borrower.get(0), collectionId);
+                saveSingleBorrowerToLocalStorage(borrower, collectionId);
             }
         }else {
             borrowersQueries.retrieveSingleBorrowers(borrowerId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -261,21 +265,9 @@ public class Collection {
 
     /***********Save new borrowersQueries to storage********************/
     public void saveBorrowerToLocalStorage(BorrowersTable borrowersTable) {
+        BorrowersTable allBorrowers = borrowersTableQueries.loadSingleBorrower(borrowersTable.getBorrowersId());
 
-        List<BorrowersTable> allBorrowers = borrowersTableQueries.loadAllBorrowers();
-
-        Boolean doesLoanAlreadyExist = false;
-
-        for(BorrowersTable borrower : allBorrowers){
-            if(borrower.getBorrowersId().equals(borrowersTable.getBorrowersId())){
-                doesLoanAlreadyExist = true;
-                break;
-            }
-        }
-
-        if(!doesLoanAlreadyExist) {
-            borrowersTableQueries.insertBorrowersToStorage(borrowersTable);
-        }
+        if(allBorrowers == null){borrowersTableQueries.insertBorrowersToStorage(borrowersTable);}
 
         if(count == collectionSize){
             getDueCollectionData();
@@ -284,20 +276,9 @@ public class Collection {
     }
 
     public void saveSingleBorrowerToLocalStorage(BorrowersTable borrowersTable, String collectionId){
-        List<BorrowersTable> allBorrowers = borrowersTableQueries.loadAllBorrowers();
+        BorrowersTable allBorrowers = borrowersTableQueries.loadSingleBorrower(borrowersTable.getBorrowersId());
 
-        Boolean doesLoanAlreadyExist = false;
-
-        for(BorrowersTable borrower : allBorrowers){
-            if(borrower.getBorrowersId().equals(borrowersTable.getBorrowersId())){
-                doesLoanAlreadyExist = true;
-                break;
-            }
-        }
-
-        if(!doesLoanAlreadyExist) {
-            borrowersTableQueries.insertBorrowersToStorage(borrowersTable);
-        }
+        if(allBorrowers == null){borrowersTableQueries.insertBorrowersToStorage(borrowersTable);}
 
         getSingleDueCollectionData(collectionId);
         isDueCollectionSingle = false;
@@ -305,15 +286,11 @@ public class Collection {
 
     /****************Save loansQueries to storage************************/
     public void saveLoanToLocalStorage(LoansTable loansTable) {
-        List<LoansTable> loansTables = loanTableQueries.loadAllLoans();
+        LoansTable loansTables = loanTableQueries.loadSingleLoan(loansTable.getLoanId());
 
-        for(LoansTable loan : loansTables){
-            if(loan.getLoanId().equals(loansTable.getLoanId())){
-                return;
-            }
+        if(loansTables == null){
+            loanTableQueries.insertLoanToStorage(loansTable);
         }
-
-        loanTableQueries.insertLoanToStorage(loansTable);
     }
 
     /**********************Sae new collections to storage************/
@@ -333,10 +310,6 @@ public class Collection {
     /**************Retrieves data to show on slideuppanel************/
     public void getDueCollectionData(){
         List<CollectionTable>[] collectionTables = collectionTableQueries.loadAllDueCollections();
-
-        //Updates UI
-        FragmentManager fm = fragmentActivity.getSupportFragmentManager();
-        MapFragment fragment = (MapFragment) fm.findFragmentByTag("home");
 
         fragment.dueCollectionList.clear();
         fragment.overDueCollectionList.clear();
@@ -420,8 +393,6 @@ public class Collection {
     }
 
     private void drawCollectionMarker(final List<CollectionTable> collectionTable) {
-        FragmentManager fm = fragmentActivity.getSupportFragmentManager();
-        final MapFragment fragment = (MapFragment) fm.findFragmentByTag("home");
 
         final ArrayList<Marker> markers = new ArrayList<>();
         fragment.mGoogleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
@@ -476,9 +447,9 @@ public class Collection {
     public void getSingleDueCollectionData(String collectionId){
         CollectionTable collectionTable = collectionTableQueries.loadSingleCollection(collectionId);
 
-        //Updates UI
-        FragmentManager fm = fragmentActivity.getSupportFragmentManager();
-        MapFragment fragment = (MapFragment) fm.findFragmentByTag("home");
+        //draw markers
+        List<CollectionTable>[] collectionTables = collectionTableQueries.loadAllDueCollections();
+        drawCollectionMarker(collectionTables[0]);
 
         DueCollectionDetails dueCollectionDetails = new DueCollectionDetails();
         dueCollectionDetails.setDueAmount(collectionTable.getCollectionDueAmount());

@@ -124,21 +124,16 @@ public class Loan {
      * @param groupId
      */
     private void getGroupDetails(String groupId) {
-        List<GroupBorrowerTable> groupBorrowerTables = groupBorrowerTableQueries.loadAllGroups();
+        GroupBorrowerTable groupBorrowerTables = groupBorrowerTableQueries.loadSingleBorrowerGroup(groupId);
 
-        Boolean doesDataExist = false;
-        for (GroupBorrowerTable table : groupBorrowerTables) {
-            if(table.getGroupId().equals(groupId)){
-                doesDataExist = true;
-                count++;
-                if(count == docSize) {
-                    loadLoansToUI();
-                }
-                break;
+        if(groupBorrowerTables == null){
+            getNewGroupDetails(groupId);
+        }else{
+            count++;
+            if(count == docSize) {
+                loadLoansToUI();
             }
         }
-
-        if(!doesDataExist) getNewGroupDetails(groupId);
 
     }
 
@@ -172,12 +167,8 @@ public class Loan {
      * @param groupBorrowerTable
      */
     private void saveGroupToLocalStorage(GroupBorrowerTable groupBorrowerTable) {
-        List<GroupBorrowerTable> groupBorrowerTable1 = groupBorrowerTableQueries.loadAllGroups();
-        for (GroupBorrowerTable table : groupBorrowerTable1) {
-            if(table.getGroupId().equals(groupBorrowerTable.getGroupId())) return;
-        }
-
-        groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
+        GroupBorrowerTable groupBorrowerTable1 = groupBorrowerTableQueries.loadSingleBorrowerGroup(groupBorrowerTable.getGroupId());
+        if(groupBorrowerTable1 == null) groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
     }
 
     /**
@@ -187,21 +178,16 @@ public class Loan {
      * @param borrowerId
      */
     private void getBorrowerDetails(String borrowerId) {
-        List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowers();
+        BorrowersTable borrowersTables = borrowersTableQueries.loadSingleBorrower(borrowerId);
 
-        Boolean doesDataExist = false;
-        for (BorrowersTable borrowersTable : borrowersTables) {
-            if(borrowersTable.getBorrowersId().equals(borrowerId)){
-                doesDataExist = true;
-                count++;
-                if(count == docSize) {
-                    loadLoansToUI();
-                }
-                break;
+        if(borrowersTables == null){
+            getNewBorrowerDetail(borrowerId);
+        }else{
+            count++;
+            if(count == docSize) {
+                loadLoansToUI();
             }
         }
-
-        if(!doesDataExist) getNewBorrowerDetail(borrowerId);
 
     }
 
@@ -231,36 +217,30 @@ public class Loan {
                 });
     }
 
-    private void saveBorrowerImage(BorrowersTable borrowersTable) {
-        List<BorrowersTable> borrowersTableList = borrowersTableQueries.loadAllBorrowers();
+    private void saveBorrowerImage(final BorrowersTable borrowersTable) {
+        final BorrowersTable table = borrowersTableQueries.loadSingleBorrower(borrowersTable.getBorrowersId());
 
-        for (final BorrowersTable table : borrowersTableList) {
-            if(borrowersTable.getBorrowersId().equals(table.getBorrowersId())
-                    && table.getBorrowerImageByteArray() == null){
+        if(table.getBorrowerImageByteArray() == null){
 
-                BitmapUtil.getImageWithGlide(activity, borrowersTable.getProfileImageUri())
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                saveImage(resource, table);
-                            }
-                        });
-                return;
+            BitmapUtil.getImageWithGlide(activity, borrowersTable.getProfileImageUri())
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            saveImage(resource, table);
+                        }
+                    });
 
-            }else if(borrowersTable.getBorrowersId().equals(table.getBorrowersId())
-                    && table.getBorrowerImageByteArray() != null
-                    && !borrowersTable.getProfileImageUri().equals(table.getProfileImageUri())){
+        }else if(table.getBorrowerImageByteArray() != null
+                && !borrowersTable.getProfileImageUri().equals(table.getProfileImageUri())){
 
-                BitmapUtil.getImageWithGlide(activity, borrowersTable.getProfileImageUri())
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                saveImage(resource, table);
-                            }
-                        });
-                return;
-
-            }
+            BitmapUtil.getImageWithGlide(activity, borrowersTable.getProfileImageUri())
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            borrowersTable.setId(table.getId());
+                            saveImage(resource, borrowersTable);
+                        }
+                    });
         }
     }
 
@@ -277,12 +257,10 @@ public class Loan {
      * @param borrowersTable
      */
     private void saveBorrowerToLocalStorage(BorrowersTable borrowersTable) {
-        List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowers();
-        for (BorrowersTable table : borrowersTables) {
-            if(table.getBorrowersId().equals(borrowersTable.getBorrowersId())) return;
+        BorrowersTable borrowersTables = borrowersTableQueries.loadSingleBorrower(borrowersTable.getBorrowersId());
+        if(borrowersTables == null){
+            borrowersTableQueries.insertBorrowersToStorage(borrowersTable);
         }
-
-        borrowersTableQueries.insertBorrowersToStorage(borrowersTable);
     }
 
     /**
@@ -296,38 +274,20 @@ public class Loan {
     private void getLoanType(LoansTable loansTable) {
 
         if(loansTable.getIsOtherLoanType()) {
-            List<OtherLoanTypesTable> otherLoanTypesTable = otherLoanTypesTableQueries.loadAllLoanTpes();
+            OtherLoanTypesTable otherLoanTypesTable = otherLoanTypesTableQueries.loadSingleLoanType(loansTable.getLoanTypeId());
 
-            Boolean doesDataExist = false;
-            if(otherLoanTypesTable != null) {
-                for (OtherLoanTypesTable typesTable : otherLoanTypesTable) {
-                    if(typesTable.getOtherLoanTypeId().equals(loansTable.getLoanTypeId())){
-                        doesDataExist = true;
-                        if(loansTable.getBorrowerId() != null) getBorrowerDetails(loansTable.getBorrowerId());
-                        else getGroupDetails(loansTable.getGroupId());
-                        break;
-                    }
-                }
-
-                if(!doesDataExist) getOtherLoanType(loansTable);
-            }
+            if(otherLoanTypesTable != null){
+                if(loansTable.getBorrowerId() != null) getBorrowerDetails(loansTable.getBorrowerId());
+                else getGroupDetails(loansTable.getGroupId());
+            }else getOtherLoanType(loansTable);
         }
         else{
-            List<LoanTypeTable> loanTypeTable = loanTypeTableQueries.loadAllLoanTpes();
+            LoanTypeTable loanTypeTable = loanTypeTableQueries.loadSingleLoanType(loansTable.getLoanTypeId());
 
-            Boolean doesDataExist = false;
             if(loanTypeTable != null){
-                for (LoanTypeTable typeTable : loanTypeTable) {
-                    if(typeTable.getLoanTypeId().equals(loansTable.getLoanTypeId())){
-                        doesDataExist = true;
-                        if(loansTable.getBorrowerId() != null) getBorrowerDetails(loansTable.getBorrowerId());
-                        else getGroupDetails(loansTable.getGroupId());
-                        break;
-                    }
-                }
-
-                if(!doesDataExist) getNormalLoanType(loansTable);
-            }
+                if(loansTable.getBorrowerId() != null) getBorrowerDetails(loansTable.getBorrowerId());
+                else getGroupDetails(loansTable.getGroupId());
+            }else getNormalLoanType(loansTable);
         }
     }
 
@@ -360,12 +320,8 @@ public class Loan {
      * @param loanTypeTable
      */
     private void saveLoanTypeToLocalStorage(LoanTypeTable loanTypeTable) {
-        List<LoanTypeTable> loanTypeTableList = loanTypeTableQueries.loadAllLoanTpes();
-        for (LoanTypeTable table : loanTypeTableList) {
-            if(table.getLoanTypeId().equals(loanTypeTable.getLoanTypeId())) return;
-        }
-
-        loanTypeTableQueries.insertLoanTypeToStorage(loanTypeTable);
+        LoanTypeTable loanTypeTableList = loanTypeTableQueries.loadSingleLoanType(loanTypeTable.getLoanTypeId());
+        if(loanTypeTableList == null) loanTypeTableQueries.insertLoanTypeToStorage(loanTypeTable);
     }
 
     /**
@@ -397,12 +353,8 @@ public class Loan {
      * @param otherLoanTypesTable
      */
     private void saveOtherLoanTypeToLocalStorage(OtherLoanTypesTable otherLoanTypesTable) {
-        List<OtherLoanTypesTable> otherLoanTypesTableList = otherLoanTypesTableQueries.loadAllLoanTpes();
-        for (OtherLoanTypesTable table : otherLoanTypesTableList) {
-            if(table.getOtherLoanTypeId().equals(otherLoanTypesTable.getOtherLoanTypeId())) return;
-        }
-
-        otherLoanTypesTableQueries.insertLoanTypeToStorage(otherLoanTypesTable);
+        OtherLoanTypesTable otherLoanTypesTableList = otherLoanTypesTableQueries.loadSingleLoanType(otherLoanTypesTable.getOtherLoanTypeId());
+        if(otherLoanTypesTableList == null) otherLoanTypesTableQueries.insertLoanTypeToStorage(otherLoanTypesTable);
     }
 
     /**
@@ -410,12 +362,8 @@ public class Loan {
      * @param loansTable
      */
     private void saveLoanToLocalStorage(LoansTable loansTable) {
-        List<LoansTable> loansTables = loanTableQueries.loadAllLoans();
-        for (LoansTable table : loansTables) {
-            if(table.getLoanId().equals(loansTable.getLoanTypeId())) return;
-        }
-
-        loanTableQueries.insertLoanToStorage(loansTable);
+        LoansTable loansTables = loanTableQueries.loadSingleLoan(loansTable.getLoanId());
+        if(loansTables == null) loanTableQueries.insertLoanToStorage(loansTable);
     }
 
     /**
@@ -433,13 +381,13 @@ public class Loan {
                 BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(table.getBorrowerId());
 
                 if(table.getIsOtherLoanType()){
-                    List<OtherLoanTypesTable> otherLoanTypesTable = otherLoanTypesTableQueries.loadSingleLoanTypeList(table.getLoanTypeId());
+                    OtherLoanTypesTable otherLoanTypesTable = otherLoanTypesTableQueries.loadSingleLoanType(table.getLoanTypeId());
 
                     LoanDetails loanDetails = new LoanDetails();
                     loanDetails.setBorrowersTable(borrowersTable);
                     loanDetails.setLoansTable(table);
-                    if(!otherLoanTypesTable.isEmpty()){
-                        loanDetails.setOtherLoanTypesTable(otherLoanTypesTable.get(0));
+                    if(otherLoanTypesTable != null){
+                        loanDetails.setOtherLoanTypesTable(otherLoanTypesTable);
                         ((LoanActivity) activity).loanDetailsList.add(loanDetails);
                         secondCount++;
                         ((LoanActivity) activity).loanRecyclerAdapter.notifyDataSetChanged();
@@ -447,13 +395,13 @@ public class Loan {
                     else getOtherLoanTypeForWhenDueCollection(table, loanDetails);
 
                 }else{
-                    List<LoanTypeTable> loanTypeTable = loanTypeTableQueries.loadSingleLoanTypeList(table.getLoanTypeId());
+                    LoanTypeTable loanTypeTable = loanTypeTableQueries.loadSingleLoanType(table.getLoanTypeId());
 
                     LoanDetails loanDetails = new LoanDetails();
                     loanDetails.setBorrowersTable(borrowersTable);
                     loanDetails.setLoansTable(table);
-                    if(!loanTypeTable.isEmpty()){
-                        loanDetails.setLoanTypeTable(loanTypeTable.get(0));
+                    if(loanTypeTable != null){
+                        loanDetails.setLoanTypeTable(loanTypeTable);
                         ((LoanActivity) activity).loanDetailsList.add(loanDetails);
                         secondCount++;
                         ((LoanActivity) activity).loanRecyclerAdapter.notifyDataSetChanged();
@@ -464,26 +412,26 @@ public class Loan {
                 GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(table.getGroupId());
 
                 if(table.getIsOtherLoanType()){
-                    List<OtherLoanTypesTable> otherLoanTypesTable = otherLoanTypesTableQueries.loadSingleLoanTypeList(table.getLoanTypeId());
+                    OtherLoanTypesTable otherLoanTypesTable = otherLoanTypesTableQueries.loadSingleLoanType(table.getLoanTypeId());
 
                     LoanDetails loanDetails = new LoanDetails();
                     loanDetails.setGroupBorrowerTable(groupBorrowerTable);
                     loanDetails.setLoansTable(table);
-                    if(!otherLoanTypesTable.isEmpty()){
-                        loanDetails.setOtherLoanTypesTable(otherLoanTypesTable.get(0));
+                    if(otherLoanTypesTable != null){
+                        loanDetails.setOtherLoanTypesTable(otherLoanTypesTable);
                         ((LoanActivity) activity).loanDetailsList.add(loanDetails);
                         secondCount++;
                         ((LoanActivity) activity).loanRecyclerAdapter.notifyDataSetChanged();
                     }
                     else getOtherLoanTypeForWhenDueCollection(table, loanDetails);
                 }else{
-                    List<LoanTypeTable> loanTypeTable = loanTypeTableQueries.loadSingleLoanTypeList(table.getLoanTypeId());
+                    LoanTypeTable loanTypeTable = loanTypeTableQueries.loadSingleLoanType(table.getLoanTypeId());
 
                     LoanDetails loanDetails = new LoanDetails();
                     loanDetails.setGroupBorrowerTable(groupBorrowerTable);
                     loanDetails.setLoansTable(table);
-                    if(!loanTypeTable.isEmpty()){
-                        loanDetails.setLoanTypeTable(loanTypeTable.get(0));
+                    if(loanTypeTable != null){
+                        loanDetails.setLoanTypeTable(loanTypeTable);
                         ((LoanActivity) activity).loanDetailsList.add(loanDetails);
                         secondCount++;
                         ((LoanActivity) activity).loanRecyclerAdapter.notifyDataSetChanged();
