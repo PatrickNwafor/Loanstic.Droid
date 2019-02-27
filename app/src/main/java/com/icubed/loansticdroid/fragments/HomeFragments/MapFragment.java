@@ -62,6 +62,8 @@ import com.icubed.loansticdroid.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.ceryle.segmentedbutton.SegmentedButtonGroup;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -80,7 +82,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Account account;
     private BorrowersQueries borrowersQueries;
     public MarkerOptions markerOptions;
-
+    public SegmentedButtonGroup sbg;
     public List<DueCollectionDetails> dueCollectionList;
     public SlideUpPanelRecyclerAdapter slideUpPanelRecyclerAdapter;
     private RecyclerView overDueRecyclerView;
@@ -112,6 +114,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
+        //segmented control
+        sbg = v.findViewById(R.id.segmentedButtonGroup);
+        sbg.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition(){
+            @Override
+            public void onClickedButtonPosition(int position){
+                if(position==0) {
+
+                    //startFragment(singleBorrowerFragment, "single");
+                }
+                else if (position==1) {
+
+                   // startFragment(groupBorrowerFragment, "group");
+                }
+            }
+        });
+
         btnShow = v.findViewById(R.id.btn_show);
         slideUp = v.findViewById(R.id.slideUp);
         search = v.findViewById(R.id.searchEditText);

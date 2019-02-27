@@ -14,7 +14,7 @@
     android:focusable="true"
 
     sothree:umanoScrollableView="@id/collection_layout"
-    sothree:umanoPanelHeight="120dp"
+    sothree:umanoPanelHeight="60dp"
     sothree:umanoShadowHeight="4dp"
 
 
@@ -83,7 +83,7 @@
 
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="115dp"
+            android:layout_marginBottom="62dp"
             android:clickable="true"
             android:elevation="10dp"
             android:foreground="?attr/selectableItemBackground"
@@ -97,7 +97,7 @@
 
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="122dp"
+            android:layout_marginBottom="67dp"
             android:elevation="4dp"
             android:text="Slide Up"
             android:textColor="@color/colorPrimary" />
@@ -108,10 +108,9 @@
     <!-- SLIDING LAYOUT PARENT-->
 
     <android.support.v7.widget.CardView
-        android:id="@+id/dragView"
+
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        sothree:cardCornerRadius="20dp"
+        android:layout_height="match_parent"
         android:clickable="true"
         android:focusable="true"
         android:background="#ffffff"
@@ -123,16 +122,66 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingBottom="8dp"
-            android:paddingTop="8dp"
-            android:visibility="invisible">
+            android:visibility="visible">
+<android.support.v7.widget.CardView
+    android:id="@+id/dragView"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:elevation="4dp"
+   >
 
-            <TextView
-                android:id="@+id/due_text"
-                android:layout_width="wrap_content"
+
+</android.support.v7.widget.CardView>
+
+            <co.ceryle.segmentedbutton.SegmentedButtonGroup
+                android:id="@+id/segmentedButtonGroup"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Due Collections"
-                android:textColor="@color/colorAccent" />
+                android:layout_margin="10dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="9dp"
+
+                sothree:sbg_animateSelector="bounce"
+                sothree:sbg_backgroundColor="@color/whiteEnd"
+                sothree:sbg_dividerColor="@color/colorPrimary"
+                sothree:sbg_dividerPadding="10dp"
+                sothree:sbg_dividerSize="1dp"
+                sothree:sbg_position="0"
+                sothree:sbg_radius="2dp"
+                sothree:sbg_ripple="true"
+                sothree:sbg_rippleColor="@color/colorPrimary"
+                sothree:sbg_selectorColor="@color/colorPrimary"
+                sothree:sbg_selectorTextColor="@color/whiteEnd"
+                sothree:sbg_shadow="true"
+                sothree:sbg_shadowElevation="3dp"
+                sothree:sbg_shadowMargin="4dp"
+                >
+
+                <Button
+                    android:id="@+id/dueCollectionsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="10dp"
+                    android:text="Due Collections"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/overdueCollectionsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="10dp"
+                    android:text="Overdue Collections"
+                    android:textAllCaps="false" />
+
+
+            </co.ceryle.segmentedbutton.SegmentedButtonGroup>
+
+
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/collection_list"
@@ -141,13 +190,7 @@
 
             </android.support.v7.widget.RecyclerView>
 
-            <TextView
-                android:id="@+id/overdue_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Over Due Collections"
-                android:textColor="@color/colorAccent" />
+
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/overdue_list"
@@ -155,6 +198,8 @@
                 android:layout_height="wrap_content">
 
             </android.support.v7.widget.RecyclerView>
+
+</FrameLayout>
         </LinearLayout>
 
         <LinearLayout

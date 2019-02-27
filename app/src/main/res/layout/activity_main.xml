@@ -30,27 +30,26 @@
         android:layout_height="wrap_content">
 
 
-
-
         <ImageView
             android:id="@+id/menu_btn"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:foreground="?attr/selectableItemBackground"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
             android:clickable="true"
-            android:layout_margin="13dp"
+            android:foreground="?attr/selectableItemBackground"
             app:srcCompat="@drawable/ic_menu_black_24dp" />
 
         <ToggleButton
             android:id="@+id/toggleButton"
+            style="@style/toggleButton"
             android:layout_width="100dp"
             android:layout_height="40dp"
-            android:layout_gravity="end"
 
+            android:layout_gravity="end"
             android:layout_margin="10dp"
-            style="@style/toggleButton"
-            android:background="@drawable/ic_toggle_bg"/>
+            android:background="@drawable/ic_toggle_bg" />
 
 
     </FrameLayout>
