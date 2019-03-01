@@ -153,12 +153,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         //setting layout slide listener
         slidingLayout = v.findViewById(R.id.sliding_layout);
         //event
+        final float[] prevProgress = new float[1];
+        prevProgress[0] = 0;
         slidingLayout.addPanelSlideListener(new PanelSlideListener() {
             @Override
             public void onPanelSlide(View view, float v) {
                 btnShow.setVisibility(View.GONE);
                 slideUp.setVisibility(View.GONE);
                 collectionImage.setVisibility(View.GONE);
+
+                float diff = v - prevProgress[0];
+                if(diff > 0){
+                    //increasing
+                    Log.d(TAG, "increase: "+v);
+                }
+                else{
+                    //decrease
+                    Log.d(TAG, "decrease: "+v);
+                }
+                prevProgress[0] = v;
             }
 
             @Override
@@ -180,13 +193,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         overDueCollectionFragment = new OverDueCollectionFragment();
 
         btnShow.setOnClickListener(onShowListener());
-
-        /*****
-         * @Todo
-         * to un comment the line of code below to load due collections
-         * to remove the hide progress bar method
-         */
-        //hideProgressBar();
     }
 
     /**
@@ -385,7 +391,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    /****************************set marker on map******************************/
     private void getCurrentLocationMarker(Location location) {
         markerOptions = new MarkerOptions();
 
