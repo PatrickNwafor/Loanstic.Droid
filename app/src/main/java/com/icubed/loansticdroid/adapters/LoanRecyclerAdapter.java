@@ -152,13 +152,13 @@ public class LoanRecyclerAdapter extends RecyclerView.Adapter<LoanRecyclerAdapte
         }
 
         private String getMaturityDate(LoansTable loansTable) {
-            if(loansTable.getLoanDurationUnit().equals("year")){
+            if(loansTable.getLoanDurationUnit().equals(DateUtil.YEAR)){
                 Date date = DateUtil.addYear(loansTable.getLoanCreationDate(), loansTable.getLoanDuration());
                 return DateUtil.dateString(date);
-            }else if(loansTable.getLoanDurationUnit().equals("month")){
+            }else if(loansTable.getLoanDurationUnit().equals(DateUtil.MONTH)){
                 Date date = DateUtil.addMonth(loansTable.getLoanCreationDate(), loansTable.getLoanDuration());
                 return DateUtil.dateString(date);
-            }else if(loansTable.getLoanDurationUnit().equals("week")){
+            }else if(loansTable.getLoanDurationUnit().equals(DateUtil.WEEK)){
                 Date date = DateUtil.addDay(loansTable.getLoanCreationDate(), loansTable.getLoanDuration()*7);
                 return DateUtil.dateString(date);
             }else{

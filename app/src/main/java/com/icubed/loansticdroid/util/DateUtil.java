@@ -7,6 +7,17 @@ import java.util.Date;
 import java.util.Locale;
 
 public class DateUtil {
+
+    public static final String YEAR = "year";
+    public static final String MONTH = "month";
+    public static final String DAY = "day";
+    public static final String WEEK = "week";
+
+    public static final String PER_YEAR = "per year";
+    public static final String PER_MONTH = "per month";
+    public static final String PER_DAY = "per day";
+    public static final String PER_WEEK = "per week";
+
     public static Date addDay(Date date, int i) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);

@@ -130,7 +130,7 @@ public class LoanTerms extends AppCompatActivity {
         spRate = findViewById(R.id.spRate);
 
         ArrayAdapter<CharSequence> adapterRate;
-        String[] RateArr = {"per year", "per month", "per week", "per day"};
+        String[] RateArr = {DateUtil.PER_YEAR, DateUtil.PER_MONTH, DateUtil.PER_WEEK, DateUtil.PER_DAY};
         adapterRate = new ArrayAdapter<CharSequence>(this,android.R.layout.simple_spinner_item,RateArr);
         adapterRate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spRate.setAdapter(adapterRate);
@@ -139,7 +139,7 @@ public class LoanTerms extends AppCompatActivity {
         //for duration
         spDuration = findViewById(R.id.spDuration);
         ArrayAdapter<CharSequence> adapterDuration;
-        String[] DurationArr = {"year", "month", "week", "day"};
+        String[] DurationArr = {DateUtil.YEAR, DateUtil.MONTH, DateUtil.WEEK, DateUtil.DAY};
         adapterDuration = new ArrayAdapter<CharSequence>(this,android.R.layout.simple_spinner_item,DurationArr);
         adapterDuration.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spDuration.setAdapter(adapterDuration);
@@ -148,7 +148,7 @@ public class LoanTerms extends AppCompatActivity {
         //for duration
         spCycle = findViewById(R.id.spCycle);
         ArrayAdapter<CharSequence> adapterCycle;
-        String[] CycleArr = {"per year", "per month", "per week", "per day"};
+        String[] CycleArr = {DateUtil.PER_YEAR, DateUtil.PER_MONTH, DateUtil.PER_WEEK, DateUtil.PER_DAY};
         adapterCycle = new ArrayAdapter<CharSequence>(this,android.R.layout.simple_spinner_item,CycleArr);
         adapterCycle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCycle.setAdapter(adapterCycle);

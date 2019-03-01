@@ -85,10 +85,7 @@ public class SexDOBFragment extends Fragment {
         sexDrp.setAdapter(adapterSex);
         selectedSex = sexDrp.getSelectedItem().toString();
 
-
-
-
-        dateOfBirthTextView= (EditText) view.findViewById(R.id.date_of_birth);
+        dateOfBirthTextView= view.findViewById(R.id.date_of_birth);
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override

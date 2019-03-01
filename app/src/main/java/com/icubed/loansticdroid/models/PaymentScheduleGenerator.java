@@ -77,16 +77,16 @@ public class PaymentScheduleGenerator {
     private List<CollectionTable> generateCollection(double repaymentAmount){
 
         switch (loan.getRepaymentAmountUnit()){
-            case "per day":
+            case DateUtil.PER_DAY:
                 return generateRepaymentPerDay(repaymentAmount);
 
-            case "per month":
+            case DateUtil.PER_MONTH:
                 return generateRepaymentPerMonth(repaymentAmount);
 
-            case "per week":
+            case DateUtil.PER_WEEK:
                 return generateRepaymentPerWeek(repaymentAmount);
 
-            case "per year":
+            case DateUtil.PER_YEAR:
                 return generateRepaymentPerYear(repaymentAmount);
 
                 default:
