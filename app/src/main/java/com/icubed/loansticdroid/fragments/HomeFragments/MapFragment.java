@@ -2,11 +2,8 @@ package com.icubed.loansticdroid.fragments.HomeFragments;
 
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
@@ -17,14 +14,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.*;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -44,13 +39,8 @@ import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
 import com.icubed.loansticdroid.activities.MainActivity;
-import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
-import com.icubed.loansticdroid.cloudqueries.Account;
-import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.fragments.CollectionFragments.DueCollectionFragment;
 import com.icubed.loansticdroid.fragments.CollectionFragments.OverDueCollectionFragment;
-import com.icubed.loansticdroid.models.DueCollection;
-import com.icubed.loansticdroid.models.DueCollectionDetails;
 import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.BitmapUtil;
 import com.icubed.loansticdroid.util.KeyboardUtil;
@@ -273,23 +263,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
 
-    public void moveCamera(ArrayList<Marker> markers){
+    public void moveCamera(ArrayList<Marker> markers, List<LatLng> path){
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        for (Marker marker : markers) {
+        if(path != null) {
+            path.add(0, markers.get(0).getPosition());
+            path.lastIndexOf(markers.get(1).getPosition());
 
-            builder.include(marker.getPosition());
+            for (LatLng marker : path) {
 
+                builder.include(marker);
+
+            }
+        }else{
+            for (Marker marker : markers) {
+
+                builder.include(marker.getPosition());
+
+            }
         }
+
         LatLngBounds bounds = builder.build();
 
         //Then obtain a movement description object by using the factory: CameraUpdateFactory:
-        int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
-        int padding = (int) (width * 0.45);
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+        int padding = 50;
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,padding);
 
+        mGoogleMap.setPadding(0, (int) (0.2*height), 0, (int) (0.15*height));
         mGoogleMap.animateCamera(cu);
 
     }
@@ -394,7 +396,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             polyline = mGoogleMap.addPolyline(opts);
         }
 
-        moveCamera(markers);
+        moveCamera(markers, path);
     }
 
     private void mapOnClickListener() {

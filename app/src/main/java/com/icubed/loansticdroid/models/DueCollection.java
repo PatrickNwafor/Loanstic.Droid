@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -23,7 +22,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.activities.MainActivity;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.cloudqueries.CollectionQueries;
 import com.icubed.loansticdroid.cloudqueries.GroupBorrowerQueries;
@@ -440,7 +438,7 @@ public class DueCollection {
 
                         mapFragment.myMarker = mapFragment.mGoogleMap.addMarker(mapFragment.markerOptions);
                         markers.add(mapFragment.myMarker);
-                        mapFragment.moveCamera(markers);
+                        mapFragment.moveCamera(markers, null);
 
                     } else {
                         mapFragment.drawMarker(mapFragment.markerOptions);
