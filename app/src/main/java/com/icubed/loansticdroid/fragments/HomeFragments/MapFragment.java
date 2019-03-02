@@ -390,7 +390,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         //Draw the polyline
         if (path.size() > 0) {
             if(polyline != null) polyline.remove();
-            PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
+            PolylineOptions opts = new PolylineOptions().addAll(path).color(R.color.colorAccent).width(20);
             polyline = mGoogleMap.addPolyline(opts);
         }
 
