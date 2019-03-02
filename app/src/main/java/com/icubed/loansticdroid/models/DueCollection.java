@@ -419,6 +419,7 @@ public class DueCollection {
                                 else circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
                                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
                                 markers.add(mapFragment.mGoogleMap.addMarker(markerOptions));
+
                             } else {
                                 GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
                                 String markerTitle = groupBorrowerTable.getGroupName();
@@ -437,7 +438,8 @@ public class DueCollection {
                             }
                         }
 
-                        markers.add(mapFragment.mGoogleMap.addMarker(mapFragment.markerOptions));
+                        mapFragment.myMarker = mapFragment.mGoogleMap.addMarker(mapFragment.markerOptions);
+                        markers.add(mapFragment.myMarker);
                         mapFragment.moveCamera(markers);
 
                     } else {

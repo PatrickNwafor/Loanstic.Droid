@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -49,6 +50,7 @@ import com.icubed.loansticdroid.fragments.CollectionFragments.DueCollectionFragm
 import com.icubed.loansticdroid.fragments.CollectionFragments.OverDueCollectionFragment;
 import com.icubed.loansticdroid.models.DueCollection;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
+import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.BitmapUtil;
 import com.icubed.loansticdroid.util.KeyboardUtil;
 import com.icubed.loansticdroid.util.PlayServiceUtil;
@@ -74,7 +76,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     MapView mMapView;
     public GoogleMap mGoogleMap;
@@ -83,10 +85,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     TextView slideUp;
     Animation bounce, bounce1, blink;
     EditText search;
+    private static boolean isLocationModeCheck = true;
 
     public MarkerOptions markerOptions;
     public SegmentedButtonGroup sbg;
     public LinearLayout progressLayout, collectionLayout;
+    public Marker myMarker = null;
 
     private static final String TAG = "MapFragment";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -225,24 +229,47 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        mapOnClickListener();
-        initMap();
-        startFragment(dueCollectionFragment, "due");
-        //segmented control
-        sbg.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition(){
-            @Override
-            public void onClickedButtonPosition(int position){
-                if(position==0) {
-
-                    startFragment(dueCollectionFragment, "due");
-                }
-                else if (position==1) {
-
-                    startFragment(overDueCollectionFragment, "overdue");
-                }
-            }
-        });
+        mGoogleMap.setOnMarkerClickListener(this);
+        onMapReadyFeatures();
     }
+
+    private void onMapReadyFeatures(){
+        if(checkIfLocationModeIsHighAccuracy()) {
+            mapOnClickListener();
+            initMap();
+            startFragment(dueCollectionFragment, "due");
+            //segmented control
+            sbg.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition() {
+                @Override
+                public void onClickedButtonPosition(int position) {
+                    if (position == 0) {
+
+                        startFragment(dueCollectionFragment, "due");
+                    } else if (position == 1) {
+
+                        startFragment(overDueCollectionFragment, "overdue");
+                    }
+                }
+            });
+        }else {
+            isLocationModeCheck = false;
+            AndroidUtils.changeLocationModeToHighAccuracy(getContext());
+        }
+    }
+
+    private boolean checkIfLocationModeIsHighAccuracy(){
+        int locationMode = 4234;
+        try {
+            locationMode = Settings.Secure.getInt(getContext().getContentResolver(),Settings.Secure.LOCATION_MODE);
+
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return (locationMode != Settings.Secure.LOCATION_MODE_OFF && locationMode == Settings.Secure.LOCATION_MODE_HIGH_ACCURACY); //check location mode
+
+    }
+
 
     public void moveCamera(ArrayList<Marker> markers){
 
@@ -257,7 +284,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         //Then obtain a movement description object by using the factory: CameraUpdateFactory:
 
-        int padding = 100; // offset from edges of the map in pixels
+        int padding = 500; // offset from edges of the map in pixels
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
 
         //Finally move the map:
@@ -299,6 +326,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+        marker.showInfoWindow();
+        if(!marker.equals(myMarker)){
+            ArrayList<Marker> arrayList = new ArrayList<>();
+            arrayList.add(marker);
+            arrayList.add(myMarker);
+            selectedUserLatLng = marker.getPosition();
+            getRoute(myMarker.getPosition(), marker.getPosition(), arrayList);
+            return true;
+        }
+
+        return false;
     }
 
     private void drawRoute(DirectionsResult res, ArrayList<Marker> markers) {
@@ -411,7 +454,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public void drawMarker(MarkerOptions markerOptions){
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerOptions.getPosition(), 10));
-        mGoogleMap.addMarker(markerOptions);
+        myMarker = mGoogleMap.addMarker(markerOptions);
     }
 
     /***************************Accepting Permission***********************/
@@ -448,6 +491,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        if(!isLocationModeCheck) onMapReadyFeatures();
         getCurrentLocation();
     }
 
