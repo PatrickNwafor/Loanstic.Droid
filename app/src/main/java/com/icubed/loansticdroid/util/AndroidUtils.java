@@ -44,7 +44,7 @@ public class AndroidUtils {
     public static void changeLocationModeToHighAccuracy(final Context context){
         Log.d(TAG, "changeLocationModeToHighAccuracy: called");
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("Your Location mode is not set to high accuracy. Click okay to change it")
+        builder.setMessage("Your Location mode is not set to high accuracy. Click okay to change")
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
