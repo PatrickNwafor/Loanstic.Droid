@@ -31,6 +31,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
@@ -86,6 +87,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     Animation bounce, bounce1, blink;
     EditText search;
     private static boolean isLocationModeCheck = true;
+    private Polyline polyline;
 
     public MarkerOptions markerOptions;
     public SegmentedButtonGroup sbg;
@@ -335,6 +337,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             arrayList.add(marker);
             arrayList.add(myMarker);
             selectedUserLatLng = marker.getPosition();
+            navButton.setVisibility(VISIBLE);
             getRoute(myMarker.getPosition(), marker.getPosition(), arrayList);
             return true;
         }
@@ -386,8 +389,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         //Draw the polyline
         if (path.size() > 0) {
+            if(polyline != null) polyline.remove();
             PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
-            mGoogleMap.addPolyline(opts);
+            polyline = mGoogleMap.addPolyline(opts);
         }
 
         moveCamera(markers);
