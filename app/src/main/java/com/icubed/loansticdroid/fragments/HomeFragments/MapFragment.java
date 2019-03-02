@@ -283,12 +283,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         LatLngBounds bounds = builder.build();
 
         //Then obtain a movement description object by using the factory: CameraUpdateFactory:
-
-        int padding = 500; // offset from edges of the map in pixels
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-
-        //Finally move the map:
-        //Or if you want an animation:
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+        int padding = (int) (width * 0.45);
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
 
         mGoogleMap.animateCamera(cu);
 
