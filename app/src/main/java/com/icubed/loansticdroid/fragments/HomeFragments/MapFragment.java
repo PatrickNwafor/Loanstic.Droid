@@ -268,9 +268,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
         if(path != null) {
-            path.add(0, markers.get(0).getPosition());
-            path.lastIndexOf(markers.get(1).getPosition());
-
             for (LatLng marker : path) {
 
                 builder.include(marker);
@@ -307,8 +304,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         //Execute Directions API request
         final DirectionsApiRequest req = DirectionsApi.newRequest(geoApiContext)
                 .origin(origin)
-                .destination(destination)
-                .mode(TravelMode.DRIVING);
+                .destination(destination);
 
         req.setCallback(new PendingResult.Callback<DirectionsResult>() {
             @Override
@@ -355,6 +351,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         if (res.routes != null && res.routes.length > 0) {
             DirectionsRoute route = res.routes[0];
 
+            path.add(markers.get(1).getPosition());
             if (route.legs !=null) {
                 for(int i=0; i<route.legs.length; i++) {
                     DirectionsLeg leg = route.legs[i];
@@ -387,6 +384,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     }
                 }
             }
+            path.add(markers.get(0).getPosition());
         }
 
         //Draw the polyline
