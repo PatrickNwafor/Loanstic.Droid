@@ -222,7 +222,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         mGoogleMap.setOnMarkerClickListener(this);
-        mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
         mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
         int height = getResources().getDisplayMetrics().heightPixels;
         mGoogleMap.setPadding(0, (int) (0.2*height), 0, (int) (0.15*height));
