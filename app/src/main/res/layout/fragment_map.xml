@@ -50,16 +50,6 @@
             android:imeOptions="actionSearch"
             android:inputType="text" />
 
-        <ImageButton
-            android:id="@+id/nav_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="70dp"
-            android:layout_marginStart="11dp"
-            android:src="@drawable/ic_navigation_black_24dp"
-            android:visibility="gone" />
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -106,6 +96,19 @@
                 android:visibility="gone"
                 android:textColor="@color/colorPrimary" />
 
+            <ImageButton
+                android:id="@+id/nav_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/btn_show1"
+                android:layout_gravity="bottom"
+                android:layout_marginEnd="18dp"
+                android:background="@drawable/circle_white"
+                android:elevation="4dp"
+                android:src="@drawable/ic_navigation_black_24dp"
+                android:visibility="gone" />
+
         </RelativeLayout>
     </FrameLayout>
 
@@ -136,7 +139,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/change_icon_later"
+                    android:src="@drawable/collect_icon"
                     android:layout_marginLeft="16dp"
                     />
 

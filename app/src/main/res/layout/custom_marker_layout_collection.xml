@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/custom_marker_view"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:background="@drawable/marker_background"
+    android:layout_width="60dp"
+
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:clipChildren="false"
 
     >
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/map_pin_copy_3"
+        android:paddingTop="2dp"
+        android:id="@+id/imageView2" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/backgroundd"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginLeft="5dp"
+
+
+        android:background="@drawable/borower_circle_back"
+        android:contentDescription="@null" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/user_dp"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="30dp"
-        android:layout_marginEnd="23dp"
-        android:layout_marginStart="23dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/circle_white"
-        android:contentDescription="@null"
-        android:src="@drawable/person_image"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.181" />
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="1dp"
 
-</android.support.constraint.ConstraintLayout>
+        android:background="@drawable/circle_white"
+        android:contentDescription="@null" />
+
+</RelativeLayout>
