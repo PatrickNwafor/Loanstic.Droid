@@ -222,6 +222,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         mGoogleMap.setOnMarkerClickListener(this);
+        mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
+        mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
+        int height = getResources().getDisplayMetrics().heightPixels;
+        mGoogleMap.setPadding(0, (int) (0.2*height), 0, (int) (0.15*height));
         onMapReadyFeatures();
     }
 
@@ -258,7 +262,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             e.printStackTrace();
         }
 
-        return (locationMode != Settings.Secure.LOCATION_MODE_OFF && locationMode == Settings.Secure.LOCATION_MODE_HIGH_ACCURACY); //check location mode
+        return (locationMode == Settings.Secure.LOCATION_MODE_HIGH_ACCURACY); //check location mode
 
     }
 
@@ -284,11 +288,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         LatLngBounds bounds = builder.build();
 
         //Then obtain a movement description object by using the factory: CameraUpdateFactory:
-        int height = getResources().getDisplayMetrics().heightPixels;
         int padding = 50;
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,padding);
-
-        mGoogleMap.setPadding(0, (int) (0.2*height), 0, (int) (0.15*height));
         mGoogleMap.animateCamera(cu);
 
     }
@@ -390,7 +391,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         //Draw the polyline
         if (path.size() > 0) {
             if(polyline != null) polyline.remove();
-            PolylineOptions opts = new PolylineOptions().addAll(path).color(R.color.colorAccent).width(20);
+            PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.GRAY).width(20);
             polyline = mGoogleMap.addPolyline(opts);
         }
 
