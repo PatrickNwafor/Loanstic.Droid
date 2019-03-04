@@ -15,12 +15,13 @@
     android:layout_height="60dp"
     android:src="@drawable/map_pin_copy_3"
     android:paddingTop="2dp"
+    android:paddingStart="20dp"
     android:id="@+id/imageView2" />
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/backgroundd"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_marginLeft="2dp"
+        android:layout_marginLeft="12dp"
 
 android:backgroundTint="@color/green"
         android:background="@drawable/borower_circle_back"
@@ -30,7 +31,7 @@ android:backgroundTint="@color/green"
         android:id="@+id/user_dp"
         android:layout_width="26dp"
         android:layout_height="26dp"
-android:layout_marginLeft="6.5dp"
+android:layout_marginLeft="17dp"
         android:layout_marginTop="4.5dp"
 
         android:background="@drawable/circle_white"
