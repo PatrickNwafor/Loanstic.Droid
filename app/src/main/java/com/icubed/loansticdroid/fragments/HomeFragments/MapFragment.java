@@ -481,7 +481,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
     public void hidePanel(){
-        if(slidingLayout.getPanelState() == PanelState.EXPANDED)
+        if(slidingLayout.getPanelState() == PanelState.EXPANDED || slidingLayout.getPanelState() == PanelState.ANCHORED)
         slidingLayout.setPanelState(PanelState.COLLAPSED);
     }
 

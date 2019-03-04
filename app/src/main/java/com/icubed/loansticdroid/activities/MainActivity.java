@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
             mDrawerLayout.closeDrawers();
 
-        }else if(fragment != null && fragment.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+        }else if(fragment != null && fragment.getPanelState() != SlidingUpPanelLayout.PanelState.COLLAPSED) {
 
             fragment.hidePanel();
 
