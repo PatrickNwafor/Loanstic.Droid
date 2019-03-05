@@ -156,7 +156,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             public void onPanelSlide(View view, float v) {
                 btnShow.setVisibility(View.GONE);
                 slideUp.setVisibility(View.GONE);
-                collectionImage.setVisibility(View.GONE);
+                collectionImage.setVisibility(View.VISIBLE);
 
                 float diff = v - prevProgress[0];
                 if(diff > 0){
@@ -449,7 +449,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.custom_marker_layout_user, null);
         CircleImageView circleImageView = view.findViewById(R.id.user_dp);
-        circleImageView.setImageResource(R.drawable.new_borrower);
+        circleImageView.setImageResource(R.drawable.new_borrower_green);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
 
         drawMarker(markerOptions);
