@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,7 @@ public class LoanActivity extends AppCompatActivity {
     public LoanRecyclerAdapter loanRecyclerAdapter;
     public SwipeRefreshLayout swipeRefreshLayout;
     public List<LoanDetails> loanDetailsList;
+    public LinearLayout emptyLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,7 @@ public class LoanActivity extends AppCompatActivity {
         searchLoanEditText = findViewById(R.id.searchEditText);
         loanProgressBar = findViewById(R.id.borrowerProgressBar);
         loanRecyclerView = findViewById(R.id.loan_list);
+        emptyLayout = findViewById(R.id.search_empty_layout);
 
         loan = new Loan(this);
         searchLoanEditTextListener();

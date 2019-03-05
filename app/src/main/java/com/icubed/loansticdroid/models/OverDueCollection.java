@@ -117,6 +117,7 @@ public class OverDueCollection {
                                 }
 
                             }else{
+                                if(fragment != null) fragment.emptyCollection.setVisibility(View.VISIBLE);
                                 hideProgressBar();
                                 removeRefresher();
                                 Log.d(TAG, "onComplete: No due collections for today");
@@ -333,6 +334,9 @@ public class OverDueCollection {
         fragment.overDueCollectionList.clear();
 
         if(!collectionTables.isEmpty()) {
+
+            if(fragment != null) fragment.emptyCollection.setVisibility(View.GONE);
+
             for (CollectionTable collectionTable : collectionTables) {
 
                 DueCollectionDetails dueCollectionDetails = new DueCollectionDetails();
@@ -371,7 +375,8 @@ public class OverDueCollection {
             if(fragment != null)
             fragment.emptyCollection.setVisibility(View.VISIBLE);
         }
-        
+
+
         hideProgressBar();
         removeRefresher();
 

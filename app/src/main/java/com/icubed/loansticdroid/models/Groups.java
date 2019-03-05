@@ -68,6 +68,7 @@ public class Groups {
                     }else{
                         removeRefresher();
                         ((BorrowerActivity) activity).borrowerProgressBar.setVisibility(View.GONE);
+                        if(fragment != null) fragment.emptyLayout.setVisibility(View.VISIBLE);
                         Toast.makeText(activity, "Document is empty", Toast.LENGTH_SHORT).show();
                     }
                 }else{
@@ -86,6 +87,8 @@ public class Groups {
         List<GroupBorrowerTable> groupBorrowerTables = groupBorrowerTableQueries.loadAllGroupsOrderByLastName();
 
         ((BorrowerActivity) activity).isGroupSearch = false;
+
+        if(fragment != null) fragment.emptyLayout.setVisibility(View.GONE);
         if(fragment != null) {
             fragment.groupRecyclerAdapter = new GroupRecyclerAdapter(groupBorrowerTables);
             fragment.groupRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));

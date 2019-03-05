@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.icubed.loansticdroid.R;
@@ -26,6 +27,7 @@ public class SingleBorrowerFragment extends Fragment {
     public BorrowerRecyclerAdapter borrowerRecyclerAdapter;
     public SwipeRefreshLayout swipeRefreshLayout;
     public Borrowers borrowers;
+    public LinearLayout emptyLayout;
 
     public SingleBorrowerFragment() {
         // Required empty public constructor
@@ -45,6 +47,7 @@ public class SingleBorrowerFragment extends Fragment {
         borrowers = new Borrowers(getActivity());
 
         borrowerRecyclerView = view.findViewById(R.id.borrower_list);
+        emptyLayout = view.findViewById(R.id.search_empty_layout);
 
 
         //Swipe down refresher initialization

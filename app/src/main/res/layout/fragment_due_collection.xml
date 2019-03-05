@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:gravity="center"
-                android:text="Sorry, Loan not found"
+                android:text="No due collection today"
                 android:textColor="@color/Grey"
                 android:textStyle="bold" />
         </LinearLayout>

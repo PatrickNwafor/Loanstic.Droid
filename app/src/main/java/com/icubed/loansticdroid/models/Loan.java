@@ -108,6 +108,7 @@ public class Loan {
                             }else{
                                 removeRefresher();
                                 ((LoanActivity) activity).loanProgressBar.setVisibility(View.GONE);
+                                ((LoanActivity) activity).emptyLayout.setVisibility(View.VISIBLE);
                                 Toast.makeText(activity, "Document is empty", Toast.LENGTH_SHORT).show();
                             }
                         }else{
@@ -375,6 +376,7 @@ public class Loan {
         ((LoanActivity) activity).loanDetailsList.clear();
         size = loansTable.size();
 
+        ((LoanActivity) activity).emptyLayout.setVisibility(View.GONE);
         for(LoansTable table : loansTable){
 
             if(table.getBorrowerId() != null) {

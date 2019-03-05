@@ -88,6 +88,7 @@ public class Borrowers {
                     }else{
                         removeRefresher();
                         ((BorrowerActivity) activity).borrowerProgressBar.setVisibility(View.GONE);
+                        if(fragment != null) fragment.emptyLayout.setVisibility(View.VISIBLE);
                         Toast.makeText(activity, "Document is empty", Toast.LENGTH_SHORT).show();
                     }
                 }else{
@@ -145,6 +146,7 @@ public class Borrowers {
         List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowersOrderByLastName();
 
         ((BorrowerActivity) activity).isSearch = false;
+        if(fragment != null) fragment.emptyLayout.setVisibility(View.GONE);
 
         if(fragment != null) {
             fragment.borrowerRecyclerAdapter = new BorrowerRecyclerAdapter(borrowersTables);

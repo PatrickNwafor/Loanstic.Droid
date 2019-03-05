@@ -452,10 +452,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         circleImageView.setImageResource(R.drawable.new_borrower);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
 
+        drawMarker(markerOptions);
     }
 
     public void drawMarker(MarkerOptions markerOptions){
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerOptions.getPosition(), 10));
+        mGoogleMap.clear();
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerOptions.getPosition(), 15));
         myMarker = mGoogleMap.addMarker(markerOptions);
     }
 
