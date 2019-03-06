@@ -13,215 +13,90 @@ public class PaymentTable {
     @Unique
     private String paymentId;
 
-    private String loanId;
-
     @Id(autoincrement = true)
     private Long id;
 
-    private String paymentScheduleOrder;
-
-    private String interestId;
-
-    private double interestAmount;
-
-    private double repaymentPrincipal;
-
-    private double totalRepaymentDue;
-
-    private Date repaymentDueDate;
-
-    private Boolean isPaid;
-
-    private Date actualPaymentDate;
-    private Date lastUpdatedAt;
-
-    private double actualPaymentAmount;
-
-    private String paymentLocationId;
-
-    private String paymentValidationPhotoUrl;
-
-    private String paymentValidationThumbPhotoUrl;
-
-    private String paymentMethod;
-
-    private byte[] imageByteArray;
-
-    @Generated(hash = 1564763185)
-    public PaymentTable(String paymentId, String loanId, Long id,
-            String paymentScheduleOrder, String interestId, double interestAmount,
-            double repaymentPrincipal, double totalRepaymentDue,
-            Date repaymentDueDate, Boolean isPaid, Date actualPaymentDate,
-            Date lastUpdatedAt, double actualPaymentAmount,
-            String paymentLocationId, String paymentValidationPhotoUrl,
-            String paymentValidationThumbPhotoUrl, String paymentMethod,
-            byte[] imageByteArray) {
+    private String collectionId, loanId, paymentModeId;
+    private double amountPaid;
+    private double photoLatitude, photoLongitude;
+    private Date paymentTime, lastUpdatedAt;
+    @Generated(hash = 995459116)
+    public PaymentTable(String paymentId, Long id, String collectionId,
+            String loanId, String paymentModeId, double amountPaid,
+            double photoLatitude, double photoLongitude, Date paymentTime,
+            Date lastUpdatedAt) {
         this.paymentId = paymentId;
-        this.loanId = loanId;
         this.id = id;
-        this.paymentScheduleOrder = paymentScheduleOrder;
-        this.interestId = interestId;
-        this.interestAmount = interestAmount;
-        this.repaymentPrincipal = repaymentPrincipal;
-        this.totalRepaymentDue = totalRepaymentDue;
-        this.repaymentDueDate = repaymentDueDate;
-        this.isPaid = isPaid;
-        this.actualPaymentDate = actualPaymentDate;
+        this.collectionId = collectionId;
+        this.loanId = loanId;
+        this.paymentModeId = paymentModeId;
+        this.amountPaid = amountPaid;
+        this.photoLatitude = photoLatitude;
+        this.photoLongitude = photoLongitude;
+        this.paymentTime = paymentTime;
         this.lastUpdatedAt = lastUpdatedAt;
-        this.actualPaymentAmount = actualPaymentAmount;
-        this.paymentLocationId = paymentLocationId;
-        this.paymentValidationPhotoUrl = paymentValidationPhotoUrl;
-        this.paymentValidationThumbPhotoUrl = paymentValidationThumbPhotoUrl;
-        this.paymentMethod = paymentMethod;
-        this.imageByteArray = imageByteArray;
     }
-
     @Generated(hash = 522700409)
     public PaymentTable() {
     }
-
     public String getPaymentId() {
         return this.paymentId;
     }
-
     public void setPaymentId(String paymentId) {
         this.paymentId = paymentId;
     }
-
-    public String getLoanId() {
-        return this.loanId;
-    }
-
-    public void setLoanId(String loanId) {
-        this.loanId = loanId;
-    }
-
     public Long getId() {
         return this.id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
-    public String getPaymentScheduleOrder() {
-        return this.paymentScheduleOrder;
+    public String getCollectionId() {
+        return this.collectionId;
     }
-
-    public void setPaymentScheduleOrder(String paymentScheduleOrder) {
-        this.paymentScheduleOrder = paymentScheduleOrder;
+    public void setCollectionId(String collectionId) {
+        this.collectionId = collectionId;
     }
-
-    public String getInterestId() {
-        return this.interestId;
+    public String getLoanId() {
+        return this.loanId;
     }
-
-    public void setInterestId(String interestId) {
-        this.interestId = interestId;
+    public void setLoanId(String loanId) {
+        this.loanId = loanId;
     }
-
-    public double getInterestAmount() {
-        return this.interestAmount;
+    public String getPaymentModeId() {
+        return this.paymentModeId;
     }
-
-    public void setInterestAmount(double interestAmount) {
-        this.interestAmount = interestAmount;
+    public void setPaymentModeId(String paymentModeId) {
+        this.paymentModeId = paymentModeId;
     }
-
-    public double getRepaymentPrincipal() {
-        return this.repaymentPrincipal;
+    public double getAmountPaid() {
+        return this.amountPaid;
     }
-
-    public void setRepaymentPrincipal(double repaymentPrincipal) {
-        this.repaymentPrincipal = repaymentPrincipal;
+    public void setAmountPaid(double amountPaid) {
+        this.amountPaid = amountPaid;
     }
-
-    public double getTotalRepaymentDue() {
-        return this.totalRepaymentDue;
+    public double getPhotoLatitude() {
+        return this.photoLatitude;
     }
-
-    public void setTotalRepaymentDue(double totalRepaymentDue) {
-        this.totalRepaymentDue = totalRepaymentDue;
+    public void setPhotoLatitude(double photoLatitude) {
+        this.photoLatitude = photoLatitude;
     }
-
-    public Date getRepaymentDueDate() {
-        return this.repaymentDueDate;
+    public double getPhotoLongitude() {
+        return this.photoLongitude;
     }
-
-    public void setRepaymentDueDate(Date repaymentDueDate) {
-        this.repaymentDueDate = repaymentDueDate;
+    public void setPhotoLongitude(double photoLongitude) {
+        this.photoLongitude = photoLongitude;
     }
-
-    public Boolean getIsPaid() {
-        return this.isPaid;
+    public Date getPaymentTime() {
+        return this.paymentTime;
     }
-
-    public void setIsPaid(Boolean isPaid) {
-        this.isPaid = isPaid;
+    public void setPaymentTime(Date paymentTime) {
+        this.paymentTime = paymentTime;
     }
-
-    public Date getActualPaymentDate() {
-        return this.actualPaymentDate;
-    }
-
-    public void setActualPaymentDate(Date actualPaymentDate) {
-        this.actualPaymentDate = actualPaymentDate;
-    }
-
-    public double getActualPaymentAmount() {
-        return this.actualPaymentAmount;
-    }
-
-    public void setActualPaymentAmount(double actualPaymentAmount) {
-        this.actualPaymentAmount = actualPaymentAmount;
-    }
-
-    public String getPaymentLocationId() {
-        return this.paymentLocationId;
-    }
-
-    public void setPaymentLocationId(String paymentLocationId) {
-        this.paymentLocationId = paymentLocationId;
-    }
-
-    public String getPaymentValidationPhotoUrl() {
-        return this.paymentValidationPhotoUrl;
-    }
-
-    public void setPaymentValidationPhotoUrl(String paymentValidationPhotoUrl) {
-        this.paymentValidationPhotoUrl = paymentValidationPhotoUrl;
-    }
-
-    public String getPaymentValidationThumbPhotoUrl() {
-        return this.paymentValidationThumbPhotoUrl;
-    }
-
-    public void setPaymentValidationThumbPhotoUrl(
-            String paymentValidationThumbPhotoUrl) {
-        this.paymentValidationThumbPhotoUrl = paymentValidationThumbPhotoUrl;
-    }
-
-    public String getPaymentMethod() {
-        return this.paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
     public Date getLastUpdatedAt() {
         return this.lastUpdatedAt;
     }
-
     public void setLastUpdatedAt(Date lastUpdatedAt) {
         this.lastUpdatedAt = lastUpdatedAt;
-    }
-
-    public byte[] getImageByteArray() {
-        return this.imageByteArray;
-    }
-
-    public void setImageByteArray(byte[] imageByteArray) {
-        this.imageByteArray = imageByteArray;
     }
 }

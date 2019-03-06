@@ -40,10 +40,10 @@ public class SelectGroupLeader extends AppCompatActivity {
     private List<SelectedBorrowerForGroup> groupList;
     private RecyclerView borrowerRecyclerView;
     private GroupLeaderRecyclerAdapter groupLeaderRecyclerAdapter;
-    public Button proceedBtn;
     public ImageView lastChecked;
     public SelectedBorrowerForGroup selectedGroupLeader;
     private ProgressBar progressBar;
+    public boolean isNextVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,6 @@ public class SelectGroupLeader extends AppCompatActivity {
         searchEditText = findViewById(R.id.searchEditText);
         borrowerRecyclerView = findViewById(R.id.borrower_list);
         progressBar = findViewById(R.id.borrowerProgressBar);
-        proceedBtn = findViewById(R.id.proceed);
 
         searchEditTextTextChangeListener();
         searchDrawableButtonListener();
@@ -71,7 +70,6 @@ public class SelectGroupLeader extends AppCompatActivity {
         borrowerRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         borrowerRecyclerView.setAdapter(groupLeaderRecyclerAdapter);
         hideProgressBar();
-        proceedBtnClickListener();
     }
 
     private void searchDrawableButtonListener() {
@@ -91,18 +89,6 @@ public class SelectGroupLeader extends AppCompatActivity {
                     default:
                         break;
                 }
-            }
-        });
-    }
-
-    private void proceedBtnClickListener() {
-        proceedBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mainActivityIntent = new Intent(SelectGroupLeader.this, GroupDetailsActivity.class);
-                mainActivityIntent.putParcelableArrayListExtra("selectedBorrowers", (ArrayList<? extends Parcelable>) groupList);
-                mainActivityIntent.putExtra("groupLeaderId", selectedGroupLeader.getBorrowersId());
-                startActivity(mainActivityIntent);
             }
         });
     }
@@ -165,24 +151,43 @@ public class SelectGroupLeader extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.new_group_menu, menu);
+        getMenuInflater().inflate(R.menu.loanee_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem register = menu.findItem(R.id.next_to_loan_terms);
+
+        if(isNextVisible){
+            register.setVisible(true);
+        }else{
+            register.setVisible(false);
+        }
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
 
-
             case android.R.id.home:
-                onBackPressed();
+                finish();
                 return true;
 
-            case R.id.action_search:
+            case R.id.search_loan:
                 searchEditText.setVisibility(View.VISIBLE);
                 searchEditText.requestFocus();
                 KeyboardUtil.showKeyboard(this);
                 return true;
+
+            case R.id.next_to_loan_terms:
+                Intent mainActivityIntent = new Intent(SelectGroupLeader.this, GroupDetailsActivity.class);
+                mainActivityIntent.putParcelableArrayListExtra("selectedBorrowers", (ArrayList<? extends Parcelable>) groupList);
+                mainActivityIntent.putExtra("groupLeaderId", selectedGroupLeader.getBorrowersId());
+                startActivity(mainActivityIntent);
 
             default:
                 return super.onOptionsItemSelected(item);

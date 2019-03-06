@@ -13,11 +13,12 @@ public class SelectedBorrowerForGroup implements Parcelable {
     private String firstName, lastName;
     private String borrowersId;
     private boolean belongsToGroup;
+    private byte[] imageByteArray;
 
     public SelectedBorrowerForGroup() {
     }
 
-    public SelectedBorrowerForGroup(String imageUri, String imageThumbUri, String businessName, ImageView selectedImageView, String firstName, String lastName, String borrowersId, boolean belongsToGroup) {
+    public SelectedBorrowerForGroup(String imageUri, String imageThumbUri, String businessName, ImageView selectedImageView, String firstName, String lastName, String borrowersId, boolean belongsToGroup, byte[] imageByteArray) {
         this.imageUri = imageUri;
         this.imageThumbUri = imageThumbUri;
         this.businessName = businessName;
@@ -26,6 +27,15 @@ public class SelectedBorrowerForGroup implements Parcelable {
         this.lastName = lastName;
         this.borrowersId = borrowersId;
         this.belongsToGroup = belongsToGroup;
+        this.imageByteArray = imageByteArray;
+    }
+
+    public byte[] getImageByteArray() {
+        return imageByteArray;
+    }
+
+    public void setImageByteArray(byte[] imageByteArray) {
+        this.imageByteArray = imageByteArray;
     }
 
     public String getImageUri() {
@@ -99,17 +109,13 @@ public class SelectedBorrowerForGroup implements Parcelable {
 
     // Parcelling part
     public SelectedBorrowerForGroup(Parcel in){
-        String[] data = new String[7];
-
-        in.readStringArray(data);
-        this.borrowersId = data[0];
-        this.firstName = data[1];
-        this.lastName = data[2];
-        this.businessName = data[3];
-        this.imageUri = data[4];
-        this.imageThumbUri = data[5];
-        this.belongsToGroup = Boolean.parseBoolean(data[6]);
-
+        this.borrowersId = in.readString();
+        this.firstName = in.readString();
+        this.lastName = in.readString();
+        this.businessName = in.readString();
+        this.imageUri = in.readString();
+        this.imageThumbUri = in.readString();
+        this.belongsToGroup = Boolean.parseBoolean(in.readString());
     }
 
     @Override
@@ -119,8 +125,13 @@ public class SelectedBorrowerForGroup implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringArray(new String[] {this.borrowersId,
-                this.firstName, this.lastName, this.businessName, this.imageUri, this.imageThumbUri, String.valueOf(this.belongsToGroup)});
+        dest.writeString(this.borrowersId);
+        dest.writeString(this.firstName);
+        dest.writeString(this.lastName);
+        dest.writeString(this.businessName);
+        dest.writeString(this.imageUri);
+        dest.writeString(this.imageThumbUri);
+        dest.writeString(String.valueOf(this.belongsToGroup));
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

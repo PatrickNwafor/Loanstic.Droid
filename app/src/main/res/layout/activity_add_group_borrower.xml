@@ -100,27 +100,6 @@
             tools:visibility="visible" />
 
 
-        <Button
-            android:id="@+id/proceed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:background="@drawable/add_borower_button"
-
-
-            android:drawableLeft="@drawable/proceed"
-            android:drawableTint="@color/whiteEnd"
-            android:onClick="setUpWizard"
-
-            android:text="Next"
-            android:textAllCaps="false"
-            android:textColor="@color/whiteEnd"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-
     </android.support.constraint.ConstraintLayout>
 
     <ProgressBar

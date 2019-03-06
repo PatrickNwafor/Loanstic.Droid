@@ -16,6 +16,7 @@ import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.AddGroupBorrower;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.List;
 
@@ -45,9 +46,11 @@ public class SelectedBorrowerForGroupRecyclerAdapter extends RecyclerView.Adapte
         holder.setViews(borrowersTableList.get(position));
 
         if(borrowersTableList.size() > 0){
-            ((AddGroupBorrower) context).proceed.setVisibility(View.VISIBLE);
+            ((AddGroupBorrower) context).isNextVisible = true;
+            ((AddGroupBorrower) context).invalidateOptionsMenu();
         }else{
-            ((AddGroupBorrower) context).proceed.setVisibility(View.INVISIBLE);
+            ((AddGroupBorrower) context).isNextVisible = false;
+            ((AddGroupBorrower) context).invalidateOptionsMenu();
         }
 
         holder.removeBorrower.setOnClickListener(new View.OnClickListener() {
@@ -85,12 +88,15 @@ public class SelectedBorrowerForGroupRecyclerAdapter extends RecyclerView.Adapte
         public void setViews(SelectedBorrowerForGroup borrowersTable){
 
             nameTextView.setText(borrowersTable.getLastName() + " " + borrowersTable.getFirstName());
-            RequestOptions placeholderOption = new RequestOptions();
-            placeholderOption.placeholder(R.drawable.person_image);
 
-            Glide.with(mView.getContext()).applyDefaultRequestOptions(placeholderOption).load(borrowersTable.getImageUri()).thumbnail(
-                    Glide.with(mView.getContext()).load(borrowersTable.getImageThumbUri())
-            ).into(imageView);
+            if(borrowersTable.getImageByteArray() == null) {
+                RequestOptions placeholderOption = new RequestOptions();
+                placeholderOption.placeholder(R.drawable.person_image);
+
+                BitmapUtil.getImageAndThumbnailWithRequestOptionsGlide(mView.getContext(), borrowersTable.getImageUri(), borrowersTable.getImageThumbUri(), placeholderOption).into(imageView);
+            }else{
+                imageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getImageByteArray()));
+            }
         }
     }
 }

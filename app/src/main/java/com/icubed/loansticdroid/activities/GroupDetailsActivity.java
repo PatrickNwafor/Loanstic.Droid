@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +37,7 @@ import com.icubed.loansticdroid.notification.GroupNotificationQueries;
 import com.icubed.loansticdroid.notification.GroupNotificationTable;
 import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.FormUtil;
+import com.icubed.loansticdroid.util.KeyboardUtil;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
 
 import org.json.JSONException;
@@ -60,12 +63,12 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private Account account;
     private Location local;
     private Index index;
-    private Button submitBtn;
     private FormUtil formUtil;
     private ProgressBar groupProgressBar;
     private boolean gottenLocation = false;
     private GroupNotificationQueries groupNotificationQueries;
     int count = 0;
+    private MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +77,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
         groupNameEditText = findViewById(R.id.groupName);
         meetingLocationEditText = findViewById(R.id.meetingLocation);
-        submitBtn = findViewById(R.id.submit_group);
         groupProgressBar = findViewById(R.id.group_progressbar);
-
-        submitBtnClickListener();
 
         toolbar = findViewById(R.id.group_details_toolbar);
         setSupportActionBar(toolbar);
@@ -100,24 +100,6 @@ public class GroupDetailsActivity extends AppCompatActivity {
         //Algolia search initiation
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
         index = client.getIndex("BORROWER_GROUP");
-    }
-
-    private void submitBtnClickListener() {
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText[] forms = new EditText[]{groupNameEditText, meetingLocationEditText};
-                if(isAnyFormEmpty(forms))
-                    return;
-
-                if(AndroidUtils.isMobileDataEnabled(getApplicationContext())) {
-                    showProgressBar();
-                    getCurrentLocation();
-                }else{
-                    Toast.makeText(getApplicationContext(), "Request failed, please try again", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
     private void getCurrentLocation(){
@@ -274,12 +256,12 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
     private void showProgressBar(){
         groupProgressBar.setVisibility(View.VISIBLE);
-        submitBtn.setEnabled(false);
+        menuItem.setEnabled(false);
     }
 
     private void hideProgressBar(){
         groupProgressBar.setVisibility(View.GONE);
-        submitBtn.setEnabled(true);
+        menuItem.setEnabled(true);
     }
 
     public Boolean isAnyFormEmpty(EditText[] forms){
@@ -301,5 +283,53 @@ public class GroupDetailsActivity extends AppCompatActivity {
         }
 
         return isFormEmpty;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.loanee_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menuItem = menu.findItem(R.id.next_to_loan_terms);
+        menuItem.setTitle("Submit");
+        menuItem.setVisible(true);
+        menu.findItem(R.id.search_loan).setVisible(false);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                finish();
+                return true;
+
+            case R.id.next_to_loan_terms:
+                submitStart();
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    private void submitStart(){
+        EditText[] forms = new EditText[]{groupNameEditText, meetingLocationEditText};
+        if(isAnyFormEmpty(forms))
+            return;
+
+        if(AndroidUtils.isMobileDataEnabled(getApplicationContext())) {
+            showProgressBar();
+            getCurrentLocation();
+        }else{
+            Toast.makeText(getApplicationContext(), "Request failed, please try again", Toast.LENGTH_SHORT).show();
+        }
     }
 }

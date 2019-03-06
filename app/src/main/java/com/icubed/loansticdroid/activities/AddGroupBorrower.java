@@ -82,10 +82,11 @@ public class AddGroupBorrower extends AppCompatActivity {
     private Index index;
     private GroupBorrowerTable group;
     private Toolbar toolbar;
-    public Button proceed;
     private BorrowerGroupsQueries borrowerGroupsQueries;
     int count = 0;
     private Index groupIndex;
+    public boolean isNextVisible = false;
+    private MenuItem register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,26 +102,12 @@ public class AddGroupBorrower extends AppCompatActivity {
         borrowerRecyclerView = findViewById(R.id.borrower_list);
         selectedBorrowerRecyclerView = findViewById(R.id.busiVerifRecyclerView);
         progressBar = findViewById(R.id.borrowerProgressBar);
-        proceed = findViewById(R.id.proceed);
         addBorrowerProg = findViewById(R.id.add_borrower_prog);
 
         borrowerGroupsQueries = new BorrowerGroupsQueries();
 
         alreadyAddedBorrower = getIntent().getParcelableArrayListExtra("already_added_borrowers");
         group = getIntent().getParcelableExtra("group");
-
-        proceed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(alreadyAddedBorrower == null){
-                    createNewGroup();
-                }else{
-                    proceed.setEnabled(false);
-                    addBorrowerProg.setVisibility(View.VISIBLE);
-                    updateBorrowerProfile();
-                }
-            }
-        });
 
         toolbar = findViewById(R.id.new_group_toolbar);
         setSupportActionBar(toolbar);
@@ -178,7 +165,7 @@ public class AddGroupBorrower extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Failed updating borrower details", Toast.LENGTH_SHORT).show();
                                     Log.d(TAG, "onComplete: "+task.getException().getMessage());
                                     addBorrowerProg.setVisibility(View.GONE);
-                                    proceed.setEnabled(true);
+                                    register.setEnabled(true);
                                 }
                             }
                         });
@@ -206,7 +193,7 @@ public class AddGroupBorrower extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Failed updating borrower details", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "onComplete: "+task.getException().getMessage());
                             addBorrowerProg.setVisibility(View.GONE);
-                            proceed.setEnabled(true);
+                            register.setEnabled(true);
                         }
                     }
                 });
@@ -232,7 +219,7 @@ public class AddGroupBorrower extends AppCompatActivity {
                         }else{
                             addBorrowerProg.setVisibility(View.VISIBLE);
                             Log.d(TAG, "onComplete: "+task.getException().getMessage());
-                            proceed.setEnabled(true);
+                            register.setEnabled(true);
                         }
                     }
                 });
@@ -256,7 +243,7 @@ public class AddGroupBorrower extends AppCompatActivity {
                     }else{
                         addBorrowerProg.setVisibility(View.VISIBLE);
                         Log.d(TAG, "requestCompleted: "+e.getMessage());
-                        proceed.setEnabled(true);
+                        register.setEnabled(true);
                     }
                 }
             });
@@ -411,7 +398,20 @@ public class AddGroupBorrower extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.new_group_menu, menu);
+        getMenuInflater().inflate(R.menu.loanee_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        register = menu.findItem(R.id.next_to_loan_terms);
+
+        if(isNextVisible){
+            register.setVisible(true);
+        }else{
+            register.setVisible(false);
+        }
+
         return true;
     }
 
@@ -421,14 +421,23 @@ public class AddGroupBorrower extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                onBackPressed();
+                finish();
                 return true;
 
-            case R.id.action_search:
+            case R.id.search_loan:
                 searchEditText.setVisibility(View.VISIBLE);
                 searchEditText.requestFocus();
                 KeyboardUtil.showKeyboard(this);
                 return true;
+
+            case R.id.next_to_loan_terms:
+                if(alreadyAddedBorrower == null){
+                    createNewGroup();
+                }else{
+                    register.setEnabled(false);
+                    addBorrowerProg.setVisibility(View.VISIBLE);
+                    updateBorrowerProfile();
+                }
 
             default:
                 return super.onOptionsItemSelected(item);

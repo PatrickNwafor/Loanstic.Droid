@@ -25,27 +25,21 @@ public class PaymentTableQueries {
 
     /**********Load a single collection from local Storage*******/
     public PaymentTable loadSinglePayment(String paymentId){
-        return paymentTableDao.queryBuilder()
-                .where(PaymentTableDao.Properties.PaymentId.eq(paymentId))
-                .build()
-                .list()
-                .get(0);
+        List<PaymentTable> list = paymentTableDao.queryBuilder().where(PaymentTableDao.Properties.PaymentId.eq(paymentId)).build().list();
+
+        if(!list.isEmpty()){
+            return list.get(0);
+        }
+
+        return null;
     }
 
-    /********Load all Unconfirmed PaymentQueries****************/
-    public List<PaymentTable> loadUnconfimredPayment(){
-        return paymentTableDao.queryBuilder()
-                .where(PaymentTableDao.Properties.IsPaid.eq(false))
-                .build()
-                .list();
+    public void updatePayment(PaymentTable paymentTable){
+        paymentTableDao.update(paymentTable);
     }
 
-    /********Load all Confirmed PaymentQueries****************/
-    public List<PaymentTable> loadConfimredPayment(){
-        return paymentTableDao.queryBuilder()
-                .where(PaymentTableDao.Properties.IsPaid.eq(true))
-                .build()
-                .list();
+    public void deletePayment(PaymentTable paymentTable){
+        paymentTableDao.delete(paymentTable);
     }
 
 }
