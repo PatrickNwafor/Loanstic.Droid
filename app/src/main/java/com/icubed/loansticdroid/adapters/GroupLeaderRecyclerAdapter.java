@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.icubed.loansticdroid.R;
@@ -72,6 +73,7 @@ public class GroupLeaderRecyclerAdapter extends RecyclerView.Adapter<GroupLeader
                     ((SelectGroupLeader) context).isNextVisible = true;
                     ((SelectGroupLeader) context).invalidateOptionsMenu();
                     holder.addCheckMark.setVisibility(View.VISIBLE);
+                    holder.addCheckMark.playAnimation();
 
                 }else{
                     ((SelectGroupLeader) context).lastChecked = null;
@@ -97,7 +99,7 @@ public class GroupLeaderRecyclerAdapter extends RecyclerView.Adapter<GroupLeader
         public TextView borrowerbusinessEditText;
         public CircleImageView imageView;
         public FrameLayout borrowerFrame;
-        public ImageView addCheckMark;
+        public LottieAnimationView addCheckMark;
 
         public ViewHolder(View itemView) {
             super(itemView);

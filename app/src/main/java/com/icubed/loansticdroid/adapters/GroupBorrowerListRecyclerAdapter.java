@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.icubed.loansticdroid.R;
@@ -92,6 +93,7 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
 
                 if (!isBorrowerAlreadyAdded) {
                     holder.addCheckMark.setVisibility(View.VISIBLE);
+                    holder.addCheckMark.playAnimation();
                     ((AddGroupBorrower) context).selectedBorrowerList.add(0, selectedBorrowerForGroup);
                     ((AddGroupBorrower) context).selectedBorrowerForGroupRecyclerAdapter.notifyDataSetChanged();
                 } else {
@@ -117,7 +119,7 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
         public TextView borrowerbusinessEditText;
         public CircleImageView imageView;
         public FrameLayout borrowerFrame;
-        public ImageView addCheckMark;
+        public LottieAnimationView addCheckMark;
 
 
         public ViewHolder(View itemView) {
@@ -152,6 +154,7 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
             for(SelectedBorrowerForGroup borrowerForGroup : selectedBorrowerList){
                 if(borrowerForGroup.getBorrowersId().equals(borrowersId)){
                     addCheckMark.setVisibility(View.VISIBLE);
+                    addCheckMark.playAnimation();
                     Log.d("BorrowerSelected", selectedBorrowerList.toString());
                     break;
                 }

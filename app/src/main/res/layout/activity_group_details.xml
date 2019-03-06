@@ -54,6 +54,7 @@
         android:drawableTint="@color/whiteEnd"
         android:text="Verify"
         android:textAllCaps="false"
+        android:visibility="gone"
         android:textColor="@color/whiteEnd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

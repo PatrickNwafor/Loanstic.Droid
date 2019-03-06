@@ -1,6 +1,7 @@
 package com.icubed.loansticdroid.activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,15 +14,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,6 +38,7 @@ import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.BusinessVerificationRecyclerViewAdapter;
 import com.icubed.loansticdroid.cloudqueries.BorrowerPhotoValidationQueries;
+import com.icubed.loansticdroid.util.BitmapUtil;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
 
 import java.util.ArrayList;
@@ -38,18 +46,25 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.app.PendingIntent.getActivity;
+
 public class BusinessVerification extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "BusinessVerification";
 
     //vars
+    private MenuItem menuItem;
+    private Toolbar toolbar;
     private RecyclerView recyclerView;
     private BusinessVerificationRecyclerViewAdapter adapter;
     private ArrayList<Bitmap> mImageBitmap;
-    private ImageView takePictureImageView, selectedImageView;
-
+    private ImageView  selectedImageView;
+    private LottieAnimationView takePictureImageView;
     private static final int CAMERA_REQUEST_CODE = 335;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+   // public MarkerOptions markerOptions;
 
     private LocationProviderUtil locationProviderUtil;
     private MapView mMapView;
@@ -87,12 +102,21 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
         activityCycleId = getIntent().getStringExtra("activityCycleId");
         groupId = getIntent().getStringExtra("groupId");
         Log.d(TAG, "onCreate: "+groupId);
+
+        toolbar = findViewById(R.id.business_verification_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Business Verification");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     private void startCamera() {
         takePictureImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
                 dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE);
             }
         });
@@ -185,9 +209,11 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
         if (mGoogleMap != null) {
             mGoogleMap.clear();
             LatLng gps = new LatLng(location.getLatitude(), location.getLongitude());
+
             mGoogleMap.addMarker(new MarkerOptions()
                     .position(gps)
                     .title("Current Position"));
+
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gps, 15));
         }
 
@@ -250,6 +276,44 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
                         }
                     }
                 });
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.loanee_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menuItem = menu.findItem(R.id.next_to_loan_terms);
+        menuItem.setTitle("Finish");
+        menuItem.setVisible(true);
+        menu.findItem(R.id.search_loan).setVisible(false);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                finish();
+                return true;
+
+            case R.id.next_to_loan_terms:
+                Intent intent = new Intent(this, BorrowerActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                //finish();
+
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
     @Override
