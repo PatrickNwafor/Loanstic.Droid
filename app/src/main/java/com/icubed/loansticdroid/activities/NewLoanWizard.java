@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Client;
 import com.algolia.search.saas.CompletionHandler;
@@ -60,7 +61,7 @@ public class NewLoanWizard extends AppCompatActivity {
     Index index;
     Index groupIndex;
     private int searchPosition = 0;
-    public ImageView lastChecked = null;
+    public LottieAnimationView lastChecked = null;
     public BorrowersTable selectedBorrower = null;
     public GroupBorrowerTable selectedGroup = null;
 
