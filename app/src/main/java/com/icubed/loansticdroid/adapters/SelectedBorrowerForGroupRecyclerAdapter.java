@@ -3,6 +3,7 @@ package com.icubed.loansticdroid.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import com.icubed.loansticdroid.util.BitmapUtil;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class SelectedBorrowerForGroupRecyclerAdapter extends RecyclerView.Adapter<SelectedBorrowerForGroupRecyclerAdapter.ViewHolder> {
 
@@ -45,19 +48,16 @@ public class SelectedBorrowerForGroupRecyclerAdapter extends RecyclerView.Adapte
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.setViews(borrowersTableList.get(position));
 
-        if(borrowersTableList.size() > 0){
-            ((AddGroupBorrower) context).isNextVisible = true;
-            ((AddGroupBorrower) context).invalidateOptionsMenu();
-        }else{
-            ((AddGroupBorrower) context).isNextVisible = false;
-            ((AddGroupBorrower) context).invalidateOptionsMenu();
-        }
+        Log.d(TAG, "onBindViewHolder: "+borrowersTableList.size());
+        if(borrowersTableList.size() > 0) ((AddGroupBorrower) context).register.setVisible(true);
 
         holder.removeBorrower.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 borrowersTableList.get(position).getSelectedImageView().setVisibility(View.GONE);
                 borrowersTableList.remove(position);
+                //hide next button when selected borrower list is empty
+                if((borrowersTableList.isEmpty())) ((AddGroupBorrower) context).register.setVisible(false);
                 ((AddGroupBorrower) context).selectedBorrowerForGroupRecyclerAdapter.notifyDataSetChanged();
                 ((AddGroupBorrower) context).groupBorrowerListRecyclerAdapter.notifyDataSetChanged();
             }

@@ -85,8 +85,7 @@ public class AddGroupBorrower extends AppCompatActivity {
     private BorrowerGroupsQueries borrowerGroupsQueries;
     int count = 0;
     private Index groupIndex;
-    public boolean isNextVisible = false;
-    private MenuItem register;
+    public MenuItem register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -405,13 +404,6 @@ public class AddGroupBorrower extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         register = menu.findItem(R.id.next_to_loan_terms);
-
-        if(isNextVisible){
-            register.setVisible(true);
-        }else{
-            register.setVisible(false);
-        }
-
         return true;
     }
 

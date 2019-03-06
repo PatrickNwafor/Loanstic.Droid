@@ -68,15 +68,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, CollectionDetailsActivity.class);
-                intent.putExtra("firstName", collectionList.get(position).getFirstName());
-                intent.putExtra("lastName", collectionList.get(position).getLastName());
-                intent.putExtra("businessName", collectionList.get(position).getBusinessName());
-                intent.putExtra("collectionAmount", collectionList.get(position).getDueAmount());
-                intent.putExtra("isDueCollected", collectionList.get(position).getIsDueCollected());
-                intent.putExtra("collectionDueDate", collectionList.get(position).getDueCollectionDate());
-                intent.putExtra("collectionNumber", collectionList.get(position).getCollectionNumber());
-                intent.putExtra("workAddress", collectionList.get(position).getWorkAddress());
-                intent.putExtra("groupName", collectionList.get(position).getGroupName());
+                intent.putExtra("dueCollectionDetails", collectionList.get(position));
                 context.startActivity(intent);
             }
         });

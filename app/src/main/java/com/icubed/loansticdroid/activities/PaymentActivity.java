@@ -65,49 +65,6 @@ public class PaymentActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadPaymentPicture(final Bitmap bitmap, final String paymentId){
-        paymentQueries.uploadImage(bitmap, paymentId).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if(task.isSuccessful()){
-
-                    final String paymentImageUri = task.getResult().getDownloadUrl().toString();
-
-                    paymentQueries.uploadImageThumb(bitmap, paymentId)
-                            .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                    if(task.isSuccessful()){
-                                        String paymentImageThumbUri = task.getResult().getDownloadUrl().toString();
-
-                                        saveImageUri(paymentId, paymentImageUri, paymentImageThumbUri);
-                                    }else{
-                                        Toast.makeText(PaymentActivity.this, "Failed 2", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                }else{
-                    Toast.makeText(PaymentActivity.this, "failed 1", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    private void saveImageUri(String paymentId, final String paymentImageUri, String paymentImageThumbUri){
-        paymentQueries.storeUriToFirestore(paymentId, paymentImageUri, paymentImageThumbUri)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(PaymentActivity.this, "Done", Toast.LENGTH_SHORT).show();
-
-                        }else{
-                            Toast.makeText(PaymentActivity.this, "Failed 3", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
     public void takeBorrowerPicture(View view) {
         dispatchTakePictureIntent();
     }

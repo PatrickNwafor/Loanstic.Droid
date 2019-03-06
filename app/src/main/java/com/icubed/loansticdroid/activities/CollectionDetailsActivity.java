@@ -32,23 +32,15 @@ public class CollectionDetailsActivity extends AppCompatActivity {
             collectionAddressView, collectionStatusView;
 
 
-    private String businessName, collectionDueDate;
-    private double collectionAmount;
-    private int colelctionNumber;
-    private Boolean collectionStatus;
-    private String firstName, workAddress, lastName;
-    private Toolbar toolbar;
-    private CardView CD7;
     private ImageView iconUser;
     private TextView userNameTextView;
-    private String groupName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.collection_details);
 
-        toolbar = findViewById(R.id.collection_toolbar);
+        Toolbar toolbar = findViewById(R.id.collection_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("DueCollection Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -61,7 +53,7 @@ public class CollectionDetailsActivity extends AppCompatActivity {
         CD4 = findViewById(R.id.CD4);
         CD5 = findViewById(R.id.CD5);
         CD6 = findViewById(R.id.CD6);
-        CD7 = findViewById(R.id.CD7);
+        CardView CD7 = findViewById(R.id.CD7);
 
         CD7.setAnimation(bounce);
         CD1.setAnimation(bounce);
@@ -82,31 +74,10 @@ public class CollectionDetailsActivity extends AppCompatActivity {
         userNameTextView = findViewById(R.id.user_name);
 
         //getting collection details value
-        firstName = getIntent().getStringExtra("firstName");
-        lastName = getIntent().getStringExtra("lastName");
-        workAddress = getIntent().getStringExtra("workAddress");
-        groupName = getIntent().getStringExtra("groupName");
-        businessName = getIntent().getStringExtra("businessName");
-        collectionAmount = getIntent().getDoubleExtra("collectionAmount", 0.0);
-        collectionStatus = getIntent().getBooleanExtra("isDueCollected", false);
-        collectionDueDate = getIntent().getStringExtra("collectionDueDate");
-        colelctionNumber = getIntent().getIntExtra("collectionNumber", 0);
-
-
-        //Passing them to an object
-        DueCollectionDetails dueCollectionDetails = new DueCollectionDetails();
-        dueCollectionDetails.setFirstName(firstName);
-        dueCollectionDetails.setLastName(lastName);
-        dueCollectionDetails.setWorkAddress(workAddress);
-        dueCollectionDetails.setBusinessName(businessName);
-        dueCollectionDetails.setIsDueCollected(collectionStatus);
-        dueCollectionDetails.setCollectionNumber(colelctionNumber);
-        dueCollectionDetails.setDueAmount(collectionAmount);
-        dueCollectionDetails.setDueCollectionDate(collectionDueDate);
-        dueCollectionDetails.setGroupName(groupName);
+        DueCollectionDetails dueCollectionDetails = getIntent().getParcelableExtra("dueCollectionDetails");
 
         //UpdatesUI
-        Log.d(TAG, "onCreate: "+dueCollectionDetails.toString());
+        Log.d(TAG, "onCreate: "+ dueCollectionDetails.toString());
         updateUI(dueCollectionDetails);
 
     }

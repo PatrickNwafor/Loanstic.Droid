@@ -1,6 +1,9 @@
 package com.icubed.loansticdroid.models;
 
-public class DueCollectionDetails {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class DueCollectionDetails implements Parcelable {
 
     private String firstName, lastName, workAddress, businessName, dueCollectionDate, imageUri, imageUriThumb;
     private int collectionNumber;
@@ -145,4 +148,57 @@ public class DueCollectionDetails {
     public String toString() {
         return "DueCollectionDetails{" + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", workAddress='" + workAddress + '\'' + ", businessName='" + businessName + '\'' + ", dueCollectionDate='" + dueCollectionDate + '\'' + ", collectionNumber=" + collectionNumber + ", dueAmount=" + dueAmount + ", isDueCollected=" + isDueCollected + '}';
     }
+
+    // Parcelling part
+    public DueCollectionDetails(Parcel in){
+        this.firstName = in.readString();
+        this.lastName = in.readString();
+        this.workAddress = in.readString();
+        this.businessName = in.readString();
+        this.dueCollectionDate = in.readString();
+        this.imageUri = in.readString();
+        this.imageUriThumb = in.readString();
+        this.collectionNumber = in.readInt();
+        this.dueAmount = in.readDouble();
+        this.isDueCollected = Boolean.valueOf(in.readString());
+        this.groupName = in.readString();
+        this.latitude = in.readDouble();
+        this.longitude = in.readDouble();
+        imageByteArray = new byte[in.readInt()];
+        in.readByteArray(imageByteArray);
+    }
+
+    @Override
+    public int describeContents(){
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.firstName);
+        dest.writeString(this.lastName);
+        dest.writeString(this.workAddress);
+        dest.writeString(this.businessName);
+        dest.writeString(this.dueCollectionDate);
+        dest.writeString(this.imageUri);
+        dest.writeString(this.imageUriThumb);
+        dest.writeInt(this.collectionNumber);
+        dest.writeDouble(this.dueAmount);
+        dest.writeString(String.valueOf(this.isDueCollected));
+        dest.writeString(this.groupName);
+        dest.writeDouble(this.latitude);
+        dest.writeDouble(this.longitude);
+        dest.writeInt(imageByteArray.length);
+        dest.writeByteArray(imageByteArray);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public DueCollectionDetails createFromParcel(Parcel in) {
+            return new DueCollectionDetails(in);
+        }
+
+        public DueCollectionDetails[] newArray(int size) {
+            return new DueCollectionDetails[size];
+        }
+    };
 }

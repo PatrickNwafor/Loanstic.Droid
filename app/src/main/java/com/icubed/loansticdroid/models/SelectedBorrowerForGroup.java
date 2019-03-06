@@ -6,6 +6,8 @@ import android.widget.ImageView;
 
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 
+import java.util.Arrays;
+
 public class SelectedBorrowerForGroup implements Parcelable {
     private String imageUri;
     private String imageThumbUri, businessName;
@@ -104,7 +106,7 @@ public class SelectedBorrowerForGroup implements Parcelable {
 
     @Override
     public String toString() {
-        return "SelectedBorrowerForGroup{" + "imageUri='" + imageUri + '\'' + ", imageThumbUri='" + imageThumbUri + '\'' + ", businessName='" + businessName + '\'' + ", selectedImageView=" + selectedImageView + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", borrowersId='" + borrowersId + '\'' + ", belongsToGroup=" + belongsToGroup + '}';
+        return "SelectedBorrowerForGroup{" + "imageUri='" + imageUri + '\'' + ", imageThumbUri='" + imageThumbUri + '\'' + ", businessName='" + businessName + '\'' + ", selectedImageView=" + selectedImageView + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", borrowersId='" + borrowersId + '\'' + ", belongsToGroup=" + belongsToGroup + ", imageByteArray=" + Arrays.toString(imageByteArray) + '}';
     }
 
     // Parcelling part
@@ -116,6 +118,8 @@ public class SelectedBorrowerForGroup implements Parcelable {
         this.imageUri = in.readString();
         this.imageThumbUri = in.readString();
         this.belongsToGroup = Boolean.parseBoolean(in.readString());
+        imageByteArray = new byte[in.readInt()];
+        in.readByteArray(imageByteArray);
     }
 
     @Override
@@ -132,6 +136,8 @@ public class SelectedBorrowerForGroup implements Parcelable {
         dest.writeString(this.imageUri);
         dest.writeString(this.imageThumbUri);
         dest.writeString(String.valueOf(this.belongsToGroup));
+        dest.writeInt(imageByteArray.length);
+        dest.writeByteArray(imageByteArray);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

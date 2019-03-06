@@ -97,6 +97,8 @@ public class GroupBorrowerListRecyclerAdapter extends RecyclerView.Adapter<Group
                 } else {
                     holder.addCheckMark.setVisibility(View.GONE);
                     ((AddGroupBorrower) context).selectedBorrowerList.remove(selectedBorrower);
+                    //hide next button when selected borrower list is empty
+                    if(((AddGroupBorrower) context).selectedBorrowerList.isEmpty()) ((AddGroupBorrower) context).register.setVisible(false);
                     ((AddGroupBorrower) context).selectedBorrowerForGroupRecyclerAdapter.notifyDataSetChanged();
                 }
             }

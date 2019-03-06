@@ -15,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.SelectGroupLeader;
 import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.List;
 
@@ -114,12 +115,14 @@ public class GroupLeaderRecyclerAdapter extends RecyclerView.Adapter<GroupLeader
             borrowerNameEditText.setText(borrowersTable.getLastName()+" "+borrowersTable.getFirstName());
             borrowerbusinessEditText.setText(borrowersTable.getBusinessName());
 
-            RequestOptions placeholderOption = new RequestOptions();
-            placeholderOption.placeholder(R.drawable.person_image);
+            if(borrowersTable.getImageByteArray() == null) {
+                RequestOptions placeholderOption = new RequestOptions();
+                placeholderOption.placeholder(R.drawable.person_image);
 
-            Glide.with(mView.getContext()).applyDefaultRequestOptions(placeholderOption).load(borrowersTable.getImageUri()).thumbnail(
-                    Glide.with(mView.getContext()).load(borrowersTable.getImageThumbUri())
-            ).into(imageView);
+                BitmapUtil.getImageAndThumbnailWithRequestOptionsGlide(mView.getContext(), borrowersTable.getImageUri(), borrowersTable.getImageThumbUri(), placeholderOption).into(imageView);
+            }else{
+                imageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getImageByteArray()));
+            }
         }
     }
 
