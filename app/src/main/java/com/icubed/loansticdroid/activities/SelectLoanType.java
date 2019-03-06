@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -47,13 +48,15 @@ public class SelectLoanType extends AppCompatActivity {
     private LoanTypeTableQueries loanTypeTableQueries;
     private List<LoanTypeTable> currentLoanTable;
     public LoanTypeTable selectedLoanTypeTable = null;
-    public ImageView lastCheck = null;
+   // public ImageView lastCheck = null;
+    public LottieAnimationView lastCheck = null;
 
     private BorrowersTable borrower;
     private GroupBorrowerTable group;
 
     private CardView otherLoanCard;
-    public ImageView otherLoanCheck;
+   // public ImageView otherLoanCheck;
+   public LottieAnimationView otherLoanCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +106,7 @@ public class SelectLoanType extends AppCompatActivity {
             }
 
             otherLoanCheck.setVisibility(View.VISIBLE);
+            otherLoanCheck.playAnimation();
             lastCheck = otherLoanCheck;
             selectedLoanTypeTable = null;
             invalidateOptionsMenu();

@@ -48,16 +48,17 @@
                 app:layout_constraintStart_toEndOf="@+id/loan_type_image"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/check_loan_type"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginBottom="8dp"
-
+app:lottie_fileName="check.json"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:src="@drawable/check_loan_type"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="false"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

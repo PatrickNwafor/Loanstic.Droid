@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.icubed.loansticdroid.R;
@@ -56,6 +57,7 @@ public class SingleLoanRecyclerAdapter extends RecyclerView.Adapter<SingleLoanRe
                     ((NewLoanWizard) context).selectedBorrower = borrowersTableList.get(position);
                     ((NewLoanWizard) context).selectedGroup = null;
                     holder.addCheckMark.setVisibility(View.VISIBLE);
+                    holder.addCheckMark.playAnimation();
                     ((NewLoanWizard) context).invalidateOptionsMenu();
 
                 }else{
@@ -81,7 +83,8 @@ public class SingleLoanRecyclerAdapter extends RecyclerView.Adapter<SingleLoanRe
         public TextView borrowerbusinessEditText;
         public CircleImageView imageView;
         public FrameLayout borrowerFrame;
-        public ImageView addCheckMark;
+        //public ImageView addCheckMark;
+        public LottieAnimationView addCheckMark;
 
         public ViewHolder(View itemView) {
             super(itemView);

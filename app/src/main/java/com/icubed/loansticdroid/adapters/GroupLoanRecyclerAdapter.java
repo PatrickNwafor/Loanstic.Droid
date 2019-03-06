@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.BorrowerActivity;
 import com.icubed.loansticdroid.activities.BorrowerDetailsGroup;
@@ -56,6 +57,7 @@ public class GroupLoanRecyclerAdapter extends RecyclerView.Adapter<GroupLoanRecy
                     ((NewLoanWizard) context).selectedGroup = groupBorrowerTables.get(position);
                     ((NewLoanWizard) context).selectedBorrower = null;
                     holder.addCheckMark.setVisibility(View.VISIBLE);
+                    holder.addCheckMark.playAnimation();
                     ((NewLoanWizard) context).invalidateOptionsMenu();
 
                 }else{
@@ -79,7 +81,8 @@ public class GroupLoanRecyclerAdapter extends RecyclerView.Adapter<GroupLoanRecy
         View mView;
         public TextView groupNameTextView, groupCountTextView;
         public FrameLayout frameLayout;
-        public ImageView addCheckMark;
+        //public ImageView addCheckMark;
+        public LottieAnimationView addCheckMark;
 
         public ViewHolder(View itemView) {
             super(itemView);

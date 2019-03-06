@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.SelectLoanType;
@@ -59,6 +60,7 @@ public class LoanTypeRecyclerAdapter extends RecyclerView.Adapter<LoanTypeRecycl
                     }
 
                     holder.selectLoanTypeView.setVisibility(View.VISIBLE);
+                    holder.selectLoanTypeView.playAnimation();
                     ((SelectLoanType) context).selectedLoanTypeTable = loanTypeTableList.get(position);
                     ((SelectLoanType) context).lastCheck = holder.selectLoanTypeView;
                     ((SelectLoanType) context).otherLoanCheck.setVisibility(View.GONE);
@@ -88,7 +90,8 @@ public class LoanTypeRecyclerAdapter extends RecyclerView.Adapter<LoanTypeRecycl
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
         public CircleImageView loanTypeImageView;
-        public ImageView  selectLoanTypeView;
+       // public ImageView  selectLoanTypeView;
+       public LottieAnimationView selectLoanTypeView;
         public TextView loanTypeName, loanTypeDesc;
         public FrameLayout frameLayout;
 
