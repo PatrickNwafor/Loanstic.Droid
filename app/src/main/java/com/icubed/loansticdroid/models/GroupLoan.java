@@ -72,7 +72,7 @@ public class GroupLoan {
                     }else{
                         removeRefresher();
                         if(fragment != null) fragment.emptyLayout.setVisibility(View.VISIBLE);
-                        ((BorrowerActivity) activity).borrowerProgressBar.setVisibility(View.GONE);
+                        ((NewLoanWizard) activity).borrowerProgressBar.setVisibility(View.GONE);
                         Toast.makeText(activity, "Document is empty", Toast.LENGTH_SHORT).show();
                     }
                 }else{
