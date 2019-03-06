@@ -79,6 +79,7 @@ public class SingleLoan {
                         loadBorrowersToUI();
                     }else{
                         removeRefresher();
+                        if(fragment != null) fragment.emptyLayout.setVisibility(View.VISIBLE);
                         ((NewLoanWizard) activity).borrowerProgressBar.setVisibility(View.GONE);
                         Toast.makeText(activity, "Document is empty", Toast.LENGTH_SHORT).show();
                     }
@@ -137,6 +138,7 @@ public class SingleLoan {
         List<BorrowersTable> borrowersTables = borrowersTableQueries.loadAllBorrowersOrderByLastName();
 
         ((NewLoanWizard) activity).isSearch = false;
+        if(fragment != null) fragment.emptyLayout.setVisibility(View.GONE);
 
         if(fragment != null) {
             fragment.singleLoanRecyclerAdapter = new SingleLoanRecyclerAdapter(borrowersTables);

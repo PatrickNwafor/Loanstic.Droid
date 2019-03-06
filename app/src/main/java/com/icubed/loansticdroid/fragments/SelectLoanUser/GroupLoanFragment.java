@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.icubed.loansticdroid.R;
@@ -30,6 +31,7 @@ public class GroupLoanFragment extends Fragment {
     public GroupLoanRecyclerAdapter groupLoanRecyclerAdapter;
     public SwipeRefreshLayout swipeRefreshLayout;
     public GroupLoan groups;
+    public LinearLayout emptyLayout;
 
     public GroupLoanFragment() {
         // Required empty public constructor
@@ -49,6 +51,7 @@ public class GroupLoanFragment extends Fragment {
         groups = new GroupLoan(getActivity());
 
         groupRecyclerView = view.findViewById(R.id.group_list);
+        emptyLayout = view.findViewById(R.id.search_empty_layout);
 
         ((NewLoanWizard) getContext()).selectedBorrower = null;
 

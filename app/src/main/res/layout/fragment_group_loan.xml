@@ -43,6 +43,40 @@
         </android.support.v4.widget.SwipeRefreshLayout>
         <!-- To here, delete the ones i will populate under-->
 
+        <LinearLayout
+            android:id="@+id/search_empty_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout2">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieAnimationView"
+                android:layout_width="200dp"
+
+                android:layout_height="200dp"
+                android:layout_marginBottom="0dp"
+                app:lottie_autoPlay="true"
+                app:lottie_fileName="loan_stick_broken.json"
+                app:lottie_loop="true" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginBottom="100dp"
+                android:gravity="center"
+                android:text="No group has been registered"
+                android:textColor="@color/Grey"
+                android:textStyle="bold" />
+        </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 
 </FrameLayout>

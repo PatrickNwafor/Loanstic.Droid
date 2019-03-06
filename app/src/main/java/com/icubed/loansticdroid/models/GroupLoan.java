@@ -71,6 +71,7 @@ public class GroupLoan {
                         loadGroupsToUI();
                     }else{
                         removeRefresher();
+                        if(fragment != null) fragment.emptyLayout.setVisibility(View.VISIBLE);
                         ((BorrowerActivity) activity).borrowerProgressBar.setVisibility(View.GONE);
                         Toast.makeText(activity, "Document is empty", Toast.LENGTH_SHORT).show();
                     }
@@ -90,6 +91,9 @@ public class GroupLoan {
         List<GroupBorrowerTable> groupBorrowerTables = groupBorrowerTableQueries.loadAllGroupsOrderByLastName();
 
         ((NewLoanWizard) activity).isGroupSearch = false;
+
+        if(fragment != null) fragment.emptyLayout.setVisibility(View.GONE);
+
         if(fragment != null) {
             fragment.groupLoanRecyclerAdapter = new GroupLoanRecyclerAdapter(groupBorrowerTables);
             fragment.groupRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
