@@ -36,7 +36,6 @@ public class SexDOBFragment extends Fragment {
     private Spinner sexDrp;
     EditText dateOfBirthTextView;
     private String selectedSex;
-    private Button nextBtn, previousBtn;
     private FormUtil formUtil;
     private Bundle bundle;
     final Calendar myCalendar = Calendar.getInstance();
@@ -59,24 +58,8 @@ public class SexDOBFragment extends Fragment {
 
         sexDrp = view.findViewById(R.id.spSex);
         dateOfBirthTextView = view.findViewById(R.id.date_of_birth);
-        nextBtn = view.findViewById(R.id.next1);
-        previousBtn = view.findViewById(R.id.previous);
         formUtil = new FormUtil();
         bundle = getArguments();
-
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                next();
-            }
-        });
-
-        previousBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                previous();
-            }
-        });
 
         ArrayAdapter<CharSequence> adapterSex;
         String[] sexArr = {"Male", "Female"};
@@ -112,7 +95,19 @@ public class SexDOBFragment extends Fragment {
             }
         });
 
+        ((AddSingleBorrower) getContext()).previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                previous();
+            }
+        });
 
+        ((AddSingleBorrower) getContext()).next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                next();
+            }
+        });
 
     }
 

@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.algolia.search.saas.Client;
@@ -47,6 +49,8 @@ public class AddSingleBorrower extends AppCompatActivity {
     private LocationProviderUtil locationProviderUtil;
     private Toolbar toolbar;
     public ActionBar actionBar;
+    public TextView next, title;
+    public ImageView previous;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +69,12 @@ public class AddSingleBorrower extends AppCompatActivity {
         toolbar = findViewById(R.id.reg_borrower_toolbar);
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
-        getSupportActionBar().setTitle("Register new borrower");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setSupportActionBar(toolbar);
+        View logo = getLayoutInflater().inflate(R.layout.borrower_reg_custom_menu, null);
+        next = logo.findViewById(R.id.next);
+        previous = logo.findViewById(R.id.previous);
+        title = logo.findViewById(R.id.title);
+        toolbar.addView(logo);
 
         locationProviderUtil = new LocationProviderUtil(this);
         formUtil = new FormUtil();
@@ -123,19 +130,6 @@ public class AddSingleBorrower extends AppCompatActivity {
 
         return isFormEmpty;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
 
     public Boolean doesFieldContainNumberOnly(EditText editText){
         if(!formUtil.doesFormContainNumbersOnly(editText)){

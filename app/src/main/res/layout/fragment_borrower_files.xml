@@ -168,22 +168,4 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/submit"
-        android:layout_width="206dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/loan_button_back"
-
-        android:text="Submit"
-        android:textAllCaps="false"
-
-        android:textColor="@color/whiteEnd"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
 </android.support.constraint.ConstraintLayout>

@@ -88,7 +88,6 @@ public class BorrowerFilesFragment extends Fragment {
     public static final String OTHER_DOC_DESC = "other_file_desc";
     private boolean gottenLocation = false;
     Context context;
-    private Button submitButton;
     private BorrowersQueries borrowersQueries;
     private String borrowerImageUri;
     private String borrowerImageThumbUri;
@@ -134,6 +133,8 @@ public class BorrowerFilesFragment extends Fragment {
         bundle = getArguments();
         Log.d(TAG, "onViewCreated: "+bundle.toString());
 
+        ((AddSingleBorrower) getContext()).next.setText("Submit");
+
         filesRecyclerView = view.findViewById(R.id.add_files_list);
         filesDescription = new ArrayList<>();
         filesRecyclerAdapter = new FilesRecyclerAdapter(filesDescription, getActivity());
@@ -150,11 +151,10 @@ public class BorrowerFilesFragment extends Fragment {
         borrowerPendingApprovalNotificationTableQueries = new BorrowerPendingApprovalNotificationTableQueries();
 
         //Changing action bar title
-        ((AddSingleBorrower) getContext()).actionBar.setTitle("ID Documents");
+        ((AddSingleBorrower) getContext()).title.setText("ID Documents");
 
         addFileTextView = view.findViewById(R.id.addFileTextView);
         reg_progress_bar = view.findViewById(R.id.reg_progress_bar);
-        submitButton = view.findViewById(R.id.submit);
         idLayout = view.findViewById(R.id.idLayout);
         driverLayout = view.findViewById(R.id.driverLayout);
         passportLayout = view.findViewById(R.id.passportLayout);
@@ -162,7 +162,14 @@ public class BorrowerFilesFragment extends Fragment {
         borrowerFilesQueries = new BorrowerFilesQueries(context);
 
 
-        submitButton.setOnClickListener(new View.OnClickListener() {
+        ((AddSingleBorrower) getContext()).previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                previous();
+            }
+        });
+
+        ((AddSingleBorrower) getContext()).next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startSubmission();
@@ -204,12 +211,16 @@ public class BorrowerFilesFragment extends Fragment {
         });
     }
 
+    private void previous() {
+        ((AddSingleBorrower) context).startFragment(((AddSingleBorrower) context).takeBorrowerPhotoFragment, "borrower_photo");
+    }
+
     private void startSubmission(){
         if(AndroidUtils.isMobileDataEnabled(getContext())) {
             if(frontId != null || backId !=null || driverLicense != null
                     || passport != null || !otherFile.isEmpty()) {
                 reg_progress_bar.setVisibility(View.VISIBLE);
-                submitButton.setEnabled(false);
+                ((AddSingleBorrower) getContext()).next.setEnabled(false);
                 Bitmap bitmap = StringToBitMap(bundle.getString("borrowerImage"));
                 uploadBorrowerPicture(bitmap);
             }else{
@@ -244,13 +255,13 @@ public class BorrowerFilesFragment extends Fragment {
                                         getCurrentLocation();
                                     }else{
                                         reg_progress_bar.setVisibility(View.GONE);
-                                        submitButton.setEnabled(true);
+                                        ((AddSingleBorrower) getContext()).next.setEnabled(true);
                                         Toast.makeText(context, "Failed 2", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                 }else{
-                    submitButton.setEnabled(true);
+                    ((AddSingleBorrower) getContext()).next.setEnabled(true);
                     reg_progress_bar.setVisibility(View.GONE);
                     Toast.makeText(context, "failed 1", Toast.LENGTH_SHORT).show();
                 }
@@ -316,7 +327,7 @@ public class BorrowerFilesFragment extends Fragment {
                             createActivityCycle(task.getResult().getId());
                         }else{
                             reg_progress_bar.setVisibility(View.GONE);
-                            submitButton.setEnabled(true);
+                            ((AddSingleBorrower) getContext()).next.setEnabled(true);
                             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -384,7 +395,7 @@ public class BorrowerFilesFragment extends Fragment {
             public void requestCompleted(JSONObject jsonObject, AlgoliaException e) {
                 if(e == null) {
                     reg_progress_bar.setVisibility(View.GONE);
-                    submitButton.setEnabled(true);
+                    ((AddSingleBorrower) getContext()).next.setEnabled(true);
                     Toast.makeText(context, "New borrower Added Successfully", Toast.LENGTH_SHORT).show();
 
                     //moving to business verification page

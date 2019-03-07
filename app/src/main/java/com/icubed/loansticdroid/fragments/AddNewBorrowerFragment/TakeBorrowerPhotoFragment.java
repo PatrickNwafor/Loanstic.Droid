@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.AddSingleBorrower;
+import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.io.ByteArrayOutputStream;
 
@@ -41,7 +42,6 @@ public class TakeBorrowerPhotoFragment extends Fragment {
 
     private CircleImageView borrowerImageView;
     private ImageView editImageView;
-    private Button nextBtn, previousBtn;
     Context context;
     Bundle bundle;
 
@@ -66,10 +66,14 @@ public class TakeBorrowerPhotoFragment extends Fragment {
 
         editImageView = view.findViewById(R.id.start_camera_button);
         borrowerImageView = view.findViewById(R.id.borrower_image);
-        nextBtn = view.findViewById(R.id.next1);
-        previousBtn = view.findViewById(R.id.previous);
-
         bundle = getArguments();
+
+        Bitmap bitmap = StringToBitMap(bundle.getString("borrowerImage"));
+        if(bitmap == null) ((AddSingleBorrower) getContext()).next.setText("Take Photo");
+        else {
+            ((AddSingleBorrower) getContext()).next.setText("Next");
+            borrowerImageView.setImageBitmap(bitmap);
+        }
 
         ((AddSingleBorrower) getContext()).actionBar.setTitle("Take Borrower Photo");
 
@@ -80,23 +84,27 @@ public class TakeBorrowerPhotoFragment extends Fragment {
             }
         });
 
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                next();
-            }
-        });
-
-        previousBtn.setOnClickListener(new View.OnClickListener() {
+        ((AddSingleBorrower) getContext()).previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 previous();
             }
         });
+
+        ((AddSingleBorrower) getContext()).next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                next();
+            }
+        });
+    }
+
+    public Bitmap StringToBitMap(String encodedString){
+        return BitmapUtil.stringToBitMap(encodedString);
     }
 
     private void previous() {
-        ((AddSingleBorrower) context).startFragment(((AddSingleBorrower) context).sexDobFragment, "business");
+        ((AddSingleBorrower) context).startFragment(((AddSingleBorrower) context).businessFragment, "business");
     }
 
     private void next() {
@@ -119,7 +127,6 @@ public class TakeBorrowerPhotoFragment extends Fragment {
 
     /***************Calls up Up Phone camera********************/
     private void dispatchTakePictureIntent(int CAMERA_CODE) {
-        nextBtn.setText("Next");
         try {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
@@ -141,6 +148,7 @@ public class TakeBorrowerPhotoFragment extends Fragment {
             //Bitmap returned from camera
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             borrowerImageView.setImageBitmap(imageBitmap);
+            ((AddSingleBorrower) getContext()).next.setText("Next");
             borrowerImage = imageBitmap;
 
         }

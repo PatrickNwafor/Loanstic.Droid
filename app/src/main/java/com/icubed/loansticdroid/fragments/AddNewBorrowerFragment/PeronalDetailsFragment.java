@@ -22,7 +22,6 @@ import com.icubed.loansticdroid.activities.AddSingleBorrower;
 public class PeronalDetailsFragment extends Fragment {
 
     private EditText firstNameTextView, middleNameTextView, lastNameTextView;
-    private Button nextButton;
     Context context;
 
     public PeronalDetailsFragment() {
@@ -44,9 +43,15 @@ public class PeronalDetailsFragment extends Fragment {
         firstNameTextView = v.findViewById(R.id.first_name);
         middleNameTextView = v.findViewById(R.id.middle_name);
         lastNameTextView = v.findViewById(R.id.last_name);
-        nextButton = v.findViewById(R.id.next);
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
+        ((AddSingleBorrower) getContext()).previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((AddSingleBorrower) getContext()).finish();
+            }
+        });
+
+        ((AddSingleBorrower) getContext()).next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 moveToNextFragment();

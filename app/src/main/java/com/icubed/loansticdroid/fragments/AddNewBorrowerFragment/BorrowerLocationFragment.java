@@ -30,7 +30,6 @@ public class BorrowerLocationFragment extends Fragment {
 
     Context context;
     private EditText cityTextView,stateTextView, zipCodeTextView;
-    private Button nextBtn, previousBtn;
     private Spinner citizenship;
     private static final String DEFAULT_LOCAL = "Nigeria";
     private String selectedCountry;
@@ -59,8 +58,6 @@ public class BorrowerLocationFragment extends Fragment {
         zipCodeTextView = view.findViewById(R.id.zip_code);
 
         bundle = getArguments();
-        nextBtn = view.findViewById(R.id.next1);
-        previousBtn = view.findViewById(R.id.previous);
 
         Locale[] locale = Locale.getAvailableLocales();
         ArrayList<String> countries = new ArrayList<>();
@@ -79,17 +76,17 @@ public class BorrowerLocationFragment extends Fragment {
         citizenship.setSelection(adapter.getPosition(DEFAULT_LOCAL));
         selectedCountry = citizenship.getSelectedItem().toString();
 
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                next();
-            }
-        });
-
-        previousBtn.setOnClickListener(new View.OnClickListener() {
+        ((AddSingleBorrower) getContext()).previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 previous();
+            }
+        });
+
+        ((AddSingleBorrower) getContext()).next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                next();
             }
         });
     }

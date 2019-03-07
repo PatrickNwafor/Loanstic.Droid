@@ -21,7 +21,6 @@ import com.icubed.loansticdroid.activities.AddSingleBorrower;
 public class BusinessFragment extends Fragment {
 
     private EditText businessAddressTextView, businessNameTextView, businessDescTextView;
-    private Button nextBtn, previousBtn;
     Context context;
     Bundle bundle;
 
@@ -41,32 +40,31 @@ public class BusinessFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ((AddSingleBorrower) getContext()).next.setText("Next");
+
         businessAddressTextView = view.findViewById(R.id.business_address);
         businessNameTextView = view.findViewById(R.id.business_name);
         businessDescTextView = view.findViewById(R.id.description);
 
         bundle = getArguments();
 
-        nextBtn = view.findViewById(R.id.next1);
-        previousBtn = view.findViewById(R.id.previous);
-
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                next();
-            }
-        });
-
-        previousBtn.setOnClickListener(new View.OnClickListener() {
+        ((AddSingleBorrower) getContext()).previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 previous();
             }
         });
+
+        ((AddSingleBorrower) getContext()).next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                next();
+            }
+        });
     }
 
     private void previous() {
-        ((AddSingleBorrower) context).startFragment(((AddSingleBorrower) context).sexDobFragment, "contact");
+        ((AddSingleBorrower) context).startFragment(((AddSingleBorrower) context).contactFragment, "contact");
     }
 
     private void next() {

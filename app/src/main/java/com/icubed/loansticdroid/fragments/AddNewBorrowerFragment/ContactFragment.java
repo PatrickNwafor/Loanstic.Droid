@@ -23,7 +23,6 @@ public class ContactFragment extends Fragment {
 
     Context context;
     private EditText phoneNumberTextView, emailTextView, homeAddressTextView;
-    private Button nextBtn, previousBtn;
     private FormUtil formUtil;
     Bundle bundle;
 
@@ -49,27 +48,25 @@ public class ContactFragment extends Fragment {
 
         bundle = getArguments();
 
-        nextBtn = view.findViewById(R.id.next1);
-        previousBtn = view.findViewById(R.id.previous);
         formUtil = new FormUtil();
 
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                next();
-            }
-        });
-
-        previousBtn.setOnClickListener(new View.OnClickListener() {
+        ((AddSingleBorrower) getContext()).previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 previous();
             }
         });
+
+        ((AddSingleBorrower) getContext()).next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                next();
+            }
+        });
     }
 
     private void previous() {
-        ((AddSingleBorrower) context).startFragment(((AddSingleBorrower) context).sexDobFragment, "borrower_location");
+        ((AddSingleBorrower) context).startFragment(((AddSingleBorrower) context).locationFragment, "borrower_location");
     }
 
     private void next() {
