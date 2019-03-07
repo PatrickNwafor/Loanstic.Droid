@@ -41,6 +41,7 @@ public class BusinessFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ((AddSingleBorrower) getContext()).next.setText("Next");
+        ((AddSingleBorrower) getContext()).title.setText("Borrower Registration");
 
         businessAddressTextView = view.findViewById(R.id.business_address);
         businessNameTextView = view.findViewById(R.id.business_name);
