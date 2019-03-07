@@ -61,7 +61,6 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
     private ArrayList<Bitmap> mImageBitmap;
     private ImageView  selectedImageView;
     private LottieAnimationView takePictureImageView;
-    private static final int CAMERA_REQUEST_CODE = 335;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
    // public MarkerOptions markerOptions;
@@ -106,17 +105,12 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
         toolbar = findViewById(R.id.business_verification_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Business Verification");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     private void startCamera() {
         takePictureImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
                 dispatchTakePictureIntent(REQUEST_IMAGE_CAPTURE);
             }
         });
@@ -299,16 +293,10 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
 
         switch (item.getItemId()) {
 
-            case android.R.id.home:
-                finish();
-                return true;
-
             case R.id.next_to_loan_terms:
                 Intent intent = new Intent(this, BorrowerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-                //finish();
-
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -345,12 +333,5 @@ public class BusinessVerification extends AppCompatActivity implements OnMapRead
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
-    }
-
-    public void done(View view) {
-        Intent intent = new Intent(this, BorrowerActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        //finish();
     }
 }

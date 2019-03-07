@@ -57,26 +57,6 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <Button
-        android:id="@+id/proceed"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/add_borower_button"
-        android:drawableLeft="@drawable/proceed"
-
-
-        android:drawableTint="@color/whiteEnd"
-        android:onClick="done"
-android:visibility="gone"
-        android:text="Finish"
-        android:textAllCaps="false"
-        android:textColor="@color/whiteEnd"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/takepicture"
         android:layout_width="80dp"
