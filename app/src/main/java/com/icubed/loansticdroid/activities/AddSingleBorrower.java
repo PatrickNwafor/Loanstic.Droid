@@ -48,7 +48,6 @@ public class AddSingleBorrower extends AppCompatActivity {
     private FormUtil formUtil;
     private LocationProviderUtil locationProviderUtil;
     private Toolbar toolbar;
-    public ActionBar actionBar;
     public TextView next, title;
     public ImageView previous;
 
@@ -66,9 +65,8 @@ public class AddSingleBorrower extends AppCompatActivity {
         sexDobFragment = new SexDOBFragment();
         locationFragment = new BorrowerLocationFragment();
 
+        //Setting up custom toolbar
         toolbar = findViewById(R.id.reg_borrower_toolbar);
-        setSupportActionBar(toolbar);
-        actionBar = getSupportActionBar();
         setSupportActionBar(toolbar);
         View logo = getLayoutInflater().inflate(R.layout.borrower_reg_custom_menu, null);
         next = logo.findViewById(R.id.next);
