@@ -26,23 +26,13 @@
                 android:layout_height="match_parent"
                 android:layout_margin="15dp"
                 android:background="@color/whiteEnd"
-
+android:layout_gravity="center"
                 android:orientation="vertical"
                 android:padding="10dp"
 
                 android:visibility="visible">
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/image_view5"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center_horizontal"
 
-
-                    android:background="@drawable/circle_white"
-
-
-                    android:src="@drawable/camera" />
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
@@ -75,7 +65,7 @@
                         android:clickable="true"
                         android:elevation="4dp"
                         android:padding="10dp"
-                        android:src="@drawable/names"
+                        android:src="@drawable/cam_action_stillshot"
 
                         android:textColor="@color/whiteEnd"
                         android:tint="@color/colorPrimary"

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.AddGroupBorrower;
 import com.icubed.loansticdroid.activities.AddSingleBorrower;
@@ -23,7 +24,7 @@ public class PeronalDetailsFragment extends Fragment {
 
     private EditText firstNameTextView, middleNameTextView, lastNameTextView;
     Context context;
-
+    public LottieAnimationView circlebackground;
     public PeronalDetailsFragment() {
         // Required empty public constructor
     }
@@ -41,8 +42,10 @@ public class PeronalDetailsFragment extends Fragment {
         super.onViewCreated(v, savedInstanceState);
 
         firstNameTextView = v.findViewById(R.id.first_name);
+        circlebackground = v.findViewById(R.id.circle_background);
         middleNameTextView = v.findViewById(R.id.middle_name);
         lastNameTextView = v.findViewById(R.id.last_name);
+
 
         ((AddSingleBorrower) getContext()).previous.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -37,7 +37,7 @@ public class BorrrowerFileDriverLicense extends AppCompatActivity {
         setContentView(R.layout.activity_borrrower_file_driver_license);
         toolbar = findViewById(R.id.ID_document_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Identity card");
+        getSupportActionBar().setTitle("Driving License");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

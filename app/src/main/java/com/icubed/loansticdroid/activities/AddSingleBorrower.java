@@ -1,30 +1,17 @@
 package com.icubed.loansticdroid.activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.location.Location;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.algolia.search.saas.Client;
-import com.algolia.search.saas.Index;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.fragments.AddNewBorrowerFragment.BorrowerFilesFragment;
 import com.icubed.loansticdroid.fragments.AddNewBorrowerFragment.BorrowerLocationFragment;
@@ -33,12 +20,10 @@ import com.icubed.loansticdroid.fragments.AddNewBorrowerFragment.ContactFragment
 import com.icubed.loansticdroid.fragments.AddNewBorrowerFragment.PeronalDetailsFragment;
 import com.icubed.loansticdroid.fragments.AddNewBorrowerFragment.SexDOBFragment;
 import com.icubed.loansticdroid.fragments.AddNewBorrowerFragment.TakeBorrowerPhotoFragment;
-import com.icubed.loansticdroid.cloudqueries.Account;
-import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.util.FormUtil;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
 
-import java.util.Map;
+import static android.app.PendingIntent.getActivity;
 
 public class AddSingleBorrower extends AppCompatActivity {
 
@@ -70,7 +55,7 @@ public class AddSingleBorrower extends AppCompatActivity {
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
         setSupportActionBar(toolbar);
-        View logo = getLayoutInflater().inflate(R.layout.borrower_reg_custom_menu, null);
+        View logo = getLayoutInflater().inflate(R.layout.app_bar_layout_borrower_reg, null);
         next = logo.findViewById(R.id.next);
         previous = logo.findViewById(R.id.previous);
         title = logo.findViewById(R.id.title);

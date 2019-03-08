@@ -6,6 +6,9 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -18,14 +21,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.cloudqueries.PaymentQueries;
+import com.icubed.loansticdroid.util.KeyboardUtil;
+
+import co.ceryle.segmentedbutton.SegmentedButtonGroup;
 
 public class PaymentActivity extends AppCompatActivity {
 
-    Button proceed;
-    Animation frombottom;
-    TextView paymentCollection,letsVerify;
 
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    public SegmentedButtonGroup sbg;
+    private Toolbar toolbar;
     private PaymentQueries paymentQueries;
 
     @Override
@@ -33,39 +37,80 @@ public class PaymentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
 
-        paymentCollection = findViewById(R.id.textView4);
-        letsVerify = findViewById(R.id.textView5);
-        proceed = findViewById(R.id.proceed);
-        frombottom = AnimationUtils.loadAnimation( this,R.anim.frombottom);
+        toolbar = findViewById(R.id.repayment_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Repayments");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
 
 
-        proceed.setAnimation(frombottom);
 
         paymentQueries = new PaymentQueries();
-    }
-
-    /***************Calls up Up Phone camera********************/
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
+        //segmented control
+        sbg = findViewById(R.id.segmentedButtonGroup);
+        sbg.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition(){
+            @Override
+            public void onClickedButtonPosition(int position){
+                if(position==0) {
+                   // searchPosition = 0;
+                    //startFragment(singleBorrowerFragment, "single");
+                }
+                else if (position==1) {
+                    //searchPosition = 1;
+                    //startFragment(groupBorrowerFragment, "group");
+                }
+            }
+        });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            //Bitmap returned from camera
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            //imageView.setImageBitmap(imageBitmap);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.repayments_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+
+        switch (item.getItemId()) {
+
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            case R.id.action_search:
+               // searchBorrowerEditText.setVisibility(View.VISIBLE);
+               // searchBorrowerEditText.requestFocus();
+               // KeyboardUtil.showKeyboard(BorrowerActivity.this);
+                return true;
+
+
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
-    public void takeBorrowerPicture(View view) {
-        dispatchTakePictureIntent();
+    private void startAnotherActivity(Class newActivity){
+        Intent newActivityIntent = new Intent(this, newActivity);
+        startActivity(newActivityIntent);
     }
+
+    @Override
+    public void onBackPressed() {
+        /*if(searchBorrowerEditText.getVisibility() == View.VISIBLE){
+            searchBorrowerEditText.setVisibility(View.GONE);
+            return;
+        }*/
+
+        super.onBackPressed();
+    }
+
 }
