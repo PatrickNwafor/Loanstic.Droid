@@ -75,7 +75,7 @@ public class TakeBorrowerPhotoFragment extends Fragment {
             borrowerImageView.setImageBitmap(bitmap);
         }
 
-        ((AddSingleBorrower) getContext()).title.setText("Photo");
+        ((AddSingleBorrower) getContext()).title.setText("Borrower Photo");
 
         editImageView.setOnClickListener(new View.OnClickListener() {
             @Override

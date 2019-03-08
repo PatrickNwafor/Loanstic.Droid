@@ -26,7 +26,7 @@
 
         android:elevation="4dp"
         android:padding="10dp"
-        android:src="@drawable/names"
+        android:src="@drawable/cam_action_stillshot"
         android:textColor="@color/whiteEnd"
         android:tint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout4"

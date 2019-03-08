@@ -4,80 +4,116 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/whiteEnd"
     tools:context=".activities.PaymentActivity">
-
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/image_view"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginBottom="189dp"
-        android:layout_marginEnd="8dp"
-
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="122dp"
-        android:background="@drawable/circle_white"
-        android:elevation="4dp"
-        android:src="@drawable/person_image"
-
+    <include
+        android:id="@+id/repayment_toolbar"
+        layout="@layout/app_bar_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView4"
+    <com.icubed.loansticdroid.util.EditTextExtension.CustomEditText
+        android:id="@+id/searchEditText"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="@color/whiteEnd"
+
+        android:drawableLeft="@drawable/ic_arrow_back_black_24dp"
+        android:drawableRight="@drawable/cancel_earch"
+        android:drawablePadding="10dp"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
+        android:elevation="4dp"
+
+        android:ems="10"
+        android:hint="Search borrower's name...."
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:singleLine="true"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <co.ceryle.segmentedbutton.SegmentedButtonGroup
+        android:id="@+id/segmentedButtonGroup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_horizontal"
-        android:text="Payment Collection"
-        android:textColor="@color/whiteEnd"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/proceed"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="9dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_view"
-        app:layout_constraintVertical_bias="0.173" />
+        app:layout_constraintTop_toBottomOf="@+id/repayment_toolbar"
+        app:layout_constraintVertical_bias="0.0"
+        app:sbg_animateSelector="bounce"
+        app:sbg_backgroundColor="@color/whiteEnd"
+        app:sbg_dividerColor="@color/colorPrimary"
+        app:sbg_dividerPadding="10dp"
+        app:sbg_dividerSize="1dp"
+        app:sbg_position="0"
+        app:sbg_radius="2dp"
+        app:sbg_ripple="true"
+        app:sbg_rippleColor="@color/colorPrimary"
+        app:sbg_selectorColor="@color/colorPrimary"
+        app:sbg_selectorTextColor="@color/whiteEnd"
+        app:sbg_shadow="true"
+        app:sbg_shadowElevation="3dp"
+        app:sbg_shadowMargin="4dp"
+        tools:ignore="MissingConstraints">
 
-    <TextView
-        android:id="@+id/textView5"
+        <Button
+            android:id="@+id/singleBorrowerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="10dp"
+            android:text="Loan Repayments"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/groupBorrowerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="10dp"
+            android:text="Savings Payments"
+            android:textAllCaps="false" />
+
+
+    </co.ceryle.segmentedbutton.SegmentedButtonGroup>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_horizontal"
-        android:text="Take a clear picture of the borrower"
-        android:textSize="14sp"
-        android:textColor="@color/whiteEnd"
-
-        app:layout_constraintBottom_toTopOf="@+id/proceed"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_view"
-        app:layout_constraintVertical_bias="0.382" />
-
-
-    <Button
-        android:id="@+id/proceed"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="73dp"
-        android:background="@drawable/add_borower_button"
-
-
-        android:drawableLeft="@drawable/proceed"
-        android:drawableTint="@color/whiteEnd"
-        android:onClick="takeBorrowerPicture"
-        android:text="Proceed"
-        android:textAllCaps="false"
-        android:textColor="@color/whiteEnd"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/segmentedButtonGroup"
+        tools:ignore="UnknownId">
 
 
-</android.support.constraint.ConstraintLayout>
+        <FrameLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ProgressBar
+            android:id="@+id/borrowerProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+  </android.support.constraint.ConstraintLayout>
