@@ -27,6 +27,10 @@ public class PaymentScheduleGenerator {
     LoansTable loan;
     private CollectionQueries collectionQueries;
 
+    public static final String COLLECTION_STATE_FULL = "Full Collection";
+    public static final String COLLECTION_STATE_PARTIAL = "Partial Collection";
+    public static final String COLLECTION_STATE_NO = "No Collection";
+
     public PaymentScheduleGenerator() {
         collectionQueries = new CollectionQueries();
     }
@@ -117,6 +121,8 @@ public class PaymentScheduleGenerator {
             collectionTable.setCollectionNumber(i);
             collectionTable.setLoanId(loan.getLoanId());
             collectionTable.setPenalty(0.0);
+            collectionTable.setAmountPaid(0.0);
+            collectionTable.setCollectionState(COLLECTION_STATE_NO);
 
             collectionTableList.add(collectionTable);
         }
@@ -141,6 +147,8 @@ public class PaymentScheduleGenerator {
             collectionTable.setCollectionNumber(i);
             collectionTable.setLoanId(loan.getLoanId());
             collectionTable.setPenalty(0.0);
+            collectionTable.setAmountPaid(0.0);
+            collectionTable.setCollectionState(COLLECTION_STATE_NO);
 
             collectionTableList.add(collectionTable);
         }
@@ -165,6 +173,8 @@ public class PaymentScheduleGenerator {
             collectionTable.setCollectionNumber(i);
             collectionTable.setLoanId(loan.getLoanId());
             collectionTable.setPenalty(0.0);
+            collectionTable.setAmountPaid(0.0);
+            collectionTable.setCollectionState(COLLECTION_STATE_NO);
 
             collectionTableList.add(collectionTable);
         }
@@ -191,6 +201,8 @@ public class PaymentScheduleGenerator {
             collectionTable.setCollectionNumber(i);
             collectionTable.setLoanId(loan.getLoanId());
             collectionTable.setPenalty(0.0);
+            collectionTable.setAmountPaid(0.0);
+            collectionTable.setCollectionState(COLLECTION_STATE_NO);
 
             collectionTableList.add(collectionTable);
         }

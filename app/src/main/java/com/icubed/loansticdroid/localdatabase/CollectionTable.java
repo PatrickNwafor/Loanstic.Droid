@@ -25,11 +25,13 @@ public class CollectionTable {
     private Date collectionDueDate;
     private Date lastUpdatedAt;
     private Date timestamp;
+    private double amountPaid;
+    private String collectionState;
 
     private Boolean isDueCollected;
 
-    @Generated(hash = 1851244840)
-    public CollectionTable(String collectionId, String loanId, int collectionNumber, Long id, Double collectionDueAmount, Double penalty, Date collectionDueDate, Date lastUpdatedAt, Date timestamp, Boolean isDueCollected) {
+    @Generated(hash = 2049575765)
+    public CollectionTable(String collectionId, String loanId, int collectionNumber, Long id, Double collectionDueAmount, Double penalty, Date collectionDueDate, Date lastUpdatedAt, Date timestamp, double amountPaid, String collectionState, Boolean isDueCollected) {
         this.collectionId = collectionId;
         this.loanId = loanId;
         this.collectionNumber = collectionNumber;
@@ -39,6 +41,8 @@ public class CollectionTable {
         this.collectionDueDate = collectionDueDate;
         this.lastUpdatedAt = lastUpdatedAt;
         this.timestamp = timestamp;
+        this.amountPaid = amountPaid;
+        this.collectionState = collectionState;
         this.isDueCollected = isDueCollected;
     }
 
@@ -129,5 +133,21 @@ public class CollectionTable {
 
     public void setPenalty(Double penalty) {
         this.penalty = penalty;
+    }
+
+    public double getAmountPaid() {
+        return this.amountPaid;
+    }
+
+    public void setAmountPaid(double amountPaid) {
+        this.amountPaid = amountPaid;
+    }
+
+    public String getCollectionState() {
+        return this.collectionState;
+    }
+
+    public void setCollectionState(String collectionState) {
+        this.collectionState = collectionState;
     }
 }
