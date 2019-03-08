@@ -252,6 +252,7 @@ public class LoanTerms extends AppCompatActivity {
         loanMap.put("loanDurationUnit", selectedDuration);
         loanMap.put("repaymentAmount", Double.parseDouble(repaymentCycleEditText.getText().toString()));
         loanMap.put("repaymentAmountUnit", selectedCycle);
+        loanMap.put("repaymentMade", 0.0);
         loanMap.put("lastUpdatedAt", new Date());
 
         if(!formUtil.isSingleFormEmpty(loanFeesEditText) && formUtil.doesFormContainNumbersOnly(loanFeesEditText))

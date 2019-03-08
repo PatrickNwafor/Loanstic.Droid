@@ -109,27 +109,15 @@ public class LoginActivity extends AppCompatActivity {
 
                     final String email = task.getResult().getUser().getEmail();
 
+                    account.saveDeviceToken();
+
+                    Toast.makeText(getApplicationContext(), "Account Login of "+email+ " Successful", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onComplete: Account Login successful");
+
+                    Intent mainActivityIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(mainActivityIntent);
+                    finish();
                     //Save device token
-                    account.saveDeviceToken()
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        Toast.makeText(getApplicationContext(), "Account Login of "+email+ " Successful", Toast.LENGTH_SHORT).show();
-                                        Log.d(TAG, "onComplete: Account Login successful");
-
-                                        Intent mainActivityIntent = new Intent(LoginActivity.this, MainActivity.class);
-                                        startActivity(mainActivityIntent);
-                                        finish();
-                                    }else{
-                                        loginProgressBar.setVisibility(View.GONE);
-                                        loginBtn.setEnabled(true);
-
-                                        //Determine the type of login error message
-                                        loginError(task.getException().getMessage());
-                                    }
-                                }
-                            });
                 }else{
 
                     loginProgressBar.setVisibility(View.GONE);

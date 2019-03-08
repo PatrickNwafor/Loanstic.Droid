@@ -1,41 +1,34 @@
 package com.icubed.loansticdroid.activities;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.cloudqueries.PaymentQueries;
-import com.icubed.loansticdroid.util.KeyboardUtil;
+import com.icubed.loansticdroid.fragments.RepaymentFragment.LoanRepaymentFragment;
+import com.icubed.loansticdroid.fragments.RepaymentFragment.SavingsPaymentFragment;
 
 import co.ceryle.segmentedbutton.SegmentedButtonGroup;
 
-public class PaymentActivity extends AppCompatActivity {
+public class RepaymentActivity extends AppCompatActivity {
 
 
-    public SegmentedButtonGroup sbg;
+    private SegmentedButtonGroup sbg;
     private Toolbar toolbar;
     private PaymentQueries paymentQueries;
+    private LoanRepaymentFragment loanRepaymentFragment;
+    private SavingsPaymentFragment savingsPaymentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_payment);
+        setContentView(R.layout.activity_repayment);
 
         toolbar = findViewById(R.id.repayment_toolbar);
         setSupportActionBar(toolbar);
@@ -43,26 +36,32 @@ public class PaymentActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        savingsPaymentFragment = new SavingsPaymentFragment();
+        loanRepaymentFragment = new LoanRepaymentFragment();
 
-
-
-
+        startFragment(loanRepaymentFragment, "repayment");
         paymentQueries = new PaymentQueries();
+
         //segmented control
         sbg = findViewById(R.id.segmentedButtonGroup);
         sbg.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition(){
             @Override
             public void onClickedButtonPosition(int position){
                 if(position==0) {
-                   // searchPosition = 0;
-                    //startFragment(singleBorrowerFragment, "single");
+                    startFragment(loanRepaymentFragment, "repayment");
                 }
                 else if (position==1) {
-                    //searchPosition = 1;
-                    //startFragment(groupBorrowerFragment, "group");
+                    startFragment(savingsPaymentFragment, "savings");
                 }
             }
         });
+    }
+
+    /************Instantiate fragment transactions**********/
+    public void startFragment(Fragment fragment, String fragmentTag){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content, fragment, fragmentTag);
+        transaction.commit();
     }
 
     @Override
@@ -77,12 +76,10 @@ public class PaymentActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-
         switch (item.getItemId()) {
 
-
             case android.R.id.home:
-                onBackPressed();
+                finish();
                 return true;
 
             case R.id.action_search:
@@ -97,20 +94,4 @@ public class PaymentActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    private void startAnotherActivity(Class newActivity){
-        Intent newActivityIntent = new Intent(this, newActivity);
-        startActivity(newActivityIntent);
-    }
-
-    @Override
-    public void onBackPressed() {
-        /*if(searchBorrowerEditText.getVisibility() == View.VISIBLE){
-            searchBorrowerEditText.setVisibility(View.GONE);
-            return;
-        }*/
-
-        super.onBackPressed();
-    }
-
 }

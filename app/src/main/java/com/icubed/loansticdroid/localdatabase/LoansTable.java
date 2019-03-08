@@ -23,20 +23,14 @@ public class LoansTable implements Parcelable {
     private boolean isOtherLoanType, isLoanApproved;
 
     private double loanAmount, loanFees, repaymentAmount;
-    private double loanInterestRate;
+    private double loanInterestRate, repaymentMade;
     private Date loanCreationDate, loanReleaseDate;
     private Date loanApprovedDate, lastUpdatedAt;
     private int loanDuration;
     private String loanTypeId, loanOfficerId, loanInterestRateUnit
             , loanDurationUnit, repaymentAmountUnit;
-    @Generated(hash = 453351641)
-    public LoansTable(String loanId, String borrowerId, String groupId, Long id,
-            boolean isOtherLoanType, boolean isLoanApproved, double loanAmount,
-            double loanFees, double repaymentAmount, double loanInterestRate,
-            Date loanCreationDate, Date loanReleaseDate, Date loanApprovedDate,
-            Date lastUpdatedAt, int loanDuration, String loanTypeId,
-            String loanOfficerId, String loanInterestRateUnit,
-            String loanDurationUnit, String repaymentAmountUnit) {
+    @Generated(hash = 1671416047)
+    public LoansTable(String loanId, String borrowerId, String groupId, Long id, boolean isOtherLoanType, boolean isLoanApproved, double loanAmount, double loanFees, double repaymentAmount, double loanInterestRate, double repaymentMade, Date loanCreationDate, Date loanReleaseDate, Date loanApprovedDate, Date lastUpdatedAt, int loanDuration, String loanTypeId, String loanOfficerId, String loanInterestRateUnit, String loanDurationUnit, String repaymentAmountUnit) {
         this.loanId = loanId;
         this.borrowerId = borrowerId;
         this.groupId = groupId;
@@ -47,6 +41,7 @@ public class LoansTable implements Parcelable {
         this.loanFees = loanFees;
         this.repaymentAmount = repaymentAmount;
         this.loanInterestRate = loanInterestRate;
+        this.repaymentMade = repaymentMade;
         this.loanCreationDate = loanCreationDate;
         this.loanReleaseDate = loanReleaseDate;
         this.loanApprovedDate = loanApprovedDate;
@@ -228,6 +223,12 @@ public class LoansTable implements Parcelable {
         dest.writeString(this.loanInterestRateUnit);
         dest.writeString(this.loanDurationUnit);
         dest.writeString(this.repaymentAmountUnit);
+    }
+    public double getRepaymentMade() {
+        return this.repaymentMade;
+    }
+    public void setRepaymentMade(double repaymentMade) {
+        this.repaymentMade = repaymentMade;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

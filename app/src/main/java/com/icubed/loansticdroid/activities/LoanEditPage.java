@@ -117,7 +117,7 @@ public class LoanEditPage extends AppCompatActivity {
                 return true;
 
             case R.id.add_repayment:
-               //startAnotherActivity(PaymentActivity.class);
+               //startAnotherActivity(RepaymentActivity.class);
                 return true;
 
 

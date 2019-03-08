@@ -17,12 +17,9 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.fragments.HomeFragments.DashboardFragment;
 import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
@@ -111,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.nav_payment:
-                startAnotherActivity(PaymentActivity.class);
+                startAnotherActivity(RepaymentActivity.class);
                 return true;
 
             case R.id.nav_loans:

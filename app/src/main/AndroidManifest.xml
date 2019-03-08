@@ -53,7 +53,7 @@
         <activity android:name=".activities.ResetPasswordActivity" />
         <activity android:name=".activities.CollectionDetailsActivity" />
         <activity android:name=".activities.CollectionActivity" />
-        <activity android:name=".activities.PaymentActivity" />
+        <activity android:name=".activities.RepaymentActivity" />
         <activity android:name=".activities.LoanActivity" />
         <activity android:name=".activities.SavingsActivity" />
         <activity
@@ -99,7 +99,8 @@
         <activity android:name=".activities.LoanEditPage" />
         <activity android:name=".activities.AddBorrowerToExistingGroupActivity" />
         <activity android:name=".activities.LoanRepayment" />
-        <activity android:name=".activities.SavingsRepayment"></activity>
+        <activity android:name=".activities.SavingsRepayment" />
+        <activity android:name=".activities.LoanPaymentActivity"></activity>
     </application>
 
 </manifest>
