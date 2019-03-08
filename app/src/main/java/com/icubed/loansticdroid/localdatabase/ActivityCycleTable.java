@@ -19,16 +19,16 @@ public class ActivityCycleTable {
     private Boolean isActive;
     private String borrowerId;
     private Date startCycleTime;
-    private Date endCycleTime;
-    @Generated(hash = 1438263465)
-    public ActivityCycleTable(String activityCycleId, Long Id, Boolean isActive,
-            String borrowerId, Date startCycleTime, Date endCycleTime) {
+    private Date endCycleTime, lastUpdatedAt;
+    @Generated(hash = 76276144)
+    public ActivityCycleTable(String activityCycleId, Long Id, Boolean isActive, String borrowerId, Date startCycleTime, Date endCycleTime, Date lastUpdatedAt) {
         this.activityCycleId = activityCycleId;
         this.Id = Id;
         this.isActive = isActive;
         this.borrowerId = borrowerId;
         this.startCycleTime = startCycleTime;
         this.endCycleTime = endCycleTime;
+        this.lastUpdatedAt = lastUpdatedAt;
     }
     @Generated(hash = 1053731150)
     public ActivityCycleTable() {
@@ -73,5 +73,11 @@ public class ActivityCycleTable {
     @Override
     public String toString() {
         return "ActivityCycleTable{" + "activityCycleId='" + activityCycleId + '\'' + ", Id=" + Id + ", isActive=" + isActive + ", borrowerId='" + borrowerId + '\'' + ", startCycleTime=" + startCycleTime + ", endCycleTime=" + endCycleTime + '}';
+    }
+    public Date getLastUpdatedAt() {
+        return this.lastUpdatedAt;
+    }
+    public void setLastUpdatedAt(Date lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 }
