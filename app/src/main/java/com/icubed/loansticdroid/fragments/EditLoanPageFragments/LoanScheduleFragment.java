@@ -27,6 +27,7 @@ import com.icubed.loansticdroid.cloudqueries.CollectionQueries;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.localdatabase.CollectionTableQueries;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
+import com.icubed.loansticdroid.models.PaymentScheduleGenerator;
 import com.icubed.loansticdroid.util.DateUtil;
 
 import java.util.List;
@@ -214,8 +215,9 @@ public class LoanScheduleFragment extends Fragment {
         dueAmountHeader.setGravity(Gravity.CENTER);
         dueAmountHeader.setPadding(10,10,10,10);
 
-        if(collectionTable.getIsDueCollected()) {
-            currentBalance = currentBalance + collectionTable.getCollectionDueAmount();
+        if(collectionTable.getCollectionState().equals(PaymentScheduleGenerator.COLLECTION_STATE_PARTIAL) ||
+                collectionTable.getCollectionState().equals(PaymentScheduleGenerator.COLLECTION_STATE_FULL)) {
+            currentBalance = currentBalance + collectionTable.getAmountPaid();
             totalBalanceHeader.setText(String.valueOf(currentBalance));
         } else totalBalanceHeader.setText(String.valueOf(currentBalance));
         totalBalanceHeader.setGravity(Gravity.CENTER);

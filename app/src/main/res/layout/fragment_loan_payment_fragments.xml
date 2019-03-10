@@ -6,7 +6,6 @@
         android:layout_height="match_parent"
         tools:context=".fragments.PaymentFragment.LoanPaymentFragments">
 
-        <!-- TODO: Update blank fragment layout -->
         <ProgressBar
             android:id="@+id/schedule_progress_bar"
             style="?android:attr/progressBarStyle"

@@ -15,6 +15,7 @@ import com.icubed.loansticdroid.fragments.PaymentFragment.CollectionPaymentFragm
 import com.icubed.loansticdroid.fragments.PaymentFragment.LoanPaymentFragments;
 import com.icubed.loansticdroid.fragments.RepaymentFragment.LoanRepaymentFragment;
 import com.icubed.loansticdroid.fragments.RepaymentFragment.SavingsPaymentFragment;
+import com.icubed.loansticdroid.localdatabase.LoansTable;
 
 import co.ceryle.segmentedbutton.SegmentedButtonGroup;
 
@@ -22,6 +23,7 @@ public class LoanPaymentActivity extends AppCompatActivity {
 
     private CollectionPaymentFragment collectionPaymentFragment;
     private LoanPaymentFragments loanPaymentFragments;
+    public LoansTable loan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,8 @@ public class LoanPaymentActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Loan Repayments");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        loan = getIntent().getParcelableExtra("loan");
 
         collectionPaymentFragment = new CollectionPaymentFragment();
         loanPaymentFragments = new LoanPaymentFragments();
