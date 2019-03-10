@@ -30,7 +30,7 @@ public class LoanPaymentActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.repayment_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Loan Payments");
+        getSupportActionBar().setTitle("Loan Repayments");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

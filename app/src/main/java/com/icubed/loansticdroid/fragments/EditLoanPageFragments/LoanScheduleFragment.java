@@ -55,7 +55,7 @@ public class LoanScheduleFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for getContext() fragment
-        return inflater.inflate(R.layout.fragment_loan_schedule, container, false);
+        return inflater.inflate(R.layout.fragment_payment_schedule, container, false);
     }
 
     @Override
