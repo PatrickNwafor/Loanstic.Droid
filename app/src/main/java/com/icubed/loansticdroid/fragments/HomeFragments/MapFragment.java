@@ -83,6 +83,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public SegmentedButtonGroup sbg;
     public LinearLayout progressLayout, collectionLayout;
     public Marker myMarker = null;
+    public boolean isNoCol = true;
 
     private static final String TAG = "MapFragment";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -427,7 +428,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     }
 
-    private void getCurrentLocation() {
+    public void getCurrentLocation() {
         locationProviderUtil.requestSingleUpdate(new LocationProviderUtil.LocationCallback() {
             @Override
             public void onNewLocationAvailable(LocationProviderUtil.GPSCoordinates location) {
@@ -452,7 +453,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         circleImageView.setImageResource(R.drawable.new_borrower_green);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
 
-        drawMarker(markerOptions);
+        if(isNoCol){
+            drawMarker(markerOptions);
+            isNoCol = false;
+        }
     }
 
     public void drawMarker(MarkerOptions markerOptions){

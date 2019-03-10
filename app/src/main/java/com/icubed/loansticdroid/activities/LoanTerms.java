@@ -26,14 +26,17 @@ import com.algolia.search.saas.Index;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.cloudqueries.Account;
+import com.icubed.loansticdroid.cloudqueries.LoanNumberGeneratorQueries;
 import com.icubed.loansticdroid.cloudqueries.LoansQueries;
 import com.icubed.loansticdroid.cloudqueries.OtherLoanTypeQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
+import com.icubed.loansticdroid.models.LoanNumberGenerator;
 import com.icubed.loansticdroid.models.PaymentScheduleGenerator;
 import com.icubed.loansticdroid.notification.LoanRequestNotificationQueries;
 import com.icubed.loansticdroid.notification.LoanRequestNotificationTable;
@@ -64,11 +67,13 @@ public class LoanTerms extends AppCompatActivity {
     private LoanTypeTable loanTypeTable;
     private GroupBorrowerTable group;
     private BorrowersTable borrower;
+    private LoanNumberGeneratorQueries loanNumberGeneratorQueries;
 
     private LoansQueries loansQueries;
     private FormUtil formUtil;
     private Account account;
     private OtherLoanTypeQueries otherLoanTypeQueries;
+    private String loanNumber;
     
     private EditText loanTypeNameEditText, principlaAmountEditText, loanInterestEditText
             , loanDurationTextView, repaymentCycleEditText, loanFeesEditText, loanTypeDescEditText;
@@ -112,6 +117,7 @@ public class LoanTerms extends AppCompatActivity {
         account = new Account();
         otherLoanTypeQueries = new OtherLoanTypeQueries();
         loanRequestNotificationQueries = new LoanRequestNotificationQueries();
+        loanNumberGeneratorQueries = new LoanNumberGeneratorQueries();
 
         //Algolia search initiation
         Client client = new Client("HGQ25JRZ8Y", "d4453ddf82775ee2324c47244b30a7c7");
@@ -186,17 +192,62 @@ public class LoanTerms extends AppCompatActivity {
     private void submitButtonListener(){
         creationDate = new Date();
         if(loanTypeTable == null){
+            progressBar.setVisibility(View.VISIBLE);
             createLoanTypeId();
         }else {
-            submitLoan(false);
+            progressBar.setVisibility(View.VISIBLE);
+            generateLoanNumber(false);
         }
+    }
+
+    /**
+     * generates loan number and checks if it already exist in cloud storage
+     * @param isOtherLoanType
+     */
+    private void generateLoanNumber(final boolean isOtherLoanType) {
+        loanNumber = LoanNumberGenerator.generateLoanNumber(loanTypeTable.getLoanTypeAbbreviation());
+
+        loanNumberGeneratorQueries.validateLoanNumber(loanNumber)
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            if(task.getResult().isEmpty()){
+                                addLoanNumber(loanNumber, isOtherLoanType);
+                            }else{
+                                generateLoanNumber(isOtherLoanType);
+                            }
+                        }else {
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Adds new loan number to database
+     * @param loanNumber
+     * @param isOtherLoanType
+     */
+    private void addLoanNumber(String loanNumber, final boolean isOtherLoanType) {
+        loanNumberGeneratorQueries.addLoanNumber(loanNumber)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if(task.isSuccessful()){
+                            submitLoan(isOtherLoanType);
+                        }else {
+                            progressBar.setVisibility(View.GONE);
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
     }
 
     private void createLoanTypeId(){
 
         if(!checkForm()) return;
-
-        progressBar.setVisibility(View.VISIBLE);
 
         Map<String, Object> loanTypeMap = new HashMap<>();
         loanTypeMap.put("branchId", "2s6biiTANBZ4VqTUDrtEsdwgc822");
@@ -213,7 +264,8 @@ public class LoanTerms extends AppCompatActivity {
                             loanTypeTable = new LoanTypeTable();
                             loanTypeTable.setLoanTypeId(task.getResult().getId());
                             loanTypeTable.setLoanTypeName(loanTypeNameEditText.getText().toString());
-                            submitLoan(true);
+                            loanTypeTable.setLoanTypeAbbreviation("OLT");
+                            generateLoanNumber(true);
                         }else{
                             progressBar.setVisibility(View.GONE);
                             Log.d(TAG, "onComplete: "+task.getException().getMessage());
@@ -225,8 +277,6 @@ public class LoanTerms extends AppCompatActivity {
 
     private void submitLoan(final Boolean isOtherLoanType){
         if(!checkForm()) return;
-
-        progressBar.setVisibility(View.VISIBLE);
 
         Map<String, Object> loanMap = new HashMap<>();
 
@@ -254,6 +304,7 @@ public class LoanTerms extends AppCompatActivity {
         loanMap.put("repaymentAmountUnit", selectedCycle);
         loanMap.put("repaymentMade", 0.0);
         loanMap.put("lastUpdatedAt", new Date());
+        loanMap.put("loanNumber", loanNumber);
 
         if(!formUtil.isSingleFormEmpty(loanFeesEditText) && formUtil.doesFormContainNumbersOnly(loanFeesEditText))
             loanMap.put("loanFees", Double.parseDouble(loanFeesEditText.getText().toString()));
@@ -384,6 +435,7 @@ public class LoanTerms extends AppCompatActivity {
         Map<String, Object> searchMap = new HashMap<>();
 
         searchMap.put("loanTypeName", loanTypeTable.getLoanTypeName());
+        searchMap.put("loanNumber", loanNumber);
         if(borrower != null) searchMap.put("name", borrower.getFirstName()+" "+borrower.getLastName());
         else searchMap.put("name", group.getGroupName());
 

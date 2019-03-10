@@ -445,7 +445,9 @@ public class DueCollection {
                         mapFragment.moveCamera(markers, null);
 
                     } else {
-                        mapFragment.drawMarker(mapFragment.markerOptions);
+                        if(mapFragment.isNoCol){
+                            mapFragment.getCurrentLocation();
+                        }
                     }
                 }
             });

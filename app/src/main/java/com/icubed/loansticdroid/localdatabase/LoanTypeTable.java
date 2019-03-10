@@ -26,12 +26,12 @@ public class LoanTypeTable implements Parcelable {
     private Date lastUpdatedAt;
     private String loanTypeDescription;
 
-    private String loanTypeImageUri;
+    private String loanTypeImageUri, LoanTypeAbbreviation;
     private String loanTypeImageThumbUri;
     private Date timestamp;
     private byte[] loanTypeImageByteArray;
-    @Generated(hash = 1885994709)
-    public LoanTypeTable(String loanTypeId, String branchId, Long Id, String loanTypeName, Date lastUpdatedAt, String loanTypeDescription, String loanTypeImageUri, String loanTypeImageThumbUri, Date timestamp, byte[] loanTypeImageByteArray) {
+    @Generated(hash = 448677121)
+    public LoanTypeTable(String loanTypeId, String branchId, Long Id, String loanTypeName, Date lastUpdatedAt, String loanTypeDescription, String loanTypeImageUri, String LoanTypeAbbreviation, String loanTypeImageThumbUri, Date timestamp, byte[] loanTypeImageByteArray) {
         this.loanTypeId = loanTypeId;
         this.branchId = branchId;
         this.Id = Id;
@@ -39,6 +39,7 @@ public class LoanTypeTable implements Parcelable {
         this.lastUpdatedAt = lastUpdatedAt;
         this.loanTypeDescription = loanTypeDescription;
         this.loanTypeImageUri = loanTypeImageUri;
+        this.LoanTypeAbbreviation = LoanTypeAbbreviation;
         this.loanTypeImageThumbUri = loanTypeImageThumbUri;
         this.timestamp = timestamp;
         this.loanTypeImageByteArray = loanTypeImageByteArray;
@@ -108,13 +109,14 @@ public class LoanTypeTable implements Parcelable {
 
     // Parcelling part
     public LoanTypeTable(Parcel in){
-        String[] data = new String[4];
+        String[] data = new String[5];
 
         in.readStringArray(data);
         this.loanTypeId = data[0];
         this.loanTypeName = data[1];
         this.loanTypeDescription = data[2];
         this.branchId = data[3];
+        this.LoanTypeAbbreviation = data[4];
     }
 
     @Override
@@ -127,13 +129,19 @@ public class LoanTypeTable implements Parcelable {
         dest.writeStringArray(new String[] {this.loanTypeId,
                 this.loanTypeName,
                 this.loanTypeDescription,
-                this.branchId});
+                this.branchId, this.LoanTypeAbbreviation});
     }
     public Date getLastUpdatedAt() {
         return this.lastUpdatedAt;
     }
     public void setLastUpdatedAt(Date lastUpdatedAt) {
         this.lastUpdatedAt = lastUpdatedAt;
+    }
+    public String getLoanTypeAbbreviation() {
+        return this.LoanTypeAbbreviation;
+    }
+    public void setLoanTypeAbbreviation(String LoanTypeAbbreviation) {
+        this.LoanTypeAbbreviation = LoanTypeAbbreviation;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

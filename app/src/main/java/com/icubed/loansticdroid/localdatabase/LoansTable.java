@@ -28,9 +28,9 @@ public class LoansTable implements Parcelable {
     private Date loanApprovedDate, lastUpdatedAt;
     private int loanDuration;
     private String loanTypeId, loanOfficerId, loanInterestRateUnit
-            , loanDurationUnit, repaymentAmountUnit;
-    @Generated(hash = 1671416047)
-    public LoansTable(String loanId, String borrowerId, String groupId, Long id, boolean isOtherLoanType, boolean isLoanApproved, double loanAmount, double loanFees, double repaymentAmount, double loanInterestRate, double repaymentMade, Date loanCreationDate, Date loanReleaseDate, Date loanApprovedDate, Date lastUpdatedAt, int loanDuration, String loanTypeId, String loanOfficerId, String loanInterestRateUnit, String loanDurationUnit, String repaymentAmountUnit) {
+            , loanDurationUnit, repaymentAmountUnit, loanNumber;
+    @Generated(hash = 238380133)
+    public LoansTable(String loanId, String borrowerId, String groupId, Long id, boolean isOtherLoanType, boolean isLoanApproved, double loanAmount, double loanFees, double repaymentAmount, double loanInterestRate, double repaymentMade, Date loanCreationDate, Date loanReleaseDate, Date loanApprovedDate, Date lastUpdatedAt, int loanDuration, String loanTypeId, String loanOfficerId, String loanInterestRateUnit, String loanDurationUnit, String repaymentAmountUnit, String loanNumber) {
         this.loanId = loanId;
         this.borrowerId = borrowerId;
         this.groupId = groupId;
@@ -52,6 +52,7 @@ public class LoansTable implements Parcelable {
         this.loanInterestRateUnit = loanInterestRateUnit;
         this.loanDurationUnit = loanDurationUnit;
         this.repaymentAmountUnit = repaymentAmountUnit;
+        this.loanNumber = loanNumber;
     }
     @Generated(hash = 1106604234)
     public LoansTable() {
@@ -229,6 +230,12 @@ public class LoansTable implements Parcelable {
     }
     public void setRepaymentMade(double repaymentMade) {
         this.repaymentMade = repaymentMade;
+    }
+    public String getLoanNumber() {
+        return this.loanNumber;
+    }
+    public void setLoanNumber(String loanNumber) {
+        this.loanNumber = loanNumber;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
