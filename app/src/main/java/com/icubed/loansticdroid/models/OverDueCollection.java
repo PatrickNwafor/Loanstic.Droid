@@ -114,6 +114,13 @@ public class OverDueCollection {
                                         getLoansData(collectionTable.getLoanId(), collectionTable.getCollectionId());
                                         saveNewCollectionToLocalStorage(collectionTable);
                                     }else collectionSize--;
+
+                                    if(collectionSize == 0){
+                                        if(fragment != null) fragment.emptyCollection.setVisibility(View.VISIBLE);
+                                        hideProgressBar();
+                                        removeRefresher();
+                                        Log.d(TAG, "onComplete: No due collections for today");
+                                    }
                                 }
 
                             }else{
