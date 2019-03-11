@@ -56,6 +56,7 @@ public class PaymentScheduleGenerator {
             objectMap.put("isDueCollected", collectionTable.getIsDueCollected());
             objectMap.put("penalty", collectionTable.getPenalty());
             objectMap.put("collectionState", collectionTable.getCollectionState());
+            objectMap.put("amountPaid", 0);
 
             collectionQueries.createCollection(objectMap)
                     .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {

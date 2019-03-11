@@ -113,7 +113,7 @@ public class CollectionDetailsActivity extends AppCompatActivity {
             collectionStatusView.setText("Not Collected");
         }
 
-        collectionAmountView.setText(String.valueOf(dueCollectionDetails.getDueAmount()));
+        collectionAmountView.setText(String.valueOf(dueCollectionDetails.getDueAmount() - dueCollectionDetails.getAmountPaid()));
 
         String dueDate = monthYearDate(dueCollectionDetails.getDueCollectionDate());
         collectionDueDateView.setText(dueDate);

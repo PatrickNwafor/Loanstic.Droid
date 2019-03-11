@@ -9,7 +9,7 @@ public class DueCollectionDetails implements Parcelable {
 
     private String firstName, lastName, workAddress, businessName, dueCollectionDate, imageUri, imageUriThumb;
     private int collectionNumber;
-    private double dueAmount;
+    private double dueAmount, amountPaid;
     private Boolean isDueCollected;
     private String groupName;
     private byte[] imageByteArray;
@@ -18,7 +18,7 @@ public class DueCollectionDetails implements Parcelable {
 
     public DueCollectionDetails(){}
 
-    public DueCollectionDetails(String firstName, String lastName, String workAddress, String businessName, String dueCollectionDate, String imageUri, String imageUriThumb, int collectionNumber, double dueAmount, Boolean isDueCollected, String groupName, byte[] imageByteArray, double latitude, double longitude, CollectionTable collectionTable) {
+    public DueCollectionDetails(String firstName, String lastName, String workAddress, String businessName, String dueCollectionDate, String imageUri, String imageUriThumb, int collectionNumber, double dueAmount, double amountPaid, Boolean isDueCollected, String groupName, byte[] imageByteArray, double latitude, double longitude, CollectionTable collectionTable) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.workAddress = workAddress;
@@ -28,6 +28,7 @@ public class DueCollectionDetails implements Parcelable {
         this.imageUriThumb = imageUriThumb;
         this.collectionNumber = collectionNumber;
         this.dueAmount = dueAmount;
+        this.amountPaid = amountPaid;
         this.isDueCollected = isDueCollected;
         this.groupName = groupName;
         this.imageByteArray = imageByteArray;
@@ -156,6 +157,14 @@ public class DueCollectionDetails implements Parcelable {
         this.collectionTable = collectionTable;
     }
 
+    public double getAmountPaid() {
+        return amountPaid;
+    }
+
+    public void setAmountPaid(double amountPaid) {
+        this.amountPaid = amountPaid;
+    }
+
     @Override
     public String toString() {
         return "DueCollectionDetails{" + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", workAddress='" + workAddress + '\'' + ", businessName='" + businessName + '\'' + ", dueCollectionDate='" + dueCollectionDate + '\'' + ", collectionNumber=" + collectionNumber + ", dueAmount=" + dueAmount + ", isDueCollected=" + isDueCollected + '}';
@@ -176,6 +185,7 @@ public class DueCollectionDetails implements Parcelable {
         this.groupName = in.readString();
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
+        this.amountPaid = in.readDouble();
     }
 
     @Override
@@ -198,6 +208,7 @@ public class DueCollectionDetails implements Parcelable {
         dest.writeString(this.groupName);
         dest.writeDouble(this.latitude);
         dest.writeDouble(this.longitude);
+        dest.writeDouble(this.amountPaid);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

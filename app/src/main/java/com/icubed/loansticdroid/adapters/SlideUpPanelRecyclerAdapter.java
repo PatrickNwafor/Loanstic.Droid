@@ -60,7 +60,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
         final String lastName = collectionList.get(position).getLastName();
         final String groupName = collectionList.get(position).getGroupName();
         holder.setCollectionName(firstName, lastName,groupName);
-        holder.setCollectionAmount(collectionList.get(position).getDueAmount());
+        holder.setCollectionAmount(collectionList.get(position).getDueAmount(), collectionList.get(position).getAmountPaid());
         holder.setBusiness(collectionList.get(position).getBusinessName(), groupName);
         holder.setImage(collectionList.get(position));
 
@@ -154,8 +154,8 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
             else collectionNameTextView.setText(groupName);
         }
 
-        public void setCollectionAmount(double collectionAmount){
-            amountTextView.setText(String.valueOf(collectionAmount));
+        public void setCollectionAmount(double collectionAmount, double amountPaid){
+            amountTextView.setText(String.valueOf(collectionAmount-amountPaid));
         }
 
         public void setBusiness(String businessName, String groupName) {

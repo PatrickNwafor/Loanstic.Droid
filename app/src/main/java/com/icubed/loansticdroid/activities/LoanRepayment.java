@@ -251,7 +251,10 @@ public class LoanRepayment extends AppCompatActivity {
 
                             objectMap.put("repaymentAmount", collectionTable.getAmountPaid()+Double.parseDouble(amountPaidTextView.getText().toString()));
                             objectMap.put("lastUpdatedAt", new Date());
-                            if(full.isChecked()) objectMap.put("collectionState", PaymentScheduleGenerator.COLLECTION_STATE_FULL);
+                            if(full.isChecked()){
+                                objectMap.put("collectionState", PaymentScheduleGenerator.COLLECTION_STATE_FULL);
+                                objectMap.put("isDueCollected", true);
+                            }
                             else objectMap.put("collectionState", PaymentScheduleGenerator.COLLECTION_STATE_PARTIAL);
 
                             collectionQueries.updateCollectionDetails(objectMap, collectionTable.getCollectionId());
