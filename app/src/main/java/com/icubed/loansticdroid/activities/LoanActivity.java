@@ -128,6 +128,7 @@ public class LoanActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(LoanActivity.this, LoanSearchActivity.class);
                     intent.putExtra("search", searchLoanEditText.getText().toString());
+                    intent.putExtra("from", true);
                     startActivity(intent);
                     searchLoanEditText.setText("");
                     searchLoanEditText.setVisibility(View.GONE);

@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.icubed.loansticdroid.activities.LoanSearchActivity;
 import com.icubed.loansticdroid.adapters.LoanRecyclerAdapter;
+import com.icubed.loansticdroid.adapters.LoanRepaymentRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.cloudqueries.GroupBorrowerQueries;
 import com.icubed.loansticdroid.cloudqueries.LoanTypeQueries;
@@ -215,9 +216,15 @@ public class SearchLoan {
      * loads all our loan data to UI for the user to see
      */
     private void loadLoansToUI(){
-        ((LoanSearchActivity) activity).loanRecyclerAdapter = new LoanRecyclerAdapter(((LoanSearchActivity) activity).loanDetailsList);
-        ((LoanSearchActivity) activity).loanRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
-        ((LoanSearchActivity) activity).loanRecyclerView.setAdapter((((LoanSearchActivity) activity).loanRecyclerAdapter));
+        if(((LoanSearchActivity) activity).fromLoanActivity) {
+            ((LoanSearchActivity) activity).loanRecyclerAdapter = new LoanRecyclerAdapter(((LoanSearchActivity) activity).loanDetailsList);
+            ((LoanSearchActivity) activity).loanRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
+            ((LoanSearchActivity) activity).loanRecyclerView.setAdapter((((LoanSearchActivity) activity).loanRecyclerAdapter));
+        }else{
+            ((LoanSearchActivity) activity).loanRepaymentRecyclerAdapter = new LoanRepaymentRecyclerAdapter(((LoanSearchActivity) activity).loanDetailsList);
+            ((LoanSearchActivity) activity).loanRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
+            ((LoanSearchActivity) activity).loanRecyclerView.setAdapter((((LoanSearchActivity) activity).loanRepaymentRecyclerAdapter));
+        }
         ((LoanSearchActivity) activity).loanRecyclerView.setVisibility(View.VISIBLE);
         ((LoanSearchActivity) activity).progressBar.setVisibility(View.GONE);
     }

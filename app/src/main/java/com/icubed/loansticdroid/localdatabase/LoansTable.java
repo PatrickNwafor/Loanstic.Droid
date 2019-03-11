@@ -180,7 +180,7 @@ public class LoansTable implements Parcelable {
 
     @Override
     public String toString() {
-        return "LoansTable{" + "loanId='" + loanId + '\'' + ", borrowerId='" + borrowerId + '\'' + ", groupId='" + groupId + '\'' + ", id=" + id + ", isOtherLoanType=" + isOtherLoanType + ", isLoanApproved=" + isLoanApproved + ", loanAmount=" + loanAmount + ", loanFees=" + loanFees + ", repaymentAmount=" + repaymentAmount + ", loanInterestRate=" + loanInterestRate + ", loanCreationDate=" + loanCreationDate + ", loanReleaseDate=" + loanReleaseDate + ", loanApprovedDate=" + loanApprovedDate + ", lastUpdatedAt=" + lastUpdatedAt + ", loanDuration=" + loanDuration + ", loanTypeId='" + loanTypeId + '\'' + ", loanOfficerId='" + loanOfficerId + '\'' + ", loanInterestRateUnit='" + loanInterestRateUnit + '\'' + ", loanDurationUnit='" + loanDurationUnit + '\'' + ", repaymentAmountUnit='" + repaymentAmountUnit + '\'' + '}';
+        return "LoansTable{" + "loanId='" + loanId + '\'' + ", borrowerId='" + borrowerId + '\'' + ", groupId='" + groupId + '\'' + ", id=" + id + ", isOtherLoanType=" + isOtherLoanType + ", isLoanApproved=" + isLoanApproved + ", loanAmount=" + loanAmount + ", loanFees=" + loanFees + ", repaymentAmount=" + repaymentAmount + ", loanInterestRate=" + loanInterestRate + ", repaymentMade=" + repaymentMade + ", loanCreationDate=" + loanCreationDate + ", loanReleaseDate=" + loanReleaseDate + ", loanApprovedDate=" + loanApprovedDate + ", lastUpdatedAt=" + lastUpdatedAt + ", loanDuration=" + loanDuration + ", loanTypeId='" + loanTypeId + '\'' + ", loanOfficerId='" + loanOfficerId + '\'' + ", loanInterestRateUnit='" + loanInterestRateUnit + '\'' + ", loanDurationUnit='" + loanDurationUnit + '\'' + ", repaymentAmountUnit='" + repaymentAmountUnit + '\'' + ", loanNumber='" + loanNumber + '\'' + '}';
     }
 
     // Parcelling part
@@ -200,6 +200,7 @@ public class LoansTable implements Parcelable {
         this.loanInterestRateUnit = in.readString();
         this.loanDurationUnit = in.readString();
         this.repaymentAmountUnit = in.readString();
+        this.loanNumber = in.readString();
     }
 
     @Override
@@ -224,6 +225,7 @@ public class LoansTable implements Parcelable {
         dest.writeString(this.loanInterestRateUnit);
         dest.writeString(this.loanDurationUnit);
         dest.writeString(this.repaymentAmountUnit);
+        dest.writeString(this.loanNumber);
     }
     public double getRepaymentMade() {
         return this.repaymentMade;

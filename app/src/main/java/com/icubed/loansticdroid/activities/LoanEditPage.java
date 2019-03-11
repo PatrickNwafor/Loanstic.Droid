@@ -63,7 +63,7 @@ public class LoanEditPage extends AppCompatActivity {
         if(borrower != null) getSupportActionBar().setTitle(borrower.getFirstName()+" "+borrower.getLastName());
         else getSupportActionBar().setTitle(group.getGroupName());
 
-        getSupportActionBar().setSubtitle("loan #100098");
+        getSupportActionBar().setSubtitle(loan.getLoanNumber());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
