@@ -1,5 +1,8 @@
 package com.icubed.loansticdroid.localdatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
@@ -8,7 +11,7 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class CollectionTable {
+public class CollectionTable implements Parcelable {
 
     @Unique
     private String collectionId;
@@ -124,7 +127,7 @@ public class CollectionTable {
 
     @Override
     public String toString() {
-        return "CollectionTable{" + "collectionId='" + collectionId + '\'' + ", loanId='" + loanId + '\'' + ", collectionNumber=" + collectionNumber + ", id=" + id + ", collectionDueAmount=" + collectionDueAmount + ", collectionDueDate=" + collectionDueDate + ", lastUpdatedAt=" + lastUpdatedAt + ", timestamp=" + timestamp + ", isDueCollected=" + isDueCollected + '}';
+        return "CollectionTable{" + "collectionId='" + collectionId + '\'' + ", loanId='" + loanId + '\'' + ", collectionNumber=" + collectionNumber + ", id=" + id + ", collectionDueAmount=" + collectionDueAmount + ", penalty=" + penalty + ", collectionDueDate=" + collectionDueDate + ", lastUpdatedAt=" + lastUpdatedAt + ", timestamp=" + timestamp + ", amountPaid=" + amountPaid + ", collectionState='" + collectionState + '\'' + ", isDueCollected=" + isDueCollected + '}';
     }
 
     public Double getPenalty() {
@@ -150,4 +153,45 @@ public class CollectionTable {
     public void setCollectionState(String collectionState) {
         this.collectionState = collectionState;
     }
+
+    // Parcelling part
+    public CollectionTable(Parcel in){
+        this.collectionId = in.readString();
+        this.loanId = in.readString();
+        this.collectionNumber = in.readInt();
+        this.id = in.readLong();
+        this.collectionDueAmount = in.readDouble();
+        this.penalty = in.readDouble();
+        this.amountPaid = in.readDouble();
+        this.collectionState = in.readString();
+        this.isDueCollected = Boolean.valueOf(in.readString());
+    }
+
+    @Override
+    public int describeContents(){
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.collectionId);
+        dest.writeString(this.loanId);
+        dest.writeInt(this.collectionNumber);
+        dest.writeLong(this.id);
+        dest.writeDouble(this.collectionDueAmount);
+        dest.writeDouble(this.penalty);
+        dest.writeDouble(this.amountPaid);
+        dest.writeString(this.collectionState);
+        dest.writeString(String.valueOf(this.isDueCollected));
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public CollectionTable createFromParcel(Parcel in) {
+            return new CollectionTable(in);
+        }
+
+        public CollectionTable[] newArray(int size) {
+            return new CollectionTable[size];
+        }
+    };
 }

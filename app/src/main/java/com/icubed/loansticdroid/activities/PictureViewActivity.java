@@ -23,6 +23,7 @@ public class PictureViewActivity extends AppCompatActivity {
     private GroupPhotoValidationTable groupPhotoValidationTable;
     private BorrowerPhotoValidationTable borrowerPhotoValidationTable;
     private byte[] fileByte, borrowerValidByte, groupValidByte = null;
+    private Bitmap paymentBitMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class PictureViewActivity extends AppCompatActivity {
         groupValidByte = getIntent().getByteArrayExtra("group_photo_valid_byte");
         borrowerPhotoValidationTable = getIntent().getParcelableExtra("borrower_photo_valid");
         borrowerValidByte = getIntent().getByteArrayExtra("borrower_photo_valid_byte");
+        paymentBitMap = getIntent().getParcelableExtra("payment");
 
         toolbar = findViewById(R.id.picture_toolbar);
         setSupportActionBar(toolbar);
@@ -58,6 +60,9 @@ public class PictureViewActivity extends AppCompatActivity {
             borrowerPhotoValidationTable.setImageByteArray(borrowerValidByte);
             if(borrowerPhotoValidationTable.getImageByteArray() == null) loadImage(borrowerPhotoValidationTable.getPhotoUri(), borrowerPhotoValidationTable.getPhotoThumbUri());
             else loadImageFromByte(borrowerPhotoValidationTable.getImageByteArray());
+        }else if(paymentBitMap != null){
+            getSupportActionBar().setTitle("Payment Receipt Photo");
+            imageView.setImageBitmap(paymentBitMap);
         }
     }
 

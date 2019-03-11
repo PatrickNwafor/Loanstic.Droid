@@ -69,6 +69,10 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
             public void onClick(View v) {
                 Intent intent = new Intent(context, CollectionDetailsActivity.class);
                 intent.putExtra("dueCollectionDetails", collectionList.get(position));
+                intent.putExtra("collection", collectionList.get(position).getCollectionTable());
+                intent.putExtra("lastUpdatedAt", collectionList.get(position).getCollectionTable().getLastUpdatedAt());
+                intent.putExtra("dueDate", collectionList.get(position).getCollectionTable().getCollectionDueDate());
+                intent.putExtra("timestamp", collectionList.get(position).getCollectionTable().getTimestamp());
                 context.startActivity(intent);
             }
         });

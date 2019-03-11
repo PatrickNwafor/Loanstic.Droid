@@ -3,6 +3,8 @@ package com.icubed.loansticdroid.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.icubed.loansticdroid.localdatabase.CollectionTable;
+
 public class DueCollectionDetails implements Parcelable {
 
     private String firstName, lastName, workAddress, businessName, dueCollectionDate, imageUri, imageUriThumb;
@@ -12,10 +14,11 @@ public class DueCollectionDetails implements Parcelable {
     private String groupName;
     private byte[] imageByteArray;
     private double latitude, longitude;
+    private CollectionTable collectionTable;
 
     public DueCollectionDetails(){}
 
-    public DueCollectionDetails(String firstName, String lastName, String workAddress, String businessName, String dueCollectionDate, String imageUri, String imageUriThumb, int collectionNumber, double dueAmount, Boolean isDueCollected, String groupName, byte[] imageByteArray, double latitude, double longitude) {
+    public DueCollectionDetails(String firstName, String lastName, String workAddress, String businessName, String dueCollectionDate, String imageUri, String imageUriThumb, int collectionNumber, double dueAmount, Boolean isDueCollected, String groupName, byte[] imageByteArray, double latitude, double longitude, CollectionTable collectionTable) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.workAddress = workAddress;
@@ -30,6 +33,7 @@ public class DueCollectionDetails implements Parcelable {
         this.imageByteArray = imageByteArray;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.collectionTable = collectionTable;
     }
 
     public double getLatitude() {
@@ -144,6 +148,14 @@ public class DueCollectionDetails implements Parcelable {
         isDueCollected = dueCollected;
     }
 
+    public CollectionTable getCollectionTable() {
+        return collectionTable;
+    }
+
+    public void setCollectionTable(CollectionTable collectionTable) {
+        this.collectionTable = collectionTable;
+    }
+
     @Override
     public String toString() {
         return "DueCollectionDetails{" + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", workAddress='" + workAddress + '\'' + ", businessName='" + businessName + '\'' + ", dueCollectionDate='" + dueCollectionDate + '\'' + ", collectionNumber=" + collectionNumber + ", dueAmount=" + dueAmount + ", isDueCollected=" + isDueCollected + '}';
@@ -164,8 +176,6 @@ public class DueCollectionDetails implements Parcelable {
         this.groupName = in.readString();
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
-        imageByteArray = new byte[in.readInt()];
-        in.readByteArray(imageByteArray);
     }
 
     @Override
@@ -188,8 +198,6 @@ public class DueCollectionDetails implements Parcelable {
         dest.writeString(this.groupName);
         dest.writeDouble(this.latitude);
         dest.writeDouble(this.longitude);
-        dest.writeInt(imageByteArray.length);
-        dest.writeByteArray(imageByteArray);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

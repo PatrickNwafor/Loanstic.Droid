@@ -2,16 +2,16 @@ package com.icubed.loansticdroid.cloudqueries;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.util.DateUtil;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class CollectionQueries {
@@ -58,6 +58,12 @@ public class CollectionQueries {
 
     }
 
+    public Task<DocumentSnapshot> retrieveSingleCollection(String collectionId){
+        return firebaseFirestore.collection("Collection")
+                .document(collectionId)
+                .get();
+    }
+
     /*****************Retrieve Due CollectionTable for all officers*******************/
     public Task<QuerySnapshot> retrieveCollectionsDataForAllOfficer(){
 
@@ -76,5 +82,11 @@ public class CollectionQueries {
 
         return firebaseFirestore.collection("Collection").document(collectionId)
                 .update(dueCollectedMap);
+    }
+
+    public Task<Void> updateCollectionDetails(Map<String, Object> objectMap, String collectionId) {
+        return firebaseFirestore.collection("Collection")
+                .document(collectionId)
+                .set(objectMap, SetOptions.merge());
     }
 }

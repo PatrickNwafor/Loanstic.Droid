@@ -16,7 +16,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-5dp"
+        android:indeterminate="true"
+        android:visibility="gone" />
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -70,13 +77,15 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="4dp"
+        android:layout_height="50dp"
         android:layout_margin="10dp"
-        android:layout_height="50dp">
+        app:cardCornerRadius="15dp"
+        app:cardElevation="4dp">
+
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <TextView
                 android:id="@+id/collection_date_header"
                 android:layout_width="170dp"
@@ -87,8 +96,8 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/text_field_background"
                 android:ems="10"
-                android:text="Collection Date"
                 android:inputType="number|numberDecimal"
+                android:text="Collection Date"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -100,12 +109,12 @@
                 android:id="@+id/collection_date_value"
                 android:layout_width="140dp"
                 android:layout_height="40dp"
-                android:text="12/11/2019"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/text_field_background"
+                android:text="12/11/2019"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -169,13 +178,39 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="4dp"
+        android:layout_height="90dp"
         android:layout_margin="10dp"
-        android:layout_height="50dp">
+        app:cardCornerRadius="15dp"
+        app:cardElevation="4dp">
+
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RadioButton
+                    android:id="@+id/full"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Full Payment" />
+
+                <RadioButton
+                    android:id="@+id/partial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="Partial Payment" />
+            </RadioGroup>
+
             <TextView
                 android:id="@+id/amount_paid_header"
                 android:layout_width="170dp"
@@ -186,31 +221,30 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/text_field_background"
                 android:ems="10"
-                android:text="Amount Paid"
                 android:inputType="number|numberDecimal"
+                android:text="Amount Paid"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.818" />
+                app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
             <EditText
                 android:id="@+id/amount_paid_value"
                 android:layout_width="140dp"
                 android:layout_height="40dp"
-                android:text="1000"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/text_field_background"
+                android:text="1000"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/amount_paid_header"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.818" />
+                app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+                tools:enabled="false" />
 
 
         </android.support.constraint.ConstraintLayout>
@@ -286,23 +320,23 @@
             android:background="@color/DarkGrey"/>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/membersRecyclerView"
+            android:id="@+id/paymentList"
 
             android:layout_width="wrap_content"
             android:layout_height="64dp"
             android:elevation="4dp"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
         </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
 
     <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/camera"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        app:lottie_fileName="camera.json"
         app:lottie_autoPlay="true"
-        app:lottie_loop="false"/>
+        app:lottie_fileName="camera.json"
+        app:lottie_loop="false" />
 
 </LinearLayout>

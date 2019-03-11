@@ -5,8 +5,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class LoansQueries {
@@ -55,6 +57,13 @@ public class LoansQueries {
         return firebaseFirestore.collection("Loan")
                 .whereEqualTo("groupId", groupId)
                 .get();
+    }
+
+    public Task<Void> updateLoanDetails(Map<String, Object> objectMap, String loanId){
+        return firebaseFirestore.collection("Loan")
+                .document(loanId)
+                .set(objectMap, SetOptions.merge());
+
     }
 
 }

@@ -356,6 +356,7 @@ public class DueCollection {
                 dueCollectionDetails.setCollectionNumber(collectionTable.getCollectionNumber());
                 dueCollectionDetails.setDueCollectionDate(DateUtil.dateString(collectionTable.getCollectionDueDate()));
                 dueCollectionDetails.setIsDueCollected(collectionTable.getIsDueCollected());
+                dueCollectionDetails.setCollectionTable(collectionTable);
 
                 LoansTable loan = loanTableQueries.loadSingleLoan(collectionTable.getLoanId());
 
@@ -473,6 +474,7 @@ public class DueCollection {
         dueCollectionDetails.setCollectionNumber(collectionTable.getCollectionNumber());
         dueCollectionDetails.setDueCollectionDate(DateUtil.dateString(collectionTable.getCollectionDueDate()));
         dueCollectionDetails.setIsDueCollected(collectionTable.getIsDueCollected());
+        dueCollectionDetails.setCollectionTable(collectionTable);
 
         LoansTable loan = loanTableQueries.loadSingleLoan(collectionTable.getLoanId());
 

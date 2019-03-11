@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
 
 import java.text.DateFormat;
@@ -34,6 +35,7 @@ public class CollectionDetailsActivity extends AppCompatActivity {
 
     private ImageView iconUser;
     private TextView userNameTextView;
+    private CollectionTable collectionTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +77,19 @@ public class CollectionDetailsActivity extends AppCompatActivity {
 
         //getting collection details value
         DueCollectionDetails dueCollectionDetails = getIntent().getParcelableExtra("dueCollectionDetails");
+        collectionTable = getIntent().getParcelableExtra("collection");
+        Date lastUpdatedAt = (Date) getIntent().getSerializableExtra("lastUpdatedAt");
+        Date timestamp = (Date) getIntent().getSerializableExtra("timestamp");
+        Date dueDate = (Date) getIntent().getSerializableExtra("dueDate");
+
+        collectionTable.setLastUpdatedAt(lastUpdatedAt);
+        collectionTable.setCollectionDueDate(dueDate);
+        collectionTable.setTimestamp(timestamp);
+
+        Log.d(TAG, "onCreate: "+collectionTable.toString());
 
         //UpdatesUI
-        Log.d(TAG, "onCreate: "+ dueCollectionDetails.toString());
+        //Log.d(TAG, "onCreate: "+ dueCollectionDetails.toString());
         updateUI(dueCollectionDetails);
 
     }
