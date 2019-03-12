@@ -14,10 +14,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,7 +57,8 @@ public class LoanRepayment extends AppCompatActivity {
     private FormUtil formUtil;
     private CollectionTable collectionTable;
     private RadioButton full, partial;
-
+    private Spinner paymentDrp;
+    private String selectedMode;
     private PaymentQueries paymentQueries;
     private LoansQueries loansQueries;
     CollectionQueries collectionQueries;
@@ -78,6 +81,7 @@ public class LoanRepayment extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        paymentDrp = findViewById(R.id.payment_mode_value);
         collectionNumberTextView = findViewById(R.id.collection_number_value);
         collectionDateTextView = findViewById(R.id.collection_date_value);
         collectionAmountTextView = findViewById(R.id.collection_amount_value);
@@ -88,6 +92,15 @@ public class LoanRepayment extends AppCompatActivity {
         full = findViewById(R.id.full);
         partial = findViewById(R.id.partial);
         progressBar = findViewById(R.id.progressBar);
+
+
+
+        ArrayAdapter<CharSequence> adapterPaymet;
+        String[] paymentArr = {"Cash", "Bank Transfer", "Bank Teller"};
+        adapterPaymet = new ArrayAdapter<CharSequence>(getBaseContext(),android.R.layout.simple_spinner_item,paymentArr);
+        adapterPaymet.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        paymentDrp.setAdapter(adapterPaymet);
+        selectedMode = paymentDrp.getSelectedItem().toString();
 
         paymentQueries = new PaymentQueries();
         account = new Account();

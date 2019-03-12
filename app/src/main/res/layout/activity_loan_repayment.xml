@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+
     android:gravity="center_horizontal"
     tools:context="com.icubed.loansticdroid.activities.LoanRepayment">
+ <LinearLayout
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:orientation="vertical">
     <include
         android:id="@+id/repayment_toolbar"
         layout="@layout/app_bar_layout"
@@ -24,6 +28,14 @@
         android:layout_marginTop="-5dp"
         android:indeterminate="true"
         android:visibility="gone" />
+<android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -208,6 +220,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"
+
                     android:text="Partial Payment" />
             </RadioGroup>
 
@@ -300,6 +313,56 @@
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="4dp"
+            android:layout_margin="10dp"
+            android:layout_height="50dp">
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/Payment_mode_header"
+                    android:layout_width="170dp"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/text_field_background"
+                    android:ems="10"
+                    android:text="Payment Mode"
+                    android:inputType="number|numberDecimal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.818" />
+                <Spinner
+                    android:id="@+id/payment_mode_value"
+                    android:layout_width="140dp"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/text_field_background"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/Payment_mode_header"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.818"
+                    tools:listitem="@android:layout/simple_spinner_item" />
+
+
+
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+
     <LinearLayout
         android:id="@+id/linearLayout6"
         android:layout_width="match_parent"
@@ -329,14 +392,22 @@
 
         </android.support.v7.widget.RecyclerView>
 
+
+
     </LinearLayout>
 
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
+ </LinearLayout>
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/camera"
         android:layout_width="64dp"
         android:layout_height="64dp"
         app:lottie_autoPlay="true"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         app:lottie_fileName="camera.json"
         app:lottie_loop="false" />
 
-</LinearLayout>
+</RelativeLayout>
