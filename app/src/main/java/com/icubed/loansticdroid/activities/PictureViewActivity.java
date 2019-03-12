@@ -13,6 +13,7 @@ import com.icubed.loansticdroid.localdatabase.BorrowerFilesTable;
 import com.icubed.loansticdroid.localdatabase.BorrowerPhotoValidationTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupPhotoValidationTable;
+import com.icubed.loansticdroid.localdatabase.PaymentPhotoVerificationTable;
 import com.icubed.loansticdroid.util.BitmapUtil;
 
 public class PictureViewActivity extends AppCompatActivity {
@@ -22,8 +23,9 @@ public class PictureViewActivity extends AppCompatActivity {
     private BorrowerFilesTable borrowerFilesTable;
     private GroupPhotoValidationTable groupPhotoValidationTable;
     private BorrowerPhotoValidationTable borrowerPhotoValidationTable;
-    private byte[] fileByte, borrowerValidByte, groupValidByte = null;
+    private byte[] fileByte, borrowerValidByte, groupValidByte, paymentByteArray = null;
     private Bitmap paymentBitMap;
+    private PaymentPhotoVerificationTable paymentPhotoVerificationTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,8 @@ public class PictureViewActivity extends AppCompatActivity {
         borrowerPhotoValidationTable = getIntent().getParcelableExtra("borrower_photo_valid");
         borrowerValidByte = getIntent().getByteArrayExtra("borrower_photo_valid_byte");
         paymentBitMap = getIntent().getParcelableExtra("payment");
+        paymentPhotoVerificationTable = getIntent().getParcelableExtra("paymentTable");
+        paymentByteArray = getIntent().getByteArrayExtra("paymentByteArray");
 
         toolbar = findViewById(R.id.picture_toolbar);
         setSupportActionBar(toolbar);
@@ -63,6 +67,11 @@ public class PictureViewActivity extends AppCompatActivity {
         }else if(paymentBitMap != null){
             getSupportActionBar().setTitle("Payment Receipt Photo");
             imageView.setImageBitmap(paymentBitMap);
+        }else if(paymentPhotoVerificationTable != null){
+            getSupportActionBar().setTitle("Payment Receipt Photo");
+            paymentPhotoVerificationTable.setImageByteArray(paymentByteArray);
+            if(paymentPhotoVerificationTable.getImageByteArray() == null) loadImage(paymentPhotoVerificationTable.getImageUri(), paymentPhotoVerificationTable.getImageUriThumb());
+            else loadImageFromByte(paymentPhotoVerificationTable.getImageByteArray());
         }
     }
 

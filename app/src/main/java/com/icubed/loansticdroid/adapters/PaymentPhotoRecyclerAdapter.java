@@ -46,7 +46,7 @@ public class PaymentPhotoRecyclerAdapter extends RecyclerView.Adapter<PaymentPho
             @Override
             public void onClick(View v) {
                 Intent pictureIntent = new Intent(context, PictureViewActivity.class);
-                pictureIntent.putExtra("paymentUri", photoVerificationTableList.get(position).getImageUri());
+                pictureIntent.putExtra("paymentTable", photoVerificationTableList.get(position));
                 pictureIntent.putExtra("paymentByteArray", photoVerificationTableList.get(position).getImageByteArray());
                 context.startActivity(pictureIntent);
             }

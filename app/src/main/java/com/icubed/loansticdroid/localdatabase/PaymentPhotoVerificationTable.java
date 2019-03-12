@@ -1,5 +1,8 @@
 package com.icubed.loansticdroid.localdatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
@@ -9,7 +12,7 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class PaymentPhotoVerificationTable {
+public class PaymentPhotoVerificationTable implements Parcelable {
 
     @Unique
     private String paymentVerificationPhotoId;
@@ -82,4 +85,35 @@ public class PaymentPhotoVerificationTable {
     public String toString() {
         return "PaymentPhotoVerificationTable{" + "paymentVerificationPhotoId='" + paymentVerificationPhotoId + '\'' + ", id=" + id + ", paymentId='" + paymentId + '\'' + ", imageUri='" + imageUri + '\'' + ", imageUriThumb='" + imageUriThumb + '\'' + ", imageByteArray=" + Arrays.toString(imageByteArray) + ", timestamp=" + timestamp + '}';
     }
+
+    // Parcelling part
+    public PaymentPhotoVerificationTable(Parcel in){
+        this.paymentVerificationPhotoId = in.readString();
+        this.paymentId = in.readString();
+        this.imageUri = in.readString();
+        this.imageUriThumb = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.paymentVerificationPhotoId);
+        dest.writeString(this.paymentId);
+        dest.writeString(this.imageUri);
+        dest.writeString(this.imageUriThumb);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public PaymentPhotoVerificationTable createFromParcel(Parcel in) {
+            return new PaymentPhotoVerificationTable(in);
+        }
+
+        public PaymentPhotoVerificationTable[] newArray(int size) {
+            return new PaymentPhotoVerificationTable[size];
+        }
+    };
 }
