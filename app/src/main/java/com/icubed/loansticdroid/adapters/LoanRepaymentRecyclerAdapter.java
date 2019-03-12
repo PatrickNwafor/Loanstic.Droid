@@ -99,8 +99,9 @@ public class LoanRepaymentRecyclerAdapter extends RecyclerView.Adapter<LoanRepay
 
             double loanRepaymentRatio = 1 - ((loansTable.getLoanAmount() - loansTable.getRepaymentMade())/(loansTable.getLoanAmount()));
             double loanRepaymentPercent = loanRepaymentRatio * 100;
+            double roundOff = Math.round(loanRepaymentPercent * 100.0) / 100.0;
 
-            repaymentProgress.setText(String.valueOf(loanRepaymentPercent) + "%");
+            repaymentProgress.setText(String.valueOf(roundOff) + "%");
             loanId.setText(loansTable.getLoanNumber());
         }
     }

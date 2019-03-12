@@ -1,10 +1,12 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,14 +30,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.PaymentRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.Account;
 import com.icubed.loansticdroid.cloudqueries.CollectionQueries;
 import com.icubed.loansticdroid.cloudqueries.LoansQueries;
+import com.icubed.loansticdroid.cloudqueries.PaymentPhotoValidationQueries;
 import com.icubed.loansticdroid.cloudqueries.PaymentQueries;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
+import com.icubed.loansticdroid.localdatabase.PaymentModeTable;
+import com.icubed.loansticdroid.localdatabase.PaymentModeTableQueries;
 import com.icubed.loansticdroid.models.PaymentScheduleGenerator;
 import com.icubed.loansticdroid.util.DateUtil;
 import com.icubed.loansticdroid.util.FormUtil;
@@ -70,6 +76,12 @@ public class LoanRepayment extends AppCompatActivity {
     private PaymentRecyclerAdapter paymentRecyclerAdapter;
     List<Bitmap> bitmapList;
     private ProgressBar progressBar;
+    private int selectedPaymentModePosition;
+    private List<PaymentModeTable> paymentModeTables;
+    private AlertDialog.Builder builder;
+    private AlertDialog.Builder builder2;
+    private PaymentPhotoValidationQueries paymentPhotoValidationQueries;
+    private double collectionAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,20 +105,39 @@ public class LoanRepayment extends AppCompatActivity {
         partial = findViewById(R.id.partial);
         progressBar = findViewById(R.id.progressBar);
 
-
+        PaymentModeTableQueries paymentModeTableQueries = new PaymentModeTableQueries(getApplication());
+        paymentModeTables = paymentModeTableQueries.loadAllPaymentModes();
 
         ArrayAdapter<CharSequence> adapterPaymet;
-        String[] paymentArr = {"Cash", "Bank Transfer", "Bank Teller"};
+        String[] paymentArr;
+        int count = 0;
+
+        if(!paymentModeTables.isEmpty()) {
+            paymentArr = new String[paymentModeTables.size()];
+            for (PaymentModeTable paymentModeTable : paymentModeTables) {
+                paymentArr[count] = paymentModeTable.getPaymentMode();
+                count++;
+            }
+        }else{
+            paymentArr = new String[]{"Cash", "Bank Transfer", "Bank Teller"};
+        }
+
         adapterPaymet = new ArrayAdapter<CharSequence>(getBaseContext(),android.R.layout.simple_spinner_item,paymentArr);
         adapterPaymet.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         paymentDrp.setAdapter(adapterPaymet);
         selectedMode = paymentDrp.getSelectedItem().toString();
+        if(!paymentModeTables.isEmpty()) selectedPaymentModePosition = paymentDrp.getSelectedItemPosition();
+        else selectedPaymentModePosition = -1;
+
+        builder = new AlertDialog.Builder(this);
+        builder2 = new AlertDialog.Builder(this);
 
         paymentQueries = new PaymentQueries();
         account = new Account();
         loansQueries = new LoansQueries();
         collectionQueries = new CollectionQueries();
         locationProviderUtil = new LocationProviderUtil(getApplicationContext());
+        paymentPhotoValidationQueries = new PaymentPhotoValidationQueries();
 
         bitmapList = new ArrayList<>();
         paymentRecyclerAdapter = new PaymentRecyclerAdapter(bitmapList);
@@ -123,10 +154,11 @@ public class LoanRepayment extends AppCompatActivity {
         collectionTable.setCollectionDueDate(dueDate);
         collectionTable.setTimestamp(timestamp);
 
-        collectionNumberTextView.setText(collectionTable.getCollectionNumber());
+        collectionNumberTextView.setText(String.valueOf(collectionTable.getCollectionNumber()));
         collectionDateTextView.setText(DateUtil.dateString(collectionTable.getCollectionDueDate()));
-        collectionAmountTextView.setText(String.valueOf(collectionTable.getCollectionDueAmount()));
-        amountPaidTextView.setText(String.valueOf(collectionTable.getCollectionDueAmount()));
+        collectionAmountTextView.setText(String.valueOf(collectionTable.getCollectionDueAmount() - collectionTable.getAmountPaid()));
+        amountPaidTextView.setText(String.valueOf(collectionTable.getCollectionDueAmount() - collectionTable.getAmountPaid()));
+        collectionAmount = collectionTable.getCollectionDueAmount() - collectionTable.getAmountPaid();
 
         partial.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -143,7 +175,7 @@ public class LoanRepayment extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     amountPaidTextView.setEnabled(false);
-                    amountPaidTextView.setText(String.valueOf(collectionTable.getCollectionDueAmount()));
+                    amountPaidTextView.setText(String.valueOf(collectionTable.getCollectionDueAmount() - collectionTable.getAmountPaid()));
                 }
             }
         });
@@ -175,8 +207,34 @@ public class LoanRepayment extends AppCompatActivity {
         menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                disabledViews();
-                getCurrentLocation();
+
+                builder.setMessage("Are you sure you want to make payment")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, final int id) {
+                                if(formUtil.isSingleFormEmpty(amountPaidTextView)) {
+                                    amountPaidTextView.setError("Please enter amount paid");
+                                }else if(bitmapList.isEmpty()){
+                                    amountPaidTextView.setError(null);
+                                    Toast.makeText(LoanRepayment.this, "Please upload payment pictures", Toast.LENGTH_SHORT).show();
+                                }
+                                else if(partial.isChecked() &&
+                                        Double.parseDouble(amountPaidTextView.getText().toString()) >= collectionAmount){
+                                    Toast.makeText(LoanRepayment.this, "Amount to be paid cannot be greater than collection amount", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    amountPaidTextView.setError(null);
+                                    disabledViews();
+                                    getCurrentLocation();
+                                }
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, final int id) {
+                                dialog.cancel();
+                            }
+                        });
+                final AlertDialog alert = builder.create();
+                alert.show();
                 return true;
             }
         });
@@ -201,13 +259,12 @@ public class LoanRepayment extends AppCompatActivity {
     }
 
     private void submitPayment(Location getLocation) {
-        if(formUtil.isSingleFormEmpty(amountPaidTextView)) return;
-
         Map<String, Object> paymentMap = new HashMap<>();
         paymentMap.put("collectionId", collectionTable.getCollectionId());
         paymentMap.put("loanId", collectionTable.getLoanId());
         paymentMap.put("loanOfficerId", account.getCurrentUserId());
-        paymentMap.put("paymentModeId", "");
+        if(selectedPaymentModePosition != -1) paymentMap.put("paymentModeId", paymentModeTables.get(selectedPaymentModePosition).getPaymentModeId());
+        else paymentMap.put("paymentMode", selectedMode);
         paymentMap.put("amountPaid", amountPaidTextView.getText().toString());
         paymentMap.put("paymentTime", new Date());
         paymentMap.put("lastUpdatedAt", new Date());
@@ -221,6 +278,20 @@ public class LoanRepayment extends AppCompatActivity {
                         if(task.isSuccessful()){
                             updateLoanDetails();
                             updateCollectionDetails();
+                            uploadPaymentPhoto(task.getResult().getId());
+                            progressBar.setVisibility(View.GONE);
+                            builder2.setMessage("Payment Successful!")
+                                    .setTitle("Payment")
+                                    .setCancelable(false)
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        public void onClick(final DialogInterface dialog, final int id) {
+                                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                            final AlertDialog alert = builder2.create();
+                            alert.show();
                         }else{
                             enableViews();
                             Log.d(TAG, "onComplete: "+task.getException().getMessage());
@@ -228,6 +299,47 @@ public class LoanRepayment extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void uploadPaymentPhoto(final String paymentId) {
+        for (final Bitmap bitmap : bitmapList) {
+            paymentPhotoValidationQueries.uploadImage(bitmap)
+                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if(task.isSuccessful()){
+                                final String downloadUri = task.getResult().getDownloadUrl().toString();
+
+                                paymentPhotoValidationQueries.uploadImageThumb(bitmap)
+                                        .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                if(task.isSuccessful()){
+                                                    String downloadUriThumb = task.getResult().getDownloadUrl().toString();
+
+                                                    savePaymentPhotoToCloud(paymentId, downloadUri, downloadUriThumb);
+                                                }else{
+                                                    Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                                                }
+                                            }
+                                        });
+                            }else{
+                                Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                            }
+                        }
+                    });
+        }
+
+    }
+
+    private void savePaymentPhotoToCloud(String paymentId, String downloadUri, String downloadUriThumb) {
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("paymentId", paymentId);
+        objectMap.put("imageUri", downloadUri);
+        objectMap.put("imageUriThumb", downloadUriThumb);
+        objectMap.put("timestamp", new Date());
+
+        paymentPhotoValidationQueries.savePaymentPhotoUriToCloud(objectMap);
     }
 
     private void updateLoanDetails() {
@@ -240,7 +352,7 @@ public class LoanRepayment extends AppCompatActivity {
                         if(task.isSuccessful()){
                             LoansTable loansTable = task.getResult().toObject(LoansTable.class);
 
-                            objectMap.put("repaymentAmount", loansTable.getRepaymentMade()+Double.parseDouble(amountPaidTextView.getText().toString()));
+                            objectMap.put("repaymentMade", loansTable.getRepaymentMade()+Double.parseDouble(amountPaidTextView.getText().toString()));
                             objectMap.put("lastUpdatedAt", new Date());
 
                             loansQueries.updateLoanDetails(objectMap, collectionTable.getLoanId());
@@ -261,8 +373,9 @@ public class LoanRepayment extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if(task.isSuccessful()){
                             CollectionTable collectionTable = task.getResult().toObject(CollectionTable.class);
+                            collectionTable.setCollectionId(task.getResult().getId());
 
-                            objectMap.put("repaymentAmount", collectionTable.getAmountPaid()+Double.parseDouble(amountPaidTextView.getText().toString()));
+                            objectMap.put("amountPaid", collectionTable.getAmountPaid()+Double.parseDouble(amountPaidTextView.getText().toString()));
                             objectMap.put("lastUpdatedAt", new Date());
                             if(full.isChecked()){
                                 objectMap.put("collectionState", PaymentScheduleGenerator.COLLECTION_STATE_FULL);
@@ -327,10 +440,8 @@ public class LoanRepayment extends AppCompatActivity {
 
         switch (item.getItemId()) {
 
-            case R.id.next_to_loan_terms:
-               // Intent intent = new Intent(this, BorrowerActivity.class);
-               // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-               // startActivity(intent);
+            case android.R.id.home:
+               finish();
 
             default:
                 return super.onOptionsItemSelected(item);

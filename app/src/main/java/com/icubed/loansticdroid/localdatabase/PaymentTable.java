@@ -16,21 +16,22 @@ public class PaymentTable {
     @Id(autoincrement = true)
     private Long id;
 
-    private String collectionId, loanId, paymentModeId, loanOfficerId;
+    private String collectionId, loanId, paymentModeId, loanOfficerId, paymentMode;
     private double amountPaid;
     private double photoLatitude, photoLongitude;
     private Date paymentTime, lastUpdatedAt;
-    @Generated(hash = 2136120651)
+    @Generated(hash = 1688859942)
     public PaymentTable(String paymentId, Long id, String collectionId,
             String loanId, String paymentModeId, String loanOfficerId,
-            double amountPaid, double photoLatitude, double photoLongitude,
-            Date paymentTime, Date lastUpdatedAt) {
+            String paymentMode, double amountPaid, double photoLatitude,
+            double photoLongitude, Date paymentTime, Date lastUpdatedAt) {
         this.paymentId = paymentId;
         this.id = id;
         this.collectionId = collectionId;
         this.loanId = loanId;
         this.paymentModeId = paymentModeId;
         this.loanOfficerId = loanOfficerId;
+        this.paymentMode = paymentMode;
         this.amountPaid = amountPaid;
         this.photoLatitude = photoLatitude;
         this.photoLongitude = photoLongitude;
@@ -105,5 +106,11 @@ public class PaymentTable {
     }
     public void setLoanOfficerId(String loanOfficerId) {
         this.loanOfficerId = loanOfficerId;
+    }
+    public String getPaymentMode() {
+        return this.paymentMode;
+    }
+    public void setPaymentMode(String paymentMode) {
+        this.paymentMode = paymentMode;
     }
 }

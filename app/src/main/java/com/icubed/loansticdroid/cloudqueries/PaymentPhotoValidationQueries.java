@@ -7,38 +7,30 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.util.BitmapUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class PaymentPhotoValidationQueries {
-    private Account account;
     private FirebaseFirestore firebaseFirestore;
     private StorageReference paymentImageStorageRef;
     private StorageReference paymentImageThumbStorageRef;
     private String uniqueID;
 
     public PaymentPhotoValidationQueries(){
-
-        account = new Account();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        paymentImageStorageRef = FirebaseStorage.getInstance()
-                .getReference("payment_photo_verification/");
-
-        paymentImageThumbStorageRef = FirebaseStorage.getInstance()
-                .getReference("payment_photo_verification/thumb/");
     }
 
     /************Upload PaymentQueries Validation Image***************/
     public UploadTask uploadImage(Bitmap bitmap){
         uniqueID = UUID.randomUUID().toString();
-        paymentImageStorageRef.child(uniqueID+".jpg");
+        paymentImageStorageRef = FirebaseStorage.getInstance()
+                .getReference("Payment_Photo_Verification/")
+                .child(uniqueID+".jpg");
 
         byte[] data = BitmapUtil.getBytesFromBitmapInJPG(bitmap, 100);
         return paymentImageStorageRef.putBytes(data);
@@ -47,17 +39,19 @@ public class PaymentPhotoValidationQueries {
     /***************Upload payment validation image thumb**********/
     public UploadTask uploadImageThumb(Bitmap bitmap){
 
-        paymentImageThumbStorageRef.child(uniqueID+".jpg");
+        paymentImageThumbStorageRef = FirebaseStorage.getInstance()
+                .getReference("Payment_Photo_Verification/thumb/")
+                .child(uniqueID+".jpg");
+
         byte[] data = BitmapUtil.getBytesFromBitmapInJPG(bitmap, 10);
         return paymentImageThumbStorageRef.putBytes(data);
     }
 
     /**********Save image Uri on firestore database**************/
-    public Task<Void> savePaymentPhotoUriToCloud(Map<String, Object> photoVerifMap, String paymentId) {
+    public Task<DocumentReference> savePaymentPhotoUriToCloud(Map<String, Object> photoVerifMap) {
 
         return firebaseFirestore.collection("Payment_Photo_Verification")
-                .document(paymentId)
-                .set(photoVerifMap, SetOptions.merge());
+                .add(photoVerifMap);
 
     }
 

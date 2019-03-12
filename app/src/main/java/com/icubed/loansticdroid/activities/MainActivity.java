@@ -24,6 +24,7 @@ import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.fragments.HomeFragments.DashboardFragment;
 import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
 import com.icubed.loansticdroid.cloudqueries.Account;
+import com.icubed.loansticdroid.models.GetPaymentMode;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     public ToggleButton viewSwitch1;
     private FrameLayout contentFrame;
+    private GetPaymentMode getPaymentMode;
 
     //Fragments
     MapFragment mapFragment;
@@ -96,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
+
+        getPaymentMode = new GetPaymentMode(this);
+        getPaymentMode.getPaymentMode();
 
     }
 

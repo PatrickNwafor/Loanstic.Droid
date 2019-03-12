@@ -98,9 +98,10 @@
         <activity android:name=".activities.AllBorrowerLoan" />
         <activity android:name=".activities.LoanEditPage" />
         <activity android:name=".activities.AddBorrowerToExistingGroupActivity" />
-        <activity android:name=".activities.LoanRepayment" />
+        <activity android:name=".activities.LoanRepayment"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".activities.SavingsRepayment" />
-        <activity android:name=".activities.LoanPaymentActivity"></activity>
+        <activity android:name=".activities.LoanPaymentActivity"/>
     </application>
 
 </manifest>

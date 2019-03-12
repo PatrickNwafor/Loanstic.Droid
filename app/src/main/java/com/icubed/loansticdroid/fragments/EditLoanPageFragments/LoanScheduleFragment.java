@@ -1,11 +1,14 @@
 package com.icubed.loansticdroid.fragments.EditLoanPageFragments;
 
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,6 +26,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.LoanEditPage;
+import com.icubed.loansticdroid.activities.LoanRepayment;
 import com.icubed.loansticdroid.cloudqueries.CollectionQueries;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.localdatabase.CollectionTableQueries;
@@ -47,6 +51,7 @@ public class LoanScheduleFragment extends Fragment {
     private boolean isGrey = true;
     private double currentBalance = 0;
     private ProgressBar scheduleProgressBar;
+    private AlertDialog.Builder builder;
 
     public LoanScheduleFragment() {
         // Required empty public constructor
@@ -71,6 +76,8 @@ public class LoanScheduleFragment extends Fragment {
         
         collectionQueries = new CollectionQueries();
         collectionTableQueries = new CollectionTableQueries(getActivity().getApplication());
+
+        builder = new AlertDialog.Builder(getContext());
 
         createTableHeader();
         List<CollectionTable> collectionTableList = collectionTableQueries.loadCollectionsForLoan(loan.getLoanId());
@@ -105,6 +112,7 @@ public class LoanScheduleFragment extends Fragment {
                                     }
 
                                     if(newData) saveCollectionToLocalStorage(collectionTable);
+                                    updateCollection(collectionTable);
                                 }
 
                                 loadAllCollections();
@@ -121,6 +129,19 @@ public class LoanScheduleFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    private void updateCollection(CollectionTable collectionTable) {
+
+        CollectionTable currentlySaved = collectionTableQueries.loadSingleCollection(collectionTable.getCollectionId());
+        collectionTable.setId(currentlySaved.getId());
+
+        if(collectionTable.getLastUpdatedAt().getTime() != currentlySaved.getLastUpdatedAt().getTime()){
+
+            collectionTableQueries.updateCollection(collectionTable);
+            Log.d("Borrower", "Borrower Detailed updated");
+
+        }
     }
 
     private void loadAllCollections() {
@@ -181,10 +202,34 @@ public class LoanScheduleFragment extends Fragment {
         if(collectionTable1 == null) collectionTableQueries.insertCollectionToStorage(collectionTable);
     }
 
-    private void createTableBody(CollectionTable collectionTable) {
+    private void createTableBody(final CollectionTable collectionTable) {
         TableRow row = new TableRow(getContext());
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
         row.setLayoutParams(lp);
+
+        if(!collectionTable.getIsDueCollected() && !collectionTable.getCollectionState().equals(PaymentScheduleGenerator.COLLECTION_STATE_FULL)) {
+            row.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    builder.setMessage("Do you want to make payment for collection number " + collectionTable.getCollectionNumber()).setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, final int id) {
+                            Intent intent = new Intent(getContext(), LoanRepayment.class);
+                            intent.putExtra("collection", collectionTable);
+                            intent.putExtra("lastUpdatedAt", collectionTable.getLastUpdatedAt());
+                            intent.putExtra("dueDate", collectionTable.getCollectionDueDate());
+                            intent.putExtra("timestamp", collectionTable.getTimestamp());
+                            startActivity(intent);
+                        }
+                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, final int id) {
+                            dialog.cancel();
+                        }
+                    });
+                    final AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            });
+        }
 
         //row color alternates between grey and white
         if(isGrey) {
@@ -215,16 +260,11 @@ public class LoanScheduleFragment extends Fragment {
         dueAmountHeader.setGravity(Gravity.CENTER);
         dueAmountHeader.setPadding(10,10,10,10);
 
-        if(collectionTable.getCollectionState().equals(PaymentScheduleGenerator.COLLECTION_STATE_PARTIAL) ||
-                collectionTable.getCollectionState().equals(PaymentScheduleGenerator.COLLECTION_STATE_FULL)) {
-            currentBalance = currentBalance + collectionTable.getAmountPaid();
-            totalBalanceHeader.setText(String.valueOf(currentBalance));
-        } else totalBalanceHeader.setText(String.valueOf(currentBalance));
+        totalBalanceHeader.setText(String.valueOf(collectionTable.getAmountPaid()));
         totalBalanceHeader.setGravity(Gravity.CENTER);
         totalBalanceHeader.setPadding(10,10,10,10);
 
-        if(collectionTable.getIsDueCollected()) isCollectedHeader.setText("Collected");
-        else isCollectedHeader.setText("Not Collected");
+        isCollectedHeader.setText(collectionTable.getCollectionState());
         isCollectedHeader.setGravity(Gravity.CENTER);
         isCollectedHeader.setPadding(10,10,10,10);
         penaltyHeader.setText(String.valueOf(collectionTable.getPenalty()));

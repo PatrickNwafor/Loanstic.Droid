@@ -454,9 +454,8 @@ public class DueCollection {
                         mapFragment.moveCamera(markers, null);
 
                     } else {
-                        if(mapFragment.isNoCol){
-                            mapFragment.getCurrentLocation();
-                        }
+                        mapFragment.isNoCol = true;
+                        mapFragment.getCurrentLocation();
                     }
                 }
             });
@@ -545,6 +544,7 @@ public class DueCollection {
                                         updateTable(documentSnapshot);
                                     }
                                 }
+                                getDueCollectionData();
                                 removeRefresher();
                             }else{
                                 removeRefresher();
@@ -576,7 +576,6 @@ public class DueCollection {
         if(collectionTable.getLastUpdatedAt().getTime() != currentlySaved.getLastUpdatedAt().getTime()){
 
             collectionTableQueries.updateCollection(collectionTable);
-            getDueCollectionData();
             Log.d("DueCollection", "DueCollection Detailed updated");
 
         }

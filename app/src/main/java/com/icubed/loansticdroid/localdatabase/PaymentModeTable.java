@@ -63,4 +63,9 @@ public class PaymentModeTable {
     public void setLastUpdatedAt(Date lastUpdatedAt) {
         this.lastUpdatedAt = lastUpdatedAt;
     }
+
+    @Override
+    public String toString() {
+        return "PaymentModeTable{" + "paymentModeId='" + paymentModeId + '\'' + ", id=" + id + ", paymentMode='" + paymentMode + '\'' + ", lastUpdatedAt=" + lastUpdatedAt + '}';
+    }
 }

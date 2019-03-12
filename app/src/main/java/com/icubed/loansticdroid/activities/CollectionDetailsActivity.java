@@ -1,10 +1,12 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -107,11 +109,7 @@ public class CollectionDetailsActivity extends AppCompatActivity {
         collectionNumberView.setText(String.valueOf(dueCollectionDetails.getCollectionNumber()));
         collectionAddressView.setText(dueCollectionDetails.getWorkAddress());
 
-        if(dueCollectionDetails.getIsDueCollected()){
-            collectionStatusView.setText("Collected");
-        }else{
-            collectionStatusView.setText("Not Collected");
-        }
+        collectionStatusView.setText(collectionTable.getCollectionState());
 
         collectionAmountView.setText(String.valueOf(dueCollectionDetails.getDueAmount() - dueCollectionDetails.getAmountPaid()));
 
@@ -136,13 +134,49 @@ public class CollectionDetailsActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.repayment_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem register = menu.findItem(R.id.add_repayment);
+
+        register.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent = new Intent(getApplicationContext(), LoanRepayment.class);
+                intent.putExtra("collection", collectionTable);
+                intent.putExtra("lastUpdatedAt", collectionTable.getLastUpdatedAt());
+                intent.putExtra("dueDate", collectionTable.getCollectionDueDate());
+                intent.putExtra("timestamp", collectionTable.getTimestamp());
+                startActivity(intent);
+                return true;
+            }
+        });
+
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(item.getItemId() == android.R.id.home){
-            finish();
-            return true;
-        }
 
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+            case R.id.add_repayment:
+                //startAnotherActivity(RepaymentActivity.class);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

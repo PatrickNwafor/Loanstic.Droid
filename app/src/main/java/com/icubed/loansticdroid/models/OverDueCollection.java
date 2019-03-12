@@ -468,6 +468,7 @@ public class OverDueCollection {
                                         updateTable(documentSnapshot);
                                     }
                                 }
+                                getDueCollectionData();
                                 removeRefresher();
                             }else{
                                 removeRefresher();
@@ -499,7 +500,6 @@ public class OverDueCollection {
         if(collectionTable.getLastUpdatedAt().getTime() != currentlySaved.getLastUpdatedAt().getTime()){
 
             collectionTableQueries.updateCollection(collectionTable);
-            getDueCollectionData();
             Log.d("DueCollection", "DueCollection Detailed updated");
 
         }
