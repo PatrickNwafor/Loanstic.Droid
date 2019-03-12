@@ -4,6 +4,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.util.Arrays;
 import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
@@ -75,5 +76,10 @@ public class PaymentPhotoVerificationTable {
     }
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "PaymentPhotoVerificationTable{" + "paymentVerificationPhotoId='" + paymentVerificationPhotoId + '\'' + ", id=" + id + ", paymentId='" + paymentId + '\'' + ", imageUri='" + imageUri + '\'' + ", imageUriThumb='" + imageUriThumb + '\'' + ", imageByteArray=" + Arrays.toString(imageByteArray) + ", timestamp=" + timestamp + '}';
     }
 }

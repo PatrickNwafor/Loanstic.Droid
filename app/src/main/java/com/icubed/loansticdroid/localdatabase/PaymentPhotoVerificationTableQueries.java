@@ -18,8 +18,10 @@ public class PaymentPhotoVerificationTableQueries {
     }
 
     /************Load all collections from local Storage********/
-    public List<PaymentPhotoVerificationTable> loadAllPaymentPhotoVerif(){
-        return paymentPhotoVerificationTableDao.loadAll();
+    public List<PaymentPhotoVerificationTable> loadAllPaymentPhotoVerif(String paymentId){
+        return paymentPhotoVerificationTableDao.queryBuilder()
+                .where(PaymentPhotoVerificationTableDao.Properties.PaymentId.eq(paymentId))
+                .build().list();
     }
 
     /**********Load a single collection from local Storage*******/

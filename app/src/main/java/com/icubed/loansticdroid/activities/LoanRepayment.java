@@ -265,7 +265,7 @@ public class LoanRepayment extends AppCompatActivity {
         paymentMap.put("loanOfficerId", account.getCurrentUserId());
         if(selectedPaymentModePosition != -1) paymentMap.put("paymentModeId", paymentModeTables.get(selectedPaymentModePosition).getPaymentModeId());
         else paymentMap.put("paymentMode", selectedMode);
-        paymentMap.put("amountPaid", amountPaidTextView.getText().toString());
+        paymentMap.put("amountPaid", Double.parseDouble(amountPaidTextView.getText().toString()));
         paymentMap.put("paymentTime", new Date());
         paymentMap.put("lastUpdatedAt", new Date());
         paymentMap.put("photoLatitude", getLocation.getLatitude());
@@ -375,7 +375,9 @@ public class LoanRepayment extends AppCompatActivity {
                             CollectionTable collectionTable = task.getResult().toObject(CollectionTable.class);
                             collectionTable.setCollectionId(task.getResult().getId());
 
-                            objectMap.put("amountPaid", collectionTable.getAmountPaid()+Double.parseDouble(amountPaidTextView.getText().toString()));
+                            double amount = collectionTable.getAmountPaid()+Double.parseDouble(amountPaidTextView.getText().toString());
+
+                            objectMap.put("amountPaid", amount);
                             objectMap.put("lastUpdatedAt", new Date());
                             if(full.isChecked()){
                                 objectMap.put("collectionState", PaymentScheduleGenerator.COLLECTION_STATE_FULL);

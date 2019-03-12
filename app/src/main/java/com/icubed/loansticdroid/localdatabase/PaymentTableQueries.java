@@ -19,8 +19,12 @@ public class PaymentTableQueries {
     }
 
     /************Load all collections from local Storage********/
-    public List<PaymentTable> loadAllPayments(){
-        return paymentTableDao.loadAll();
+    public List<PaymentTable> loadAllPayments(String loanId){
+        return paymentTableDao.queryBuilder()
+                .where(PaymentTableDao.Properties.LoanId.eq(loanId))
+                .orderDesc(PaymentTableDao.Properties.PaymentTime)
+                .build()
+                .list();
     }
 
     /**********Load a single collection from local Storage*******/

@@ -64,7 +64,7 @@ public class PaymentPhotoValidationQueries {
 
     /***************Retrieve All Payments Details******************/
     public Task<QuerySnapshot> retrieveAllPhotoVerifForPayment(String paymentId){
-        return firebaseFirestore.collection("Payment")
+        return firebaseFirestore.collection("Payment_Photo_Verification")
                 .whereEqualTo("paymentId", paymentId)
                 .get();
     }
