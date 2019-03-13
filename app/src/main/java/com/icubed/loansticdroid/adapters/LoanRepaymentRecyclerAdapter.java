@@ -2,6 +2,7 @@ package com.icubed.loansticdroid.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -68,6 +69,7 @@ public class LoanRepaymentRecyclerAdapter extends RecyclerView.Adapter<LoanRepay
         public FrameLayout frameLayout;
         private TextView loanId, borrowerName, repaymentProgress;
         private CircleImageView borrowerImage;
+        private android.widget.ProgressBar progressBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -78,6 +80,7 @@ public class LoanRepaymentRecyclerAdapter extends RecyclerView.Adapter<LoanRepay
             borrowerName = mView.findViewById(R.id.name_of_loanee);
             repaymentProgress = mView.findViewById(R.id.repayment_progress_text_view);
             borrowerImage = mView.findViewById(R.id.loan_type_image);
+            progressBar = mView.findViewById(R.id.progressBarLoan);
         }
 
         public void setViews(LoanDetails loanDetails) {
@@ -100,6 +103,12 @@ public class LoanRepaymentRecyclerAdapter extends RecyclerView.Adapter<LoanRepay
             double loanRepaymentRatio = 1 - ((loansTable.getLoanAmount() - loansTable.getRepaymentMade())/(loansTable.getLoanAmount()));
             double loanRepaymentPercent = loanRepaymentRatio * 100;
             double roundOff = Math.round(loanRepaymentPercent * 100.0) / 100.0;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                progressBar.setProgress((int) roundOff, true);
+            }else{
+                progressBar.setProgress((int) roundOff);
+            }
 
             repaymentProgress.setText(String.valueOf(roundOff) + "%");
             loanId.setText(loansTable.getLoanNumber());

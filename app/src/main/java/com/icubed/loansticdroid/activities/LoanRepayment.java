@@ -125,7 +125,6 @@ public class LoanRepayment extends AppCompatActivity {
         adapterPaymet = new ArrayAdapter<CharSequence>(getBaseContext(),android.R.layout.simple_spinner_item,paymentArr);
         adapterPaymet.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         paymentDrp.setAdapter(adapterPaymet);
-        selectedMode = paymentDrp.getSelectedItem().toString();
         if(!paymentModeTables.isEmpty()) selectedPaymentModePosition = paymentDrp.getSelectedItemPosition();
         else selectedPaymentModePosition = -1;
 
@@ -259,6 +258,9 @@ public class LoanRepayment extends AppCompatActivity {
     }
 
     private void submitPayment(Location getLocation) {
+
+        selectedMode = paymentDrp.getSelectedItem().toString();
+
         Map<String, Object> paymentMap = new HashMap<>();
         paymentMap.put("collectionId", collectionTable.getCollectionId());
         paymentMap.put("loanId", collectionTable.getLoanId());

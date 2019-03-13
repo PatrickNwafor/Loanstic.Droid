@@ -62,12 +62,13 @@ public class LoanPaymentFragments extends Fragment {
     private CollectionQueries collectionQueries;
     private CollectionTableQueries collectionTableQueries;
     private LoansTable loan;
-    private int count = 0;
+    private int count;
     private int docSize;
-    private int paymentCount = 1;
+    private int paymentCount;
     private LinearLayout emptyLayout;
     private TextView totalDueCollected;
-    private double totalAmountPaid = 0;
+    private double totalAmountPaid;
+    private boolean firstData = true;
 
     public LoanPaymentFragments() {
         // Required empty public constructor
@@ -88,6 +89,10 @@ public class LoanPaymentFragments extends Fragment {
         tableLayout = view.findViewById(R.id.table);
         emptyLayout = view.findViewById(R.id.search_empty_layout);
         totalDueCollected = view.findViewById(R.id.total_due_collected_text);
+
+        paymentCount = 1;
+        totalAmountPaid = 0;
+        count = 0;
 
         loan = ((LoanPaymentActivity) getContext()).loan;
 
@@ -117,6 +122,18 @@ public class LoanPaymentFragments extends Fragment {
                         if(task.isSuccessful()){
                             if(!task.getResult().isEmpty()){
 
+                                firstData = false;
+                                docSize = task.getResult().size();
+                                //get doc size not registered
+                                for(DocumentSnapshot documentSnapshot : task.getResult()){
+                                    for (PaymentTable table : paymentTables) {
+                                        if(table.getPaymentId().equals(documentSnapshot.getId())){
+                                            docSize--;
+                                            break;
+                                        }
+                                    }
+                                }
+
                                 for(DocumentSnapshot doc : task.getResult()){
                                     PaymentTable paymentTable = doc.toObject(PaymentTable.class);
                                     paymentTable.setPaymentId(doc.getId());
@@ -135,9 +152,6 @@ public class LoanPaymentFragments extends Fragment {
                                         retrievePaymentModeDetails(paymentTable);
                                     }
                                 }
-
-                                loadAllPayment();
-
                                 progressBar.setVisibility(View.GONE);
                             }else {
                                 progressBar.setVisibility(View.GONE);
@@ -153,6 +167,7 @@ public class LoanPaymentFragments extends Fragment {
 
     private void loadAllPayment() {
         totalAmountPaid = 0;
+        paymentCount = 1;
         tableLayout.removeAllViews();
         createTableHeader();
 
@@ -243,8 +258,14 @@ public class LoanPaymentFragments extends Fragment {
             getCollectionDetails(paymentTable.getCollectionId());
         }else{
             count++;
-            if(count == docSize){
-                loadPaymentsToUi();
+            if(firstData) {
+                if (count == docSize) {
+                    loadPaymentsToUi();
+                }
+            }else{
+                if (count == docSize) {
+                    loadAllPayment();
+                }
             }
         }
     }
@@ -260,8 +281,14 @@ public class LoanPaymentFragments extends Fragment {
 
                             saveCollectionDetailsToLocalStorage(collectionTable);
                             count++;
-                            if(count == docSize){
-                                loadPaymentsToUi();
+                            if(firstData) {
+                                if (count == docSize) {
+                                    loadPaymentsToUi();
+                                }
+                            }else{
+                                if (count == docSize) {
+                                    loadAllPayment();
+                                }
                             }
                         }else{
                             Log.d(TAG, "onComplete: "+task.getException().getMessage());
