@@ -50,11 +50,11 @@
                 android:id="@+id/collection_number_header"
                 android:layout_width="170dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="6dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/text_field_background"
+                android:gravity="center_vertical"
                 android:ems="10"
                 android:text="Collection Number"
                 android:inputType="number|numberDecimal"
@@ -70,7 +70,7 @@
                 android:layout_width="140dp"
                 android:layout_height="40dp"
                 android:text="2"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="5dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
@@ -106,7 +106,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/text_field_background"
+                android:gravity="center_vertical"
                 android:ems="10"
                 android:inputType="number|numberDecimal"
                 android:text="Collection Date"
@@ -121,7 +121,7 @@
                 android:id="@+id/collection_date_value"
                 android:layout_width="140dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="6dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
@@ -155,7 +155,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/text_field_background"
+                android:gravity="center_vertical"
                 android:ems="10"
                 android:text="Collection Amount"
                 android:inputType="number|numberDecimal"
@@ -171,7 +171,7 @@
                 android:layout_width="140dp"
                 android:layout_height="40dp"
                 android:text="1000"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="6dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
@@ -232,7 +232,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/text_field_background"
+                android:gravity="center_vertical"
                 android:ems="10"
                 android:inputType="number|numberDecimal"
                 android:text="Amount Paid"
@@ -281,7 +281,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/text_field_background"
+                android:gravity="center_vertical"
                 android:ems="10"
                 android:text="Amount Due"
                 android:inputType="number|numberDecimal"
@@ -297,7 +297,7 @@
                 android:layout_width="140dp"
                 android:layout_height="40dp"
                 android:text="0"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="6dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
@@ -331,7 +331,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/text_field_background"
+                    android:gravity="center_vertical"
                     android:ems="10"
                     android:text="Payment Mode"
                     android:inputType="number|numberDecimal"
@@ -345,7 +345,7 @@
                     android:id="@+id/payment_mode_value"
                     android:layout_width="140dp"
                     android:layout_height="40dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="6dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
@@ -369,6 +369,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:weightSum="10">
 
             <TextView
@@ -398,17 +400,23 @@
 
         </LinearLayout>
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/camera"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            app:lottie_autoPlay="true"
-            android:layout_margin="10dp"
-            android:layout_gravity="center"
-            app:lottie_fileName="camera.json"
-            app:lottie_loop="false" />
+
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
+
  </LinearLayout>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/camera"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        app:lottie_autoPlay="true"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_background"
+        android:elevation="4dp"
+        app:lottie_fileName="camera.json"
+        app:lottie_loop="false" />
 
 </RelativeLayout>
