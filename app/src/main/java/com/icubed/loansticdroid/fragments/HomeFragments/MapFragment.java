@@ -327,6 +327,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     }
 
+
     @Override
     public boolean onMarkerClick(Marker marker) {
 
