@@ -137,6 +137,7 @@ public class PaymentScheduleGenerator {
 
         int numberOfRepaymentMonths = (int) Math.ceil(repaymentAmount/loan.getRepaymentAmount());
         double lastRepaymentAmount = repaymentAmount - ((numberOfRepaymentMonths-1) * loan.getRepaymentAmount());
+        lastRepaymentAmount = decimalFormat(lastRepaymentAmount);
 
         for(int i = 1; i <= numberOfRepaymentMonths; i++){
             CollectionTable collectionTable = new CollectionTable();
@@ -163,6 +164,7 @@ public class PaymentScheduleGenerator {
 
         int numberOfRepaymentYears = (int) Math.ceil(repaymentAmount/loan.getRepaymentAmount());
         double lastRepaymentAmount = repaymentAmount - ((numberOfRepaymentYears-1) * loan.getRepaymentAmount());
+        lastRepaymentAmount = decimalFormat(lastRepaymentAmount);
 
         for(int i = 1; i <= numberOfRepaymentYears; i++){
             CollectionTable collectionTable = new CollectionTable();
@@ -189,6 +191,7 @@ public class PaymentScheduleGenerator {
 
         int numberOfRepaymentDays = (int) Math.ceil(repaymentAmount/loan.getRepaymentAmount());
         double lastRepaymentAmount = repaymentAmount - ((numberOfRepaymentDays-1) * loan.getRepaymentAmount());
+        lastRepaymentAmount = decimalFormat(lastRepaymentAmount);
 
         Log.d(TAG, "lastRepaymentAmount: "+lastRepaymentAmount);
 
