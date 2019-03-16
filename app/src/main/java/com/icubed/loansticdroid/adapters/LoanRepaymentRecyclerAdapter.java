@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.LoanPaymentActivity;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
 import com.icubed.loansticdroid.models.LoanDetails;
 import com.icubed.loansticdroid.util.BitmapUtil;
@@ -84,18 +85,20 @@ public class LoanRepaymentRecyclerAdapter extends RecyclerView.Adapter<LoanRepay
         }
 
         public void setViews(LoanDetails loanDetails) {
-            BorrowersTable borrowersTable = loanDetails.getBorrowersTable();
 
-            borrowerName.setText(borrowersTable.getLastName() + " " + borrowersTable.getFirstName());
+            if(loanDetails.getBorrowersTable() != null) {
+                BorrowersTable borrowersTable = loanDetails.getBorrowersTable();
+                borrowerName.setText(borrowersTable.getLastName() + " " + borrowersTable.getFirstName());
+                if (borrowersTable.getBorrowerImageByteArray() == null) {
+                    BitmapUtil.getImageAndThumbnailWithGlide(mView.getContext(), borrowersTable.getProfileImageUri(), borrowersTable.getProfileImageThumbUri()).into(borrowerImage);
+                } else {
+                    borrowerImage.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
+                }
 
-            if(borrowersTable.getBorrowerImageByteArray() == null){
-                BitmapUtil.getImageAndThumbnailWithGlide(
-                        mView.getContext(),
-                        borrowersTable.getProfileImageUri(),
-                        borrowersTable.getProfileImageThumbUri()
-                ).into(borrowerImage);
             }else{
-                borrowerImage.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
+                GroupBorrowerTable groupBorrowerTable = loanDetails.getGroupBorrowerTable();
+                borrowerName.setText(groupBorrowerTable.getGroupName());
+                borrowerImage.setImageResource(R.drawable.new_group);
             }
 
             LoansTable loansTable = loanDetails.getLoansTable();

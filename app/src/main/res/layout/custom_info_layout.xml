@@ -5,25 +5,29 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
-<ImageView
-    android:layout_width="64dp"
-    android:layout_height="64dp"
-    android:src="@drawable/collect_icon"/>
+
+    <ImageView
+        android:id="@+id/col"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/collect_icon" />
     <view
         android:layout_width="2dp"
         android:layout_height="match_parent"/>
+
     <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="Title"/>
+        android:text="Title" />
     <view
         android:layout_width="2dp"
         android:layout_height="match_parent"/>
 
     <ImageView
+        android:id="@+id/nav"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/ic_navigation_black_24dp"
-         />
+        android:src="@drawable/ic_navigation_black_24dp" />
 </LinearLayout>
