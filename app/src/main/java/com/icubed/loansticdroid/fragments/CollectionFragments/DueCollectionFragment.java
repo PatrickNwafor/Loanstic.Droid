@@ -33,6 +33,7 @@ public class DueCollectionFragment extends Fragment {
     RecyclerView recyclerView;
     public SlideUpPanelRecyclerAdapter slideUpPanelRecyclerAdapter;
     public List<DueCollectionDetails> dueCollectionList;
+    public List<CollectionTable> collectionTableList;
     public ProgressBar progressBar;
     private DueCollection dueCollection;
     public SwipeRefreshLayout swipeRefreshLayout;
@@ -60,7 +61,8 @@ public class DueCollectionFragment extends Fragment {
         dueCollection = new DueCollection(getActivity().getApplication(), getActivity());
 
         dueCollectionList = new ArrayList<>();
-        slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(dueCollectionList, getActivity());
+        collectionTableList = new ArrayList<>();
+        slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(dueCollectionList, getActivity(), collectionTableList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(slideUpPanelRecyclerAdapter);
 

@@ -2,6 +2,8 @@ package com.icubed.loansticdroid.fragments.HomeFragments;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -44,6 +46,8 @@ import com.icubed.loansticdroid.fragments.CollectionFragments.OverDueCollectionF
 import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.BitmapUtil;
 import com.icubed.loansticdroid.util.KeyboardUtil;
+import com.icubed.loansticdroid.util.MapInfoWindow.MapWrapperLayout;
+import com.icubed.loansticdroid.util.MapInfoWindow.OnInfoWindowElemTouchListener;
 import com.icubed.loansticdroid.util.PlayServiceUtil;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -90,10 +94,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     private LocationProviderUtil locationProviderUtil;
     private PlayServiceUtil playServiceUtil;
-    public ImageButton navButton;
     public LatLng selectedUserLatLng = null;
     private DueCollectionFragment dueCollectionFragment;
     private OverDueCollectionFragment overDueCollectionFragment;
+    private View infoWindow;
+    private TextView infoTitle;
+    private ImageButton navBtn;
+    public ImageButton colBtn;
+    private OnInfoWindowElemTouchListener infoButtonListener;
+    public OnInfoWindowElemTouchListener infoButtonListener2;
+    private MapWrapperLayout mapWrapperLayout;
 
     public MapFragment() {
         // Required empty public constructor
@@ -119,6 +129,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         slideUp = v.findViewById(R.id.slideUp);
         sbg = v.findViewById(R.id.segmentedButtonGroup);
         search = v.findViewById(R.id.searchEditText);
+        mapWrapperLayout = v.findViewById(R.id.map_relative_layout);
+
 
         bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
         blink = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
@@ -131,21 +143,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         playServiceUtil = new PlayServiceUtil(getContext());
         locationProviderUtil = new LocationProviderUtil(getContext());
 
-        navButton = v.findViewById(R.id.nav_button);
         mMapView = v.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
-
-        navButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(selectedUserLatLng != null){
-                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                            Uri.parse("http://maps.google.com/maps?daddr="+selectedUserLatLng.latitude+","+selectedUserLatLng.longitude+""));
-                    startActivity(intent);
-                }
-            }
-        });
 
         //setting layout slide listener
         slidingLayout = v.findViewById(R.id.sliding_layout);
@@ -226,7 +226,66 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
         int height = getResources().getDisplayMetrics().heightPixels;
         mGoogleMap.setPadding(0, (int) (0.2*height), 0, (int) (0.15*height));
+        customInfoWindowInit(mGoogleMap);
         onMapReadyFeatures();
+    }
+
+    private void customInfoWindowInit(GoogleMap map) {
+        mapWrapperLayout.init(map, getPixelsFromDp(getContext(), 39 + 20));
+
+        // We want to reuse the info window for all the markers,
+        // so let's create only one class member instance
+        infoWindow = getLayoutInflater().inflate(R.layout.custom_info_layout, null);
+        infoTitle = infoWindow.findViewById(R.id.title);
+        navBtn = infoWindow.findViewById(R.id.nav);
+        colBtn = infoWindow.findViewById(R.id.col);
+
+        // Setting custom OnTouchListener which deals with the pressed state
+        // so it shows up
+        infoButtonListener = new OnInfoWindowElemTouchListener(navBtn,
+                getResources().getDrawable(R.color.whiteEnd),
+                getResources().getDrawable(R.color.darkGrey))
+        {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) {
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?daddr="+marker.getPosition().latitude+","+marker.getPosition().longitude+""));
+                startActivity(intent);
+            }
+        };
+        navBtn.setOnTouchListener(infoButtonListener);
+
+
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                // Setting up the infoWindow with current's marker info
+                if(marker.getTitle().equals("Your Location")){
+                    navBtn.setVisibility(GONE);
+                    colBtn.setVisibility(GONE);
+                }else {
+                    navBtn.setVisibility(VISIBLE);
+                    colBtn.setVisibility(VISIBLE);
+                }
+
+                infoTitle.setText(marker.getTitle());
+                infoButtonListener.setMarker(marker);
+                // We must call this to set the current marker and infoWindow references
+                // to the MapWrapperLayout
+                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+                return infoWindow;
+            }
+        });
+    }
+
+    public static int getPixelsFromDp(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int)(dp * scale + 0.5f);
     }
 
     private void onMapReadyFeatures(){
@@ -337,7 +396,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             arrayList.add(marker);
             arrayList.add(myMarker);
             selectedUserLatLng = marker.getPosition();
-            navButton.setVisibility(VISIBLE);
             getRoute(myMarker.getPosition(), marker.getPosition(), arrayList);
             return true;
         }

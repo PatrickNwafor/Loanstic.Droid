@@ -22,10 +22,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView"
+        <com.icubed.loansticdroid.util.MapInfoWindow.MapWrapperLayout
+            android:id="@+id/map_relative_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.icubed.loansticdroid.util.MapInfoWindow.MapWrapperLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,19 +101,6 @@
                 android:text="Slide Up"
                 android:visibility="gone"
                 android:textColor="@color/colorPrimary" />
-
-            <ImageButton
-                android:id="@+id/nav_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignTop="@+id/btn_show1"
-                android:layout_gravity="bottom"
-                android:layout_marginEnd="18dp"
-                android:background="@drawable/circle_white"
-                android:elevation="4dp"
-                android:src="@drawable/ic_navigation_black_24dp"
-                android:visibility="gone" />
 
         </RelativeLayout>
     </FrameLayout>

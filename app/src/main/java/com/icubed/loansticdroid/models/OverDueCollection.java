@@ -353,6 +353,7 @@ public class OverDueCollection {
                 dueCollectionDetails.setIsDueCollected(collectionTable.getIsDueCollected());
                 dueCollectionDetails.setCollectionTable(collectionTable);
                 dueCollectionDetails.setAmountPaid(collectionTable.getAmountPaid());
+                fragment.collectionTableList.add(collectionTable);
 
                 LoansTable loan = loanTableQueries.loadSingleLoan(collectionTable.getLoanId());
 
@@ -401,6 +402,7 @@ public class OverDueCollection {
         dueCollectionDetails.setIsDueCollected(collectionTable.getIsDueCollected());
         dueCollectionDetails.setCollectionTable(collectionTable);
         dueCollectionDetails.setAmountPaid(collectionTable.getAmountPaid());
+        fragment.collectionTableList.add(collectionTable);
 
         LoansTable loan = loanTableQueries.loadSingleLoan(collectionTable.getLoanId());
 

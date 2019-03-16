@@ -1,10 +1,12 @@
 package com.icubed.loansticdroid.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +20,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.CollectionDetailsActivity;
+import com.icubed.loansticdroid.activities.LoanRepayment;
 import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
+import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
 import com.icubed.loansticdroid.util.BitmapUtil;
+import com.icubed.loansticdroid.util.MapInfoWindow.OnInfoWindowElemTouchListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,16 +34,20 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPanelRecyclerAdapter.ViewHolder> {
 
     List<DueCollectionDetails> collectionList;
+    List<CollectionTable> collections;
     Context context;
     MapFragment fragment;
+    private AlertDialog.Builder builder;
 
     private FragmentActivity fragmentActivity;
 
-    public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList, FragmentActivity activity) {
+    public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList, FragmentActivity activity, List<CollectionTable> collectionTable) {
         this.collectionList = collectionList;
+        this.collections = collectionTable;
         fragmentActivity = activity;
         FragmentManager fm = fragmentActivity.getSupportFragmentManager();
         fragment = (MapFragment) fm.findFragmentByTag("home");
+        builder = new AlertDialog.Builder(fragmentActivity);
     }
 
 
@@ -108,17 +117,52 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
 
                 fragment.hidePanel();
-                markers.add(fragment.mGoogleMap.addMarker(markerOptions));
+                Marker mark = fragment.mGoogleMap.addMarker(markerOptions);
+
+                //custom info window collection button click listener
+                fragment.infoButtonListener2 = new OnInfoWindowElemTouchListener(fragment.colBtn,
+                        fragment.getResources().getDrawable(R.color.whiteEnd),
+                        fragment.getResources().getDrawable(R.color.darkGrey)) {
+                    @Override
+                    protected void onClickConfirmed(View v, Marker marker) {
+                        // Here we can perform some action triggered after clicking the button
+                        makePayment(collections.get(position));
+                    }
+                };
+                fragment.colBtn.setOnTouchListener(fragment.infoButtonListener2);
+                fragment.infoButtonListener2.setMarker(mark);
+
+                markers.add(mark);
 
                 fragment.myMarker = fragment.mGoogleMap.addMarker(fragment.markerOptions);
                 markers.add(fragment.myMarker);
 
                 fragment.getRoute(fragment.markerOptions.getPosition(), markerOptions.getPosition(), markers);
                 fragment.selectedUserLatLng = latLng;
-                fragment.navButton.setVisibility(View.VISIBLE);
             }
         });
+    }
 
+    private void makePayment(final CollectionTable collectionTable) {
+        builder.setMessage("Do you want to make payment")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        Intent intent = new Intent(fragment.getContext(), LoanRepayment.class);
+                        intent.putExtra("collection", collectionTable);
+                        intent.putExtra("lastUpdatedAt", collectionTable.getLastUpdatedAt());
+                        intent.putExtra("dueDate", collectionTable.getCollectionDueDate());
+                        intent.putExtra("timestamp", collectionTable.getTimestamp());
+                        fragment.startActivity(intent);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override

@@ -280,26 +280,86 @@ public class LoanRepayment {
             if(table.getBorrowerId() != null) {
                 BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(table.getBorrowerId());
 
-                LoanDetails loanDetails = new LoanDetails();
-                loanDetails.setBorrowersTable(borrowersTable);
-                loanDetails.setLoansTable(table);
+                if(borrowersTable != null) {
+                    LoanDetails loanDetails = new LoanDetails();
+                    loanDetails.setBorrowersTable(borrowersTable);
+                    loanDetails.setLoansTable(table);
 
-                fragment.loanDetailsList.add(loanDetails);
-                secondCount++;
-                fragment.loanRecyclerAdapter.notifyDataSetChanged();
+                    fragment.loanDetailsList.add(loanDetails);
+                    secondCount++;
+                    fragment.loanRecyclerAdapter.notifyDataSetChanged();
+                }else{
+                    getSingleBorrowerDetails(table.getBorrowerId(), table);
+                }
             }else{
                 GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(table.getGroupId());
 
-                LoanDetails loanDetails = new LoanDetails();
-                loanDetails.setGroupBorrowerTable(groupBorrowerTable);
-                loanDetails.setLoansTable(table);
-                fragment.loanDetailsList.add(loanDetails);
-                secondCount++;
-                fragment.loanRecyclerAdapter.notifyDataSetChanged();
+                if(groupBorrowerTable != null) {
+                    LoanDetails loanDetails = new LoanDetails();
+                    loanDetails.setGroupBorrowerTable(groupBorrowerTable);
+                    loanDetails.setLoansTable(table);
+                    fragment.loanDetailsList.add(loanDetails);
+                    secondCount++;
+                    fragment.loanRecyclerAdapter.notifyDataSetChanged();
+                }else{
+                    getSingleGroupDetails(table.getGroupId(), table);
+                }
             }
         }
 
         if(secondCount == size) fragment.progressBar.setVisibility(View.GONE);
+    }
+
+    private void getSingleBorrowerDetails(String borrowerId, final LoansTable table) {
+        borrowersQueries.retrieveSingleBorrowers(borrowerId)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            BorrowersTable borrowersTable = task.getResult().toObject(BorrowersTable.class);
+                            borrowersTable.setBorrowersId(task.getResult().getId());
+
+                            saveBorrowerToLocalStorage(borrowersTable);
+
+                            LoanDetails loanDetails = new LoanDetails();
+                            loanDetails.setBorrowersTable(borrowersTable);
+                            loanDetails.setLoansTable(table);
+
+                            fragment.loanDetailsList.add(loanDetails);
+                            secondCount++;
+                            fragment.loanRecyclerAdapter.notifyDataSetChanged();
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void getSingleGroupDetails(String groupId, final LoansTable table) {
+        groupBorrowerQueries.retrieveSingleBorrowerGroup(groupId)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            GroupBorrowerTable groupBorrowerTable = task.getResult().toObject(GroupBorrowerTable.class);
+                            groupBorrowerTable.setGroupId(task.getResult().getId());
+
+                            saveGroupToLocalStorage(groupBorrowerTable);
+
+                            LoanDetails loanDetails = new LoanDetails();
+                            loanDetails.setGroupBorrowerTable(groupBorrowerTable);
+                            loanDetails.setLoansTable(table);
+                            fragment.loanDetailsList.add(loanDetails);
+                            secondCount++;
+                            fragment.loanRecyclerAdapter.notifyDataSetChanged();
+
+                        }else {
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
     }
 
     /**

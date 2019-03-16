@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.SlideUpPanelRecyclerAdapter;
+import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.models.DueCollection;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
 import com.icubed.loansticdroid.models.OverDueCollection;
@@ -33,6 +34,7 @@ public class OverDueCollectionFragment extends Fragment {
     RecyclerView recyclerView;
     public SlideUpPanelRecyclerAdapter slideUpPanelRecyclerAdapter;
     public List<DueCollectionDetails> overDueCollectionList;
+    public List<CollectionTable> collectionTableList;
     public ProgressBar progressBar;
     private OverDueCollection overDueCollection;
     public SwipeRefreshLayout swipeRefreshLayout;
@@ -60,7 +62,8 @@ public class OverDueCollectionFragment extends Fragment {
         overDueCollection = new OverDueCollection(getActivity().getApplication(), getActivity());
 
         overDueCollectionList = new ArrayList<>();
-        slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(overDueCollectionList, getActivity());
+        collectionTableList = new ArrayList<>();
+        slideUpPanelRecyclerAdapter = new SlideUpPanelRecyclerAdapter(overDueCollectionList, getActivity(), collectionTableList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(slideUpPanelRecyclerAdapter);
 

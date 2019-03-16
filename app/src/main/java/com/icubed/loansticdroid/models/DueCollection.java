@@ -1,14 +1,18 @@
 package com.icubed.loansticdroid.models;
 
 import android.app.Application;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -22,6 +26,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.activities.LoanRepayment;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.cloudqueries.CollectionQueries;
 import com.icubed.loansticdroid.cloudqueries.GroupBorrowerQueries;
@@ -38,6 +43,7 @@ import com.icubed.loansticdroid.localdatabase.LoanTableQueries;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
 import com.icubed.loansticdroid.util.BitmapUtil;
 import com.icubed.loansticdroid.util.DateUtil;
+import com.icubed.loansticdroid.util.MapInfoWindow.OnInfoWindowElemTouchListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,6 +69,7 @@ public class DueCollection {
     private FragmentActivity fragmentActivity;
     private DueCollectionFragment fragment;
     private MapFragment mapFragment;
+    private AlertDialog.Builder builder;
 
     private static final String TAG = ".DueCollection";
 
@@ -83,6 +90,7 @@ public class DueCollection {
         FragmentManager fm = fragmentActivity.getSupportFragmentManager();
         fragment = (DueCollectionFragment) fm.findFragmentByTag("due");
         mapFragment = (MapFragment) fm.findFragmentByTag("home");
+        builder = new AlertDialog.Builder(fragmentActivity);
     }
 
     /***********check if collection exist in storage********/
@@ -358,6 +366,7 @@ public class DueCollection {
                 dueCollectionDetails.setIsDueCollected(collectionTable.getIsDueCollected());
                 dueCollectionDetails.setCollectionTable(collectionTable);
                 dueCollectionDetails.setAmountPaid(collectionTable.getAmountPaid());
+                fragment.collectionTableList.add(collectionTable);
 
                 LoansTable loan = loanTableQueries.loadSingleLoan(collectionTable.getLoanId());
 
@@ -411,7 +420,7 @@ public class DueCollection {
                     mapFragment.mGoogleMap.clear();
 
                     if (!collectionTable.isEmpty()) {
-                        for (CollectionTable table : collectionTable) {
+                        for (final CollectionTable table : collectionTable) {
                             LoansTable loan = loanTableQueries.loadSingleLoan(table.getLoanId());
                             if (loan.getBorrowerId() != null) {
                                 BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
@@ -429,7 +438,23 @@ public class DueCollection {
                                     circleImageView.setImageResource(R.drawable.new_borrower);
                                 else circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
                                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
-                                markers.add(mapFragment.mGoogleMap.addMarker(markerOptions));
+                                Marker mark = mapFragment.mGoogleMap.addMarker(markerOptions);
+
+                                //custom info window collection button click listener
+                                mapFragment.infoButtonListener2 = new OnInfoWindowElemTouchListener(mapFragment.colBtn,
+                                        mapFragment.getResources().getDrawable(R.color.whiteEnd),
+                                        mapFragment.getResources().getDrawable(R.color.darkGrey)) {
+                                    @Override
+                                    protected void onClickConfirmed(View v, Marker marker) {
+                                        // Here we can perform some action triggered after clicking the button
+                                        makePayment(table);
+                                    }
+                                };
+                                mapFragment.colBtn.setOnTouchListener(mapFragment.infoButtonListener2);
+                                mapFragment.infoButtonListener2.setMarker(mark);
+
+                                //adding marker to map
+                                markers.add(mark);
 
                             } else {
                                 GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
@@ -462,6 +487,28 @@ public class DueCollection {
         }
     }
 
+    private void makePayment(final CollectionTable collectionTable) {
+        builder.setMessage("Do you want to make payment")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        Intent intent = new Intent(mapFragment.getContext(), LoanRepayment.class);
+                        intent.putExtra("collection", collectionTable);
+                        intent.putExtra("lastUpdatedAt", collectionTable.getLastUpdatedAt());
+                        intent.putExtra("dueDate", collectionTable.getCollectionDueDate());
+                        intent.putExtra("timestamp", collectionTable.getTimestamp());
+                        mapFragment.startActivity(intent);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     public void getSingleDueCollectionData(String collectionId){
         CollectionTable collectionTable = collectionTableQueries.loadSingleCollection(collectionId);
 
@@ -476,6 +523,7 @@ public class DueCollection {
         dueCollectionDetails.setIsDueCollected(collectionTable.getIsDueCollected());
         dueCollectionDetails.setCollectionTable(collectionTable);
         dueCollectionDetails.setAmountPaid(collectionTable.getAmountPaid());
+        fragment.collectionTableList.add(collectionTable);
 
         LoansTable loan = loanTableQueries.loadSingleLoan(collectionTable.getLoanId());
 
