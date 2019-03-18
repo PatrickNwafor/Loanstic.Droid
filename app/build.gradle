@@ -48,6 +48,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-simple:1.7.25'
     implementation 'com.ramotion.foldingcell:folding-cell:1.2.2'
     implementation 'com.airbnb.android:lottie:2.0.0'
+    implementation 'com.daasuu:animateHorizontalProgressBar:0.2.4'
 }
 
 apply plugin: 'com.google.gms.google-services'

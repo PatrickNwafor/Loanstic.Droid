@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daasuu.ahp.AnimateHorizontalProgressBar;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.LoanPaymentActivity;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
@@ -70,7 +71,8 @@ public class LoanRepaymentRecyclerAdapter extends RecyclerView.Adapter<LoanRepay
         public FrameLayout frameLayout;
         private TextView loanId, borrowerName, repaymentProgress;
         private CircleImageView borrowerImage;
-        private android.widget.ProgressBar progressBar;
+        //private android.widget.ProgressBar progressBar;
+       private AnimateHorizontalProgressBar progressBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -81,7 +83,8 @@ public class LoanRepaymentRecyclerAdapter extends RecyclerView.Adapter<LoanRepay
             borrowerName = mView.findViewById(R.id.name_of_loanee);
             repaymentProgress = mView.findViewById(R.id.repayment_progress_text_view);
             borrowerImage = mView.findViewById(R.id.loan_type_image);
-            progressBar = mView.findViewById(R.id.progressBarLoan);
+           // progressBar = mView.findViewById(R.id.progressBarLoan);
+            progressBar = mView.findViewById(R.id.progressBarLoan1);
         }
 
         public void setViews(LoanDetails loanDetails) {
@@ -109,9 +112,11 @@ public class LoanRepaymentRecyclerAdapter extends RecyclerView.Adapter<LoanRepay
             double roundOff = Math.round(loanRepaymentPercent * 100.0) / 100.0;
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                progressBar.setProgress((int) roundOff, true);
+                //progressBar.setProgress((int) roundOff, true);
+                progressBar.setProgressWithAnim((int) roundOff);
+
             }else{
-                progressBar.setProgress((int) roundOff);
+                progressBar.setProgressWithAnim((int) roundOff);
             }
 
             repaymentProgress.setText(String.valueOf(roundOff) + "%");
