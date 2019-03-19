@@ -339,6 +339,7 @@ public class OverDueCollection {
 
         if(fragment != null)
         fragment.overDueCollectionList.clear();
+        fragment.collectionTableList.clear();
 
         if(!collectionTables.isEmpty()) {
 

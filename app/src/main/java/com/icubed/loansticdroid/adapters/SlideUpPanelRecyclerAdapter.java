@@ -25,6 +25,7 @@ import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
 import com.icubed.loansticdroid.util.BitmapUtil;
+import com.icubed.loansticdroid.util.CustomDialogBox.PaymentDialogBox;
 import com.icubed.loansticdroid.util.MapInfoWindow.OnInfoWindowElemTouchListener;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
     Context context;
     MapFragment fragment;
     private AlertDialog.Builder builder;
+    private PaymentDialogBox paymentDialogBox;
 
     private FragmentActivity fragmentActivity;
 
@@ -48,6 +50,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
         FragmentManager fm = fragmentActivity.getSupportFragmentManager();
         fragment = (MapFragment) fm.findFragmentByTag("home");
         builder = new AlertDialog.Builder(fragmentActivity);
+        paymentDialogBox = new PaymentDialogBox(fragmentActivity);
     }
 
 
@@ -144,25 +147,18 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
     }
 
     private void makePayment(final CollectionTable collectionTable) {
-        builder.setMessage("Do you want to make payment")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        Intent intent = new Intent(fragment.getContext(), LoanRepayment.class);
-                        intent.putExtra("collection", collectionTable);
-                        intent.putExtra("lastUpdatedAt", collectionTable.getLastUpdatedAt());
-                        intent.putExtra("dueDate", collectionTable.getCollectionDueDate());
-                        intent.putExtra("timestamp", collectionTable.getTimestamp());
-                        fragment.startActivity(intent);
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
+        paymentDialogBox.setOnYesClicked(new PaymentDialogBox.OnButtonClick() {
+            @Override
+            public void onYesButtonClick() {
+                Intent intent = new Intent(fragment.getContext(), LoanRepayment.class);
+                intent.putExtra("collection", collectionTable);
+                intent.putExtra("lastUpdatedAt", collectionTable.getLastUpdatedAt());
+                intent.putExtra("dueDate", collectionTable.getCollectionDueDate());
+                intent.putExtra("timestamp", collectionTable.getTimestamp());
+                fragment.startActivity(intent);
+            }
+        });
+        paymentDialogBox.show();
     }
 
     @Override

@@ -274,9 +274,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 if(marker.getTitle().equals("Your Location")){
                     navBtn.setVisibility(GONE);
                     colBtn.setVisibility(GONE);
+                    colTitle.setVisibility(GONE);
                 }else {
                     navBtn.setVisibility(VISIBLE);
                     colBtn.setVisibility(VISIBLE);
+                    colTitle.setVisibility(VISIBLE);
                 }
 
                 infoTitle.setText(marker.getTitle());

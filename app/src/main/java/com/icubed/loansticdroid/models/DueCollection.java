@@ -354,6 +354,7 @@ public class DueCollection {
 
         if(fragment != null)
         fragment.dueCollectionList.clear();
+        fragment.collectionTableList.clear();
         drawCollectionMarker(collectionTables);
 
         if(!collectionTables.isEmpty()) {
