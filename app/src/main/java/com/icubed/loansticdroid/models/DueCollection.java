@@ -477,7 +477,26 @@ public class DueCollection {
                                 markerOptions.anchor(0.5f, 0.5f);
                                 circleImageView.setImageResource(R.drawable.new_group);
                                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
-                                markers.add(mapFragment.mGoogleMap.addMarker(markerOptions));
+
+                                Marker mark = mapFragment.mGoogleMap.addMarker(markerOptions);
+
+                                //custom info window collection button click listener
+                                mapFragment.infoButtonListener2 = new OnInfoWindowElemTouchListener(mapFragment.colBtn,
+                                        mapFragment.getResources().getDrawable(R.color.whiteEnd),
+                                        mapFragment.getResources().getDrawable(R.color.darkGrey)) {
+                                    @Override
+                                    protected void onClickConfirmed(View v, Marker marker) {
+                                        // Here we can perform some action triggered after clicking the button
+                                        //makePayment(table);
+                                        newPayment(table);
+                                    }
+                                };
+
+                                mapFragment.colBtn.setOnTouchListener(mapFragment.infoButtonListener2);
+                                mapFragment.colTitle.setText("Collection Number: "+table.getCollectionNumber());
+                                mapFragment.infoButtonListener2.setMarker(mark)  ;
+
+                                markers.add(mark);
                             }
                         }
 
