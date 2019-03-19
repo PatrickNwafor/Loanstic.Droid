@@ -43,6 +43,7 @@ import com.icubed.loansticdroid.localdatabase.LoansTable;
 import com.icubed.loansticdroid.localdatabase.PaymentModeTable;
 import com.icubed.loansticdroid.localdatabase.PaymentModeTableQueries;
 import com.icubed.loansticdroid.models.PaymentScheduleGenerator;
+import com.icubed.loansticdroid.util.CustomDialogBox.PaymentDialogBox;
 import com.icubed.loansticdroid.util.DateUtil;
 import com.icubed.loansticdroid.util.FormUtil;
 import com.icubed.loansticdroid.util.LocationProviderUtil;
@@ -78,10 +79,10 @@ public class LoanRepayment extends AppCompatActivity {
     private ProgressBar progressBar;
     private int selectedPaymentModePosition;
     private List<PaymentModeTable> paymentModeTables;
-    private AlertDialog.Builder builder;
     private AlertDialog.Builder builder2;
     private PaymentPhotoValidationQueries paymentPhotoValidationQueries;
     private double collectionAmount;
+    private PaymentDialogBox paymentDialogBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +109,8 @@ public class LoanRepayment extends AppCompatActivity {
         PaymentModeTableQueries paymentModeTableQueries = new PaymentModeTableQueries(getApplication());
         paymentModeTables = paymentModeTableQueries.loadAllPaymentModes();
 
+        paymentDialogBox = new PaymentDialogBox(this);
+
         ArrayAdapter<CharSequence> adapterPaymet;
         String[] paymentArr;
         int count = 0;
@@ -126,7 +129,6 @@ public class LoanRepayment extends AppCompatActivity {
         adapterPaymet.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         paymentDrp.setAdapter(adapterPaymet);
 
-        builder = new AlertDialog.Builder(this);
         builder2 = new AlertDialog.Builder(this);
 
         paymentQueries = new PaymentQueries();
@@ -205,33 +207,27 @@ public class LoanRepayment extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
-                builder.setMessage("Are you sure you want to make payment")
-                        .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, final int id) {
-                                if(formUtil.isSingleFormEmpty(amountPaidTextView)) {
-                                    amountPaidTextView.setError("Please enter amount paid");
-                                }else if(bitmapList.isEmpty()){
-                                    amountPaidTextView.setError(null);
-                                    Toast.makeText(LoanRepayment.this, "Please upload payment pictures", Toast.LENGTH_SHORT).show();
-                                }
-                                else if(partial.isChecked() &&
-                                        Double.parseDouble(amountPaidTextView.getText().toString()) >= collectionAmount){
-                                    Toast.makeText(LoanRepayment.this, "Amount to be paid cannot be greater than collection amount", Toast.LENGTH_SHORT).show();
-                                }else{
-                                    amountPaidTextView.setError(null);
-                                    disabledViews();
-                                    getCurrentLocation();
-                                }
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, final int id) {
-                                dialog.cancel();
-                            }
-                        });
-                final AlertDialog alert = builder.create();
-                alert.show();
+                paymentDialogBox.setOnYesClicked(new PaymentDialogBox.OnButtonClick() {
+                    @Override
+                    public void onYesButtonClick() {
+                        if(formUtil.isSingleFormEmpty(amountPaidTextView)) {
+                            amountPaidTextView.setError("Please enter amount paid");
+                        }else if(bitmapList.isEmpty()){
+                            amountPaidTextView.setError(null);
+                            Toast.makeText(LoanRepayment.this, "Please upload payment pictures", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(partial.isChecked() &&
+                                Double.parseDouble(amountPaidTextView.getText().toString()) >= collectionAmount){
+                            Toast.makeText(LoanRepayment.this, "Amount to be paid cannot be greater than collection amount", Toast.LENGTH_SHORT).show();
+                        }else{
+                            amountPaidTextView.setError(null);
+                            disabledViews();
+                            getCurrentLocation();
+                        }
+                    }
+                });
+
+                paymentDialogBox.show();
                 return true;
             }
         });

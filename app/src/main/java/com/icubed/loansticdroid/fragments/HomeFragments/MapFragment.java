@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -357,8 +358,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mGoogleMap.animateCamera(cu);
 
         if(fromMarkerClick){
-            mGoogleMap.animateCamera(CameraUpdateFactory.zoomBy(-1f));
-            fromMarkerClick = false;
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomBy(-1f));
+                    fromMarkerClick = false;
+                }
+            }, 2000);
         }
     }
 
