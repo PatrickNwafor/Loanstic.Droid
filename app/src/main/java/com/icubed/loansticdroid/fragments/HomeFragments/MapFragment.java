@@ -26,6 +26,7 @@ import android.widget.*;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
@@ -45,6 +46,7 @@ import com.icubed.loansticdroid.fragments.CollectionFragments.DueCollectionFragm
 import com.icubed.loansticdroid.fragments.CollectionFragments.OverDueCollectionFragment;
 import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.BitmapUtil;
+import com.icubed.loansticdroid.util.CustomDialogBox.PaymentDialogBox;
 import com.icubed.loansticdroid.util.KeyboardUtil;
 import com.icubed.loansticdroid.util.MapInfoWindow.MapWrapperLayout;
 import com.icubed.loansticdroid.util.MapInfoWindow.OnInfoWindowElemTouchListener;
@@ -99,11 +101,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private OverDueCollectionFragment overDueCollectionFragment;
     private View infoWindow;
     private TextView infoTitle;
+    public TextView colTitle;
     private ImageButton navBtn;
     public ImageButton colBtn;
     private OnInfoWindowElemTouchListener infoButtonListener;
     public OnInfoWindowElemTouchListener infoButtonListener2;
     private MapWrapperLayout mapWrapperLayout;
+    private boolean fromMarkerClick = false;
 
     public MapFragment() {
         // Required empty public constructor
@@ -237,6 +241,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         // so let's create only one class member instance
         infoWindow = getLayoutInflater().inflate(R.layout.custom_info_layout, null);
         infoTitle = infoWindow.findViewById(R.id.title);
+        colTitle = infoWindow.findViewById(R.id.title1);
         navBtn = infoWindow.findViewById(R.id.nav);
         colBtn = infoWindow.findViewById(R.id.col);
 
@@ -351,6 +356,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,padding);
         mGoogleMap.animateCamera(cu);
 
+        if(fromMarkerClick){
+            mGoogleMap.animateCamera(CameraUpdateFactory.zoomBy(-1f));
+            fromMarkerClick = false;
+        }
     }
 
     public void getRoute(LatLng user, LatLng bor, final ArrayList<Marker> markers){
@@ -390,6 +399,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Override
     public boolean onMarkerClick(Marker marker) {
 
+        fromMarkerClick = true;
         marker.showInfoWindow();
         if(!marker.equals(myMarker)){
             ArrayList<Marker> arrayList = new ArrayList<>();

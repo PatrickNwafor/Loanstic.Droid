@@ -42,6 +42,7 @@ import com.icubed.loansticdroid.localdatabase.GroupBorrowerTableQueries;
 import com.icubed.loansticdroid.localdatabase.LoanTableQueries;
 import com.icubed.loansticdroid.localdatabase.LoansTable;
 import com.icubed.loansticdroid.util.BitmapUtil;
+import com.icubed.loansticdroid.util.CustomDialogBox.PaymentDialogBox;
 import com.icubed.loansticdroid.util.DateUtil;
 import com.icubed.loansticdroid.util.MapInfoWindow.OnInfoWindowElemTouchListener;
 
@@ -70,6 +71,7 @@ public class DueCollection {
     private DueCollectionFragment fragment;
     private MapFragment mapFragment;
     private AlertDialog.Builder builder;
+    private PaymentDialogBox paymentDialogBox;
 
     private static final String TAG = ".DueCollection";
 
@@ -91,6 +93,7 @@ public class DueCollection {
         fragment = (DueCollectionFragment) fm.findFragmentByTag("due");
         mapFragment = (MapFragment) fm.findFragmentByTag("home");
         builder = new AlertDialog.Builder(fragmentActivity);
+        paymentDialogBox = new PaymentDialogBox(fragmentActivity);
     }
 
     /***********check if collection exist in storage********/
@@ -447,11 +450,14 @@ public class DueCollection {
                                     @Override
                                     protected void onClickConfirmed(View v, Marker marker) {
                                         // Here we can perform some action triggered after clicking the button
-                                        makePayment(table);
+                                        //makePayment(table);
+                                        newPayment(table);
                                     }
                                 };
+
                                 mapFragment.colBtn.setOnTouchListener(mapFragment.infoButtonListener2);
-                                mapFragment.infoButtonListener2.setMarker(mark);
+                                mapFragment.colTitle.setText("Collection Number: "+table.getCollectionNumber());
+                                mapFragment.infoButtonListener2.setMarker(mark)  ;
 
                                 //adding marker to map
                                 markers.add(mark);
@@ -485,6 +491,21 @@ public class DueCollection {
                 }
             });
         }
+    }
+
+    private void newPayment(final CollectionTable collectionTable){
+        paymentDialogBox.setOnYesClicked(new PaymentDialogBox.OnButtonClick() {
+            @Override
+            public void onYesButtonClick() {
+                Intent intent = new Intent(mapFragment.getContext(), LoanRepayment.class);
+                intent.putExtra("collection", collectionTable);
+                intent.putExtra("lastUpdatedAt", collectionTable.getLastUpdatedAt());
+                intent.putExtra("dueDate", collectionTable.getCollectionDueDate());
+                intent.putExtra("timestamp", collectionTable.getTimestamp());
+                mapFragment.startActivity(intent);
+            }
+        });
+        paymentDialogBox.show();
     }
 
     private void makePayment(final CollectionTable collectionTable) {
