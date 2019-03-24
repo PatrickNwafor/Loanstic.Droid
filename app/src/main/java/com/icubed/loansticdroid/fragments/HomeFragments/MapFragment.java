@@ -100,14 +100,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public LatLng selectedUserLatLng = null;
     private DueCollectionFragment dueCollectionFragment;
     private OverDueCollectionFragment overDueCollectionFragment;
-    private View infoWindow;
+    public View infoWindow;
     private TextView infoTitle;
     public TextView colTitle;
     private ImageButton navBtn;
     public ImageButton colBtn;
     private OnInfoWindowElemTouchListener infoButtonListener;
-    public OnInfoWindowElemTouchListener infoButtonListener2;
-    private MapWrapperLayout mapWrapperLayout;
+    public MapWrapperLayout mapWrapperLayout;
     private boolean fromMarkerClick = false;
 
     public MapFragment() {

@@ -16,7 +16,7 @@ public class CollectionTable implements Parcelable {
     @Unique
     private String collectionId;
 
-    private String loanId;
+    private String loanId, savingsId;
 
     private int collectionNumber;
 
@@ -33,10 +33,11 @@ public class CollectionTable implements Parcelable {
 
     private Boolean isDueCollected;
 
-    @Generated(hash = 2049575765)
-    public CollectionTable(String collectionId, String loanId, int collectionNumber, Long id, Double collectionDueAmount, Double penalty, Date collectionDueDate, Date lastUpdatedAt, Date timestamp, double amountPaid, String collectionState, Boolean isDueCollected) {
+    @Generated(hash = 1267406644)
+    public CollectionTable(String collectionId, String loanId, String savingsId, int collectionNumber, Long id, Double collectionDueAmount, Double penalty, Date collectionDueDate, Date lastUpdatedAt, Date timestamp, double amountPaid, String collectionState, Boolean isDueCollected) {
         this.collectionId = collectionId;
         this.loanId = loanId;
+        this.savingsId = savingsId;
         this.collectionNumber = collectionNumber;
         this.id = id;
         this.collectionDueAmount = collectionDueAmount;
@@ -165,6 +166,7 @@ public class CollectionTable implements Parcelable {
         this.amountPaid = in.readDouble();
         this.collectionState = in.readString();
         this.isDueCollected = Boolean.valueOf(in.readString());
+        this.savingsId = in.readString();
     }
 
     @Override
@@ -183,6 +185,15 @@ public class CollectionTable implements Parcelable {
         dest.writeDouble(this.amountPaid);
         dest.writeString(this.collectionState);
         dest.writeString(String.valueOf(this.isDueCollected));
+        dest.writeString(this.savingsId);
+    }
+
+    public String getSavingsId() {
+        return this.savingsId;
+    }
+
+    public void setSavingsId(String savingsId) {
+        this.savingsId = savingsId;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

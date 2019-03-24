@@ -123,7 +123,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
                 Marker mark = fragment.mGoogleMap.addMarker(markerOptions);
 
                 //custom info window collection button click listener
-                fragment.infoButtonListener2 = new OnInfoWindowElemTouchListener(fragment.colBtn,
+                OnInfoWindowElemTouchListener infoButtonListener = new OnInfoWindowElemTouchListener(fragment.colBtn,
                         fragment.getResources().getDrawable(R.color.whiteEnd),
                         fragment.getResources().getDrawable(R.color.darkGrey)) {
                     @Override
@@ -132,8 +132,8 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
                         makePayment(collections.get(position));
                     }
                 };
-                fragment.colBtn.setOnTouchListener(fragment.infoButtonListener2);
-                fragment.infoButtonListener2.setMarker(mark);
+                fragment.colBtn.setOnTouchListener(infoButtonListener);
+                infoButtonListener.setMarker(mark);
 
                 markers.add(mark);
 

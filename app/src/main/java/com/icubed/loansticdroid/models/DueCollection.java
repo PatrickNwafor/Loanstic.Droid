@@ -70,7 +70,6 @@ public class DueCollection {
     private FragmentActivity fragmentActivity;
     private DueCollectionFragment fragment;
     private MapFragment mapFragment;
-    private AlertDialog.Builder builder;
     private PaymentDialogBox paymentDialogBox;
 
     private static final String TAG = ".DueCollection";
@@ -92,7 +91,6 @@ public class DueCollection {
         FragmentManager fm = fragmentActivity.getSupportFragmentManager();
         fragment = (DueCollectionFragment) fm.findFragmentByTag("due");
         mapFragment = (MapFragment) fm.findFragmentByTag("home");
-        builder = new AlertDialog.Builder(fragmentActivity);
         paymentDialogBox = new PaymentDialogBox(fragmentActivity);
     }
 
@@ -438,27 +436,25 @@ public class DueCollection {
                                 markerOptions.title(markerTitle);
                                 markerOptions.anchor(0.5f, 0.5f);
                                 // sorting marker icon
-                                if (borrowersTable.getBorrowerImageByteArray() == null)
-                                    circleImageView.setImageResource(R.drawable.new_borrower);
+                                if (borrowersTable.getBorrowerImageByteArray() == null) circleImageView.setImageResource(R.drawable.new_borrower);
                                 else circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
                                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
                                 Marker mark = mapFragment.mGoogleMap.addMarker(markerOptions);
 
                                 //custom info window collection button click listener
-                                mapFragment.infoButtonListener2 = new OnInfoWindowElemTouchListener(mapFragment.colBtn,
+                                OnInfoWindowElemTouchListener infoButtonListener = new OnInfoWindowElemTouchListener(mapFragment.colBtn,
                                         mapFragment.getResources().getDrawable(R.color.whiteEnd),
                                         mapFragment.getResources().getDrawable(R.color.darkGrey)) {
                                     @Override
                                     protected void onClickConfirmed(View v, Marker marker) {
                                         // Here we can perform some action triggered after clicking the button
-                                        //makePayment(table);
                                         newPayment(table);
                                     }
                                 };
 
-                                mapFragment.colBtn.setOnTouchListener(mapFragment.infoButtonListener2);
+                                mapFragment.colBtn.setOnTouchListener(infoButtonListener);
                                 mapFragment.colTitle.setText("Collection Number: "+table.getCollectionNumber());
-                                mapFragment.infoButtonListener2.setMarker(mark)  ;
+                                infoButtonListener.setMarker(mark);
 
                                 //adding marker to map
                                 markers.add(mark);
@@ -481,20 +477,19 @@ public class DueCollection {
                                 Marker mark = mapFragment.mGoogleMap.addMarker(markerOptions);
 
                                 //custom info window collection button click listener
-                                mapFragment.infoButtonListener2 = new OnInfoWindowElemTouchListener(mapFragment.colBtn,
+                                OnInfoWindowElemTouchListener infoButtonListener = new OnInfoWindowElemTouchListener(mapFragment.colBtn,
                                         mapFragment.getResources().getDrawable(R.color.whiteEnd),
                                         mapFragment.getResources().getDrawable(R.color.darkGrey)) {
                                     @Override
                                     protected void onClickConfirmed(View v, Marker marker) {
                                         // Here we can perform some action triggered after clicking the button
-                                        //makePayment(table);
                                         newPayment(table);
                                     }
                                 };
 
-                                mapFragment.colBtn.setOnTouchListener(mapFragment.infoButtonListener2);
+                                mapFragment.colBtn.setOnTouchListener(infoButtonListener);
                                 mapFragment.colTitle.setText("Collection Number: "+table.getCollectionNumber());
-                                mapFragment.infoButtonListener2.setMarker(mark)  ;
+                                infoButtonListener.setMarker(mark);
 
                                 markers.add(mark);
                             }
@@ -526,28 +521,6 @@ public class DueCollection {
             }
         });
         paymentDialogBox.show();
-    }
-
-    private void makePayment(final CollectionTable collectionTable) {
-        builder.setMessage("Do you want to make payment")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        Intent intent = new Intent(mapFragment.getContext(), LoanRepayment.class);
-                        intent.putExtra("collection", collectionTable);
-                        intent.putExtra("lastUpdatedAt", collectionTable.getLastUpdatedAt());
-                        intent.putExtra("dueDate", collectionTable.getCollectionDueDate());
-                        intent.putExtra("timestamp", collectionTable.getTimestamp());
-                        mapFragment.startActivity(intent);
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
     }
 
     public void getSingleDueCollectionData(String collectionId){
