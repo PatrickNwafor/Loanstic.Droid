@@ -13,7 +13,7 @@ public class App extends Application {
         super.onCreate();
 
         // regular SQLite database
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "notes-db", null);
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "loanstic-db", null);
         Database db = helper.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
     }
