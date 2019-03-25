@@ -16,8 +16,8 @@
             android:text="want to make payment"/>
 
         <com.airbnb.lottie.LottieAnimationView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             app:lottie_autoPlay="true"
             android:layout_gravity="center"
             app:lottie_fileName="want-to-make-payment.json"
@@ -30,6 +30,7 @@
                 android:id="@+id/no"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
                 android:text="No" />
 
             <TextView
@@ -38,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
+                android:textColor="@color/colorPrimary"
                 android:text="Yes" />
         </RelativeLayout>
 
