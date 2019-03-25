@@ -25,8 +25,8 @@ public class SavingsScheduleCollectionQueries {
     }
 
     /*****************Create new SavingsScheduleCollectionTable ****************/
-    public Task<DocumentReference> createSavingsScheduleCollection(SavingsScheduleCollectionTable savingsScheduleTable){
-        return firebaseFirestore.collection("Savings_Schedule_Collection").add(savingsScheduleTable);
+    public Task<DocumentReference> createSavingsScheduleCollection(SavingsScheduleCollectionTable savingsScheduleCollectionTable){
+        return firebaseFirestore.collection("Savings_Schedule_Collection").add(savingsScheduleCollectionTable);
     }
 
     /*****************Create new SavingsScheduleCollectionTable ****************/

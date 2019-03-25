@@ -2,6 +2,7 @@ package com.icubed.loansticdroid.localdatabase;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.Date;
@@ -10,33 +11,39 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class SavingsScheduleTable {
 
+    @Transient
+    public static final String TARGET_TIME = "time";
+    @Transient
+    public static final String TARGET_MONEY = "money";
+
     @Unique
     private String savingsScheduleId;
 
     @Id(autoincrement = true)
     private Long Id;
 
-    private double savingsAmount;
+    private double amountTarget;
+    private String targetType;
     private double savingsInterestRate, amountSaved;
     private Date savingsCreationDate;
-    private Date savingsApprovedDate, lastUpdatedAt;
+    private Date lastUpdatedAt;
     private int savingsDuration;
     private String loanOfficerId, savingsInterestRateUnit, savingsSchedulePurpose
             , savingsDurationUnit, savingsAmountUnit, savingsScheduleNumber, savingsId;
-    @Generated(hash = 1271889987)
-    public SavingsScheduleTable(String savingsScheduleId, Long Id, double savingsAmount,
-            double savingsInterestRate, double amountSaved, Date savingsCreationDate,
-            Date savingsApprovedDate, Date lastUpdatedAt, int savingsDuration,
+    @Generated(hash = 196202185)
+    public SavingsScheduleTable(String savingsScheduleId, Long Id, double amountTarget,
+            String targetType, double savingsInterestRate, double amountSaved,
+            Date savingsCreationDate, Date lastUpdatedAt, int savingsDuration,
             String loanOfficerId, String savingsInterestRateUnit,
             String savingsSchedulePurpose, String savingsDurationUnit,
             String savingsAmountUnit, String savingsScheduleNumber, String savingsId) {
         this.savingsScheduleId = savingsScheduleId;
         this.Id = Id;
-        this.savingsAmount = savingsAmount;
+        this.amountTarget = amountTarget;
+        this.targetType = targetType;
         this.savingsInterestRate = savingsInterestRate;
         this.amountSaved = amountSaved;
         this.savingsCreationDate = savingsCreationDate;
-        this.savingsApprovedDate = savingsApprovedDate;
         this.lastUpdatedAt = lastUpdatedAt;
         this.savingsDuration = savingsDuration;
         this.loanOfficerId = loanOfficerId;
@@ -62,11 +69,17 @@ public class SavingsScheduleTable {
     public void setId(Long Id) {
         this.Id = Id;
     }
-    public double getSavingsAmount() {
-        return this.savingsAmount;
+    public double getAmountTarget() {
+        return this.amountTarget;
     }
-    public void setSavingsAmount(double savingsAmount) {
-        this.savingsAmount = savingsAmount;
+    public void setAmountTarget(double amountTarget) {
+        this.amountTarget = amountTarget;
+    }
+    public String getTargetType() {
+        return this.targetType;
+    }
+    public void setTargetType(String targetType) {
+        this.targetType = targetType;
     }
     public double getSavingsInterestRate() {
         return this.savingsInterestRate;
@@ -85,12 +98,6 @@ public class SavingsScheduleTable {
     }
     public void setSavingsCreationDate(Date savingsCreationDate) {
         this.savingsCreationDate = savingsCreationDate;
-    }
-    public Date getSavingsApprovedDate() {
-        return this.savingsApprovedDate;
-    }
-    public void setSavingsApprovedDate(Date savingsApprovedDate) {
-        this.savingsApprovedDate = savingsApprovedDate;
     }
     public Date getLastUpdatedAt() {
         return this.lastUpdatedAt;

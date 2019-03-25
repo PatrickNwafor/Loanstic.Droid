@@ -18,8 +18,8 @@ public class SavingsScheduleCollectionTableQueries {
     }
 
     /***************Save DueCollection to local Storage*********/
-    public void insertCollectionToStorage(SavingsScheduleCollectionTable savingsCollectionTable){
-        savingsScheduleTable.insert(savingsCollectionTable);
+    public void insertCollectionToStorage(SavingsScheduleCollectionTable savingsScheduleCollectionTable){
+        savingsScheduleTable.insert(savingsScheduleCollectionTable);
     }
 
     /************Load all collections from local Storage********/
@@ -88,7 +88,7 @@ public class SavingsScheduleCollectionTableQueries {
     }
 
     /********Update Table When Due DueCollection is Confirmed*********/
-    public void updateCollection(SavingsScheduleCollectionTable savingsCollectionTable){
-        savingsScheduleTable.update(savingsCollectionTable);
+    public void updateCollection(SavingsScheduleCollectionTable savingsScheduleCollectionTable){
+        savingsScheduleTable.update(savingsScheduleCollectionTable);
     }
 }

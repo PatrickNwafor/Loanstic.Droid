@@ -39,11 +39,11 @@ public class SavingsTableScheduleQueries {
         return list.get(0);
     }
 
-    public void updateSavingsScheduleDetails(SavingsScheduleTable savingsTable){
-        savingsTableDao.update(savingsTable);
+    public void updateSavingsScheduleDetails(SavingsScheduleTable savingsScheduleTable){
+        savingsTableDao.update(savingsScheduleTable);
     }
 
-    public void deleteSavingsSchedule(SavingsScheduleTable savingsTable){
-        savingsTableDao.delete(savingsTable);
+    public void deleteSavingsSchedule(SavingsScheduleTable savingsScheduleTable){
+        savingsTableDao.delete(savingsScheduleTable);
     }
 }

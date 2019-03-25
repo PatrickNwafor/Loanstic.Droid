@@ -19,8 +19,8 @@ public class SavingsScheduleQueries {
         firebaseFirestore = FirebaseFirestore.getInstance();
     }
 
-    public Task<DocumentReference> createSavingsSchedule(SavingsScheduleTable savingsTable){
-        return firebaseFirestore.collection("Savings_Schedule").add(savingsTable);
+    public Task<DocumentReference> createSavingsSchedule(SavingsScheduleTable savingsScheduleTable){
+        return firebaseFirestore.collection("Savings_Schedule").add(savingsScheduleTable);
     }
 
     public Task<DocumentReference> createSavingsSchedule(Map<String, Object> loanMap){
@@ -42,18 +42,6 @@ public class SavingsScheduleQueries {
     public Task<QuerySnapshot> retrieveSavingsScheduleForLoanOfficer(){
         return firebaseFirestore.collection("Savings_Schedule")
                 .whereEqualTo("loanOfficerId", account.getCurrentUserId())
-                .get();
-    }
-
-    public Task<QuerySnapshot> retrieveSavingsScheduleForBorrower(String borrowerId){
-        return firebaseFirestore.collection("Savings_Schedule")
-                .whereEqualTo("borrowerId", borrowerId)
-                .get();
-    }
-
-    public Task<QuerySnapshot> retrieveSavingsScheduleForGroup(String groupId){
-        return firebaseFirestore.collection("Savings_Schedule")
-                .whereEqualTo("groupId", groupId)
                 .get();
     }
 
