@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:orientation="vertical"
+    android:elevation="4dp"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     tools:context=".activities.CollectionActivity">
+    <include
+        android:id="@+id/collection_activity_toolbar"
+        layout="@layout/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+         />
 
-</android.support.constraint.ConstraintLayout>
+
+
+
+</LinearLayout>

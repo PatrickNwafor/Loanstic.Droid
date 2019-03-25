@@ -103,7 +103,8 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".activities.SavingsRepayment" />
         <activity android:name=".activities.LoanPaymentActivity" />
-        <activity android:name=".activities.PaymentDetailsActivity"></activity>
+        <activity android:name=".activities.PaymentDetailsActivity" />
+        <activity android:name=".activities.ViewCollection"></activity>
     </application>
 
 </manifest>
