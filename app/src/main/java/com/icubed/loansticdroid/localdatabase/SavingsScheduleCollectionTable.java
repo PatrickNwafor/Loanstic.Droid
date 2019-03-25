@@ -11,9 +11,9 @@ import org.greenrobot.greendao.annotation.Generated;
 public class SavingsScheduleCollectionTable {
 
     @Unique
-    private String savingsScheduleId;
+    private String savingsScheduleCollectionId;
 
-    private String savingsId;
+    private String savingsScheduleId;
 
     private int savingsCollectionNumber;
 
@@ -30,14 +30,14 @@ public class SavingsScheduleCollectionTable {
 
     private Boolean isSavingsCollected;
 
-    @Generated(hash = 1127909122)
-    public SavingsScheduleCollectionTable(String savingsScheduleId, String savingsId,
-                                          int savingsCollectionNumber, Long id, Double savingsCollectionAmount,
-                                          Date savingsCollectionDueDate, Date lastUpdatedAt, Date timestamp,
-                                          double amountPaid, String savingsCollectionState,
-                                          Boolean isSavingsCollected) {
+    @Generated(hash = 1100785706)
+    public SavingsScheduleCollectionTable(String savingsScheduleCollectionId,
+            String savingsScheduleId, int savingsCollectionNumber, Long id,
+            Double savingsCollectionAmount, Date savingsCollectionDueDate,
+            Date lastUpdatedAt, Date timestamp, double amountPaid,
+            String savingsCollectionState, Boolean isSavingsCollected) {
+        this.savingsScheduleCollectionId = savingsScheduleCollectionId;
         this.savingsScheduleId = savingsScheduleId;
-        this.savingsId = savingsId;
         this.savingsCollectionNumber = savingsCollectionNumber;
         this.id = id;
         this.savingsCollectionAmount = savingsCollectionAmount;
@@ -49,8 +49,16 @@ public class SavingsScheduleCollectionTable {
         this.isSavingsCollected = isSavingsCollected;
     }
 
-    @Generated(hash = 1506363868)
+    @Generated(hash = 950706895)
     public SavingsScheduleCollectionTable() {
+    }
+
+    public String getSavingsScheduleCollectionId() {
+        return this.savingsScheduleCollectionId;
+    }
+
+    public void setSavingsScheduleCollectionId(String savingsScheduleCollectionId) {
+        this.savingsScheduleCollectionId = savingsScheduleCollectionId;
     }
 
     public String getSavingsScheduleId() {
@@ -59,14 +67,6 @@ public class SavingsScheduleCollectionTable {
 
     public void setSavingsScheduleId(String savingsScheduleId) {
         this.savingsScheduleId = savingsScheduleId;
-    }
-
-    public String getSavingsId() {
-        return this.savingsId;
-    }
-
-    public void setSavingsId(String savingsId) {
-        this.savingsId = savingsId;
     }
 
     public int getSavingsCollectionNumber() {
@@ -140,5 +140,4 @@ public class SavingsScheduleCollectionTable {
     public void setIsSavingsCollected(Boolean isSavingsCollected) {
         this.isSavingsCollected = isSavingsCollected;
     }
-
 }

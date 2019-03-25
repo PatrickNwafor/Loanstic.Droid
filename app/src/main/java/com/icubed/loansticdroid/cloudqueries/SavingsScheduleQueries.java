@@ -4,90 +4,63 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.icubed.loansticdroid.localdatabase.SavingsScheduleTable;
-import com.icubed.loansticdroid.util.DateUtil;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 public class SavingsScheduleQueries {
-
-    private FirebaseFirestore firebaseFirestore;
     private Account account;
+    private FirebaseFirestore firebaseFirestore;
 
     public SavingsScheduleQueries(){
-        firebaseFirestore = FirebaseFirestore.getInstance();
         account = new Account();
+        firebaseFirestore = FirebaseFirestore.getInstance();
     }
 
-    /*****************Create new SavingsScheduleTable ****************/
-    public Task<DocumentReference> createSavingsSchedule(SavingsScheduleTable savingsScheduleTable){
-        return firebaseFirestore.collection("Savings_Schedule").add(savingsScheduleTable);
+    public Task<DocumentReference> createSavingsSchedule(SavingsScheduleTable savingsTable){
+        return firebaseFirestore.collection("Savings_Schedule").add(savingsTable);
     }
 
-    /*****************Create new SavingsScheduleTable ****************/
-    public Task<DocumentReference> createSavingsSchedule(Map<String, Object> collectionMap){
-        return firebaseFirestore.collection("Savings_Schedule").add(collectionMap);
+    public Task<DocumentReference> createSavingsSchedule(Map<String, Object> loanMap){
+        return firebaseFirestore.collection("Savings_Schedule").add(loanMap);
     }
 
-    /*****************Retrieve SavingsScheduleTable*********************/
+    /**************Retrieve all Savings_SchedulesQueries***********/
     public Task<QuerySnapshot> retrieveAllSavingsSchedule(){
         return firebaseFirestore.collection("Savings_Schedule").get();
     }
 
-    /*****************Retrieve SavingsScheduleTable for loan*******************/
-    public Task<QuerySnapshot> retrieveSavingsSchedulesDataForALoanAcending(String savingsId){
-
+    /**************Retrieve single Savings_Schedule***********/
+    public Task<DocumentSnapshot> retrieveSingleSavingsSchedule(String savingsId){
         return firebaseFirestore.collection("Savings_Schedule")
-                .whereEqualTo("loanId", savingsId)
-                .orderBy("collectionNumber", Query.Direction.ASCENDING)
-                .get();
-
-    }
-
-    /*****************Retrieve SavingsScheduleTable for loan*******************/
-    public Task<QuerySnapshot> retrieveSavingsSchedulesDataForALoan(String savingsId){
-
-        return firebaseFirestore.collection("Savings_Schedule")
-                .whereEqualTo("loanId", savingsId)
-                .get();
-
-    }
-
-    public Task<DocumentSnapshot> retrieveSingleSavingsSchedule(String savingsScheduleId){
-        return firebaseFirestore.collection("Savings_Schedule")
-                .document(savingsScheduleId)
+                .document(savingsId)
                 .get();
     }
 
-    /*****************Retrieve Due SavingsScheduleTable for all officers*******************/
-    public Task<QuerySnapshot> retrieveSavingsSchedulesDataForAllOfficer(){
-
+    public Task<QuerySnapshot> retrieveSavingsScheduleForLoanOfficer(){
         return firebaseFirestore.collection("Savings_Schedule")
-                .whereEqualTo("collectionDueDate", DateUtil.dateString(new Date()))
+                .whereEqualTo("loanOfficerId", account.getCurrentUserId())
                 .get();
-
     }
 
-    /*****************Confirm Due SavingsScheduleTable*************************/
-    public Task<Void> confrimSavings_Schedule(String savingsScheduleId, Date timestamp){
-        Map<String, Object> dueCollectedMap = new HashMap<>();
-
-        dueCollectedMap.put("timestamp", timestamp);
-        dueCollectedMap.put("isDueCollected", true);
-
-        return firebaseFirestore.collection("Savings_Schedule").document(savingsScheduleId)
-                .update(dueCollectedMap);
-    }
-
-    public Task<Void> updateSavingsScheduleDetails(Map<String, Object> objectMap, String savingsScheduleId) {
+    public Task<QuerySnapshot> retrieveSavingsScheduleForBorrower(String borrowerId){
         return firebaseFirestore.collection("Savings_Schedule")
-                .document(savingsScheduleId)
+                .whereEqualTo("borrowerId", borrowerId)
+                .get();
+    }
+
+    public Task<QuerySnapshot> retrieveSavingsScheduleForGroup(String groupId){
+        return firebaseFirestore.collection("Savings_Schedule")
+                .whereEqualTo("groupId", groupId)
+                .get();
+    }
+
+    public Task<Void> updateSavingsScheduleDetails(Map<String, Object> objectMap, String savingsId){
+        return firebaseFirestore.collection("Savings_Schedule")
+                .document(savingsId)
                 .set(objectMap, SetOptions.merge());
+
     }
-    
 }

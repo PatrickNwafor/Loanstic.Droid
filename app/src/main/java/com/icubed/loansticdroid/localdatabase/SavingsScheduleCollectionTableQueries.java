@@ -9,27 +9,27 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class SavingsScheduleTableQueries {
-    private SavingsScheduleTableDao savingsScheduleTable;
+public class SavingsScheduleCollectionTableQueries {
+    private SavingsScheduleCollectionTableDao savingsScheduleTable;
 
-    public SavingsScheduleTableQueries(Application application){
+    public SavingsScheduleCollectionTableQueries(Application application){
         DaoSession daoSession = ((App) application).getDaoSession();
-        savingsScheduleTable = daoSession.getSavingsScheduleTableDao();
+        savingsScheduleTable = daoSession.getSavingsScheduleCollectionTableDao();
     }
 
     /***************Save DueCollection to local Storage*********/
-    public void insertCollectionToStorage(SavingsScheduleTable savingsCollectionTable){
+    public void insertCollectionToStorage(SavingsScheduleCollectionTable savingsCollectionTable){
         savingsScheduleTable.insert(savingsCollectionTable);
     }
 
     /************Load all collections from local Storage********/
-    public List<SavingsScheduleTable> loadAllCollections(){
+    public List<SavingsScheduleCollectionTable> loadAllCollections(){
         return savingsScheduleTable.loadAll();
     }
 
     /**********Load a single collection from local Storage*******/
-    public SavingsScheduleTable loadSingleCollection(String collectionId){
-        List<SavingsScheduleTable> list = savingsScheduleTable.queryBuilder().where(com.icubed.loansticdroid.localdatabase.SavingsScheduleTableDao.Properties.SavingsId.eq(collectionId)).build().list();
+    public SavingsScheduleCollectionTable loadSingleCollection(String collectionId){
+        List<SavingsScheduleCollectionTable> list = savingsScheduleTable.queryBuilder().where(SavingsScheduleCollectionTableDao.Properties.SavingsScheduleCollectionId.eq(collectionId)).build().list();
 
         if(list.isEmpty()) return null;
 
@@ -37,14 +37,14 @@ public class SavingsScheduleTableQueries {
     }
 
     /**********Load All Due Collections from local Storage***********/
-    public List<SavingsScheduleTable> loadAllDueCollections(){
+    public List<SavingsScheduleCollectionTable> loadAllDueCollections(){
         // the list array, the zero index contains the dueCollection
         // the one index contains the overdueCollection
-        List<SavingsScheduleTable> list = savingsScheduleTable.queryBuilder().build().list();
+        List<SavingsScheduleCollectionTable> list = savingsScheduleTable.queryBuilder().build().list();
 
-        List<SavingsScheduleTable> dueCollectionList = new ArrayList<>();
+        List<SavingsScheduleCollectionTable> dueCollectionList = new ArrayList<>();
 
-        for (SavingsScheduleTable savingsCollectionTable : list) {
+        for (SavingsScheduleCollectionTable savingsCollectionTable : list) {
             if(DateUtil.dateString(savingsCollectionTable.getSavingsCollectionDueDate()).equals(DateUtil.dateString(new Date())) &&
                     !savingsCollectionTable.getIsSavingsCollected()){
                 dueCollectionList.add(savingsCollectionTable);
@@ -56,20 +56,20 @@ public class SavingsScheduleTableQueries {
     }
 
     /**********Load All Due Collections from local Storage***********/
-    public List<SavingsScheduleTable> loadCollectionsForLoan(String savingsId){
+    public List<SavingsScheduleCollectionTable> loadCollectionsForSavingsSchedule(String savingsScheduleId){
         return savingsScheduleTable.queryBuilder()
-                .where(com.icubed.loansticdroid.localdatabase.SavingsScheduleTableDao.Properties.SavingsId.eq(savingsId))
-                .orderAsc(com.icubed.loansticdroid.localdatabase.SavingsScheduleTableDao.Properties.SavingsCollectionNumber)
+                .where(SavingsScheduleCollectionTableDao.Properties.SavingsScheduleId.eq(savingsScheduleId))
+                .orderAsc(com.icubed.loansticdroid.localdatabase.SavingsScheduleCollectionTableDao.Properties.SavingsCollectionNumber)
                 .build()
                 .list();
     }
 
-    public List<SavingsScheduleTable> loadAllOverDueCollection(){
+    public List<SavingsScheduleCollectionTable> loadAllOverDueCollection(){
         // the list array, the zero index contains the dueCollection
         // the one index contains the overdueCollection
-        List<SavingsScheduleTable> list = savingsScheduleTable.queryBuilder().build().list();
+        List<SavingsScheduleCollectionTable> list = savingsScheduleTable.queryBuilder().build().list();
 
-        List<SavingsScheduleTable> overDueCollectionList = new ArrayList<>();
+        List<SavingsScheduleCollectionTable> overDueCollectionList = new ArrayList<>();
 
         Calendar midnight = Calendar.getInstance();
         midnight.set(Calendar.HOUR_OF_DAY, 0);
@@ -77,7 +77,7 @@ public class SavingsScheduleTableQueries {
         midnight.set(Calendar.SECOND, 0);
         midnight.set(Calendar.MILLISECOND, 0);
 
-        for (SavingsScheduleTable savingsCollectionTable : list) {
+        for (SavingsScheduleCollectionTable savingsCollectionTable : list) {
             if(savingsCollectionTable.getSavingsCollectionDueDate().before(midnight.getTime()) &&
                     !savingsCollectionTable.getIsSavingsCollected()){
                 overDueCollectionList.add(savingsCollectionTable);
@@ -88,7 +88,7 @@ public class SavingsScheduleTableQueries {
     }
 
     /********Update Table When Due DueCollection is Confirmed*********/
-    public void updateCollection(SavingsScheduleTable savingsCollectionTable){
+    public void updateCollection(SavingsScheduleCollectionTable savingsCollectionTable){
         savingsScheduleTable.update(savingsCollectionTable);
     }
 }
