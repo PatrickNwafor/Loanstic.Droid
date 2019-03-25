@@ -16,15 +16,15 @@ public class PaymentTable {
     @Id(autoincrement = true)
     private Long id;
 
-    private String collectionId, loanId, paymentModeId, loanOfficerId, paymentMode, savingsId;
+    private String collectionId, loanId, paymentModeId, loanOfficerId, paymentMode;
     private double amountPaid;
     private double photoLatitude, photoLongitude;
     private Date paymentTime, lastUpdatedAt;
-    @Generated(hash = 1929164434)
-    public PaymentTable(String paymentId, Long id, String collectionId, String loanId,
-            String paymentModeId, String loanOfficerId, String paymentMode, String savingsId,
-            double amountPaid, double photoLatitude, double photoLongitude, Date paymentTime,
-            Date lastUpdatedAt) {
+    @Generated(hash = 1688859942)
+    public PaymentTable(String paymentId, Long id, String collectionId,
+            String loanId, String paymentModeId, String loanOfficerId,
+            String paymentMode, double amountPaid, double photoLatitude,
+            double photoLongitude, Date paymentTime, Date lastUpdatedAt) {
         this.paymentId = paymentId;
         this.id = id;
         this.collectionId = collectionId;
@@ -32,7 +32,6 @@ public class PaymentTable {
         this.paymentModeId = paymentModeId;
         this.loanOfficerId = loanOfficerId;
         this.paymentMode = paymentMode;
-        this.savingsId = savingsId;
         this.amountPaid = amountPaid;
         this.photoLatitude = photoLatitude;
         this.photoLongitude = photoLongitude;
@@ -72,6 +71,18 @@ public class PaymentTable {
     public void setPaymentModeId(String paymentModeId) {
         this.paymentModeId = paymentModeId;
     }
+    public String getLoanOfficerId() {
+        return this.loanOfficerId;
+    }
+    public void setLoanOfficerId(String loanOfficerId) {
+        this.loanOfficerId = loanOfficerId;
+    }
+    public String getPaymentMode() {
+        return this.paymentMode;
+    }
+    public void setPaymentMode(String paymentMode) {
+        this.paymentMode = paymentMode;
+    }
     public double getAmountPaid() {
         return this.amountPaid;
     }
@@ -101,23 +112,5 @@ public class PaymentTable {
     }
     public void setLastUpdatedAt(Date lastUpdatedAt) {
         this.lastUpdatedAt = lastUpdatedAt;
-    }
-    public String getLoanOfficerId() {
-        return this.loanOfficerId;
-    }
-    public void setLoanOfficerId(String loanOfficerId) {
-        this.loanOfficerId = loanOfficerId;
-    }
-    public String getPaymentMode() {
-        return this.paymentMode;
-    }
-    public void setPaymentMode(String paymentMode) {
-        this.paymentMode = paymentMode;
-    }
-    public String getSavingsId() {
-        return this.savingsId;
-    }
-    public void setSavingsId(String savingsId) {
-        this.savingsId = savingsId;
     }
 }

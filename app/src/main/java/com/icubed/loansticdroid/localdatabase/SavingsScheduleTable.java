@@ -12,9 +12,9 @@ import org.greenrobot.greendao.annotation.Generated;
 public class SavingsScheduleTable {
 
     @Transient
-    public static final String TARGET_TIME = "time";
+    public static final String TARGET_TYPE_TIME = "time";
     @Transient
-    public static final String TARGET_MONEY = "money";
+    public static final String TARGET_TYPE_MONEY = "money";
 
     @Unique
     private String savingsScheduleId;
