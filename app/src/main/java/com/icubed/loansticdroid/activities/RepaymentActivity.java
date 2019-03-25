@@ -12,11 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.cloudqueries.PaymentQueries;
 import com.icubed.loansticdroid.fragments.RepaymentFragment.LoanRepaymentFragment;
 import com.icubed.loansticdroid.fragments.RepaymentFragment.SavingsPaymentFragment;
 import com.icubed.loansticdroid.util.EditTextExtension.CustomEditText;
@@ -39,7 +37,7 @@ public class RepaymentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repayment);
 
-        toolbar = findViewById(R.id.repayment_toolbar);
+        toolbar = findViewById(R.id.collection_activity_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Repayments");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -103,7 +101,7 @@ public class RepaymentActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(RepaymentActivity.this, LoanSearchActivity.class);
                     intent.putExtra("search", searchLoanEditText.getText().toString());
-                    intent.putExtra("from", false);
+                    intent.putExtra("from", "repay");
                     startActivity(intent);
                     searchLoanEditText.setText("");
                     searchLoanEditText.setVisibility(View.GONE);

@@ -10,9 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -22,18 +20,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.PaymentPhotoRecyclerAdapter;
-import com.icubed.loansticdroid.adapters.PaymentRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.PaymentPhotoValidationQueries;
-import com.icubed.loansticdroid.localdatabase.BorrowerFilesTable;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
-import com.icubed.loansticdroid.localdatabase.PaymentModeTable;
 import com.icubed.loansticdroid.localdatabase.PaymentPhotoVerificationTable;
 import com.icubed.loansticdroid.localdatabase.PaymentPhotoVerificationTableQueries;
-import com.icubed.loansticdroid.localdatabase.PaymentTable;
 import com.icubed.loansticdroid.util.BitmapUtil;
 import com.icubed.loansticdroid.util.DateUtil;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -58,7 +51,7 @@ public class PaymentDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_details);
 
-        toolbar = findViewById(R.id.repayment_toolbar);
+        toolbar = findViewById(R.id.collection_activity_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Payment Receipt");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

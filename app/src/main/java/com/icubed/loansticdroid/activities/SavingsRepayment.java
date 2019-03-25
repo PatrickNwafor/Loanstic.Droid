@@ -12,7 +12,7 @@ public class SavingsRepayment extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_savings_repayment);
-        toolbar = findViewById(R.id.repayment_toolbar);
+        toolbar = findViewById(R.id.collection_activity_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Savings Repayment");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

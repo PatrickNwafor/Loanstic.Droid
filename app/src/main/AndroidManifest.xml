@@ -104,7 +104,8 @@
         <activity android:name=".activities.SavingsRepayment" />
         <activity android:name=".activities.LoanPaymentActivity" />
         <activity android:name=".activities.PaymentDetailsActivity" />
-        <activity android:name=".activities.ViewCollection"></activity>
+        <activity android:name=".activities.ViewCollection" />
+        <activity android:name=".activities.CollectionFoldActivity"></activity>
     </application>
 
 </manifest>

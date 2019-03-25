@@ -14,12 +14,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,7 +42,7 @@ public class CollectionDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.collection_details);
 
-        Toolbar toolbar = findViewById(R.id.collection_toolbar);
+        Toolbar toolbar = findViewById(R.id.collection_activity_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("DueCollection Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

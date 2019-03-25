@@ -7,7 +7,7 @@
     android:background="@color/whiteEnd"
     tools:context=".activities.RepaymentActivity">
     <include
-        android:id="@+id/repayment_toolbar"
+        android:id="@+id/collection_activity_toolbar"
         layout="@layout/app_bar_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/repayment_toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/collection_activity_toolbar"
         app:layout_constraintVertical_bias="0.0"
         app:sbg_animateSelector="bounce"
         app:sbg_backgroundColor="@color/whiteEnd"

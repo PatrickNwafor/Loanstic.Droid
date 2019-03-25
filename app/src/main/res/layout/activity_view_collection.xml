@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.icubed.loansticdroid.activities.ViewCollection">
+
     <include
         android:id="@+id/view_collection_activity_toolbar"
         layout="@layout/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ProgressBar
         android:id="@+id/schedule_progress_bar"
         style="?android:attr/progressBarStyle"
@@ -26,13 +30,14 @@
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nest"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_margin="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginTop="52dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/view_collection_activity_toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,4 +69,4 @@
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -8,7 +8,7 @@
     tools:context="com.icubed.loansticdroid.activities.CollectionDetailsActivity">
 
     <include
-        android:id="@+id/collection_toolbar"
+        android:id="@+id/collection_activity_toolbar"
         layout="@layout/app_bar_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/collection_toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/collection_activity_toolbar">
 
         <LinearLayout
 

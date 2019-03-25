@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.icubed.loansticdroid.activities.LoanSearchActivity;
+import com.icubed.loansticdroid.adapters.CollectionLoanRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.LoanRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.LoanRepaymentRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
@@ -216,14 +217,18 @@ public class SearchLoan {
      * loads all our loan data to UI for the user to see
      */
     private void loadLoansToUI(){
-        if(((LoanSearchActivity) activity).fromLoanActivity) {
+        if(((LoanSearchActivity) activity).fromLoanActivity.equals("loan")) {
             ((LoanSearchActivity) activity).loanRecyclerAdapter = new LoanRecyclerAdapter(((LoanSearchActivity) activity).loanDetailsList);
             ((LoanSearchActivity) activity).loanRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
             ((LoanSearchActivity) activity).loanRecyclerView.setAdapter((((LoanSearchActivity) activity).loanRecyclerAdapter));
-        }else{
+        }else if(((LoanSearchActivity) activity).fromLoanActivity.equals("repay")){
             ((LoanSearchActivity) activity).loanRepaymentRecyclerAdapter = new LoanRepaymentRecyclerAdapter(((LoanSearchActivity) activity).loanDetailsList);
             ((LoanSearchActivity) activity).loanRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
             ((LoanSearchActivity) activity).loanRecyclerView.setAdapter((((LoanSearchActivity) activity).loanRepaymentRecyclerAdapter));
+        }else if(((LoanSearchActivity) activity).fromLoanActivity.equals("col")){
+            ((LoanSearchActivity) activity).collectionLoanRecyclerAdapter = new CollectionLoanRecyclerAdapter(((LoanSearchActivity) activity).loanDetailsList);
+            ((LoanSearchActivity) activity).loanRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
+            ((LoanSearchActivity) activity).loanRecyclerView.setAdapter((((LoanSearchActivity) activity).collectionLoanRecyclerAdapter));
         }
         ((LoanSearchActivity) activity).loanRecyclerView.setVisibility(View.VISIBLE);
         ((LoanSearchActivity) activity).progressBar.setVisibility(View.GONE);

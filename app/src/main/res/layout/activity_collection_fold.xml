@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/whiteEnd"
-    tools:context=".activities.CollectionActivity">
+    tools:context=".activities.CollectionFoldActivity">
+
     <include
         android:id="@+id/collection_activity_toolbar"
         layout="@layout/app_bar_layout"
@@ -110,5 +110,4 @@
             android:textColor="@color/Grey"
             android:textStyle="bold" />
     </LinearLayout>
-
 </android.support.constraint.ConstraintLayout>

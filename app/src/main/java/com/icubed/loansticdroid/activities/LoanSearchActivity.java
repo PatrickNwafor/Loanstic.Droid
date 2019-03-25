@@ -19,6 +19,7 @@ import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.adapters.CollectionLoanRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.LoanRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.LoanRepaymentRecyclerAdapter;
 import com.icubed.loansticdroid.models.LoanDetails;
@@ -43,11 +44,13 @@ public class LoanSearchActivity extends AppCompatActivity {
     public RecyclerView loanRecyclerView;
     public LoanRecyclerAdapter loanRecyclerAdapter;
     public LoanRepaymentRecyclerAdapter loanRepaymentRecyclerAdapter;
+    public CollectionLoanRecyclerAdapter collectionLoanRecyclerAdapter;
+    public String type;
     public List<LoanDetails> loanDetailsList;
     public ProgressBar progressBar;
     private LinearLayout searchEmptyLayout;
     private SearchLoan searchLoan;
-    public boolean fromLoanActivity = true;
+    public String fromLoanActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +65,7 @@ public class LoanSearchActivity extends AppCompatActivity {
         searchLoan = new SearchLoan(this);
 
         String searchString = getIntent().getStringExtra("search");
-        fromLoanActivity = getIntent().getBooleanExtra("from", true);
+        fromLoanActivity = getIntent().getStringExtra("from");
         searchEditText.setText(searchString);
 
         loanRecyclerView.requestFocus();
