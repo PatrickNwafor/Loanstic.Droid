@@ -1,5 +1,8 @@
 package com.icubed.loansticdroid.localdatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
@@ -8,7 +11,7 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class DepositPhotoValidationTable {
+public class DepositPhotoValidationTable implements Parcelable {
 
     @Unique
     private String depositPhotoValidationId;
@@ -77,4 +80,36 @@ public class DepositPhotoValidationTable {
         this.timestamp = timestamp;
     }
 
+    // Parcelling part
+    public DepositPhotoValidationTable(Parcel in){
+        this.depositPhotoValidationId = in.readString();
+        this.depositId = in.readString();
+        this.imageUri = in.readString();
+        this.imageUriThumb = in.readString();
+        this.timestamp = new Date(in.readLong());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.depositPhotoValidationId);
+        dest.writeString(this.depositId);
+        dest.writeString(this.imageUri);
+        dest.writeString(this.imageUriThumb);
+        dest.writeLong(this.timestamp.getTime());
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public DepositPhotoValidationTable createFromParcel(Parcel in) {
+            return new DepositPhotoValidationTable(in);
+        }
+
+        public DepositPhotoValidationTable[] newArray(int size) {
+            return new DepositPhotoValidationTable[size];
+        }
+    };
 }

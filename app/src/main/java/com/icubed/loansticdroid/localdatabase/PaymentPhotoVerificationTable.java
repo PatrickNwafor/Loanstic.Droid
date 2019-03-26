@@ -92,6 +92,7 @@ public class PaymentPhotoVerificationTable implements Parcelable {
         this.paymentId = in.readString();
         this.imageUri = in.readString();
         this.imageUriThumb = in.readString();
+        this.timestamp = new Date(in.readLong());
     }
 
     @Override
@@ -105,6 +106,7 @@ public class PaymentPhotoVerificationTable implements Parcelable {
         dest.writeString(this.paymentId);
         dest.writeString(this.imageUri);
         dest.writeString(this.imageUriThumb);
+        dest.writeLong(this.timestamp.getTime());
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

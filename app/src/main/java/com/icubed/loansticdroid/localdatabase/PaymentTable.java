@@ -1,5 +1,8 @@
 package com.icubed.loansticdroid.localdatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
@@ -8,7 +11,7 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class PaymentTable {
+public class PaymentTable implements Parcelable {
 
     @Unique
     private String paymentId;
@@ -113,4 +116,49 @@ public class PaymentTable {
     public void setLastUpdatedAt(Date lastUpdatedAt) {
         this.lastUpdatedAt = lastUpdatedAt;
     }
+
+    // Parcelling part
+    public PaymentTable(Parcel in) {
+        this.paymentId = in.readString();
+        this.loanId = in.readString();
+        this.loanOfficerId = in.readString();
+        this.amountPaid = in.readDouble();
+        this.photoLatitude = in.readDouble();
+        this.photoLongitude = in.readDouble();
+        this.paymentTime = new Date(in.readLong());
+        this.lastUpdatedAt = new Date(in.readLong());
+        this.collectionId = in.readString();
+        this.paymentModeId = in.readString();
+        this.paymentMode = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.paymentId);
+        dest.writeString(this.loanId);
+        dest.writeString(this.loanOfficerId);
+        dest.writeDouble(this.amountPaid);
+        dest.writeDouble(this.photoLatitude);
+        dest.writeDouble(this.photoLongitude);
+        dest.writeLong(this.paymentTime.getTime());
+        dest.writeLong(this.lastUpdatedAt.getTime());
+        dest.writeString(this.collectionId);
+        dest.writeString(this.paymentModeId);
+        dest.writeString(this.paymentMode);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public PaymentTable createFromParcel(Parcel in) {
+            return new PaymentTable(in);
+        }
+
+        public PaymentTable[] newArray(int size) {
+            return new PaymentTable[size];
+        }
+    };
 }

@@ -1,5 +1,8 @@
 package com.icubed.loansticdroid.localdatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
@@ -8,7 +11,7 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class WithdrawalTable {
+public class WithdrawalTable implements Parcelable {
     @Unique
     private String withdrawalId;
 
@@ -90,4 +93,43 @@ public class WithdrawalTable {
     public void setLastUpdatedAt(Date lastUpdatedAt) {
         this.lastUpdatedAt = lastUpdatedAt;
     }
+
+    // Parcelling part
+    public WithdrawalTable(Parcel in) {
+        this.withdrawalId = in.readString();
+        this.savingsId = in.readString();
+        this.loanOfficerId = in.readString();
+        this.amountPaid = in.readDouble();
+        this.photoLatitude = in.readDouble();
+        this.photoLongitude = in.readDouble();
+        this.paymentTime = new Date(in.readLong());
+        this.lastUpdatedAt = new Date(in.readLong());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.withdrawalId);
+        dest.writeString(this.savingsId);
+        dest.writeString(this.loanOfficerId);
+        dest.writeDouble(this.amountPaid);
+        dest.writeDouble(this.photoLatitude);
+        dest.writeDouble(this.photoLongitude);
+        dest.writeLong(this.paymentTime.getTime());
+        dest.writeLong(this.lastUpdatedAt.getTime());
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public WithdrawalTable createFromParcel(Parcel in) {
+            return new WithdrawalTable(in);
+        }
+
+        public WithdrawalTable[] newArray(int size) {
+            return new WithdrawalTable[size];
+        }
+    };
 }

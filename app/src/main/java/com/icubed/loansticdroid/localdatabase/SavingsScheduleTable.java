@@ -1,5 +1,8 @@
 package com.icubed.loansticdroid.localdatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
@@ -9,7 +12,7 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class SavingsScheduleTable {
+public class SavingsScheduleTable implements Parcelable {
 
     @Transient
     public static final String TARGET_TYPE_TIME = "time";
@@ -153,4 +156,57 @@ public class SavingsScheduleTable {
     public void setSavingsId(String savingsId) {
         this.savingsId = savingsId;
     }
+
+    // Parcelling part
+    public SavingsScheduleTable(Parcel in) {
+        this.savingsScheduleId = in.readString();
+        this.amountTarget = in.readDouble();
+        this.targetType = in.readString();
+        this.savingsInterestRate = in.readDouble();
+        this.amountSaved = in.readDouble();
+        this.savingsCreationDate = new Date(in.readLong());
+        this.lastUpdatedAt = new Date(in.readLong());
+        this.savingsDuration = in.readInt();
+        this.loanOfficerId = in.readString();
+        this.savingsInterestRateUnit = in.readString();
+        this.savingsSchedulePurpose = in.readString();
+        this.savingsDurationUnit = in.readString();
+        this.savingsAmountUnit = in.readString();
+        this.savingsScheduleNumber = in.readString();
+        this.savingsId = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.savingsScheduleId);
+        dest.writeDouble(this.amountTarget);
+        dest.writeString(this.targetType);
+        dest.writeDouble(this.savingsInterestRate);
+        dest.writeDouble(this.amountSaved);
+        dest.writeLong(this.savingsCreationDate.getTime());
+        dest.writeLong(this.lastUpdatedAt.getTime());
+        dest.writeInt(this.savingsDuration);
+        dest.writeString(this.loanOfficerId);
+        dest.writeString(this.savingsInterestRateUnit);
+        dest.writeString(this.savingsSchedulePurpose);
+        dest.writeString(this.savingsDurationUnit);
+        dest.writeString(this.savingsAmountUnit);
+        dest.writeString(this.savingsScheduleNumber);
+        dest.writeString(this.savingsId);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public SavingsScheduleTable createFromParcel(Parcel in) {
+            return new SavingsScheduleTable(in);
+        }
+
+        public SavingsScheduleTable[] newArray(int size) {
+            return new SavingsScheduleTable[size];
+        }
+    };
 }

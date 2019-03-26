@@ -1,5 +1,8 @@
 package com.icubed.loansticdroid.localdatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
@@ -8,7 +11,7 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class WithdrawalPhotoValidationTable {
+public class WithdrawalPhotoValidationTable implements Parcelable {
     @Unique
     private String withdawalPhotoValidationId;
 
@@ -75,4 +78,37 @@ public class WithdrawalPhotoValidationTable {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
+    // Parcelling part
+    public WithdrawalPhotoValidationTable(Parcel in){
+        this.withdawalPhotoValidationId = in.readString();
+        this.withdrawalId = in.readString();
+        this.imageUri = in.readString();
+        this.imageUriThumb = in.readString();
+        this.timestamp = new Date(in.readLong());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.withdawalPhotoValidationId);
+        dest.writeString(this.withdrawalId);
+        dest.writeString(this.imageUri);
+        dest.writeString(this.imageUriThumb);
+        dest.writeLong(this.timestamp.getTime());
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public WithdrawalPhotoValidationTable createFromParcel(Parcel in) {
+            return new WithdrawalPhotoValidationTable(in);
+        }
+
+        public WithdrawalPhotoValidationTable[] newArray(int size) {
+            return new WithdrawalPhotoValidationTable[size];
+        }
+    };
 }
