@@ -73,7 +73,7 @@
 
                 android:layout_marginBottom="100dp"
                 android:gravity="center"
-                android:text="No group has been registered"
+                android:text="No savings has been registered"
                 android:textColor="@color/Grey"
                 android:textStyle="bold" />
         </LinearLayout>
