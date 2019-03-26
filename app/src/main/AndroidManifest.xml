@@ -105,7 +105,8 @@
         <activity android:name=".activities.LoanPaymentActivity" />
         <activity android:name=".activities.PaymentDetailsActivity" />
         <activity android:name=".activities.ViewCollection" />
-        <activity android:name=".activities.SelectBorrowerForSavingsActivity"></activity>
+        <activity android:name=".activities.SelectBorrowerForSavingsActivity" />
+        <activity android:name=".activities.PickPlan"></activity>
     </application>
 
 </manifest>
