@@ -10,26 +10,26 @@ import java.util.Date;
 import java.util.List;
 
 public class SavingsPlanCollectionTableQueries {
-    private SavingsScheduleCollectionTableDao savingsScheduleTable;
+    private SavingsPlanCollectionTableDao savingsPlanCollectionTableDao;
 
     public SavingsPlanCollectionTableQueries(Application application){
         DaoSession daoSession = ((App) application).getDaoSession();
-        savingsScheduleTable = daoSession.getSavingsScheduleCollectionTableDao();
+        savingsPlanCollectionTableDao = daoSession.getSavingsPlanCollectionTableDao();
     }
 
     /***************Save DueCollection to local Storage*********/
-    public void insertCollectionToStorage(SavingsPlanCollectionTable savingsScheduleCollectionTable){
-        savingsScheduleTable.insert(savingsScheduleCollectionTable);
+    public void insertCollectionToStorage(SavingsPlanCollectionTable savingsPlanCollectionTable){
+        savingsPlanCollectionTableDao.insert(savingsPlanCollectionTable);
     }
 
     /************Load all collections from local Storage********/
     public List<SavingsPlanCollectionTable> loadAllCollections(){
-        return savingsScheduleTable.loadAll();
+        return savingsPlanCollectionTableDao.loadAll();
     }
 
     /**********Load a single collection from local Storage*******/
     public SavingsPlanCollectionTable loadSingleCollection(String collectionId){
-        List<SavingsPlanCollectionTable> list = savingsScheduleTable.queryBuilder().where(SavingsScheduleCollectionTableDao.Properties.SavingsScheduleCollectionId.eq(collectionId)).build().list();
+        List<SavingsPlanCollectionTable> list = savingsPlanCollectionTableDao.queryBuilder().where(SavingsPlanCollectionTableDao.Properties.SavingsPlanCollectionId.eq(collectionId)).build().list();
 
         if(list.isEmpty()) return null;
 
@@ -40,7 +40,7 @@ public class SavingsPlanCollectionTableQueries {
     public List<SavingsPlanCollectionTable> loadAllDueCollections(){
         // the list array, the zero index contains the dueCollection
         // the one index contains the overdueCollection
-        List<SavingsPlanCollectionTable> list = savingsScheduleTable.queryBuilder().build().list();
+        List<SavingsPlanCollectionTable> list = savingsPlanCollectionTableDao.queryBuilder().build().list();
 
         List<SavingsPlanCollectionTable> dueCollectionList = new ArrayList<>();
 
@@ -57,9 +57,9 @@ public class SavingsPlanCollectionTableQueries {
 
     /**********Load All Due Collections from local Storage***********/
     public List<SavingsPlanCollectionTable> loadCollectionsForSavingsSchedule(String savingsScheduleId){
-        return savingsScheduleTable.queryBuilder()
-                .where(SavingsScheduleCollectionTableDao.Properties.SavingsScheduleId.eq(savingsScheduleId))
-                .orderAsc(com.icubed.loansticdroid.localdatabase.SavingsScheduleCollectionTableDao.Properties.SavingsCollectionNumber)
+        return savingsPlanCollectionTableDao.queryBuilder()
+                .where(SavingsPlanCollectionTableDao.Properties.SavingsScheduleId.eq(savingsScheduleId))
+                    .orderAsc(com.icubed.loansticdroid.localdatabase.SavingsPlanCollectionTableDao.Properties.SavingsCollectionNumber)
                 .build()
                 .list();
     }
@@ -67,7 +67,7 @@ public class SavingsPlanCollectionTableQueries {
     public List<SavingsPlanCollectionTable> loadAllOverDueCollection(){
         // the list array, the zero index contains the dueCollection
         // the one index contains the overdueCollection
-        List<SavingsPlanCollectionTable> list = savingsScheduleTable.queryBuilder().build().list();
+        List<SavingsPlanCollectionTable> list = savingsPlanCollectionTableDao.queryBuilder().build().list();
 
         List<SavingsPlanCollectionTable> overDueCollectionList = new ArrayList<>();
 
@@ -88,7 +88,7 @@ public class SavingsPlanCollectionTableQueries {
     }
 
     /********Update Table When Due DueCollection is Confirmed*********/
-    public void updateCollection(SavingsPlanCollectionTable savingsScheduleCollectionTable){
-        savingsScheduleTable.update(savingsScheduleCollectionTable);
+    public void updateCollection(SavingsPlanCollectionTable savingsPlanCollectionTable){
+        savingsPlanCollectionTableDao.update(savingsPlanCollectionTable);
     }
 }

@@ -5,32 +5,32 @@ import android.app.Application;
 import java.util.List;
 
 public class SavingsPlanTableQueries {
-    private SavingsScheduleTableDao savingsTableDao;
+    private SavingsPlanTableDao savingsPlanTableDao;
 
     public SavingsPlanTableQueries(Application application){
         DaoSession daoSession = ((App) application).getDaoSession();
-        savingsTableDao = daoSession.getSavingsScheduleTableDao();
+        savingsPlanTableDao = daoSession.getSavingsPlanTableDao();
     }
 
     /***************Save LoansQueries to local Storage*********/
     public void createSavingsSchedule(SavingsPlanTable savingsTable){
-        savingsTableDao.insert(savingsTable);
+        savingsPlanTableDao.insert(savingsTable);
     }
 
     /************Load all LoansQueries from local Storage********/
     public List<SavingsPlanTable> loadAllSavingsSchedule(){
-        return savingsTableDao.loadAll();
+        return savingsPlanTableDao.loadAll();
     }
 
     public List<SavingsPlanTable> loadAllSavingsScheduleOrderByCreationDate(){
-        return savingsTableDao.queryBuilder()
-                .orderDesc(SavingsScheduleTableDao.Properties.SavingsCreationDate)
+        return savingsPlanTableDao.queryBuilder()
+                .orderDesc(SavingsPlanTableDao.Properties.SavingsCreationDate)
                 .build().list();
     }
 
     /**********Load a single collection from local Storage*******/
-    public SavingsPlanTable loadSingleSavingSchedule(String savingsScheduleId){
-        List<SavingsPlanTable> list = savingsTableDao.queryBuilder().where(SavingsScheduleTableDao.Properties.SavingsScheduleId.eq(savingsScheduleId)).build().list();
+    public SavingsPlanTable loadSingleSavingSchedule(String savingsPlanId){
+        List<SavingsPlanTable> list = savingsPlanTableDao.queryBuilder().where(SavingsPlanTableDao.Properties.SavingsPlanId.eq(savingsPlanId)).build().list();
 
         if(list.isEmpty()){
             return null;
@@ -39,11 +39,11 @@ public class SavingsPlanTableQueries {
         return list.get(0);
     }
 
-    public void updateSavingsScheduleDetails(SavingsPlanTable savingsScheduleTable){
-        savingsTableDao.update(savingsScheduleTable);
+    public void updateSavingsScheduleDetails(SavingsPlanTable savingsPlanTable){
+        savingsPlanTableDao.update(savingsPlanTable);
     }
 
-    public void deleteSavingsSchedule(SavingsPlanTable savingsScheduleTable){
-        savingsTableDao.delete(savingsScheduleTable);
+    public void deleteSavingsSchedule(SavingsPlanTable savingsPlanTable){
+        savingsPlanTableDao.delete(savingsPlanTable);
     }
 }

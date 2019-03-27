@@ -11,7 +11,7 @@ import org.greenrobot.greendao.annotation.Generated;
 public class SavingsPlanCollectionTable {
 
     @Unique
-    private String savingsScheduleCollectionId;
+        private String savingsPlanCollectionId;
 
     private String savingsScheduleId;
 
@@ -30,13 +30,13 @@ public class SavingsPlanCollectionTable {
 
     private Boolean isSavingsCollected;
 
-    @Generated(hash = 1100785706)
-    public SavingsPlanCollectionTable(String savingsScheduleCollectionId,
-                                      String savingsScheduleId, int savingsCollectionNumber, Long id,
-                                      Double savingsCollectionAmount, Date savingsCollectionDueDate,
-                                      Date lastUpdatedAt, Date timestamp, double amountPaid,
-                                      String savingsCollectionState, Boolean isSavingsCollected) {
-        this.savingsScheduleCollectionId = savingsScheduleCollectionId;
+    @Generated(hash = 979394138)
+    public SavingsPlanCollectionTable(String savingsPlanCollectionId,
+            String savingsScheduleId, int savingsCollectionNumber, Long id,
+            Double savingsCollectionAmount, Date savingsCollectionDueDate,
+            Date lastUpdatedAt, Date timestamp, double amountPaid,
+            String savingsCollectionState, Boolean isSavingsCollected) {
+        this.savingsPlanCollectionId = savingsPlanCollectionId;
         this.savingsScheduleId = savingsScheduleId;
         this.savingsCollectionNumber = savingsCollectionNumber;
         this.id = id;
@@ -49,16 +49,16 @@ public class SavingsPlanCollectionTable {
         this.isSavingsCollected = isSavingsCollected;
     }
 
-    @Generated(hash = 950706895)
+    @Generated(hash = 41577661)
     public SavingsPlanCollectionTable() {
     }
 
-    public String getSavingsScheduleCollectionId() {
-        return this.savingsScheduleCollectionId;
+    public String getSavingsPlanCollectionId() {
+        return this.savingsPlanCollectionId;
     }
 
-    public void setSavingsScheduleCollectionId(String savingsScheduleCollectionId) {
-        this.savingsScheduleCollectionId = savingsScheduleCollectionId;
+    public void setSavingsPlanCollectionId(String savingsPlanCollectionId) {
+        this.savingsPlanCollectionId = savingsPlanCollectionId;
     }
 
     public String getSavingsScheduleId() {
