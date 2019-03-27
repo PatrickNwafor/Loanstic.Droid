@@ -121,7 +121,15 @@ public class SelectBorrowerForSavingsActivity extends AppCompatActivity {
     }
 
     private void moveToSavingsPage() {
-
+        register.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent = new Intent(getApplicationContext(), PickPlan.class);
+                intent.putExtra("borrower", selectedBorrower);
+                startActivity(intent);
+                return true;
+            }
+        });
     }
 
     private void searchDrawableButtonListener() {
@@ -302,7 +310,6 @@ public class SelectBorrowerForSavingsActivity extends AppCompatActivity {
             case R.id.next_to_loan_terms:
                 if(selectedBorrower != null){
                     moveToSavingsPage();
-                    register.setEnabled(false);
                 }
 
             default:

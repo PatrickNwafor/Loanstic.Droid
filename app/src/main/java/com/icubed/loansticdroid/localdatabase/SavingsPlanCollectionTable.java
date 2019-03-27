@@ -11,7 +11,7 @@ import org.greenrobot.greendao.annotation.Generated;
 public class SavingsPlanCollectionTable {
 
     @Unique
-        private String savingsPlanCollectionId;
+    private String savingsPlanCollectionId;
 
     private String savingsScheduleId;
 
