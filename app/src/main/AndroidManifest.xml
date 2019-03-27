@@ -108,12 +108,12 @@
         <activity android:name=".activities.SelectBorrowerForSavingsActivity" />
         <activity android:name=".activities.SavingsPickPlan" />
         <activity android:name=".activities.SavingsPlanLifeGoals" />
-        <activity android:name=".activities.LifeGoalsSetup1GoalName" />
-        <activity android:name=".activities.LifeGoalsSetup2TargetAmount" />
-        <activity android:name=".activities.LifeGoalsSetup3Cycle" />
-        <activity android:name=".activities.LifeGoalsSetup4DepositAmount" />
-        <activity android:name=".activities.LifeGoalsSetup5GoalOptions" />
-        <activity android:name=".activities.LifeGoalsSetup6GoalSummary"></activity>
+        <activity android:name=".activities.LifeGoals.LifeGoalsSetup1GoalName" />
+        <activity android:name=".activities.LifeGoals.LifeGoalsSetup2TargetAmount" />
+        <activity android:name=".activities.LifeGoals.LifeGoalsSetup3Cycle" />
+        <activity android:name=".activities.LifeGoals.LifeGoalsSetup4DepositAmount" />
+        <activity android:name=".activities.LifeGoals.LifeGoalsSetup5GoalOptions" />
+        <activity android:name=".activities.LifeGoals.LifeGoalsSetup6GoalSummary"></activity>
     </application>
 
 </manifest>

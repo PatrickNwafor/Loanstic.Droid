@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context="com.icubed.loansticdroid.activities.LifeGoalsSetup2TargetAmount">
+    tools:context="com.icubed.loansticdroid.activities.LifeGoals.LifeGoalsSetup2TargetAmount">
     <include
         android:id="@+id/life_goals_setup_toolbar"
         layout="@layout/app_bar_layout"

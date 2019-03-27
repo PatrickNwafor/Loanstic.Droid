@@ -1,6 +1,8 @@
 package com.icubed.loansticdroid.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -20,13 +22,21 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.cloudqueries.SavingsPlanTypeQueries;
 import com.icubed.loansticdroid.fragments.HomeFragments.DashboardFragment;
 import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
 import com.icubed.loansticdroid.cloudqueries.Account;
 import com.icubed.loansticdroid.models.GetPaymentMode;
+import com.icubed.loansticdroid.util.BitmapUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         contentFrame = findViewById(R.id.content_frame);
 
         savingsPlanTypeQueries = new SavingsPlanTypeQueries();
+
+        //startAnotherActivity(SavingsPickPlan.class);
 
         //Replacing our frame layout with our map fragment
         mapFragment = new MapFragment();
@@ -105,6 +117,52 @@ public class MainActivity extends AppCompatActivity {
         getPaymentMode.getPaymentMode();
 
     }
+
+//    private void uploadplan() {
+//        int[] drawable = new int[]{R.drawable.car_loan, R.drawable.car_loan, R.drawable.car_loan, R.drawable.car_loan};
+//        String[] name = new String[]{"Life Goals", "Periodic Plan", "Fixed Investment", "Save As You Earn"};
+//        String[] desc = new String[]{"Automated long term saving towards key life goals. 1-year minimum maturity", "Automated savings towards any goal. 2-months minimum maturity", "Fix a lump sum of money upfront for a long term", "Save on your own terms whenever you have free cash."};
+//        String[] abbr = new String[]{"LIG", "PEP", "FII", "SAE"};
+//
+//        int count  = 0;
+//        for (int i : drawable) {
+//
+//            final Map<String, Object> objectMap = new HashMap<>();
+//            objectMap.put("savingsTypeName", name[count]);
+//            objectMap.put("savingsTypeDescription", desc[count]);
+//            objectMap.put("savingsTypeAbbreviation", abbr[count]);
+//
+//            final Bitmap main = BitmapUtil.getBitmapFromDrawable(i, this);
+//            savingsPlanTypeQueries.uploadSavingsPlanTypeImage(main)
+//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                            objectMap.put("savingsTypeImageUri", taskSnapshot.getDownloadUrl().toString());
+//
+//                            savingsPlanTypeQueries.uploadSavingsPlanTypeImageThumb(main)
+//                                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                                        @Override
+//                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                                            objectMap.put("savingsTypeImageThumbUri", taskSnapshot.getDownloadUrl().toString());
+//                                            objectMap.put("lastUpdatedAt", new Date());
+//                                            objectMap.put("timestamp", new Date());
+//
+//                                            savingsPlanTypeQueries.saveSavingsPlanType(objectMap)
+//                                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                                                        @Override
+//                                                        public void onSuccess(DocumentReference documentReference) {
+//                                                            Toast.makeText(MainActivity.this, "Done", Toast.LENGTH_SHORT).show();
+//                                                        }
+//                                                    });
+//                                        }
+//                                    });
+//                        }
+//                    });
+//
+//            count++;
+//        }
+//
+//    }
 
     /**********Item selected on Navigation Drawer Actions*******/
     private boolean navActions(MenuItem item) {

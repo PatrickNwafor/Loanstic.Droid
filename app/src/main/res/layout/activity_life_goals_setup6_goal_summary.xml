@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.icubed.loansticdroid.activities.LifeGoalsSetup6GoalSummary">
+    tools:context="com.icubed.loansticdroid.activities.LifeGoals.LifeGoalsSetup6GoalSummary">
     <include
         android:id="@+id/life_goals_setup_toolbar"
         layout="@layout/app_bar_layout"
