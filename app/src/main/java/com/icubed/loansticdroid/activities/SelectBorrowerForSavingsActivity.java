@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.activities.LifeGoals.LifeGoalsSetup1GoalName;
 import com.icubed.loansticdroid.adapters.SelectBorrowerForSavingsRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.cloudqueries.GroupBorrowerQueries;
@@ -107,7 +108,7 @@ public class SelectBorrowerForSavingsActivity extends AppCompatActivity {
         register.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(getApplicationContext(), SavingsPickPlan.class);
+                Intent intent = new Intent(getApplicationContext(), LifeGoalsSetup1GoalName.class);
                 intent.putExtra("borrower", selectedBorrower);
                 startActivity(intent);
                 return true;
