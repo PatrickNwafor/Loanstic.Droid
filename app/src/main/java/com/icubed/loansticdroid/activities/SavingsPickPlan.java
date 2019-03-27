@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.icubed.loansticdroid.R;
 
-public class PickPlan extends AppCompatActivity {
+public class SavingsPickPlan extends AppCompatActivity {
 
     private MenuItem register;
 
