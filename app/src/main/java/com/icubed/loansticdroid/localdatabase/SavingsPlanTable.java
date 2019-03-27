@@ -12,7 +12,7 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class SavingsScheduleTable implements Parcelable {
+public class SavingsPlanTable implements Parcelable {
 
     @Transient
     public static final String TARGET_TYPE_TIME = "time";
@@ -31,15 +31,15 @@ public class SavingsScheduleTable implements Parcelable {
     private Date savingsCreationDate;
     private Date lastUpdatedAt;
     private int savingsDuration;
-    private String loanOfficerId, savingsInterestRateUnit, savingsSchedulePurpose
+    private String loanOfficerId, savingsInterestRateUnit, savingsSchedulePurpose, savingsPlanTypeId
             , savingsDurationUnit, savingsAmountUnit, savingsScheduleNumber, savingsId;
     @Generated(hash = 196202185)
-    public SavingsScheduleTable(String savingsScheduleId, Long Id, double amountTarget,
-            String targetType, double savingsInterestRate, double amountSaved,
-            Date savingsCreationDate, Date lastUpdatedAt, int savingsDuration,
-            String loanOfficerId, String savingsInterestRateUnit,
-            String savingsSchedulePurpose, String savingsDurationUnit,
-            String savingsAmountUnit, String savingsScheduleNumber, String savingsId) {
+    public SavingsPlanTable(String savingsScheduleId, Long Id, double amountTarget,
+                            String targetType, double savingsInterestRate, double amountSaved,
+                            Date savingsCreationDate, Date lastUpdatedAt, int savingsDuration,
+                            String loanOfficerId, String savingsInterestRateUnit,
+                            String savingsSchedulePurpose, String savingsDurationUnit,
+                            String savingsAmountUnit, String savingsScheduleNumber, String savingsId) {
         this.savingsScheduleId = savingsScheduleId;
         this.Id = Id;
         this.amountTarget = amountTarget;
@@ -58,7 +58,7 @@ public class SavingsScheduleTable implements Parcelable {
         this.savingsId = savingsId;
     }
     @Generated(hash = 1506363868)
-    public SavingsScheduleTable() {
+    public SavingsPlanTable() {
     }
     public String getSavingsScheduleId() {
         return this.savingsScheduleId;
@@ -158,7 +158,7 @@ public class SavingsScheduleTable implements Parcelable {
     }
 
     // Parcelling part
-    public SavingsScheduleTable(Parcel in) {
+    public SavingsPlanTable(Parcel in) {
         this.savingsScheduleId = in.readString();
         this.amountTarget = in.readDouble();
         this.targetType = in.readString();
@@ -201,12 +201,12 @@ public class SavingsScheduleTable implements Parcelable {
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public SavingsScheduleTable createFromParcel(Parcel in) {
-            return new SavingsScheduleTable(in);
+        public SavingsPlanTable createFromParcel(Parcel in) {
+            return new SavingsPlanTable(in);
         }
 
-        public SavingsScheduleTable[] newArray(int size) {
-            return new SavingsScheduleTable[size];
+        public SavingsPlanTable[] newArray(int size) {
+            return new SavingsPlanTable[size];
         }
     };
 }

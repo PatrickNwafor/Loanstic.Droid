@@ -8,7 +8,7 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class SavingsScheduleCollectionTable {
+public class SavingsPlanCollectionTable {
 
     @Unique
     private String savingsScheduleCollectionId;
@@ -31,11 +31,11 @@ public class SavingsScheduleCollectionTable {
     private Boolean isSavingsCollected;
 
     @Generated(hash = 1100785706)
-    public SavingsScheduleCollectionTable(String savingsScheduleCollectionId,
-            String savingsScheduleId, int savingsCollectionNumber, Long id,
-            Double savingsCollectionAmount, Date savingsCollectionDueDate,
-            Date lastUpdatedAt, Date timestamp, double amountPaid,
-            String savingsCollectionState, Boolean isSavingsCollected) {
+    public SavingsPlanCollectionTable(String savingsScheduleCollectionId,
+                                      String savingsScheduleId, int savingsCollectionNumber, Long id,
+                                      Double savingsCollectionAmount, Date savingsCollectionDueDate,
+                                      Date lastUpdatedAt, Date timestamp, double amountPaid,
+                                      String savingsCollectionState, Boolean isSavingsCollected) {
         this.savingsScheduleCollectionId = savingsScheduleCollectionId;
         this.savingsScheduleId = savingsScheduleId;
         this.savingsCollectionNumber = savingsCollectionNumber;
@@ -50,7 +50,7 @@ public class SavingsScheduleCollectionTable {
     }
 
     @Generated(hash = 950706895)
-    public SavingsScheduleCollectionTable() {
+    public SavingsPlanCollectionTable() {
     }
 
     public String getSavingsScheduleCollectionId() {
