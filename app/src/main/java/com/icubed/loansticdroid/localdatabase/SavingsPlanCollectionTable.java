@@ -1,19 +1,30 @@
 package com.icubed.loansticdroid.localdatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class SavingsScheduleCollectionTable {
+public class SavingsPlanCollectionTable implements Parcelable {
+
+    @Transient
+    public static final String COLLECTION_STATE_FULL = "Full Collection";
+    @Transient
+    public static final String COLLECTION_STATE_PARTIAL = "Partial Collection";
+    @Transient
+    public static final String COLLECTION_STATE_NO = "No Collection";
 
     @Unique
-    private String savingsScheduleCollectionId;
+    private String savingsPlanCollectionId;
 
-    private String savingsScheduleId;
+    private String savingsPlanId;
 
     private int savingsCollectionNumber;
 
@@ -30,14 +41,29 @@ public class SavingsScheduleCollectionTable {
 
     private Boolean isSavingsCollected;
 
-    @Generated(hash = 1100785706)
-    public SavingsScheduleCollectionTable(String savingsScheduleCollectionId,
-            String savingsScheduleId, int savingsCollectionNumber, Long id,
+    // Parcelling part
+    public SavingsPlanCollectionTable(Parcel in){
+        this.savingsPlanCollectionId = in.readString();
+        this.savingsPlanId = in.readString();
+        this.savingsCollectionNumber = in.readInt();
+        this.id = in.readLong();
+        this.savingsCollectionAmount = in.readDouble();
+        this.amountPaid = in.readDouble();
+        this.savingsCollectionState = in.readString();
+        this.isSavingsCollected = Boolean.valueOf(in.readString());
+        this.savingsCollectionDueDate = new Date(in.readLong());
+        this.lastUpdatedAt = new Date(in.readLong());
+        this.timestamp = new Date(in.readLong());
+    }
+
+    @Generated(hash = 252333918)
+    public SavingsPlanCollectionTable(String savingsPlanCollectionId,
+            String savingsPlanId, int savingsCollectionNumber, Long id,
             Double savingsCollectionAmount, Date savingsCollectionDueDate,
             Date lastUpdatedAt, Date timestamp, double amountPaid,
             String savingsCollectionState, Boolean isSavingsCollected) {
-        this.savingsScheduleCollectionId = savingsScheduleCollectionId;
-        this.savingsScheduleId = savingsScheduleId;
+        this.savingsPlanCollectionId = savingsPlanCollectionId;
+        this.savingsPlanId = savingsPlanId;
         this.savingsCollectionNumber = savingsCollectionNumber;
         this.id = id;
         this.savingsCollectionAmount = savingsCollectionAmount;
@@ -49,24 +75,44 @@ public class SavingsScheduleCollectionTable {
         this.isSavingsCollected = isSavingsCollected;
     }
 
-    @Generated(hash = 950706895)
-    public SavingsScheduleCollectionTable() {
+    @Generated(hash = 41577661)
+    public SavingsPlanCollectionTable() {
     }
 
-    public String getSavingsScheduleCollectionId() {
-        return this.savingsScheduleCollectionId;
+    @Override
+    public int describeContents(){
+        return 0;
     }
 
-    public void setSavingsScheduleCollectionId(String savingsScheduleCollectionId) {
-        this.savingsScheduleCollectionId = savingsScheduleCollectionId;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.savingsPlanCollectionId);
+        dest.writeString(this.savingsPlanId);
+        dest.writeInt(this.savingsCollectionNumber);
+        dest.writeLong(this.id);
+        dest.writeDouble(this.savingsCollectionAmount);
+        dest.writeDouble(this.amountPaid);
+        dest.writeString(this.savingsCollectionState);
+        dest.writeString(String.valueOf(this.isSavingsCollected));
+        dest.writeLong(this.savingsCollectionDueDate.getTime());
+        dest.writeLong(this.lastUpdatedAt.getTime());
+        dest.writeLong(this.timestamp.getTime());
     }
 
-    public String getSavingsScheduleId() {
-        return this.savingsScheduleId;
+    public String getSavingsPlanCollectionId() {
+        return this.savingsPlanCollectionId;
     }
 
-    public void setSavingsScheduleId(String savingsScheduleId) {
-        this.savingsScheduleId = savingsScheduleId;
+    public void setSavingsPlanCollectionId(String savingsPlanCollectionId) {
+        this.savingsPlanCollectionId = savingsPlanCollectionId;
+    }
+
+    public String getSavingsPlanId() {
+        return this.savingsPlanId;
+    }
+
+    public void setSavingsPlanId(String savingsPlanId) {
+        this.savingsPlanId = savingsPlanId;
     }
 
     public int getSavingsCollectionNumber() {
@@ -140,4 +186,14 @@ public class SavingsScheduleCollectionTable {
     public void setIsSavingsCollected(Boolean isSavingsCollected) {
         this.isSavingsCollected = isSavingsCollected;
     }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public SavingsPlanCollectionTable createFromParcel(Parcel in) {
+            return new SavingsPlanCollectionTable(in);
+        }
+
+        public SavingsPlanCollectionTable[] newArray(int size) {
+            return new SavingsPlanCollectionTable[size];
+        }
+    };
 }

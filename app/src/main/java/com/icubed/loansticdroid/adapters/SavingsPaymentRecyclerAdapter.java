@@ -23,12 +23,12 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SavingsRecyclerAdapter extends RecyclerView.Adapter<SavingsRecyclerAdapter.ViewHolder> {
+public class SavingsPaymentRecyclerAdapter extends RecyclerView.Adapter<SavingsPaymentRecyclerAdapter.ViewHolder> {
 
     List<SavingsDetails> savingsDetailsList;
     Context context;
 
-    public SavingsRecyclerAdapter(List<SavingsDetails> savingsDetailsList) {
+    public SavingsPaymentRecyclerAdapter(List<SavingsDetails> savingsDetailsList) {
         this.savingsDetailsList = savingsDetailsList;
     }
 
@@ -49,7 +49,7 @@ public class SavingsRecyclerAdapter extends RecyclerView.Adapter<SavingsRecycler
         holder.frameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
             }
         });
     }

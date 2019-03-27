@@ -21,6 +21,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.cloudqueries.SavingsPlanTypeQueries;
 import com.icubed.loansticdroid.fragments.HomeFragments.DashboardFragment;
 import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
 import com.icubed.loansticdroid.cloudqueries.Account;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public ToggleButton viewSwitch1;
     private FrameLayout contentFrame;
     private GetPaymentMode getPaymentMode;
+    private SavingsPlanTypeQueries savingsPlanTypeQueries;
 
     //Fragments
     MapFragment mapFragment;
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         viewSwitch1 = findViewById(R.id.toggleButton);
         contentFrame = findViewById(R.id.content_frame);
 
-
+        savingsPlanTypeQueries = new SavingsPlanTypeQueries();
 
         //Replacing our frame layout with our map fragment
         mapFragment = new MapFragment();
