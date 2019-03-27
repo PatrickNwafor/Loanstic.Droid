@@ -108,7 +108,7 @@ public class SelectBorrowerForSavingsActivity extends AppCompatActivity {
         register.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(getApplicationContext(), LifeGoalsSetup1GoalName.class);
+                Intent intent = new Intent(getApplicationContext(), SavingsPickPlan.class);
                 intent.putExtra("borrower", selectedBorrower);
                 startActivity(intent);
                 return true;
