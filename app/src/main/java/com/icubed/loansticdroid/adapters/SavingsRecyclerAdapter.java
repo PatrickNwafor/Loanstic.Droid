@@ -35,7 +35,7 @@ public class SavingsRecyclerAdapter extends RecyclerView.Adapter<SavingsRecycler
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.loan_repayments_single_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.savings_activity_single_layout, parent, false);
 
         context = parent.getContext();
 

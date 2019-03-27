@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.util.KeyboardUtil;
 
-public class LifeGoals extends AppCompatActivity {
+public class SavingsPlanLifeGoals extends AppCompatActivity {
 
     private MenuItem register;
 
