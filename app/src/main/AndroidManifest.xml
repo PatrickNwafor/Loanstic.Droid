@@ -112,7 +112,8 @@
         <activity android:name=".activities.LifeGoalsSetup2TargetAmount" />
         <activity android:name=".activities.LifeGoalsSetup3Cycle" />
         <activity android:name=".activities.LifeGoalsSetup4DepositAmount" />
-        <activity android:name=".activities.LifeGoalsSetup5GoalOptions"></activity>
+        <activity android:name=".activities.LifeGoalsSetup5GoalOptions" />
+        <activity android:name=".activities.LifeGoalsSetup6GoalSummary"></activity>
     </application>
 
 </manifest>
