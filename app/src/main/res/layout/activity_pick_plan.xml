@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.icubed.loansticdroid.activities.PickPlan">
+    tools:context="com.icubed.loansticdroid.activities.SavingsPickPlan">
     <include
         android:id="@+id/pick_plan_toolbar"
         layout="@layout/app_bar_layout"

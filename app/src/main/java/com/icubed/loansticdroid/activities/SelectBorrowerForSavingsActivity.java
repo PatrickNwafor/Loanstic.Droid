@@ -1,10 +1,7 @@
 package com.icubed.loansticdroid.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,9 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -32,22 +26,14 @@ import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.adapters.BorrowerRecyclerAdapter;
-import com.icubed.loansticdroid.adapters.GroupBorrowerListRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.SelectBorrowerForSavingsRecyclerAdapter;
-import com.icubed.loansticdroid.adapters.SelectedBorrowerForGroupRecyclerAdapter;
-import com.icubed.loansticdroid.cloudqueries.BorrowerGroupsQueries;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.cloudqueries.GroupBorrowerQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
-import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
-import com.icubed.loansticdroid.models.Borrowers;
-import com.icubed.loansticdroid.models.SelectedBorrowerForGroup;
 import com.icubed.loansticdroid.util.AndroidUtils;
 import com.icubed.loansticdroid.util.EditTextExtension.CustomEditText;
 import com.icubed.loansticdroid.util.EditTextExtension.DrawableClickListener;
@@ -58,10 +44,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static android.support.constraint.Constraints.TAG;
 import static android.view.View.GONE;
@@ -124,7 +107,7 @@ public class SelectBorrowerForSavingsActivity extends AppCompatActivity {
         register.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(getApplicationContext(), PickPlan.class);
+                Intent intent = new Intent(getApplicationContext(), SavingsPickPlan.class);
                 intent.putExtra("borrower", selectedBorrower);
                 startActivity(intent);
                 return true;
