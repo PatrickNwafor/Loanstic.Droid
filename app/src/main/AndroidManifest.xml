@@ -107,7 +107,12 @@
         <activity android:name=".activities.ViewCollection" />
         <activity android:name=".activities.SelectBorrowerForSavingsActivity" />
         <activity android:name=".activities.PickPlan" />
-        <activity android:name=".activities.LifeGoals"></activity>
+        <activity android:name=".activities.LifeGoals" />
+        <activity android:name=".activities.LifeGoalsSetup1GoalName" />
+        <activity android:name=".activities.LifeGoalsSetup2TargetAmount" />
+        <activity android:name=".activities.LifeGoalsSetup3Cycle" />
+        <activity android:name=".activities.LifeGoalsSetup4DepositAmount" />
+        <activity android:name=".activities.LifeGoalsSetup5GoalOptions"></activity>
     </application>
 
 </manifest>
