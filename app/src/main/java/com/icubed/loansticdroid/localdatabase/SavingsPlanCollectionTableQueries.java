@@ -56,9 +56,9 @@ public class SavingsPlanCollectionTableQueries {
     }
 
     /**********Load All Due Collections from local Storage***********/
-    public List<SavingsPlanCollectionTable> loadCollectionsForSavingsSchedule(String savingsScheduleId){
+    public List<SavingsPlanCollectionTable> loadCollectionsForSavingsSchedule(String savingsPlanId){
         return savingsPlanCollectionTableDao.queryBuilder()
-                .where(SavingsPlanCollectionTableDao.Properties.SavingsScheduleId.eq(savingsScheduleId))
+                .where(SavingsPlanCollectionTableDao.Properties.SavingsPlanId.eq(savingsPlanId))
                     .orderAsc(com.icubed.loansticdroid.localdatabase.SavingsPlanCollectionTableDao.Properties.SavingsCollectionNumber)
                 .build()
                 .list();
