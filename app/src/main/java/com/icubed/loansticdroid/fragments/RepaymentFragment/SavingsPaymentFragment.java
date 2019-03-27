@@ -16,10 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.adapters.LoanRepaymentRecyclerAdapter;
-import com.icubed.loansticdroid.adapters.SavingsRecyclerAdapter;
-import com.icubed.loansticdroid.models.LoanDetails;
-import com.icubed.loansticdroid.models.LoanRepayment;
+import com.icubed.loansticdroid.adapters.SavingsPaymentRecyclerAdapter;
 import com.icubed.loansticdroid.models.Savings;
 import com.icubed.loansticdroid.models.SavingsDetails;
 import com.icubed.loansticdroid.util.AndroidUtils;
@@ -36,7 +33,7 @@ public class SavingsPaymentFragment extends Fragment {
     public SwipeRefreshLayout swipeRefreshLayout;
     public LinearLayout emptyCollection;
     public List<SavingsDetails> savingsDetailsList;
-    public SavingsRecyclerAdapter savingsRecyclerAdapter;
+    public SavingsPaymentRecyclerAdapter savingsRecyclerAdapter;
     public ProgressBar progressBar;
     private Savings savings;
 
@@ -70,7 +67,7 @@ public class SavingsPaymentFragment extends Fragment {
         swipeRefreshListener();
 
         savingsDetailsList = new ArrayList<>();
-        savingsRecyclerAdapter = new SavingsRecyclerAdapter(savingsDetailsList);
+        savingsRecyclerAdapter = new SavingsPaymentRecyclerAdapter(savingsDetailsList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter((savingsRecyclerAdapter));
 
