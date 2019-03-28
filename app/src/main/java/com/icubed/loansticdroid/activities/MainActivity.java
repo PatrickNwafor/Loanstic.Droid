@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         contentFrame = findViewById(R.id.content_frame);
 
         savingsPlanTypeQueries = new SavingsPlanTypeQueries();
-
         //startAnotherActivity(SavingsPickPlan.class);
 
         //Replacing our frame layout with our map fragment
@@ -119,10 +118,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 //    private void uploadplan() {
-//        int[] drawable = new int[]{R.drawable.car_loan, R.drawable.car_loan, R.drawable.car_loan, R.drawable.car_loan};
-//        String[] name = new String[]{"Life Goals", "Periodic Plan", "Fixed Investment", "Save As You Earn"};
-//        String[] desc = new String[]{"Automated long term saving towards key life goals. 1-year minimum maturity", "Automated savings towards any goal. 2-months minimum maturity", "Fix a lump sum of money upfront for a long term", "Save on your own terms whenever you have free cash."};
-//        String[] abbr = new String[]{"LIG", "PEP", "FII", "SAE"};
+//        int[] drawable = new int[]{R.drawable.car_loan, R.drawable.car_loan, R.drawable.car_loan, R.drawable.car_loan, R.drawable.car_loan, R.drawable.car_loan, R.drawable.car_loan};
+//        String[] name = new String[]{"Vacation", "Education", "Family", "Emergency Funds", "Investment Or Business", "Retirement", "Home"};
+//        String[] desc = new String[]{"Save up for that vacation or time out you've always wanted", "Save up funds for your education or for that of your loved ones", "Family is everything. Grow wealth for your future self and for your loved ones",
+//                "Set aside savings to cater for emergencies.", "Save up for capital for your business idea.", "Retirement is sweet when you plan ahead. The earlier you start the better.", "Save up for rent or for your own apartment"};
+//        String[] abbr = new String[]{"VAC", "EDU", "FII", "EMF", "IOB", "RET", "HOM"};
 //
 //        int count  = 0;
 //        for (int i : drawable) {

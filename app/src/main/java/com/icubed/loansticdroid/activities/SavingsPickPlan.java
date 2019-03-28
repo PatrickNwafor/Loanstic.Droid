@@ -41,216 +41,95 @@ import java.util.List;
 
 public class SavingsPickPlan extends AppCompatActivity {
 
-    private MenuItem register;
     private static final String TAG = ".SavingsPickPlan";
     private Toolbar toolbar;
-    private RecyclerView savingsPlanRecyclerView;
-    private SavingsPlanTypeRecyclerAdapter savingsPlanRecyclerAdapter;
-    private SavingsPlanTypeQueries savingsPlanTypeQueries;
-    private ProgressBar progressBar;
-    private SavingsPlanTypeTableQueries savingsPlanTypeTableQueries;
-    private List<SavingsPlanTypeTable> currentLoanTable;
-    public SavingsPlanTypeTable selectedSavingsPlanTypeTable = null;
-    public SavingsTable savingsTable;
-    // public ImageView lastCheck = null;
-    public LottieAnimationView lastCheck = null;
+    public String savingsPlanName = null;
 
-    private BorrowersTable borrower;
-    private GroupBorrowerTable group;
+    public static final String LIFE_GOALS = "Life goals";
+    public static final String PERIODIC_PLAN = "Periodic plan";
+    public static final String FIXED_INVESTMENT = "Fixed investment";
+    public static final String SAVE_AS_YOU_EARN = "Save as you earn";
 
-    private CardView otherLoanCard;
-    // public ImageView otherLoanCheck;
-    public LottieAnimationView otherLoanCheck;
+    LottieAnimationView view1, view2, view3, view4;
+    CardView cd1, cd2, cd3, cd4;
+    LottieAnimationView lastCheck = null;
+    BorrowersTable borrower;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_plan);
 
-        savingsPlanTypeQueries = new SavingsPlanTypeQueries();
-        savingsPlanTypeTableQueries = new SavingsPlanTypeTableQueries(getApplication());
-
-        currentLoanTable = savingsPlanTypeTableQueries.loadAllSavingsPlanTypes();
-
-        toolbar = findViewById(R.id.select_loan_toolbar);
+        toolbar = findViewById(R.id.pick_plan_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Select Savings Plan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         borrower = getIntent().getParcelableExtra("borrower");
-        savingsTable = getIntent().getParcelableExtra("savings");
 
-        progressBar = findViewById(R.id.loan_types_progress_bar);
-        otherLoanCard = findViewById(R.id.other_loan_card);
-        otherLoanCheck = findViewById(R.id.other_loan_check);
-        savingsPlanRecyclerView = findViewById(R.id.loan_types_list);
+        cd1 = findViewById(R.id.cd1);
+        cd2 = findViewById(R.id.cd2);
+        cd3 = findViewById(R.id.cd3);
+        cd4 = findViewById(R.id.cd4);
 
-        otherLoanCard.setOnClickListener(new View.OnClickListener() {
+        view1 = findViewById(R.id.check_loan_type);
+        view2 = findViewById(R.id.check_loan_type1);
+        view3 = findViewById(R.id.check_loan_type2);
+        view4 = findViewById(R.id.check_loan_type3);
+
+        cd1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectOtherLoan();
+                selectPlan(view1);
             }
         });
 
-        if(!doesSavingsPlanExistInLocalStorage()) {
-            getSavingsPlans();
-        }else{
-            loadSavingsPlansToUI();
-            getNewSavingsPlans();
-        }
+        cd2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectPlan(view2);
+            }
+        });
+
+        cd3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectPlan(view3);
+            }
+        });
+
+        cd4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectPlan(view4);
+            }
+        });
+
+
     }
 
-    private void selectOtherLoan() {
-        if(otherLoanCheck.getVisibility() == View.GONE){
+    private void selectPlan(LottieAnimationView view) {
+        if(view.getVisibility() == View.GONE){
 
             if(lastCheck != null){
                 lastCheck.setVisibility(View.GONE);
             }
 
-            otherLoanCheck.setVisibility(View.VISIBLE);
-            otherLoanCheck.playAnimation();
-            lastCheck = otherLoanCheck;
-            selectedSavingsPlanTypeTable = new SavingsPlanTypeTable();
-            selectedSavingsPlanTypeTable.setSavingsTypeName("Other Savings Plan");
-            selectedSavingsPlanTypeTable.setLastUpdatedAt(new Date());
-            selectedSavingsPlanTypeTable.setTimestamp(new Date());
+            view.setVisibility(View.VISIBLE);
+            view.playAnimation();
+            lastCheck = view;
+            if(view == view1) savingsPlanName = LIFE_GOALS;
+            else if(view == view2) savingsPlanName = PERIODIC_PLAN;
+            else if(view == view3) savingsPlanName = FIXED_INVESTMENT;
+            else if(view == view4) savingsPlanName = SAVE_AS_YOU_EARN;
             invalidateOptionsMenu();
         }else{
             lastCheck = null;
-            selectedSavingsPlanTypeTable = null;
-            otherLoanCheck.setVisibility(View.GONE);
+            savingsPlanName = null;
+            view.setVisibility(View.GONE);
             invalidateOptionsMenu();
         }
-    }
-
-    private void getNewSavingsPlans() {
-        savingsPlanTypeQueries.retrieveAllSavingsPlanType()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            if(!task.getResult().isEmpty()){
-
-                                Boolean isThereNewData = false;
-                                List<SavingsPlanTypeTable> loanInStorage = currentLoanTable;
-                                for(DocumentSnapshot doc : task.getResult().getDocuments()) {
-
-                                    Boolean doesDataExist = false;
-                                    for (SavingsPlanTypeTable savingsPlan : currentLoanTable) {
-                                        if (savingsPlan.getSavingsPlanTypeId().equals(doc.getId())) {
-                                            doesDataExist = true;
-                                            loanInStorage.remove(savingsPlan);
-                                            Log.d(TAG, "onComplete: Loan Type id of " + doc.getId() + " already exist");
-                                            break;
-                                        }
-                                    }
-
-                                    if (!doesDataExist) {
-                                        Log.d(TAG, "onComplete: Loan type id of " + doc.getId() + " does not exist");
-
-                                        SavingsPlanTypeTable savingsPlanTypeTable = doc.toObject(SavingsPlanTypeTable.class);
-                                        savingsPlanTypeTable.setSavingsPlanTypeId(doc.getId());
-                                        isThereNewData = true;
-
-                                        saveSavingsPlans(savingsPlanTypeTable);
-                                    }else{
-                                        //Update local table if any changes
-                                        updateTable(doc);
-                                    }
-                                }
-
-                                //to delete deleted borrower in cloud from storage
-                                if(!loanInStorage.isEmpty()){
-                                    for(SavingsPlanTypeTable savingsPlan : loanInStorage){
-                                        deleteBorrowerFromLocalStorage(savingsPlan);
-                                        Log.d("Delete", "deleted "+savingsPlan.getSavingsPlanTypeId()+ " from storage");
-                                    }
-                                }
-
-                                if(isThereNewData || !loanInStorage.isEmpty()) {
-                                    loadSavingsPlansToUI();
-                                }
-                            }else{
-                                Toast.makeText(getApplicationContext(), "Document is empty", Toast.LENGTH_SHORT).show();
-                            }
-                        }else{
-                            Log.d("Borrower", "onComplete: "+task.getException().getMessage());
-                        }
-                    }
-                });
-    }
-
-    private void deleteBorrowerFromLocalStorage(SavingsPlanTypeTable savingsPlan) {
-        savingsPlanTypeTableQueries.deleteSavingsPlanType(savingsPlan);
-    }
-
-    private void updateTable(DocumentSnapshot doc) {
-        SavingsPlanTypeTable savingsPlanTypeTable = doc.toObject(SavingsPlanTypeTable.class);
-        savingsPlanTypeTable.setSavingsPlanTypeId(doc.getId());
-
-        SavingsPlanTypeTable saved = savingsPlanTypeTableQueries.loadSingleSavingsPlanType(doc.getId());
-        savingsPlanTypeTable.setId(saved.getId());
-
-        if(savingsPlanTypeTable.getLastUpdatedAt().getTime() != saved.getLastUpdatedAt().getTime()){
-
-            savingsPlanTypeTableQueries.updateSavingsPlanTypeDetails(savingsPlanTypeTable);
-            loadSavingsPlansToUI();
-            Log.d("SavingsPlan", "Loan Type Detailed updated");
-        }
-
-    }
-
-    private boolean doesSavingsPlanExistInLocalStorage(){
-        List<SavingsPlanTypeTable> savingsPlanTypeTable = savingsPlanTypeTableQueries.loadAllSavingsPlanTypes();
-        return !savingsPlanTypeTable.isEmpty();
-    }
-
-    private void getSavingsPlans(){
-        savingsPlanTypeQueries.retrieveAllSavingsPlanType()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            if(!task.getResult().isEmpty()) {
-                                for (DocumentSnapshot doc : task.getResult()) {
-                                    SavingsPlanTypeTable savingsPlanTypeTable = doc.toObject(SavingsPlanTypeTable.class);
-                                    savingsPlanTypeTable.setSavingsPlanTypeId(doc.getId());
-
-                                    saveSavingsPlans(savingsPlanTypeTable);
-                                }
-                                loadSavingsPlansToUI();
-                            }else{
-                                hideProgressBar();
-                                Toast.makeText(SavingsPickPlan.this, "No available loan types", Toast.LENGTH_SHORT).show();
-                            }
-
-                        }else{
-                            Toast.makeText(SavingsPickPlan.this, "Failed to retrieve loan types", Toast.LENGTH_SHORT).show();
-                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
-                            hideProgressBar();
-                        }
-                    }
-                });
-    }
-
-    private void saveSavingsPlans(SavingsPlanTypeTable savingsPlanTypeTable){
-        savingsPlanTypeTableQueries.insertSavingsPlanTypeToStorage(savingsPlanTypeTable);
-    }
-
-    private void loadSavingsPlansToUI(){
-        List<SavingsPlanTypeTable> savingsPlanTypeTable = savingsPlanTypeTableQueries.loadAllSavingsPlanTypesOrderByName();
-
-        savingsPlanRecyclerAdapter = new SavingsPlanTypeRecyclerAdapter(savingsPlanTypeTable);
-        savingsPlanRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        savingsPlanRecyclerView.setAdapter(savingsPlanRecyclerAdapter);
-
-        hideProgressBar();
-
-    }
-
-    private void hideProgressBar(){
-        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -272,7 +151,8 @@ public class SavingsPickPlan extends AppCompatActivity {
                 return true;
 
             case R.id.next_to_loan_terms:
-                startAnotherActivity(LifeGoalsSetup1GoalName.class);
+                if(savingsPlanName.equals(LIFE_GOALS)) startAnotherActivity(SavingsPlanLifeGoals.class);
+                else startAnotherActivity(LifeGoalsSetup1GoalName.class);
                 return true;
 
             default:
@@ -283,63 +163,16 @@ public class SavingsPickPlan extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem register = menu.findItem(R.id.next_to_loan_terms);
-
-        if(selectedSavingsPlanTypeTable != null || otherLoanCheck.getVisibility() == View.VISIBLE){
-            register.setVisible(true);
-        }else{
-            register.setVisible(false);
-        }
-
+        if(savingsPlanName != null) register.setVisible(true);
+        else register.setVisible(false);
         return true;
     }
 
     private void startAnotherActivity(Class newActivity){
         Intent newActivityIntent = new Intent(this, newActivity);
-        newActivityIntent.putExtra("savings_type", selectedSavingsPlanTypeTable);
-        //newActivityIntent.putExtra("borrower", borrower);
+        newActivityIntent.putExtra("savings_plan_name", savingsPlanName);
+        newActivityIntent.putExtra("borrower", borrower);
         //newActivityIntent.putExtra("savings", savingsTable);
         startActivity(newActivityIntent);
-    }
-
-    public void getImage(final SavingsPlanTypeTable savingsPlanTypeTable){
-
-        for (SavingsPlanTypeTable typeTable : currentLoanTable) {
-            if(typeTable.getSavingsPlanTypeId().equals(savingsPlanTypeTable.getSavingsPlanTypeId())
-                    && typeTable.getSavingsTypeImageByteArray() == null){
-
-                BitmapUtil.getImageWithGlide(getApplicationContext(), savingsPlanTypeTable.getSavingsTypeImageUri())
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                saveImage(resource, savingsPlanTypeTable);
-                            }
-                        });
-                return;
-
-            }else if(typeTable.getSavingsPlanTypeId().equals(savingsPlanTypeTable.getSavingsPlanTypeId()) &&
-                    typeTable.getSavingsTypeImageByteArray() != null &&
-                    !typeTable.getSavingsTypeImageUri().equals(savingsPlanTypeTable.getSavingsTypeImageUri())){
-
-                BitmapUtil.getImageWithGlide(getApplicationContext(), savingsPlanTypeTable.getSavingsTypeImageUri())
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                saveImage(resource, savingsPlanTypeTable);
-                            }
-                        });
-                return;
-            }
-        }
-
-    }
-
-
-    public void saveImage(Bitmap bitmap, SavingsPlanTypeTable savingsPlanTypeTable){
-        byte[] bytes = BitmapUtil.getBytesFromBitmapInPNG(bitmap, 100);
-
-        SavingsPlanTypeTable currentlySaved = savingsPlanTypeTableQueries.loadSingleSavingsPlanType(savingsPlanTypeTable.getSavingsPlanTypeId());
-        currentlySaved.setSavingsTypeImageByteArray(bytes);
-        savingsPlanTypeTableQueries.updateSavingsPlanTypeDetails(currentlySaved);
-        Log.d(TAG, "saveImage: savings type image byte[] saved");
     }
 }

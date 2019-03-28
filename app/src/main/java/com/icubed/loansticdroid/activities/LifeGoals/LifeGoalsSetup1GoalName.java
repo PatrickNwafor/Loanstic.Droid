@@ -10,12 +10,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.activities.SavingsPickPlan;
 import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTable;
 
 public class LifeGoalsSetup1GoalName extends AppCompatActivity {
 
     private SavingsPlanTypeTable savingsPlanTypeTable;
     private TextView goalTitleTextView;
+    private String savingsGoalName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +31,9 @@ public class LifeGoalsSetup1GoalName extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         savingsPlanTypeTable = getIntent().getParcelableExtra("savings_type");
+        savingsGoalName = getIntent().getStringExtra("savings_plan_name");
         goalTitleTextView = findViewById(R.id.goal_title);
-        goalTitleTextView.setText(savingsPlanTypeTable.getSavingsTypeName());
+        //goalTitleTextView.setText(savingsPlanTypeTable.getSavingsTypeName());
 
     }
 
@@ -53,7 +56,10 @@ public class LifeGoalsSetup1GoalName extends AppCompatActivity {
                 return true;
 
             case R.id.next_to_loan_terms:
-                startAnotherActivity(LifeGoalsSetup2TargetAmount.class);
+                if(savingsGoalName.equals(SavingsPickPlan.LIFE_GOALS)) startAnotherActivity(LifeGoalsSetup2TargetAmount.class);
+                else if(savingsGoalName.equals(SavingsPickPlan.PERIODIC_PLAN)) startAnotherActivity(LifeGoalsSetup3Cycle.class);
+                else if(savingsGoalName.equals(SavingsPickPlan.FIXED_INVESTMENT)) startAnotherActivity(LifeGoalsSetup4DepositAmount.class);
+                else if(savingsGoalName.equals(SavingsPickPlan.SAVE_AS_YOU_EARN)) startAnotherActivity(LifeGoalsSetup5GoalOptions.class);
                 return true;
 
             default:

@@ -26,7 +26,7 @@ public class SavingsPlanTable implements Parcelable {
     private Long Id;
 
     private double amountTarget;
-    private String targetType;
+    private String targetType, savingsPlanName;
     private double savingsInterestRate, amountSaved;
     private Date savingsCreationDate;
     private Date lastUpdatedAt;
@@ -51,12 +51,13 @@ public class SavingsPlanTable implements Parcelable {
         this.savingsAmountUnit = in.readString();
         this.savingsScheduleNumber = in.readString();
         this.savingsId = in.readString();
+        this.savingsPlanName = in.readString();
     }
 
-    @Generated(hash = 1222501629)
+    @Generated(hash = 1212674182)
     public SavingsPlanTable(String savingsPlanId, Long Id, double amountTarget, String targetType,
-            double savingsInterestRate, double amountSaved, Date savingsCreationDate,
-            Date lastUpdatedAt, int savingsDuration, String loanOfficerId,
+            String savingsPlanName, double savingsInterestRate, double amountSaved,
+            Date savingsCreationDate, Date lastUpdatedAt, int savingsDuration, String loanOfficerId,
             String savingsInterestRateUnit, String savingsSchedulePurpose, String savingsPlanTypeId,
             String savingsDurationUnit, String savingsAmountUnit, String savingsScheduleNumber,
             String savingsId) {
@@ -64,6 +65,7 @@ public class SavingsPlanTable implements Parcelable {
         this.Id = Id;
         this.amountTarget = amountTarget;
         this.targetType = targetType;
+        this.savingsPlanName = savingsPlanName;
         this.savingsInterestRate = savingsInterestRate;
         this.amountSaved = amountSaved;
         this.savingsCreationDate = savingsCreationDate;
@@ -105,6 +107,7 @@ public class SavingsPlanTable implements Parcelable {
         dest.writeString(this.savingsAmountUnit);
         dest.writeString(this.savingsScheduleNumber);
         dest.writeString(this.savingsId);
+        dest.writeString(this.savingsPlanName);
     }
 
     public String getSavingsPlanId() {
@@ -241,6 +244,14 @@ public class SavingsPlanTable implements Parcelable {
 
     public void setSavingsId(String savingsId) {
         this.savingsId = savingsId;
+    }
+
+    public String getSavingsPlanName() {
+        return this.savingsPlanName;
+    }
+
+    public void setSavingsPlanName(String savingsPlanName) {
+        this.savingsPlanName = savingsPlanName;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

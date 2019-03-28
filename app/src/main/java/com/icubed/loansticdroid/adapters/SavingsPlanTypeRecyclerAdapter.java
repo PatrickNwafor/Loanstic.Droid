@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.activities.SavingsPickPlan;
+import com.icubed.loansticdroid.activities.SavingsPlanLifeGoals;
 import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTable;
 import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTable;
 import com.icubed.loansticdroid.util.BitmapUtil;
@@ -42,7 +42,7 @@ public class SavingsPlanTypeRecyclerAdapter extends RecyclerView.Adapter<Savings
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        ((SavingsPickPlan) context).getImage(savingsPlanTypeTableList.get(position));
+        ((SavingsPlanLifeGoals) context).getImage(savingsPlanTypeTableList.get(position));
         holder.setViews(savingsPlanTypeTableList.get(position));
 
         holder.frameLayout.setOnClickListener(new View.OnClickListener() {
@@ -51,28 +51,25 @@ public class SavingsPlanTypeRecyclerAdapter extends RecyclerView.Adapter<Savings
 
 
                 if(holder.selectLoanTypeView.getVisibility() == View.GONE) {
-                    if(((SavingsPickPlan) context).lastCheck != null ){
-                        ((SavingsPickPlan) context).lastCheck.setVisibility(View.GONE);
+                    if(((SavingsPlanLifeGoals) context).lastCheck != null ){
+                        ((SavingsPlanLifeGoals) context).lastCheck.setVisibility(View.GONE);
                     }
 
                     holder.selectLoanTypeView.setVisibility(View.VISIBLE);
                     holder.selectLoanTypeView.playAnimation();
-                    ((SavingsPickPlan) context).selectedSavingsPlanTypeTable = savingsPlanTypeTableList.get(position);
-                    ((SavingsPickPlan) context).lastCheck = holder.selectLoanTypeView;
-                    ((SavingsPickPlan) context).otherLoanCheck.setVisibility(View.GONE);
+                    ((SavingsPlanLifeGoals) context).selectedSavingsPlanTypeTable = savingsPlanTypeTableList.get(position);
+                    ((SavingsPlanLifeGoals) context).lastCheck = holder.selectLoanTypeView;
 
                     //to fire up onPrepareOptionMenu
-                    ((SavingsPickPlan) context).invalidateOptionsMenu();
+                    ((SavingsPlanLifeGoals) context).invalidateOptionsMenu();
 
                 }else{
                     holder.selectLoanTypeView.setVisibility(View.GONE);
-                    ((SavingsPickPlan) context).selectedSavingsPlanTypeTable = null;
-                    ((SavingsPickPlan) context).lastCheck = null;
-
-                    ((SavingsPickPlan) context).otherLoanCheck.setVisibility(View.GONE);
+                    ((SavingsPlanLifeGoals) context).selectedSavingsPlanTypeTable = null;
+                    ((SavingsPlanLifeGoals) context).lastCheck = null;
 
                     //to fire up onPrepareOptionMenu
-                    ((SavingsPickPlan) context).invalidateOptionsMenu();
+                    ((SavingsPlanLifeGoals) context).invalidateOptionsMenu();
                 }
             }
         });
