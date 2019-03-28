@@ -36,6 +36,7 @@ import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTableQueries;
 import com.icubed.loansticdroid.localdatabase.SavingsTable;
 import com.icubed.loansticdroid.util.BitmapUtil;
 
+import java.util.Date;
 import java.util.List;
 
 public class SavingsPickPlan extends AppCompatActivity {
@@ -110,7 +111,10 @@ public class SavingsPickPlan extends AppCompatActivity {
             otherLoanCheck.setVisibility(View.VISIBLE);
             otherLoanCheck.playAnimation();
             lastCheck = otherLoanCheck;
-            selectedSavingsPlanTypeTable = null;
+            selectedSavingsPlanTypeTable = new SavingsPlanTypeTable();
+            selectedSavingsPlanTypeTable.setSavingsTypeName("Other Savings Plan");
+            selectedSavingsPlanTypeTable.setLastUpdatedAt(new Date());
+            selectedSavingsPlanTypeTable.setTimestamp(new Date());
             invalidateOptionsMenu();
         }else{
             lastCheck = null;

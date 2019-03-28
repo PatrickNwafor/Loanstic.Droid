@@ -105,15 +105,9 @@ public class SelectBorrowerForSavingsActivity extends AppCompatActivity {
     }
 
     private void moveToSavingsPage() {
-        register.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(getApplicationContext(), SavingsPickPlan.class);
-                intent.putExtra("borrower", selectedBorrower);
-                startActivity(intent);
-                return true;
-            }
-        });
+        Intent intent = new Intent(getApplicationContext(), SavingsPickPlan.class);
+        intent.putExtra("borrower", selectedBorrower);
+        startActivity(intent);
     }
 
     private void searchDrawableButtonListener() {

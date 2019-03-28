@@ -53,7 +53,7 @@ public class LifeGoalsSetup1GoalName extends AppCompatActivity {
                 return true;
 
             case R.id.next_to_loan_terms:
-                startAnotherActivity(LifeGoalsSetup1GoalName.class);
+                startAnotherActivity(LifeGoalsSetup2TargetAmount.class);
                 return true;
 
             default:
