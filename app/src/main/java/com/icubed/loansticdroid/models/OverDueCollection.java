@@ -358,29 +358,31 @@ public class OverDueCollection {
 
                 LoansTable loan = loanTableQueries.loadSingleLoan(collectionTable.getLoanId());
 
-                if(loan.getBorrowerId() != null) {
-                    BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
-                    dueCollectionDetails.setFirstName(borrowersTable.getFirstName());
-                    dueCollectionDetails.setLastName(borrowersTable.getLastName());
-                    dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
-                    dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
-                    dueCollectionDetails.setImageUri(borrowersTable.getProfileImageUri());
-                    dueCollectionDetails.setImageUriThumb(borrowersTable.getProfileImageThumbUri());
-                    dueCollectionDetails.setImageByteArray(borrowersTable.getBorrowerImageByteArray());
-                    dueCollectionDetails.setLatitude(borrowersTable.getBorrowerLocationLatitude());
-                    dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
-                }else{
-                    GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
-                    dueCollectionDetails.setGroupName(groupBorrowerTable.getGroupName());
-                    dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
-                    dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
-                    dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
-                }
+                if(loan != null) {
+                    if (loan.getBorrowerId() != null) {
+                        BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
+                        dueCollectionDetails.setFirstName(borrowersTable.getFirstName());
+                        dueCollectionDetails.setLastName(borrowersTable.getLastName());
+                        dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
+                        dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
+                        dueCollectionDetails.setImageUri(borrowersTable.getProfileImageUri());
+                        dueCollectionDetails.setImageUriThumb(borrowersTable.getProfileImageThumbUri());
+                        dueCollectionDetails.setImageByteArray(borrowersTable.getBorrowerImageByteArray());
+                        dueCollectionDetails.setLatitude(borrowersTable.getBorrowerLocationLatitude());
+                        dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
+                    } else {
+                        GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
+                        dueCollectionDetails.setGroupName(groupBorrowerTable.getGroupName());
+                        dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
+                        dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
+                        dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
+                    }
 
-                if(fragment != null) {
-                    fragment.overDueCollectionList.add(dueCollectionDetails);
-                    fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
-                }
+                    if (fragment != null) {
+                        fragment.overDueCollectionList.add(dueCollectionDetails);
+                        fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+                    }
+                }else getSingleLoanData(collectionTable.getLoanId(), dueCollectionDetails);
             }
         }else {
             if(fragment != null)
@@ -391,6 +393,120 @@ public class OverDueCollection {
         hideProgressBar();
         removeRefresher();
 
+    }
+
+    private void getSingleLoanData(String loanId, final DueCollectionDetails dueCollectionDetails) {
+        loansQueries.retrieveSingleLoan(loanId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "onComplete: Loan retrieved");
+                    if (task.getResult().exists()) {
+
+                        LoansTable loansTable = task.getResult().toObject(LoansTable.class);
+                        loansTable.setLoanId(task.getResult().getId());
+                        saveLoanToLocalStorage(loansTable);
+
+                        if (loansTable.getBorrowerId() != null) {
+                            BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loansTable.getBorrowerId());
+                            if(borrowersTable != null) {
+                                dueCollectionDetails.setFirstName(borrowersTable.getFirstName());
+                                dueCollectionDetails.setLastName(borrowersTable.getLastName());
+                                dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
+                                dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
+                                dueCollectionDetails.setImageUri(borrowersTable.getProfileImageUri());
+                                dueCollectionDetails.setImageUriThumb(borrowersTable.getProfileImageThumbUri());
+                                dueCollectionDetails.setImageByteArray(borrowersTable.getBorrowerImageByteArray());
+                                dueCollectionDetails.setLatitude(borrowersTable.getBorrowerLocationLatitude());
+                                dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
+
+                                if (fragment != null) {
+                                    fragment.overDueCollectionList.add(dueCollectionDetails);
+                                    fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+                                }
+                            } getSingleBorrower(loansTable.getBorrowerId(), dueCollectionDetails);
+                        } else {
+                            GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loansTable.getGroupId());
+                            if(groupBorrowerTable != null) {
+                                dueCollectionDetails.setGroupName(groupBorrowerTable.getGroupName());
+                                dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
+                                dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
+                                dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
+
+                                if (fragment != null) {
+                                    fragment.overDueCollectionList.add(dueCollectionDetails);
+                                    fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+                                }
+                            }else getSingleGroup(loansTable.getGroupId(), dueCollectionDetails);
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "onComplete: Loan retrieved Failed");
+                }
+            }
+        });
+    }
+
+    private void getSingleGroup(final String groupId, final DueCollectionDetails dueCollectionDetails) {
+        groupBorrowerQueries.retrieveSingleBorrowerGroup(groupId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    GroupBorrowerTable groupBorrowerTable = task.getResult().toObject(GroupBorrowerTable.class);
+                    groupBorrowerTable.setGroupId(task.getResult().getId());
+                    GroupBorrowerTable allGroups = groupBorrowerTableQueries.loadSingleBorrowerGroup(groupBorrowerTable.getGroupId());
+                    if(allGroups == null) groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
+
+                    dueCollectionDetails.setGroupName(groupBorrowerTable.getGroupName());
+                    dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
+                    dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
+                    dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
+
+                    if (fragment != null) {
+                        fragment.overDueCollectionList.add(dueCollectionDetails);
+                        fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    Log.d(TAG, "onComplete: " + task.getException().getMessage());
+                }
+            }
+        });
+    }
+
+    private void getSingleBorrower(String borrowerId, final DueCollectionDetails dueCollectionDetails) {
+        borrowersQueries.retrieveSingleBorrowers(borrowerId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "onComplete: BorrowersQueries retrieved");
+                    if (task.getResult().exists()) {
+                        //Set local storage table
+                        BorrowersTable borrowersTable = task.getResult().toObject(BorrowersTable.class);
+                        borrowersTable.setBorrowersId(task.getResult().getId());
+                        BorrowersTable allBorrowers = borrowersTableQueries.loadSingleBorrower(borrowersTable.getBorrowersId());
+                        if(allBorrowers == null){borrowersTableQueries.insertBorrowersToStorage(borrowersTable);}
+                        getBorrowerImage(borrowersTable);
+
+                        dueCollectionDetails.setFirstName(borrowersTable.getFirstName());
+                        dueCollectionDetails.setLastName(borrowersTable.getLastName());
+                        dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
+                        dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
+                        dueCollectionDetails.setImageUri(borrowersTable.getProfileImageUri());
+                        dueCollectionDetails.setImageUriThumb(borrowersTable.getProfileImageThumbUri());
+                        dueCollectionDetails.setImageByteArray(borrowersTable.getBorrowerImageByteArray());
+                        dueCollectionDetails.setLatitude(borrowersTable.getBorrowerLocationLatitude());
+                        dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
+
+                        if (fragment != null) {
+                            fragment.overDueCollectionList.add(dueCollectionDetails);
+                            fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "onComplete: BorrowersQueries retrieved Failed");
+                }
+            }
+        });
     }
 
     public void getSingleDueCollectionData(String collectionId){
@@ -427,6 +543,7 @@ public class OverDueCollection {
         }
 
         if(fragment != null) {
+            removeRefresher();
             fragment.emptyCollection.setVisibility(View.GONE);
             fragment.overDueCollectionList.add(dueCollectionDetails);
             fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
@@ -472,7 +589,6 @@ public class OverDueCollection {
                                     }
                                 }
                                 getDueCollectionData();
-                                removeRefresher();
                             }else{
                                 removeRefresher();
                                 Log.d(TAG, "onComplete: No New due collections for today");

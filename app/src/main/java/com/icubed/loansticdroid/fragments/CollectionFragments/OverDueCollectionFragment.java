@@ -97,8 +97,8 @@ public class OverDueCollectionFragment extends Fragment {
             overDueCollection.retrieveNewDueCollectionData();
         } else {
             hideProgressBar();
-            swipeRefreshLayout.setRefreshing(true);
             overDueCollection.getDueCollectionData();
+            swipeRefreshLayout.setRefreshing(true);
             overDueCollection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
         }
     }

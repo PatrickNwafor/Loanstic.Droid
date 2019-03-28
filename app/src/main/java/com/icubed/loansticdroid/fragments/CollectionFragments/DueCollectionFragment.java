@@ -95,8 +95,8 @@ public class DueCollectionFragment extends Fragment {
         if (!dueCollection.doesCollectionExistInLocalStorage()) {
             dueCollection.retrieveNewDueCollectionData();
         } else {
-            swipeRefreshLayout.setRefreshing(true);
             dueCollection.getDueCollectionData();
+            swipeRefreshLayout.setRefreshing(true);
             dueCollection.retrieveDueCollectionToLocalStorageAndCompareToCloud();
         }
     }

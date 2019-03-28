@@ -204,7 +204,7 @@ public class LoansTable implements Parcelable {
         this.loanCreationDate = new Date(in.readLong());
         this.lastUpdatedAt = new Date(in.readLong());
         this.loanReleaseDate = new Date(in.readLong());
-        this.loanApprovedDate = new Date(in.readLong());
+        //this.loanApprovedDate = new Date(in.readLong());
     }
 
     @Override
@@ -233,7 +233,7 @@ public class LoansTable implements Parcelable {
         dest.writeLong(this.loanCreationDate.getTime());
         dest.writeLong(this.lastUpdatedAt.getTime());
         dest.writeLong(this.loanReleaseDate.getTime());
-        dest.writeLong(this.loanApprovedDate.getTime());
+        //dest.writeLong(this.loanApprovedDate.getTime());
     }
     public double getRepaymentMade() {
         return this.repaymentMade;

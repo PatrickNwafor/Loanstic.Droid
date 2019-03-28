@@ -561,6 +561,7 @@ public class DueCollection {
         }
 
         if(fragment != null) {
+            removeRefresher();
             fragment.emptyCollection.setVisibility(View.GONE);
             fragment.dueCollectionList.add(dueCollectionDetails);
             fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
@@ -607,7 +608,6 @@ public class DueCollection {
                                     }
                                 }
                                 getDueCollectionData();
-                                removeRefresher();
                             }else{
                                 removeRefresher();
                                 Log.d(TAG, "onComplete: No New due collections for today");
