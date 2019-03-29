@@ -14,12 +14,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SavingsScheduleCollectionQueries {
+public class SavingsPlanCollectionQueries {
 
     private FirebaseFirestore firebaseFirestore;
     private Account account;
 
-    public SavingsScheduleCollectionQueries(){
+    public SavingsPlanCollectionQueries(){
         firebaseFirestore = FirebaseFirestore.getInstance();
         account = new Account();
     }
