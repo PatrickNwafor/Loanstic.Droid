@@ -24,7 +24,7 @@ public class SavingsPlanCollectionTable implements Parcelable {
     @Unique
     private String savingsPlanCollectionId;
 
-    private String savingsPlanId;
+    private String savingsId;
 
     private int savingsCollectionNumber;
 
@@ -44,7 +44,7 @@ public class SavingsPlanCollectionTable implements Parcelable {
     // Parcelling part
     public SavingsPlanCollectionTable(Parcel in){
         this.savingsPlanCollectionId = in.readString();
-        this.savingsPlanId = in.readString();
+        this.savingsId = in.readString();
         this.savingsCollectionNumber = in.readInt();
         this.id = in.readLong();
         this.savingsCollectionAmount = in.readDouble();
@@ -56,14 +56,14 @@ public class SavingsPlanCollectionTable implements Parcelable {
         this.timestamp = new Date(in.readLong());
     }
 
-    @Generated(hash = 252333918)
+    @Generated(hash = 1211818170)
     public SavingsPlanCollectionTable(String savingsPlanCollectionId,
-            String savingsPlanId, int savingsCollectionNumber, Long id,
+            String savingsId, int savingsCollectionNumber, Long id,
             Double savingsCollectionAmount, Date savingsCollectionDueDate,
             Date lastUpdatedAt, Date timestamp, double amountPaid,
             String savingsCollectionState, Boolean isSavingsCollected) {
         this.savingsPlanCollectionId = savingsPlanCollectionId;
-        this.savingsPlanId = savingsPlanId;
+        this.savingsId = savingsId;
         this.savingsCollectionNumber = savingsCollectionNumber;
         this.id = id;
         this.savingsCollectionAmount = savingsCollectionAmount;
@@ -87,7 +87,7 @@ public class SavingsPlanCollectionTable implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.savingsPlanCollectionId);
-        dest.writeString(this.savingsPlanId);
+        dest.writeString(this.savingsId);
         dest.writeInt(this.savingsCollectionNumber);
         dest.writeLong(this.id);
         dest.writeDouble(this.savingsCollectionAmount);
@@ -107,12 +107,12 @@ public class SavingsPlanCollectionTable implements Parcelable {
         this.savingsPlanCollectionId = savingsPlanCollectionId;
     }
 
-    public String getSavingsPlanId() {
-        return this.savingsPlanId;
+    public String getSavingsId() {
+        return this.savingsId;
     }
 
-    public void setSavingsPlanId(String savingsPlanId) {
-        this.savingsPlanId = savingsPlanId;
+    public void setSavingsId(String savingsId) {
+        this.savingsId = savingsId;
     }
 
     public int getSavingsCollectionNumber() {

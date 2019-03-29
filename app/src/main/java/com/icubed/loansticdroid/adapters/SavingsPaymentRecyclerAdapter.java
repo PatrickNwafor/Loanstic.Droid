@@ -93,7 +93,7 @@ public class SavingsPaymentRecyclerAdapter extends RecyclerView.Adapter<SavingsP
             }
 
             SavingsTable savingsTable = savingsDetails.getSavingsTable();
-            loanId.setText(savingsTable.getAccountNumber());
+            loanId.setText(savingsTable.getSavingsNumber());
         }
     }
 }

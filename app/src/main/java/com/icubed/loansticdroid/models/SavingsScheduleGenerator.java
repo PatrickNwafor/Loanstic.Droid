@@ -8,7 +8,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.icubed.loansticdroid.cloudqueries.CollectionQueries;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
-import com.icubed.loansticdroid.localdatabase.SavingsPlanTable;
+import com.icubed.loansticdroid.localdatabase.SavingsTable;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import java.util.Map;
 import static android.content.ContentValues.TAG;
 
 public class SavingsScheduleGenerator {
-    SavingsPlanTable savings;
+    SavingsTable savings;
     private CollectionQueries collectionQueries;
 
     public static final String COLLECTION_STATE_FULL = "Full Collection";
@@ -29,7 +29,7 @@ public class SavingsScheduleGenerator {
         collectionQueries = new CollectionQueries();
     }
 
-    public void generateRepaymentSchedule(SavingsPlanTable savingsTable){
+    public void generateRepaymentSchedule(SavingsTable savingsTable){
         savings = savingsTable;
 
 //        List<CollectionTable> collectionTableList = generateCollection(savingsTable.getSavingsAmount());
