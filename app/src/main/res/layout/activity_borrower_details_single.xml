@@ -95,6 +95,7 @@
                         android:background="@drawable/saving_button_back"
                         android:gravity="center_vertical"
                         android:text="Savings"
+                        android:onClick="savingsUnderBorrower"
                         android:textAlignment="center"
                         android:textAllCaps="false"
                         android:textColor="@color/whiteEnd"

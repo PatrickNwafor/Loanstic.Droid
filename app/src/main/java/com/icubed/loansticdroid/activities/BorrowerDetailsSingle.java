@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -64,6 +65,7 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     private BorrowersTable borrower;
     private CircleImageView profileImageView;
     private ImageView statusIndicator, addGroupBtn;
+    Button savingUnderABorrower, LoanUnderABorrower;
     private TextView nameTextView, numberTextView, emailTextView, numberOfBizVerifTextView
             , businessNameTextView, businessLocationTextView, businessDescriptionTextView
             , genderTextView, dobTextView, homeAddressTextView, countryTextView, groupCountTextView
@@ -153,6 +155,7 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         addGroupBtn = findViewById(R.id.addGroup);
         borrowerGroupRecyclerView = findViewById(R.id.groupsRecyclerView);
         groupCountTextView = findViewById(R.id.number_of_group);
+        savingUnderABorrower = findViewById(R.id.savings_button);
 
         alert = new AlertDialog.Builder(this);
 
@@ -816,5 +819,10 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void savingsUnderBorrower(View view) {
+        Intent mainActivityIntent = new Intent(BorrowerDetailsSingle.this, SavingsUnderABorrower.class);
+        startActivity(mainActivityIntent);
     }
 }

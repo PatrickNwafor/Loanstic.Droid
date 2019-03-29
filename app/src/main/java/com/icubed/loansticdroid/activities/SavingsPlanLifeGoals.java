@@ -71,7 +71,7 @@ public class SavingsPlanLifeGoals extends AppCompatActivity {
 
         toolbar = findViewById(R.id.select_loan_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Select Savings Plan");
+        getSupportActionBar().setTitle("Select Life Goal Plan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

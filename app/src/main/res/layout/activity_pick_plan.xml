@@ -20,8 +20,8 @@
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        app:cardCornerRadius="5dp"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="15dp"
         app:cardElevation="4dp">
 
         <android.support.constraint.ConstraintLayout
@@ -53,6 +53,7 @@
                 android:layout_marginTop="20dp"
                 android:text="Life Goals"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 android:transitionName="@string/blue_name"
                 app:layout_constraintStart_toEndOf="@+id/loan_type_image"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -79,9 +80,9 @@
                 android:id="@+id/loan_type_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+android:layout_marginEnd="60dp"
                 android:layout_marginStart="88dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="0dp"
                 android:text="Automated long term saving towards key life goals. 1-year minimum maturity"
                 app:layout_constraintStart_toEndOf="@+id/loan_type_image"
                 app:layout_constraintTop_toBottomOf="@+id/loan_type_title" />
@@ -101,7 +102,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
-        app:cardCornerRadius="5dp"
+        app:cardCornerRadius="15dp"
         app:cardElevation="4dp">
 
         <android.support.constraint.ConstraintLayout
@@ -133,6 +134,7 @@
                 android:layout_marginTop="20dp"
                 android:text="Periodic Plan"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 android:transitionName="@string/blue_name"
                 app:layout_constraintStart_toEndOf="@+id/loan_type_image1"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -159,9 +161,9 @@
                 android:id="@+id/loan_type_description1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+android:layout_marginEnd="60dp"
                 android:layout_marginStart="88dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="0dp"
                 android:text="Automated savings towards any goal. 2-months minimum maturity"
                 app:layout_constraintStart_toEndOf="@+id/loan_type_image1"
                 app:layout_constraintTop_toBottomOf="@+id/loan_type_title1" />
@@ -181,7 +183,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
-        app:cardCornerRadius="5dp"
+        app:cardCornerRadius="15dp"
         app:cardElevation="4dp">
 
         <android.support.constraint.ConstraintLayout
@@ -213,6 +215,7 @@
                 android:layout_marginTop="20dp"
                 android:text="Fixed Investment"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 android:transitionName="@string/blue_name"
                 app:layout_constraintStart_toEndOf="@+id/loan_type_image2"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -239,9 +242,9 @@
                 android:id="@+id/loan_type_description2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+android:layout_marginEnd="60dp"
                 android:layout_marginStart="88dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="0dp"
                 android:text="Fix a lump sum of money upfront for a long term"
                 app:layout_constraintStart_toEndOf="@+id/loan_type_image2"
                 app:layout_constraintTop_toBottomOf="@+id/loan_type_title2" />
@@ -261,7 +264,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
-        app:cardCornerRadius="5dp"
+        app:cardCornerRadius="15dp"
         app:cardElevation="4dp">
 
         <android.support.constraint.ConstraintLayout
@@ -293,6 +296,7 @@
                 android:layout_marginTop="20dp"
                 android:text="Save As You Earn"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 android:transitionName="@string/blue_name"
                 app:layout_constraintStart_toEndOf="@+id/loan_type_image3"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -319,9 +323,9 @@
                 android:id="@+id/loan_type_description3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+android:layout_marginEnd="60dp"
                 android:layout_marginStart="88dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="0dp"
                 android:text="Save on your own terms whenever you have free cash."
                 app:layout_constraintStart_toEndOf="@+id/loan_type_image3"
                 app:layout_constraintTop_toBottomOf="@+id/loan_type_title3" />

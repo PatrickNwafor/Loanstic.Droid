@@ -5,6 +5,8 @@
     <string name="branches">Branches</string>
     <string name="borrowers">Borrowers</string>
     <string name="savings">Savings</string>
+    <string name="deposits">Deposits</string>
+    <string name="withdrawals">Withdrawals</string>
     <string name="loan">Loans</string>
     <string name="Repayment">Payments</string>
     <string name="collections">Collections</string>

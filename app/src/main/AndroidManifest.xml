@@ -113,7 +113,10 @@
         <activity android:name=".activities.LifeGoals.LifeGoalsSetup3Cycle" />
         <activity android:name=".activities.LifeGoals.LifeGoalsSetup4DepositAmount" />
         <activity android:name=".activities.LifeGoals.LifeGoalsSetup5GoalOptions" />
-        <activity android:name=".activities.LifeGoals.LifeGoalsSetup6GoalSummary"></activity>
+        <activity android:name=".activities.LifeGoals.LifeGoalsSetup6GoalSummary" />
+        <activity android:name=".activities.LifeGoals.SavingsGoalFixedAmount" />
+        <activity android:name=".activities.SavingsUnderABorrower" />
+        <activity android:name=".activities.SavingsDetails"></activity>
     </application>
 
 </manifest>
