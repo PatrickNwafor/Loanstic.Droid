@@ -138,7 +138,7 @@ public class SavingsActivity extends AppCompatActivity {
                         return false;
                     }
 
-                    Intent intent = new Intent(SavingsActivity.this, LoanSearchActivity.class);
+                    Intent intent = new Intent(SavingsActivity.this, SearchSavingsActivity.class);
                     intent.putExtra("search", searchSavingsEditText.getText().toString());
                     intent.putExtra("from", "savings");
                     startActivity(intent);

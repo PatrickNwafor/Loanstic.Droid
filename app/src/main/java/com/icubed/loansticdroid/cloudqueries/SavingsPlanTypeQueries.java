@@ -11,6 +11,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
+import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTable;
 import com.icubed.loansticdroid.util.BitmapUtil;
 
 import java.util.Map;
@@ -55,9 +56,9 @@ public class SavingsPlanTypeQueries {
                 .add(borrowerGroupMap);
     }
 
-    public Task<DocumentReference> saveSavingsPlanType(LoanTypeTable loanTypeTable){
+    public Task<DocumentReference> saveSavingsPlanType(SavingsPlanTypeTable savingsPlanTypeTable){
         return firebaseFirestore.collection("Savings_Plan_Type")
-                .add(loanTypeTable);
+                .add(savingsPlanTypeTable);
     }
 
     public Task<QuerySnapshot> retrieveAllSavingsPlanType(){
@@ -65,15 +66,15 @@ public class SavingsPlanTypeQueries {
                 .get();
     }
 
-    public Task<DocumentSnapshot> retrieveSingleSavingsPlanType(String loanTypeId){
+    public Task<DocumentSnapshot> retrieveSingleSavingsPlanType(String savingsPlanTypeId){
         return firebaseFirestore.collection("Savings_Plan_Type")
-                .document(loanTypeId)
+                .document(savingsPlanTypeId)
                 .get();
     }
 
-    public Task<Void> deleteSavingsPlanType(String loanTypeId){
+    public Task<Void> deleteSavingsPlanType(String savingsPlanTypeId){
         return firebaseFirestore.collection("Savings_Plan_Type")
-                .document(loanTypeId)
+                .document(savingsPlanTypeId)
                 .delete();
     }
 
