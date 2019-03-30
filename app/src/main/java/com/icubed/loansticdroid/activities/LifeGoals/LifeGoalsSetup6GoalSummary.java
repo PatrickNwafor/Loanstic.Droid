@@ -253,10 +253,12 @@ public class LifeGoalsSetup6GoalSummary extends AppCompatActivity {
     }
 
     private void generateSavingsCollection() {
-        if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)){
-            savingsScheduleGenerator.generateMoneyTargetSchedule(savingsTable);
-        }else if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_TIME)){
-            savingsScheduleGenerator.generateTimeTargetSchedule(savingsTable);
+        if(savingsTable.getTargetType() != null) {
+            if (savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)) {
+                savingsScheduleGenerator.generateMoneyTargetSchedule(savingsTable);
+            } else if (savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_TIME)) {
+                savingsScheduleGenerator.generateTimeTargetSchedule(savingsTable);
+            }
         }
     }
 
