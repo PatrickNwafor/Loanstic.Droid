@@ -32,8 +32,8 @@ public class SavingsPlanTypeTableQueries {
     }
 
     /**********Load a single collection from local Storage*******/
-    public SavingsPlanTypeTable loadSingleSavingsPlanType(String loanTypeId){
-        List<SavingsPlanTypeTable> list = savingsPlanTypeTableDao.queryBuilder().where(SavingsPlanTypeTableDao.Properties.SavingsPlanTypeId.eq(loanTypeId)).build().list();
+    public SavingsPlanTypeTable loadSingleSavingsPlanType(String savingsPlanTypeId){
+        List<SavingsPlanTypeTable> list = savingsPlanTypeTableDao.queryBuilder().where(SavingsPlanTypeTableDao.Properties.SavingsPlanTypeId.eq(savingsPlanTypeId)).build().list();
 
         if(list.isEmpty()) return null;
 

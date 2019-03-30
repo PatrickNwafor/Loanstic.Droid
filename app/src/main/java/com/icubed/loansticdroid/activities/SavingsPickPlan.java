@@ -28,6 +28,7 @@ import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.LifeGoals.LifeGoalsSetup1GoalName;
 import com.icubed.loansticdroid.adapters.SavingsPlanTypeRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.SavingsRecyclerAdapter;
+import com.icubed.loansticdroid.cloudqueries.Account;
 import com.icubed.loansticdroid.cloudqueries.SavingsPlanTypeQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
@@ -54,6 +55,8 @@ public class SavingsPickPlan extends AppCompatActivity {
     CardView cd1, cd2, cd3, cd4;
     LottieAnimationView lastCheck = null;
     BorrowersTable borrower;
+    SavingsTable savingsTable;
+    Account account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,8 @@ public class SavingsPickPlan extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         borrower = getIntent().getParcelableExtra("borrower");
+        savingsTable = new SavingsTable();
+        account = new Account();
 
         cd1 = findViewById(R.id.cd1);
         cd2 = findViewById(R.id.cd2);
@@ -169,10 +174,18 @@ public class SavingsPickPlan extends AppCompatActivity {
     }
 
     private void startAnotherActivity(Class newActivity){
+
+        savingsTable.setSavingsPlanName(savingsPlanName);
+        savingsTable.setCreatedAt(new Date());
+        savingsTable.setLastUpdatedAt(new Date());
+        savingsTable.setLoanOfficerId(account.getCurrentUserId());
+        savingsTable.setStartDate(new Date());
+        savingsTable.setMaturityDate(new Date());
+        savingsTable.setBorrowerId(borrower.getBorrowersId());
+
         Intent newActivityIntent = new Intent(this, newActivity);
-        newActivityIntent.putExtra("savings_plan_name", savingsPlanName);
+        newActivityIntent.putExtra("savings", savingsTable);
         newActivityIntent.putExtra("borrower", borrower);
-        //newActivityIntent.putExtra("savings", savingsTable);
         startActivity(newActivityIntent);
     }
 }

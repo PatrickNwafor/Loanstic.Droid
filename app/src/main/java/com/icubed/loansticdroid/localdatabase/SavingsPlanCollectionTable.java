@@ -187,6 +187,11 @@ public class SavingsPlanCollectionTable implements Parcelable {
         this.isSavingsCollected = isSavingsCollected;
     }
 
+    @Override
+    public String toString() {
+        return "SavingsPlanCollectionTable{" + "savingsPlanCollectionId='" + savingsPlanCollectionId + '\'' + ", savingsId='" + savingsId + '\'' + ", savingsCollectionNumber=" + savingsCollectionNumber + ", id=" + id + ", savingsCollectionAmount=" + savingsCollectionAmount + ", savingsCollectionDueDate=" + savingsCollectionDueDate + ", lastUpdatedAt=" + lastUpdatedAt + ", timestamp=" + timestamp + ", amountPaid=" + amountPaid + ", savingsCollectionState='" + savingsCollectionState + '\'' + ", isSavingsCollected=" + isSavingsCollected + '}';
+    }
+
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public SavingsPlanCollectionTable createFromParcel(Parcel in) {
             return new SavingsPlanCollectionTable(in);

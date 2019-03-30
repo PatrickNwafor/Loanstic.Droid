@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="60dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:text="How often would the customer like to save for this goal"
             android:textSize="20sp"
@@ -34,47 +34,67 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.153" />
 
-        <TextView
-            android:id="@+id/daily"
+        <RadioGroup
+            android:id="@+id/radioGroup2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="60dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="148dp"
-            android:text="Once a day"
-            android:textSize="19sp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            android:paddingStart="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.05"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/target_title">
+
+            <RadioButton
+                android:id="@+id/per_day"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:checked="true"
+                android:text="Per day" />
+
+            <RadioButton
+                android:id="@+id/per_week"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="Per week" />
+
+            <RadioButton
+                android:id="@+id/per_month"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="Per month" />
+
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/lenght"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="Input cycle lenght"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup2" />
 
         <TextView
-            android:id="@+id/weekly"
-            android:layout_width="match_parent"
+            android:id="@+id/message"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="60dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="192dp"
-            android:text="Once a week"
-            android:textSize="19sp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.052"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/monthly"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="60dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="240dp"
-            android:text="Once a month"
-            android:textSize="19sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.052"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/lenght" />
     </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

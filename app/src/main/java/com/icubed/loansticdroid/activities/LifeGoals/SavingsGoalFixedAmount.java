@@ -6,10 +6,17 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.localdatabase.SavingsTable;
 
 public class SavingsGoalFixedAmount extends AppCompatActivity {
+
+    private EditText fixedEditText;
+    private SavingsTable savingsTable;
+    private BorrowersTable borrowersTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +27,11 @@ public class SavingsGoalFixedAmount extends AppCompatActivity {
         getSupportActionBar().setTitle("Savings Fixed Amount");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        savingsTable = getIntent().getParcelableExtra("savings");
+        borrowersTable = getIntent().getParcelableExtra("borrower");
+
+        fixedEditText = findViewById(R.id.target_amount);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -56,10 +68,13 @@ public class SavingsGoalFixedAmount extends AppCompatActivity {
     }
 
     private void startAnotherActivity(Class newActivity){
+
+        savingsTable.setTargetType(SavingsTable.TARGET_TYPE_FIXED);
+        savingsTable.setFixedAmount(Double.parseDouble(fixedEditText.getText().toString()));
+
         Intent newActivityIntent = new Intent(this, newActivity);
-        //newActivityIntent.putExtra("savings_type", selectedSavingsPlanTypeTable);
-        //newActivityIntent.putExtra("borrower", borrower);
-        //newActivityIntent.putExtra("savings", savingsTable);
+        newActivityIntent.putExtra("borrower", borrowersTable);
+        newActivityIntent.putExtra("savings", savingsTable);
         startActivity(newActivityIntent);
     }
 }

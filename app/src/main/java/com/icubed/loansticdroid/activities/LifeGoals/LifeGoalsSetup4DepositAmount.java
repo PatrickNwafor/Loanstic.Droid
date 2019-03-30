@@ -6,10 +6,20 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.localdatabase.SavingsTable;
+import com.icubed.loansticdroid.util.FormUtil;
 
 public class LifeGoalsSetup4DepositAmount extends AppCompatActivity {
+
+    private SavingsTable savingsTable;
+    private BorrowersTable borrowersTable;
+
+    private EditText depositAmount;
+    FormUtil formUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +31,12 @@ public class LifeGoalsSetup4DepositAmount extends AppCompatActivity {
         getSupportActionBar().setTitle("Savings Deposit Amount");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        savingsTable = getIntent().getParcelableExtra("savings");
+        borrowersTable = getIntent().getParcelableExtra("borrower");
+
+        depositAmount = findViewById(R.id.target_amount);
+        formUtil = new FormUtil();
     }
 
     @Override
@@ -42,7 +58,11 @@ public class LifeGoalsSetup4DepositAmount extends AppCompatActivity {
                 return true;
 
             case R.id.next_to_loan_terms:
-                startAnotherActivity(LifeGoalsSetup5GoalOptions.class);
+                if(formUtil.isSingleFormEmpty(depositAmount)) depositAmount.setError("Please fill deposit amount");
+                 else {
+                     depositAmount.setError(null);
+                     startAnotherActivity(LifeGoalsSetup5GoalOptions.class);
+                }
                 return true;
 
             default:
@@ -58,10 +78,12 @@ public class LifeGoalsSetup4DepositAmount extends AppCompatActivity {
     }
 
     private void startAnotherActivity(Class newActivity){
+
+        savingsTable.setDepositAmount(Double.parseDouble(depositAmount.getText().toString()));
+
         Intent newActivityIntent = new Intent(this, newActivity);
-        //newActivityIntent.putExtra("savings_type", selectedSavingsPlanTypeTable);
-        //newActivityIntent.putExtra("borrower", borrower);
-        //newActivityIntent.putExtra("savings", savingsTable);
+        newActivityIntent.putExtra("borrower", borrowersTable);
+        newActivityIntent.putExtra("savings", savingsTable);
         startActivity(newActivityIntent);
     }
 }

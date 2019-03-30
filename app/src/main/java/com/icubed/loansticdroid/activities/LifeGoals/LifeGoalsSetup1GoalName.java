@@ -11,13 +11,16 @@ import android.widget.TextView;
 
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.SavingsPickPlan;
+import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTable;
+import com.icubed.loansticdroid.localdatabase.SavingsTable;
 
 public class LifeGoalsSetup1GoalName extends AppCompatActivity {
 
+    private TextView goalTitleTextView, goalNameTextView;
+    private SavingsTable savingsTable;
+    private BorrowersTable borrower;
     private SavingsPlanTypeTable savingsPlanTypeTable;
-    private TextView goalTitleTextView;
-    private String savingsGoalName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +33,19 @@ public class LifeGoalsSetup1GoalName extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        borrower = getIntent().getParcelableExtra("borrower");
+        savingsTable = getIntent().getParcelableExtra("savings");
         savingsPlanTypeTable = getIntent().getParcelableExtra("savings_type");
-        savingsGoalName = getIntent().getStringExtra("savings_plan_name");
-        goalTitleTextView = findViewById(R.id.goal_title);
-        //goalTitleTextView.setText(savingsPlanTypeTable.getSavingsTypeName());
 
+        goalTitleTextView = findViewById(R.id.goal_title);
+        goalNameTextView = findViewById(R.id.goal_name);
+
+        goalTitleTextView.setText(savingsTable.getSavingsPlanName());
+
+        if(savingsPlanTypeTable != null){
+            goalNameTextView.setEnabled(false);
+            goalNameTextView.setText(savingsPlanTypeTable.getSavingsTypeName());
+        }
     }
 
     @Override
@@ -56,10 +67,10 @@ public class LifeGoalsSetup1GoalName extends AppCompatActivity {
                 return true;
 
             case R.id.next_to_loan_terms:
-                if(savingsGoalName.equals(SavingsPickPlan.LIFE_GOALS)) startAnotherActivity(LifeGoalsSetup2TargetAmount.class);
-                else if(savingsGoalName.equals(SavingsPickPlan.PERIODIC_PLAN)) startAnotherActivity(LifeGoalsSetup3Cycle.class);
-                else if(savingsGoalName.equals(SavingsPickPlan.FIXED_INVESTMENT)) startAnotherActivity(SavingsGoalFixedAmount.class);
-                else if(savingsGoalName.equals(SavingsPickPlan.SAVE_AS_YOU_EARN)) startAnotherActivity(LifeGoalsSetup5GoalOptions.class);
+                if(savingsTable.getSavingsPlanName().equals(SavingsPickPlan.LIFE_GOALS)) startAnotherActivity(LifeGoalsSetup2TargetAmount.class);
+                else if(savingsTable.getSavingsPlanName().equals(SavingsPickPlan.PERIODIC_PLAN)) startAnotherActivity(LifeGoalsSetup3Cycle.class);
+                else if(savingsTable.getSavingsPlanName().equals(SavingsPickPlan.FIXED_INVESTMENT)) startAnotherActivity(SavingsGoalFixedAmount.class);
+                else if(savingsTable.getSavingsPlanName().equals(SavingsPickPlan.SAVE_AS_YOU_EARN)) startAnotherActivity(LifeGoalsSetup5GoalOptions.class);
                 return true;
 
             default:
@@ -75,10 +86,12 @@ public class LifeGoalsSetup1GoalName extends AppCompatActivity {
     }
 
     private void startAnotherActivity(Class newActivity){
+
+        savingsTable.setSavingsPlanPurpose(goalNameTextView.getText().toString());
+
         Intent newActivityIntent = new Intent(this, newActivity);
-        //newActivityIntent.putExtra("savings_type", selectedSavingsPlanTypeTable);
-        //newActivityIntent.putExtra("borrower", borrower);
-        //newActivityIntent.putExtra("savings", savingsTable);
+        newActivityIntent.putExtra("borrower", borrower);
+        newActivityIntent.putExtra("savings", savingsTable);
         startActivity(newActivityIntent);
     }
 }

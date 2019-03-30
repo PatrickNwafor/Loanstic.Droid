@@ -18,6 +18,9 @@ public class SavingsTable implements Parcelable {
     public static final String TARGET_TYPE_TIME = "time";
     @Transient
     public static final String TARGET_TYPE_MONEY = "money";
+    @Transient
+    public static final String TARGET_TYPE_FIXED = "fixed";
+
 
     @Unique
     private String savingsId;
@@ -25,17 +28,18 @@ public class SavingsTable implements Parcelable {
     @Id(autoincrement = true)
     private Long id;
 
-    private Date createdAt, lastUpdatedAt;
+    private Date createdAt, lastUpdatedAt, startDate, maturityDate;
     private String savingsNumber;
     private double amountSaved;
     private String borrowerId;
+    private boolean isThereInterest;
 
-    private double amountTarget;
+    private double amountTarget, fixedAmount, depositAmount, totalExpectedPeriodicAmount;
     private String targetType, savingsPlanName, savingsPlanTypeId;
     private double savingsInterestRate;
     private int savingsDuration;
-    private String loanOfficerId, savingsInterestRateUnit, savingsSchedulePurpose
-            , savingsDurationUnit, savingsAmountUnit;
+    private String loanOfficerId, savingsInterestRateUnit, savingsPlanPurpose
+            , savingsDurationUnit;
 
     // Parcelling part
     public SavingsTable(Parcel in) {
@@ -53,27 +57,32 @@ public class SavingsTable implements Parcelable {
         this.savingsDuration = in.readInt();
         this.loanOfficerId = in.readString();
         this.savingsInterestRateUnit = in.readString();
-        this.savingsSchedulePurpose = in.readString();
+        this.savingsPlanPurpose = in.readString();
         this.savingsDurationUnit = in.readString();
-        this.savingsAmountUnit = in.readString();
+        this.fixedAmount = in.readDouble();
+        this.depositAmount = in.readDouble();
+        this.startDate = new Date(in.readLong());
+        this.maturityDate = new Date(in.readLong());
+        this.isThereInterest = Boolean.parseBoolean(in.readString());
+        this.totalExpectedPeriodicAmount = in.readDouble();
     }
 
-    @Generated(hash = 1808753213)
-    public SavingsTable(String savingsId, Long id, Date createdAt,
-            Date lastUpdatedAt, String savingsNumber, double amountSaved,
-            String borrowerId, double amountTarget, String targetType,
-            String savingsPlanName, String savingsPlanTypeId,
-            double savingsInterestRate, int savingsDuration, String loanOfficerId,
-            String savingsInterestRateUnit, String savingsSchedulePurpose,
-            String savingsDurationUnit, String savingsAmountUnit) {
+    @Generated(hash = 1214456740)
+    public SavingsTable(String savingsId, Long id, Date createdAt, Date lastUpdatedAt, Date startDate, Date maturityDate, String savingsNumber, double amountSaved, String borrowerId, boolean isThereInterest, double amountTarget, double fixedAmount, double depositAmount, double totalExpectedPeriodicAmount, String targetType, String savingsPlanName, String savingsPlanTypeId, double savingsInterestRate, int savingsDuration, String loanOfficerId, String savingsInterestRateUnit, String savingsPlanPurpose, String savingsDurationUnit) {
         this.savingsId = savingsId;
         this.id = id;
         this.createdAt = createdAt;
         this.lastUpdatedAt = lastUpdatedAt;
+        this.startDate = startDate;
+        this.maturityDate = maturityDate;
         this.savingsNumber = savingsNumber;
         this.amountSaved = amountSaved;
         this.borrowerId = borrowerId;
+        this.isThereInterest = isThereInterest;
         this.amountTarget = amountTarget;
+        this.fixedAmount = fixedAmount;
+        this.depositAmount = depositAmount;
+        this.totalExpectedPeriodicAmount = totalExpectedPeriodicAmount;
         this.targetType = targetType;
         this.savingsPlanName = savingsPlanName;
         this.savingsPlanTypeId = savingsPlanTypeId;
@@ -81,9 +90,8 @@ public class SavingsTable implements Parcelable {
         this.savingsDuration = savingsDuration;
         this.loanOfficerId = loanOfficerId;
         this.savingsInterestRateUnit = savingsInterestRateUnit;
-        this.savingsSchedulePurpose = savingsSchedulePurpose;
+        this.savingsPlanPurpose = savingsPlanPurpose;
         this.savingsDurationUnit = savingsDurationUnit;
-        this.savingsAmountUnit = savingsAmountUnit;
     }
 
     @Generated(hash = 1055947197)
@@ -111,9 +119,19 @@ public class SavingsTable implements Parcelable {
         dest.writeInt(this.savingsDuration);
         dest.writeString(this.loanOfficerId);
         dest.writeString(this.savingsInterestRateUnit);
-        dest.writeString(this.savingsSchedulePurpose);
+        dest.writeString(this.savingsPlanPurpose);
         dest.writeString(this.savingsDurationUnit);
-        dest.writeString(this.savingsAmountUnit);
+        dest.writeDouble(this.fixedAmount);
+        dest.writeDouble(this.depositAmount);
+        dest.writeLong(this.startDate.getTime());
+        dest.writeLong(this.maturityDate.getTime());
+        dest.writeString(String.valueOf(this.isThereInterest));
+        dest.writeDouble(this.totalExpectedPeriodicAmount);
+    }
+
+    @Override
+    public String toString() {
+        return "SavingsTable{" + "savingsId='" + savingsId + '\'' + ", id=" + id + ", createdAt=" + createdAt + ", lastUpdatedAt=" + lastUpdatedAt + ", startDate=" + startDate + ", maturityDate=" + maturityDate + ", savingsNumber='" + savingsNumber + '\'' + ", amountSaved=" + amountSaved + ", borrowerId='" + borrowerId + '\'' + ", isThereInterest=" + isThereInterest + ", amountTarget=" + amountTarget + ", fixedAmount=" + fixedAmount + ", depositAmount=" + depositAmount + ", totalExpectedPeriodicAmount=" + totalExpectedPeriodicAmount + ", targetType='" + targetType + '\'' + ", savingsPlanName='" + savingsPlanName + '\'' + ", savingsPlanTypeId='" + savingsPlanTypeId + '\'' + ", savingsInterestRate=" + savingsInterestRate + ", savingsDuration=" + savingsDuration + ", loanOfficerId='" + loanOfficerId + '\'' + ", savingsInterestRateUnit='" + savingsInterestRateUnit + '\'' + ", savingsPlanPurpose='" + savingsPlanPurpose + '\'' + ", savingsDurationUnit='" + savingsDurationUnit + '\'' + '}';
     }
 
     public String getSavingsId() {
@@ -148,6 +166,22 @@ public class SavingsTable implements Parcelable {
         this.lastUpdatedAt = lastUpdatedAt;
     }
 
+    public Date getStartDate() {
+        return this.startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getMaturityDate() {
+        return this.maturityDate;
+    }
+
+    public void setMaturityDate(Date maturityDate) {
+        this.maturityDate = maturityDate;
+    }
+
     public String getSavingsNumber() {
         return this.savingsNumber;
     }
@@ -172,12 +206,36 @@ public class SavingsTable implements Parcelable {
         this.borrowerId = borrowerId;
     }
 
+    public boolean getIsThereInterest() {
+        return this.isThereInterest;
+    }
+
+    public void setIsThereInterest(boolean isThereInterest) {
+        this.isThereInterest = isThereInterest;
+    }
+
     public double getAmountTarget() {
         return this.amountTarget;
     }
 
     public void setAmountTarget(double amountTarget) {
         this.amountTarget = amountTarget;
+    }
+
+    public double getFixedAmount() {
+        return this.fixedAmount;
+    }
+
+    public void setFixedAmount(double fixedAmount) {
+        this.fixedAmount = fixedAmount;
+    }
+
+    public double getDepositAmount() {
+        return this.depositAmount;
+    }
+
+    public void setDepositAmount(double depositAmount) {
+        this.depositAmount = depositAmount;
     }
 
     public String getTargetType() {
@@ -236,12 +294,12 @@ public class SavingsTable implements Parcelable {
         this.savingsInterestRateUnit = savingsInterestRateUnit;
     }
 
-    public String getSavingsSchedulePurpose() {
-        return this.savingsSchedulePurpose;
+    public String getSavingsPlanPurpose() {
+        return this.savingsPlanPurpose;
     }
 
-    public void setSavingsSchedulePurpose(String savingsSchedulePurpose) {
-        this.savingsSchedulePurpose = savingsSchedulePurpose;
+    public void setSavingsPlanPurpose(String savingsPlanPurpose) {
+        this.savingsPlanPurpose = savingsPlanPurpose;
     }
 
     public String getSavingsDurationUnit() {
@@ -252,12 +310,12 @@ public class SavingsTable implements Parcelable {
         this.savingsDurationUnit = savingsDurationUnit;
     }
 
-    public String getSavingsAmountUnit() {
-        return this.savingsAmountUnit;
+    public double getTotalExpectedPeriodicAmount() {
+        return this.totalExpectedPeriodicAmount;
     }
 
-    public void setSavingsAmountUnit(String savingsAmountUnit) {
-        this.savingsAmountUnit = savingsAmountUnit;
+    public void setTotalExpectedPeriodicAmount(double totalExpectedPeriodicAmount) {
+        this.totalExpectedPeriodicAmount = totalExpectedPeriodicAmount;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

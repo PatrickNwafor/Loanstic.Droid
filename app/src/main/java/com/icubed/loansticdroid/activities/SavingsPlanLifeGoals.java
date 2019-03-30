@@ -57,7 +57,6 @@ public class SavingsPlanLifeGoals extends AppCompatActivity {
 
     private BorrowersTable borrower;
     private GroupBorrowerTable group;
-    private String savingsPlanName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +76,6 @@ public class SavingsPlanLifeGoals extends AppCompatActivity {
 
         borrower = getIntent().getParcelableExtra("borrower");
         savingsTable = getIntent().getParcelableExtra("savings");
-        savingsPlanName = getIntent().getStringExtra("savings_plan_name");
 
         progressBar = findViewById(R.id.loan_types_progress_bar);
         savingsPlanRecyclerView = findViewById(R.id.loan_types_list);
@@ -260,11 +258,13 @@ public class SavingsPlanLifeGoals extends AppCompatActivity {
     }
 
     private void startAnotherActivity(Class newActivity){
+
+        savingsTable.setSavingsPlanTypeId(selectedSavingsPlanTypeTable.getSavingsPlanTypeId());
+
         Intent newActivityIntent = new Intent(this, newActivity);
         newActivityIntent.putExtra("savings_type", selectedSavingsPlanTypeTable);
         newActivityIntent.putExtra("borrower", borrower);
-        newActivityIntent.putExtra("savings_plan_name", savingsPlanName);
-        //newActivityIntent.putExtra("savings", savingsTable);
+        newActivityIntent.putExtra("savings", savingsTable);
         startActivity(newActivityIntent);
     }
 

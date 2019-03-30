@@ -6,11 +6,16 @@ import android.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.icubed.loansticdroid.cloudqueries.CollectionQueries;
-import com.icubed.loansticdroid.localdatabase.CollectionTable;
+import com.icubed.loansticdroid.cloudqueries.SavingsPlanCollectionQueries;
+import com.icubed.loansticdroid.cloudqueries.SavingsQueries;
+import com.icubed.loansticdroid.localdatabase.SavingsPlanCollectionTable;
 import com.icubed.loansticdroid.localdatabase.SavingsTable;
+import com.icubed.loansticdroid.util.DateUtil;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,40 +24,73 @@ import static android.content.ContentValues.TAG;
 
 public class SavingsScheduleGenerator {
     SavingsTable savings;
-    private CollectionQueries collectionQueries;
+    private SavingsPlanCollectionQueries savingsPlanCollectionQueries;
+    private SavingsQueries savingsQueries;
 
     public static final String COLLECTION_STATE_FULL = "Full Collection";
     public static final String COLLECTION_STATE_PARTIAL = "Partial Collection";
     public static final String COLLECTION_STATE_NO = "No Collection";
 
+    private double totalPeriodicAmount = 0;
+
     public SavingsScheduleGenerator() {
-        collectionQueries = new CollectionQueries();
+        savingsPlanCollectionQueries = new SavingsPlanCollectionQueries();
+        savingsQueries = new SavingsQueries();
     }
 
-    public void generateRepaymentSchedule(SavingsTable savingsTable){
+    public void generateMoneyTargetSchedule(SavingsTable savingsTable){
         savings = savingsTable;
 
-//        List<CollectionTable> collectionTableList = generateCollection(savingsTable.getSavingsAmount());
-//        Log.d(TAG, "generateRepaymentSchedule: "+collectionTableList.get(collectionTableList.size() - 1));
-//
-//        sendCollectionToCloud(collectionTableList);
+        List<SavingsPlanCollectionTable> savingsPlanCollectionTable = generateCollection(generateInterest());
+        Log.d(TAG, "generateRepaymentSchedule: "+savingsPlanCollectionTable.toString());
+
+        sendCollectionToCloud(savingsPlanCollectionTable);
     }
 
-    private void sendCollectionToCloud(List<CollectionTable> collectionTableList) {
-        for (CollectionTable collectionTable : collectionTableList) {
+    public void generateTimeTargetSchedule(SavingsTable savingsTable){
+        savings = savingsTable;
+
+        List<SavingsPlanCollectionTable> savingsPlanCollectionTable = generateCollectionTime();
+        Log.d(TAG, "generateRepaymentSchedule: "+savingsPlanCollectionTable.toString());
+
+        sendCollectionToCloud(savingsPlanCollectionTable);
+        updateSavingsDetails();
+    }
+
+    private void updateSavingsDetails() {
+
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("lastUpdated", new Date());
+        objectMap.put("totalExpectedPeriodicAmount", totalPeriodicAmount);
+
+        savingsQueries.updateSavingsDetails(objectMap, savings.getSavingsId())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Log.d(TAG, "onComplete: savings updated");
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+
+    }
+
+    private void sendCollectionToCloud(List<SavingsPlanCollectionTable> savingsPlanCollectionTable) {
+        for (SavingsPlanCollectionTable collectionTable : savingsPlanCollectionTable) {
             Map<String, Object> objectMap = new HashMap<>();
-            objectMap.put("collectionNumber", collectionTable.getCollectionNumber());
-            objectMap.put("savingsId", collectionTable.getLoanId());
-            objectMap.put("collectionDueAmount", collectionTable.getCollectionDueAmount());
-            objectMap.put("collectionDueDate", collectionTable.getCollectionDueDate());
+            objectMap.put("savingsCollectionNumber", collectionTable.getSavingsCollectionNumber());
+            objectMap.put("savingsId", collectionTable.getSavingsId());
+            objectMap.put("savingsCollectionAmount", collectionTable.getSavingsCollectionAmount());
+            objectMap.put("savingsCollectionDueDate", collectionTable.getSavingsCollectionDueDate());
             objectMap.put("lastUpdatedAt", collectionTable.getLastUpdatedAt());
             objectMap.put("timestamp", collectionTable.getTimestamp());
-            objectMap.put("isDueCollected", collectionTable.getIsDueCollected());
-            objectMap.put("penalty", collectionTable.getPenalty());
-            objectMap.put("collectionState", collectionTable.getCollectionState());
-            objectMap.put("amountPaid", 0);
+            objectMap.put("isSavingsCollected", collectionTable.getIsSavingsCollected());
+            objectMap.put("collectionState", collectionTable.getSavingsCollectionState());
+            objectMap.put("amountPaid", 0.0);
 
-            collectionQueries.createCollection(objectMap)
+            savingsPlanCollectionQueries.createSavingsScheduleCollection(objectMap)
                     .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentReference> task) {
@@ -66,138 +104,239 @@ public class SavingsScheduleGenerator {
         }
     }
 
-//    private List<CollectionTable> generateCollection(double repaymentAmount){
-//
-//        switch (savings.getSavingsAmountUnit()){
-//            case DateUtil.PER_DAY:
-//                return generateRepaymentPerDay(repaymentAmount);
-//
-//            case DateUtil.PER_MONTH:
-//                return generateRepaymentPerMonth(repaymentAmount);
-//
-//            case DateUtil.PER_WEEK:
-//                return generateRepaymentPerWeek(repaymentAmount);
-//
-//            case DateUtil.PER_YEAR:
-//                return generateRepaymentPerYear(repaymentAmount);
-//
-//            default:
-//                return null;
-//        }
-//    }
+    private List<SavingsPlanCollectionTable> generateCollection(double repaymentAmount){
+
+        switch (savings.getSavingsDurationUnit()){
+            case DateUtil.PER_DAY:
+                return generateRepaymentPerDay(repaymentAmount);
+
+            case DateUtil.PER_MONTH:
+                return generateRepaymentPerMonth(repaymentAmount);
+
+            case DateUtil.PER_WEEK:
+                return generateRepaymentPerWeek(repaymentAmount);
+
+            default:
+                return null;
+        }
+    }
+
+    private List<SavingsPlanCollectionTable> generateCollectionTime(){
+
+        switch (savings.getSavingsDurationUnit()){
+            case DateUtil.PER_DAY:
+                return generateRepaymentPerDay();
+
+            case DateUtil.PER_MONTH:
+                return generateRepaymentPerMonth();
+
+            case DateUtil.PER_WEEK:
+                return generateRepaymentPerWeek();
+
+            default:
+                return null;
+        }
+    }
+
+    private List<SavingsPlanCollectionTable> generateRepaymentPerWeek() {
+        Calendar now = Calendar.getInstance();
+        now.setTime(savings.getStartDate());
+
+        List<SavingsPlanCollectionTable> savingsPlanCollectionTable = new ArrayList<>();
+        int count = 1;
+
+        now.set(Calendar.MONTH, now.get(Calendar.MONTH) + savings.getSavingsDuration());
+
+        while (now.getTime().before(savings.getMaturityDate())){
+
+            SavingsPlanCollectionTable collectionTable = new SavingsPlanCollectionTable();
+            collectionTable.setTimestamp(new Date());
+            collectionTable.setSavingsCollectionDueDate(now.getTime());
+            collectionTable.setIsSavingsCollected(false);
+            collectionTable.setSavingsCollectionAmount(savings.getDepositAmount());
+            collectionTable.setLastUpdatedAt(new Date());
+            collectionTable.setSavingsCollectionNumber(count);
+            collectionTable.setSavingsId(savings.getSavingsId());
+            collectionTable.setAmountPaid(0.0);
+            collectionTable.setSavingsCollectionState(COLLECTION_STATE_NO);
+
+            savingsPlanCollectionTable.add(collectionTable);
+            totalPeriodicAmount = totalPeriodicAmount + savings.getDepositAmount();
+            now.set(Calendar.MONTH, now.get(Calendar.MONTH) + savings.getSavingsDuration());
+            count++;
+        }
+
+        return savingsPlanCollectionTable;
+    }
+
+    private List<SavingsPlanCollectionTable> generateRepaymentPerMonth() {
+        Calendar now = Calendar.getInstance();
+        now.setTime(savings.getStartDate());
+
+        List<SavingsPlanCollectionTable> savingsPlanCollectionTable = new ArrayList<>();
+        int count = 1;
+
+        now.set(Calendar.DAY_OF_YEAR, now.get(Calendar.DAY_OF_YEAR) + savings.getSavingsDuration());
+
+        while (now.getTime().before(savings.getMaturityDate())){
+
+            SavingsPlanCollectionTable collectionTable = new SavingsPlanCollectionTable();
+            collectionTable.setTimestamp(new Date());
+            collectionTable.setSavingsCollectionDueDate(now.getTime());
+            collectionTable.setIsSavingsCollected(false);
+            collectionTable.setSavingsCollectionAmount(savings.getDepositAmount());
+            collectionTable.setLastUpdatedAt(new Date());
+            collectionTable.setSavingsCollectionNumber(count);
+            collectionTable.setSavingsId(savings.getSavingsId());
+            collectionTable.setAmountPaid(0.0);
+            collectionTable.setSavingsCollectionState(COLLECTION_STATE_NO);
+
+            savingsPlanCollectionTable.add(collectionTable);
+            totalPeriodicAmount = totalPeriodicAmount + savings.getDepositAmount();
+            now.set(Calendar.DAY_OF_YEAR, now.get(Calendar.DAY_OF_YEAR) + savings.getSavingsDuration());
+            count++;
+        }
+
+        return savingsPlanCollectionTable;
+    }
+
+    private List<SavingsPlanCollectionTable> generateRepaymentPerDay() {
+
+        Calendar now = Calendar.getInstance();
+        now.setTime(savings.getStartDate());
+
+        List<SavingsPlanCollectionTable> savingsPlanCollectionTable = new ArrayList<>();
+        int count = 1;
+
+        now.set(Calendar.DAY_OF_YEAR, now.get(Calendar.DAY_OF_YEAR) + savings.getSavingsDuration());
+
+        while (now.getTime().before(savings.getMaturityDate())){
+
+            SavingsPlanCollectionTable collectionTable = new SavingsPlanCollectionTable();
+            collectionTable.setTimestamp(new Date());
+            collectionTable.setSavingsCollectionDueDate(now.getTime());
+            collectionTable.setIsSavingsCollected(false);
+            collectionTable.setSavingsCollectionAmount(savings.getDepositAmount());
+            collectionTable.setLastUpdatedAt(new Date());
+            collectionTable.setSavingsCollectionNumber(count);
+            collectionTable.setSavingsId(savings.getSavingsId());
+            collectionTable.setAmountPaid(0.0);
+            collectionTable.setSavingsCollectionState(COLLECTION_STATE_NO);
+
+            savingsPlanCollectionTable.add(collectionTable);
+            totalPeriodicAmount = totalPeriodicAmount + savings.getDepositAmount();
+            now.set(Calendar.DAY_OF_YEAR, now.get(Calendar.DAY_OF_YEAR) + savings.getSavingsDuration());
+            count++;
+        }
+
+        return savingsPlanCollectionTable;
+    }
 
     private double decimalFormat(double d){
         DecimalFormat df = new DecimalFormat("#.###");
         return Double.parseDouble(df.format(d));
     }
 
-//    private List<CollectionTable> generateRepaymentPerWeek(double repaymentAmount) {
-//        List<CollectionTable> collectionTableList = new ArrayList<>();
-//
-//        int numberOfRepaymentWeek = (int) Math.ceil(repaymentAmount/loan.getRepaymentAmount());
-//        double lastRepaymentAmount = repaymentAmount - ((numberOfRepaymentWeek-1) * loan.getRepaymentAmount());
-//        lastRepaymentAmount = decimalFormat(lastRepaymentAmount);
-//
-//        for(int i = 1; i <= numberOfRepaymentWeek; i++){
-//            CollectionTable collectionTable = new CollectionTable();
-//            collectionTable.setTimestamp(new Date());
-//            collectionTable.setCollectionDueDate(DateUtil.addDay(loan.getLoanCreationDate(), 7*i));
-//            collectionTable.setIsDueCollected(false);
-//            if(i==numberOfRepaymentWeek) collectionTable.setCollectionDueAmount(lastRepaymentAmount);
-//            else collectionTable.setCollectionDueAmount(loan.getRepaymentAmount());
-//            collectionTable.setLastUpdatedAt(new Date());
-//            collectionTable.setCollectionNumber(i);
-//            collectionTable.setLoanId(loan.getLoanId());
-//            collectionTable.setPenalty(0.0);
-//            collectionTable.setAmountPaid(0.0);
-//            collectionTable.setCollectionState(COLLECTION_STATE_NO);
-//
-//            collectionTableList.add(collectionTable);
-//        }
-//
-//        return collectionTableList;
-//    }
-//
-//    private List<CollectionTable> generateRepaymentPerMonth(double repaymentAmount) {
-//        List<CollectionTable> collectionTableList = new ArrayList<>();
-//
-//        int numberOfRepaymentMonths = (int) Math.ceil(repaymentAmount/loan.getRepaymentAmount());
-//        double lastRepaymentAmount = repaymentAmount - ((numberOfRepaymentMonths-1) * loan.getRepaymentAmount());
-//        lastRepaymentAmount = decimalFormat(lastRepaymentAmount);
-//
-//        for(int i = 1; i <= numberOfRepaymentMonths; i++){
-//            CollectionTable collectionTable = new CollectionTable();
-//            collectionTable.setTimestamp(new Date());
-//            collectionTable.setCollectionDueDate(DateUtil.addMonth(loan.getLoanCreationDate(), i));
-//            collectionTable.setIsDueCollected(false);
-//            if(i==numberOfRepaymentMonths) collectionTable.setCollectionDueAmount(lastRepaymentAmount);
-//            else collectionTable.setCollectionDueAmount(loan.getRepaymentAmount());
-//            collectionTable.setLastUpdatedAt(new Date());
-//            collectionTable.setCollectionNumber(i);
-//            collectionTable.setLoanId(loan.getLoanId());
-//            collectionTable.setPenalty(0.0);
-//            collectionTable.setAmountPaid(0.0);
-//            collectionTable.setCollectionState(COLLECTION_STATE_NO);
-//
-//            collectionTableList.add(collectionTable);
-//        }
-//
-//        return collectionTableList;
-//    }
-//
-//    private List<CollectionTable> generateRepaymentPerYear(double repaymentAmount) {
-//        List<CollectionTable> collectionTableList = new ArrayList<>();
-//
-//        int numberOfRepaymentYears = (int) Math.ceil(repaymentAmount/loan.getRepaymentAmount());
-//        double lastRepaymentAmount = repaymentAmount - ((numberOfRepaymentYears-1) * loan.getRepaymentAmount());
-//        lastRepaymentAmount = decimalFormat(lastRepaymentAmount);
-//
-//        for(int i = 1; i <= numberOfRepaymentYears; i++){
-//            CollectionTable collectionTable = new CollectionTable();
-//            collectionTable.setTimestamp(new Date());
-//            collectionTable.setCollectionDueDate(DateUtil.addYear(loan.getLoanCreationDate(), i));
-//            collectionTable.setIsDueCollected(false);
-//            if(i==numberOfRepaymentYears) collectionTable.setCollectionDueAmount(lastRepaymentAmount);
-//            else collectionTable.setCollectionDueAmount(loan.getRepaymentAmount());
-//            collectionTable.setLastUpdatedAt(new Date());
-//            collectionTable.setCollectionNumber(i);
-//            collectionTable.setLoanId(loan.getLoanId());
-//            collectionTable.setPenalty(0.0);
-//            collectionTable.setAmountPaid(0.0);
-//            collectionTable.setCollectionState(COLLECTION_STATE_NO);
-//
-//            collectionTableList.add(collectionTable);
-//        }
-//
-//        return collectionTableList;
-//    }
-//
-//    private List<CollectionTable> generateRepaymentPerDay(double repaymentAmount) {
-//        List<CollectionTable> collectionTableList = new ArrayList<>();
-//
-//        int numberOfRepaymentDays = (int) Math.ceil(repaymentAmount/loan.getRepaymentAmount());
-//        double lastRepaymentAmount = repaymentAmount - ((numberOfRepaymentDays-1) * loan.getRepaymentAmount());
-//        lastRepaymentAmount = decimalFormat(lastRepaymentAmount);
-//
-//        Log.d(TAG, "lastRepaymentAmount: "+lastRepaymentAmount);
-//
-//        for(int i = 1; i <= numberOfRepaymentDays; i++){
-//            CollectionTable collectionTable = new CollectionTable();
-//            collectionTable.setTimestamp(new Date());
-//            collectionTable.setCollectionDueDate(DateUtil.addDay(loan.getLoanCreationDate(), i));
-//            collectionTable.setIsDueCollected(false);
-//            if(i==numberOfRepaymentDays) collectionTable.setCollectionDueAmount(lastRepaymentAmount);
-//            else collectionTable.setCollectionDueAmount(loan.getRepaymentAmount());
-//            collectionTable.setLastUpdatedAt(new Date());
-//            collectionTable.setCollectionNumber(i);
-//            collectionTable.setLoanId(loan.getLoanId());
-//            collectionTable.setPenalty(0.0);
-//            collectionTable.setAmountPaid(0.0);
-//            collectionTable.setCollectionState(COLLECTION_STATE_NO);
-//
-//            collectionTableList.add(collectionTable);
-//        }
-//
-//        return collectionTableList;
-//    }
+    private List<SavingsPlanCollectionTable> generateRepaymentPerWeek(double repaymentAmount) {
+        List<SavingsPlanCollectionTable> savingsPlanCollectionTable = new ArrayList<>();
+
+        int numberOfRepaymentDays = (int) Math.ceil(repaymentAmount/savings.getDepositAmount());
+        double lastRepaymentAmount = repaymentAmount - ((numberOfRepaymentDays-1) * savings.getDepositAmount());
+        lastRepaymentAmount = decimalFormat(lastRepaymentAmount);
+
+        Log.d(TAG, "lastRepaymentAmount: "+lastRepaymentAmount);
+
+        int weeksCount = savings.getSavingsDuration();
+
+        for(int i = 1; i <= numberOfRepaymentDays; i++){
+            SavingsPlanCollectionTable collectionTable = new SavingsPlanCollectionTable();
+            collectionTable.setTimestamp(new Date());
+            collectionTable.setSavingsCollectionDueDate(DateUtil.addDay(savings.getStartDate(), weeksCount*7));
+            collectionTable.setIsSavingsCollected(false);
+            if(i==numberOfRepaymentDays) collectionTable.setSavingsCollectionAmount(lastRepaymentAmount);
+            else collectionTable.setSavingsCollectionAmount(savings.getDepositAmount());
+            collectionTable.setLastUpdatedAt(new Date());
+            collectionTable.setSavingsCollectionNumber(i);
+            collectionTable.setSavingsId(savings.getSavingsId());
+            collectionTable.setAmountPaid(0.0);
+            collectionTable.setSavingsCollectionState(COLLECTION_STATE_NO);
+
+            savingsPlanCollectionTable.add(collectionTable);
+
+            weeksCount = weeksCount + savings.getSavingsDuration();
+        }
+
+        return savingsPlanCollectionTable;
+    }
+
+    private List<SavingsPlanCollectionTable> generateRepaymentPerMonth(double repaymentAmount) {
+        List<SavingsPlanCollectionTable> savingsPlanCollectionTable = new ArrayList<>();
+
+        int numberOfRepaymentDays = (int) Math.ceil(repaymentAmount / savings.getDepositAmount());
+        double lastRepaymentAmount = repaymentAmount - ((numberOfRepaymentDays - 1) * savings.getDepositAmount());
+        lastRepaymentAmount = decimalFormat(lastRepaymentAmount);
+
+        Log.d(TAG, "lastRepaymentAmount: " + lastRepaymentAmount);
+
+        int monthCount = savings.getSavingsDuration();
+
+        for (int i = 1; i <= numberOfRepaymentDays; i++) {
+            SavingsPlanCollectionTable collectionTable = new SavingsPlanCollectionTable();
+            collectionTable.setTimestamp(new Date());
+            collectionTable.setSavingsCollectionDueDate(DateUtil.addMonth(savings.getStartDate(), monthCount));
+            collectionTable.setIsSavingsCollected(false);
+            if (i == numberOfRepaymentDays) collectionTable.setSavingsCollectionAmount(lastRepaymentAmount);
+            else collectionTable.setSavingsCollectionAmount(savings.getDepositAmount());
+            collectionTable.setLastUpdatedAt(new Date());
+            collectionTable.setSavingsCollectionNumber(i);
+            collectionTable.setSavingsId(savings.getSavingsId());
+            collectionTable.setAmountPaid(0.0);
+            collectionTable.setSavingsCollectionState(COLLECTION_STATE_NO);
+
+            savingsPlanCollectionTable.add(collectionTable);
+
+            monthCount = monthCount + savings.getSavingsDuration();
+        }
+
+        return savingsPlanCollectionTable;
+    }
+
+    private double generateInterest(){
+        if(savings.getIsThereInterest()) {
+            double totalPayment = (1 + savings.getSavingsInterestRate() / 100) * savings.getAmountTarget();
+            return totalPayment;
+        } else return savings.getAmountTarget();
+    }
+
+    private List<SavingsPlanCollectionTable> generateRepaymentPerDay(double repaymentAmount) {
+        List<SavingsPlanCollectionTable> savingsPlanCollectionTable = new ArrayList<>();
+
+        int numberOfRepaymentDays = (int) Math.ceil(repaymentAmount/savings.getDepositAmount());
+        double lastRepaymentAmount = repaymentAmount - ((numberOfRepaymentDays-1) * savings.getDepositAmount());
+        lastRepaymentAmount = decimalFormat(lastRepaymentAmount);
+
+        Log.d(TAG, "lastRepaymentAmount: "+lastRepaymentAmount);
+
+        int daysCount = savings.getSavingsDuration();
+
+        for(int i = 1; i <= numberOfRepaymentDays; i++){
+            SavingsPlanCollectionTable collectionTable = new SavingsPlanCollectionTable();
+            collectionTable.setTimestamp(new Date());
+            collectionTable.setSavingsCollectionDueDate(DateUtil.addDay(savings.getStartDate(), daysCount));
+            collectionTable.setIsSavingsCollected(false);
+            if(i==numberOfRepaymentDays) collectionTable.setSavingsCollectionAmount(lastRepaymentAmount);
+            else collectionTable.setSavingsCollectionAmount(savings.getDepositAmount());
+            collectionTable.setLastUpdatedAt(new Date());
+            collectionTable.setSavingsCollectionNumber(i);
+            collectionTable.setSavingsId(savings.getSavingsId());
+            collectionTable.setAmountPaid(0.0);
+            collectionTable.setSavingsCollectionState(COLLECTION_STATE_NO);
+
+            savingsPlanCollectionTable.add(collectionTable);
+
+            daysCount = daysCount + savings.getSavingsDuration();
+        }
+
+        return savingsPlanCollectionTable;
+    }
 }

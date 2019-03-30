@@ -11,15 +11,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.localdatabase.SavingsTable;
+import com.icubed.loansticdroid.models.Savings;
 import com.icubed.loansticdroid.util.DateUtil;
+import com.icubed.loansticdroid.util.FormUtil;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class LifeGoalsSetup5GoalOptions extends AppCompatActivity {
+
+    private SavingsTable savingsTable;
+    private BorrowersTable borrowersTable;
+
     final Calendar myCalendar = Calendar.getInstance();
     EditText startDate,maturityDate;
+    private Switch interestRateToggle;
+    private FormUtil formUtil;
+    private Date start, maturity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +45,15 @@ public class LifeGoalsSetup5GoalOptions extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        savingsTable = getIntent().getParcelableExtra("savings");
+        borrowersTable = getIntent().getParcelableExtra("borrower");
 
+        formUtil = new FormUtil();
 
-
+        interestRateToggle = findViewById(R.id.interestRateToggle);
         startDate= findViewById(R.id.start_date);
         maturityDate= findViewById(R.id.maturity_date);
+
         final DatePickerDialog.OnDateSetListener startdate = new DatePickerDialog.OnDateSetListener() {
 
             @Override
@@ -48,6 +65,7 @@ public class LifeGoalsSetup5GoalOptions extends AppCompatActivity {
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 startDate.setError(null);
                 startDate.setText(DateUtil.dateString(myCalendar.getTime()));
+                start = myCalendar.getTime();
             }
 
         };
@@ -74,6 +92,7 @@ public class LifeGoalsSetup5GoalOptions extends AppCompatActivity {
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 maturityDate.setError(null);
                 maturityDate.setText(DateUtil.dateString(myCalendar.getTime()));
+                maturity = myCalendar.getTime();
             }
 
         };
@@ -87,6 +106,8 @@ public class LifeGoalsSetup5GoalOptions extends AppCompatActivity {
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
+        if(!savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)) interestRateToggle.setEnabled(false);
     }
 
     @Override
@@ -124,10 +145,47 @@ public class LifeGoalsSetup5GoalOptions extends AppCompatActivity {
     }
 
     private void startAnotherActivity(Class newActivity){
+
+        EditText[] editTexts = new EditText[]{startDate, maturityDate};
+
+        boolean isAnyFormEmpty = isAnyFormEmpty(editTexts);
+        if (isAnyFormEmpty) {
+            return;
+        }
+
+        savingsTable.setStartDate(start);
+        savingsTable.setMaturityDate(maturity);
+
+        if(interestRateToggle.isChecked()) {
+            savingsTable.setSavingsInterestRate(15.0);
+            savingsTable.setSavingsInterestRateUnit(DateUtil.PER_YEAR);
+            savingsTable.setIsThereInterest(true);
+        } else savingsTable.setIsThereInterest(false);
+
         Intent newActivityIntent = new Intent(this, newActivity);
-        //newActivityIntent.putExtra("savings_type", selectedSavingsPlanTypeTable);
-        //newActivityIntent.putExtra("borrower", borrower);
-        //newActivityIntent.putExtra("savings", savingsTable);
+        newActivityIntent.putExtra("borrower", borrowersTable);
+        newActivityIntent.putExtra("savings", savingsTable);
         startActivity(newActivityIntent);
+    }
+
+    public Boolean isAnyFormEmpty(EditText[] forms){
+        Boolean isFormEmpty = false;
+        boolean[] listOfFormsEmpty = formUtil.isListOfFormsEmpty(forms);
+
+        for(int i = 0; i < forms.length; i++){
+            if(listOfFormsEmpty[i]){
+                forms[i].setError("Field is required");
+
+                if(!isFormEmpty) {
+                    forms[i].requestFocus();
+                }
+
+                isFormEmpty = true;
+            }else{
+                forms[i].setError(null);
+            }
+        }
+
+        return isFormEmpty;
     }
 }
