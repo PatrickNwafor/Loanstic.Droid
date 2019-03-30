@@ -40,22 +40,18 @@ public class ActivityCycleTableQueries {
     }
 
     public ActivityCycleTable loadLastCreatedCycle(String borrowerId){
-        return activityCycleTableDao.queryBuilder()
-                .where(ActivityCycleTableDao.Properties.BorrowerId.eq(borrowerId))
-                .orderDesc(ActivityCycleTableDao.Properties.StartCycleTime)
-                .build()
-                .list()
-                .get(0);
+        List<ActivityCycleTable> list = activityCycleTableDao.queryBuilder().where(ActivityCycleTableDao.Properties.BorrowerId.eq(borrowerId)).orderDesc(ActivityCycleTableDao.Properties.StartCycleTime).build().list();
+
+        if(!list.isEmpty()) return list.get(0);
+        else return null;
     }
 
     /**********loadCurrentlyActiveCycleForBorrower from local Storage*******/
     public ActivityCycleTable loadCurrentlyActiveCycleForBorrower(String borrowerId){
-        return activityCycleTableDao.queryBuilder()
-                .where(ActivityCycleTableDao.Properties.BorrowerId.eq(borrowerId))
-                .where(ActivityCycleTableDao.Properties.IsActive.eq(true))
-                .build()
-                .list()
-                .get(0);
+        List<ActivityCycleTable> list = activityCycleTableDao.queryBuilder().where(ActivityCycleTableDao.Properties.BorrowerId.eq(borrowerId)).where(ActivityCycleTableDao.Properties.IsActive.eq(true)).build().list();
+
+        if(!list.isEmpty()) return list.get(0);
+        else return null;
     }
 
     /********Update Table When Due ActivityCycle is Confirmed*********/

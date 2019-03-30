@@ -64,8 +64,8 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     private Toolbar toolbar;
     private BorrowersTable borrower;
     private CircleImageView profileImageView;
+    private Button savingsButton;
     private ImageView statusIndicator, addGroupBtn;
-    Button savingUnderABorrower, LoanUnderABorrower;
     private TextView nameTextView, numberTextView, emailTextView, numberOfBizVerifTextView
             , businessNameTextView, businessLocationTextView, businessDescriptionTextView
             , genderTextView, dobTextView, homeAddressTextView, countryTextView, groupCountTextView
@@ -109,7 +109,7 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         getSupportActionBar().setTitle("Borrower profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        
+
         borrower = getIntent().getParcelableExtra("borrower");
         if(borrower != null){
             borrowerImageByteArray = getIntent().getByteArrayExtra("borrowerImageByteArray");
@@ -155,9 +155,18 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         addGroupBtn = findViewById(R.id.addGroup);
         borrowerGroupRecyclerView = findViewById(R.id.groupsRecyclerView);
         groupCountTextView = findViewById(R.id.number_of_group);
-        savingUnderABorrower = findViewById(R.id.savings_button);
+        savingsButton = findViewById(R.id.savings_button);
 
         alert = new AlertDialog.Builder(this);
+
+        savingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SavingsUnderABorrower.class);
+                intent.putExtra("borrower", borrower);
+                startActivity(intent);
+            }
+        });
 
         addGroupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -819,10 +828,5 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void savingsUnderBorrower(View view) {
-        Intent mainActivityIntent = new Intent(BorrowerDetailsSingle.this, SavingsUnderABorrower.class);
-        startActivity(mainActivityIntent);
     }
 }

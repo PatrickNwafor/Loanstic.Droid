@@ -107,7 +107,8 @@ public class LifeGoalsSetup5GoalOptions extends AppCompatActivity {
             }
         });
 
-        if(!savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)) interestRateToggle.setEnabled(false);
+        if(savingsTable.getTargetType() == null) interestRateToggle.setEnabled(false);
+        else if(!savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)) interestRateToggle.setEnabled(false);
     }
 
     @Override
