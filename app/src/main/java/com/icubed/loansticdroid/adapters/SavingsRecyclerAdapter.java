@@ -9,11 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daasuu.ahp.AnimateHorizontalProgressBar;
 import com.icubed.loansticdroid.R;
-import com.icubed.loansticdroid.activities.ViewCollection;
+import com.icubed.loansticdroid.activities.SavingsDetailsActivity;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.SavingsTable;
 import com.icubed.loansticdroid.models.SavingsDetails;
@@ -49,7 +48,11 @@ public class SavingsRecyclerAdapter extends RecyclerView.Adapter<SavingsRecycler
         holder.frameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, SavingsDetailsActivity.class);
+                intent.putExtra("savings", savingsDetailsList.get(position).getSavingsTable());
+                intent.putExtra("borrower", savingsDetailsList.get(position).getBorrowersTable());
+                intent.putExtra("savings_type", savingsDetailsList.get(position).getSavingsPlanTypeTable());
+                context.startActivity(intent);
             }
         });
     }

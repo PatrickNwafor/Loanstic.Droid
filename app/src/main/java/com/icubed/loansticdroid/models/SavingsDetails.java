@@ -45,6 +45,6 @@ public class SavingsDetails {
 
     @Override
     public String toString() {
-        return "SavingsDetails{" + "borrowersTable=" + borrowersTable + ", savingsTable=" + savingsTable + '}';
+        return "SavingsDetailsActivity{" + "borrowersTable=" + borrowersTable + ", savingsTable=" + savingsTable + '}';
     }
 }

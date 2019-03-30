@@ -32,9 +32,12 @@ import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.adapters.SavingsPaymentRecyclerAdapter;
 import com.icubed.loansticdroid.adapters.SavingsRecyclerAdapter;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
+import com.icubed.loansticdroid.cloudqueries.SavingsPlanTypeQueries;
 import com.icubed.loansticdroid.cloudqueries.SavingsQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
+import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTable;
+import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTableQueries;
 import com.icubed.loansticdroid.localdatabase.SavingsTable;
 import com.icubed.loansticdroid.localdatabase.SavingsTableQueries;
 import com.icubed.loansticdroid.models.Savings;
@@ -67,6 +70,8 @@ public class SavingsActivity extends AppCompatActivity {
     private int docSize = 0;
     private int secondCount = 0;
     private int size = 0;
+    private SavingsPlanTypeQueries savingsPlanTypeQueries;
+    private SavingsPlanTypeTableQueries savingsPlanTypeTableQueries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +96,8 @@ public class SavingsActivity extends AppCompatActivity {
         savingsTableQueries = new SavingsTableQueries(getApplication());
         borrowersQueries = new BorrowersQueries(this);
         borrowersTableQueries = new BorrowersTableQueries(getApplication());
+        savingsPlanTypeQueries = new SavingsPlanTypeQueries();
+        savingsPlanTypeTableQueries = new SavingsPlanTypeTableQueries(getApplication());
 
         //Swipe down refresher initialization
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
@@ -206,7 +213,7 @@ public class SavingsActivity extends AppCompatActivity {
                                     savingsTable.setSavingsId(doc.getId());
 
                                     saveSavingsToLocalStorage(savingsTable);
-                                    getBorrowerDetails(savingsTable.getBorrowerId());
+                                    checkSavingsType(savingsTable);
                                 }
                             }else{
                                 removeRefresher();
@@ -239,6 +246,36 @@ public class SavingsActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    private void checkSavingsType(SavingsTable savingsTable){
+        if(savingsTable.getSavingsPlanTypeId() != null){
+            getNewSavingsType(savingsTable);
+        }else getBorrowerDetails(savingsTable.getBorrowerId());
+    }
+
+    private void getNewSavingsType(final SavingsTable savingsTable) {
+        savingsPlanTypeQueries.retrieveSingleSavingsPlanType(savingsTable.getSavingsPlanTypeId())
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            SavingsPlanTypeTable savingsPlanTypeTable = task.getResult().toObject(SavingsPlanTypeTable.class);
+                            savingsPlanTypeTable.setSavingsPlanTypeId(task.getResult().getId());
+
+                            saveTypeToLocal(savingsPlanTypeTable);
+                            getBorrowerDetails(savingsTable.getBorrowerId());
+                        }else {
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void saveTypeToLocal(SavingsPlanTypeTable savingsPlanTypeTable) {
+        SavingsPlanTypeTable savingsPlanTypeTable1 = savingsPlanTypeTableQueries.loadSingleSavingsPlanType(savingsPlanTypeTable.getSavingsPlanTypeId());
+        if(savingsPlanTypeTable1 == null) savingsPlanTypeTableQueries.insertSavingsPlanTypeToStorage(savingsPlanTypeTable);
     }
 
     /**
@@ -340,6 +377,12 @@ public class SavingsActivity extends AppCompatActivity {
                 savingsDetails.setBorrowersTable(borrowersTable);
                 savingsDetails.setSavingsTable(table);
 
+                if(table.getSavingsPlanTypeId() == null) savingsDetails.setSavingsPlanTypeTable(null);
+                else{
+                    SavingsPlanTypeTable savingsPlanTypeTable = savingsPlanTypeTableQueries.loadSingleSavingsPlanType(table.getSavingsPlanTypeId());
+                    savingsDetails.setSavingsPlanTypeTable(savingsPlanTypeTable);
+                }
+
                 savingsDetailsList.add(savingsDetails);
                 secondCount++;
                 savingsRecyclerAdapter.notifyDataSetChanged();
@@ -414,7 +457,7 @@ public class SavingsActivity extends AppCompatActivity {
                                         savingsTable.setSavingsId(doc.getId());
 
                                         saveSavingsToLocalStorage(savingsTable);
-                                        getBorrowerDetails(savingsTable.getBorrowerId());
+                                        checkSavingsType(savingsTable);
                                     } else {
                                         //Update local table if any changes
                                         docSize--;

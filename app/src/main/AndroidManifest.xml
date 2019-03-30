@@ -116,7 +116,7 @@
         <activity android:name=".activities.LifeGoals.LifeGoalsSetup6GoalSummary" />
         <activity android:name=".activities.LifeGoals.SavingsGoalFixedAmount" />
         <activity android:name=".activities.SavingsUnderABorrower" />
-        <activity android:name=".activities.SavingsDetails" />
+        <activity android:name=".activities.SavingsDetailsActivity" />
         <activity android:name=".activities.SearchSavingsActivity"></activity>
     </application>
 
