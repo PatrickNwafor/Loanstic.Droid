@@ -16,10 +16,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
+import com.icubed.loansticdroid.cloudqueries.SavingsPlanTypeQueries;
 import com.icubed.loansticdroid.cloudqueries.SavingsQueries;
 import com.icubed.loansticdroid.fragments.RepaymentFragment.SavingsPaymentFragment;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
+import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTable;
+import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTableQueries;
 import com.icubed.loansticdroid.localdatabase.SavingsTableQueries;
 import com.icubed.loansticdroid.localdatabase.SavingsTable;
 import com.icubed.loansticdroid.util.BitmapUtil;
@@ -40,6 +43,8 @@ public class Savings {
     private int size = 0;
     private FragmentActivity activity;
     private SavingsPaymentFragment fragment;
+    private SavingsPlanTypeQueries savingsPlanTypeQueries;
+    private SavingsPlanTypeTableQueries savingsPlanTypeTableQueries;
 
 
     public Savings(FragmentActivity activity) {
@@ -48,6 +53,8 @@ public class Savings {
         savingsTableQueries = new SavingsTableQueries(activity.getApplication());
         borrowersQueries = new BorrowersQueries(activity);
         borrowersTableQueries = new BorrowersTableQueries(activity.getApplication());
+        savingsPlanTypeQueries = new SavingsPlanTypeQueries();
+        savingsPlanTypeTableQueries= new SavingsPlanTypeTableQueries(activity.getApplication());
 
         FragmentManager fm = activity.getSupportFragmentManager();
         fragment = (SavingsPaymentFragment) fm.findFragmentByTag("savings");
@@ -83,7 +90,7 @@ public class Savings {
                                     savingsTable.setSavingsId(doc.getId());
 
                                     saveSavingsToLocalStorage(savingsTable);
-                                    getBorrowerDetails(savingsTable.getBorrowerId());
+                                    checkSavingsType(savingsTable);
                                 }
                             }else{
                                 removeRefresher();
@@ -144,6 +151,36 @@ public class Savings {
                         }
                     }
                 });
+    }
+
+    private void checkSavingsType(SavingsTable savingsTable){
+        if(savingsTable.getSavingsPlanTypeId() != null){
+            getNewSavingsType(savingsTable);
+        }else getBorrowerDetails(savingsTable.getBorrowerId());
+    }
+
+    private void getNewSavingsType(final SavingsTable savingsTable) {
+        savingsPlanTypeQueries.retrieveSingleSavingsPlanType(savingsTable.getSavingsPlanTypeId())
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            SavingsPlanTypeTable savingsPlanTypeTable = task.getResult().toObject(SavingsPlanTypeTable.class);
+                            savingsPlanTypeTable.setSavingsPlanTypeId(task.getResult().getId());
+
+                            saveTypeToLocal(savingsPlanTypeTable);
+                            getBorrowerDetails(savingsTable.getBorrowerId());
+                        }else {
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void saveTypeToLocal(SavingsPlanTypeTable savingsPlanTypeTable) {
+        SavingsPlanTypeTable savingsPlanTypeTable1 = savingsPlanTypeTableQueries.loadSingleSavingsPlanType(savingsPlanTypeTable.getSavingsPlanTypeId());
+        if(savingsPlanTypeTable1 == null) savingsPlanTypeTableQueries.insertSavingsPlanTypeToStorage(savingsPlanTypeTable);
     }
 
     private void saveBorrowerImage(final BorrowersTable borrowersTable) {
@@ -219,6 +256,12 @@ public class Savings {
                 savingsDetails.setBorrowersTable(borrowersTable);
                 savingsDetails.setSavingsTable(table);
 
+                if(table.getSavingsPlanTypeId() == null) savingsDetails.setSavingsPlanTypeTable(null);
+                else{
+                    SavingsPlanTypeTable savingsPlanTypeTable = savingsPlanTypeTableQueries.loadSingleSavingsPlanType(table.getSavingsPlanTypeId());
+                    savingsDetails.setSavingsPlanTypeTable(savingsPlanTypeTable);
+                }
+
                 fragment.savingsDetailsList.add(savingsDetails);
                 secondCount++;
                 fragment.savingsRecyclerAdapter.notifyDataSetChanged();
@@ -293,7 +336,7 @@ public class Savings {
                                         savingsTable.setSavingsId(doc.getId());
 
                                         saveSavingsToLocalStorage(savingsTable);
-                                        getBorrowerDetails(savingsTable.getBorrowerId());
+                                        checkSavingsType(savingsTable);
                                     } else {
                                         //Update local table if any changes
                                         docSize--;
