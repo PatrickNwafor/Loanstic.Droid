@@ -110,9 +110,12 @@ public class LifeGoalsSetup6GoalSummary extends AppCompatActivity {
             goalPurposeTextView.setText(savingsPlanTypeTable.getSavingsTypeName());
         }
 
-        if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)){
-            targetAmountTextView.setText(String.valueOf(savingsTable.getAmountTarget()));
-        } else targetAmountTextView.setText("NIL");
+        if(savingsTable.getTargetType() == null) targetAmountTextView.setText("NIL");
+        else {
+            if (savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)) {
+                targetAmountTextView.setText(String.valueOf(savingsTable.getAmountTarget()));
+            } else targetAmountTextView.setText("NIL");
+        }
 
         startDateTextView.setText(DateUtil.dateString(savingsTable.getStartDate()));
         maturityDateTextView.setText(DateUtil.dateString(savingsTable.getMaturityDate()));
