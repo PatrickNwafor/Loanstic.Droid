@@ -28,9 +28,14 @@ public class SavingsDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_savings_details);
 
+        savingsTable = getIntent().getParcelableExtra("savings");
+        borrowersTable = getIntent().getParcelableExtra("borrower");
+        savingsPlanTypeTable = getIntent().getParcelableExtra("savings_type");
+
         Toolbar toolbar = findViewById(R.id.pick_plan_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Savings Details");
+        getSupportActionBar().setSubtitle(savingsTable.getSavingsNumber());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -45,10 +50,6 @@ public class SavingsDetailsActivity extends AppCompatActivity {
         goalPurposeTextView = findViewById(R.id.goal_purpose_value);
         repaymentTextView = findViewById(R.id.payment_value);
 
-        savingsTable = getIntent().getParcelableExtra("savings");
-        borrowersTable = getIntent().getParcelableExtra("borrower");
-        savingsPlanTypeTable = getIntent().getParcelableExtra("savings_type");
-
         fillUIWithSummary();
     }
 
@@ -62,9 +63,12 @@ public class SavingsDetailsActivity extends AppCompatActivity {
             goalPurposeTextView.setText(savingsPlanTypeTable.getSavingsTypeName());
         }
 
-        if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)){
-            targetAmountTextView.setText(String.valueOf(savingsTable.getAmountTarget()));
-        } else targetAmountTextView.setText("NIL");
+        if(savingsTable.getTargetType() == null) targetAmountTextView.setText("NIL");
+        else {
+            if (savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)) {
+                targetAmountTextView.setText(String.valueOf(savingsTable.getAmountTarget()));
+            } else targetAmountTextView.setText("NIL");
+        }
 
         startDateTextView.setText(DateUtil.dateString(savingsTable.getStartDate()));
         maturityDateTextView.setText(DateUtil.dateString(savingsTable.getMaturityDate()));
@@ -78,20 +82,32 @@ public class SavingsDetailsActivity extends AppCompatActivity {
 
         totalAmountTextView.setText(String.valueOf(savingsTable.getAmountSaved()));
 
-        if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_FIXED)) fixedAmountTextView.setText(String.valueOf(savingsTable.getFixedAmount()));
-        else fixedAmountTextView.setText("NIL");
+        if(savingsTable.getTargetType() == null) fixedAmountTextView.setText("NIL");
+        else {
+            if (savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_FIXED))
+                fixedAmountTextView.setText(String.valueOf(savingsTable.getFixedAmount()));
+            else fixedAmountTextView.setText("NIL");
+        }
 
-        if(savingsTable.getTargetType() == null || savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_FIXED)) depositAmountTextView.setText("NIL");
-        else depositAmountTextView.setText(String.valueOf(savingsTable.getDepositAmount()));
+        if(savingsTable.getTargetType() == null) depositAmountTextView.setText("NIL");
+        else {
+            if (savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_FIXED))
+                depositAmountTextView.setText("NIL");
+            else depositAmountTextView.setText(String.valueOf(savingsTable.getDepositAmount()));
+        }
 
-        if(savingsTable.getTargetType() == null || savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_FIXED)) repaymentTextView.setText("NIL");
-        else{
-            if(savingsTable.getSavingsDurationUnit().equals(DateUtil.PER_DAY)){
-                repaymentTextView.setText(savingsTable.getDepositAmount() + " every "+ savingsTable.getSavingsDuration() +" day(s)");
-            }else if(savingsTable.getSavingsDurationUnit().equals(DateUtil.PER_WEEK)){
-                repaymentTextView.setText(savingsTable.getDepositAmount() + " every "+ savingsTable.getSavingsDuration() +" week(s)");
-            }else if(savingsTable.getSavingsDurationUnit().equals(DateUtil.PER_MONTH)){
-                repaymentTextView.setText(savingsTable.getDepositAmount() + " every "+ savingsTable.getSavingsDuration() +" month(s)");
+        if(savingsTable.getTargetType() == null) repaymentTextView.setText("NIL");
+        else {
+            if (savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_FIXED))
+                repaymentTextView.setText("NIL");
+            else {
+                if (savingsTable.getSavingsDurationUnit().equals(DateUtil.PER_DAY)) {
+                    repaymentTextView.setText(savingsTable.getDepositAmount() + " every " + savingsTable.getSavingsDuration() + " day(s)");
+                } else if (savingsTable.getSavingsDurationUnit().equals(DateUtil.PER_WEEK)) {
+                    repaymentTextView.setText(savingsTable.getDepositAmount() + " every " + savingsTable.getSavingsDuration() + " week(s)");
+                } else if (savingsTable.getSavingsDurationUnit().equals(DateUtil.PER_MONTH)) {
+                    repaymentTextView.setText(savingsTable.getDepositAmount() + " every " + savingsTable.getSavingsDuration() + " month(s)");
+                }
             }
         }
     }
