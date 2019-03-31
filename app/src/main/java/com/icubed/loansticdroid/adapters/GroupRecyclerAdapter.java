@@ -7,11 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.activities.AllBorrowerLoan;
 import com.icubed.loansticdroid.activities.BorrowerActivity;
 import com.icubed.loansticdroid.activities.BorrowerDetailsGroup;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
@@ -55,6 +57,20 @@ public class GroupRecyclerAdapter extends RecyclerView.Adapter<GroupRecyclerAdap
                 context.startActivity(intent);
             }
         });
+
+        holder.loanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, AllBorrowerLoan.class);
+
+                if(!((BorrowerActivity) context).isGroupSearch) {
+                    intent.putExtra("group", groupBorrowerTables.get(position));
+                }else{
+                    intent.putExtra("groupId", groupBorrowerTables.get(position).getGroupId());
+                }
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -67,6 +83,7 @@ public class GroupRecyclerAdapter extends RecyclerView.Adapter<GroupRecyclerAdap
         View mView;
         public TextView groupNameTextView, groupCountTextView;
         public FrameLayout frameLayout;
+        public Button loanButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -75,6 +92,7 @@ public class GroupRecyclerAdapter extends RecyclerView.Adapter<GroupRecyclerAdap
             groupNameTextView = mView.findViewById(R.id.group_name);
             groupCountTextView = mView.findViewById(R.id.group_members_count);
             frameLayout = mView.findViewById(R.id.group_frame);
+            loanButton = mView.findViewById(R.id.loan_button);
         }
     }
 

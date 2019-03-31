@@ -63,6 +63,9 @@ public class SavingsUnderABorrower extends AppCompatActivity {
     private int size = 0;
     private SavingsPlanTypeQueries savingsPlanTypeQueries;
     private SavingsPlanTypeTableQueries savingsPlanTypeTableQueries;
+    private BorrowersQueries borrowersQueries;
+    private BorrowersTableQueries borrowersTableQueries;
+    private String borrowerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +73,12 @@ public class SavingsUnderABorrower extends AppCompatActivity {
         setContentView(R.layout.activity_savings_under_a_borrower);
 
         borrowersTable = getIntent().getParcelableExtra("borrower");
+        borrowerId = getIntent().getStringExtra("borrowerId");
 
         Toolbar toolbar = findViewById(R.id.borrower_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(borrowersTable.getLastName() + " " + borrowersTable.getFirstName());
+        if(borrowersTable != null) getSupportActionBar().setTitle(borrowersTable.getLastName() + " " + borrowersTable.getFirstName());
+        else getSupportActionBar().setTitle("Borrower");
         getSupportActionBar().setSubtitle("Savings");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -86,6 +91,8 @@ public class SavingsUnderABorrower extends AppCompatActivity {
         savingsTableQueries = new SavingsTableQueries(getApplication());
         savingsPlanTypeQueries = new SavingsPlanTypeQueries();
         savingsPlanTypeTableQueries = new SavingsPlanTypeTableQueries(getApplication());
+        borrowersQueries = new BorrowersQueries(getApplicationContext());
+        borrowersTableQueries = new BorrowersTableQueries(getApplication());
 
         //Swipe down refresher initialization
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
@@ -99,7 +106,34 @@ public class SavingsUnderABorrower extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setAdapter((savingsRecyclerAdapter));
 
-        getAllSavings();
+        if(borrowersTable != null) getAllSavings();
+        else getBorrowerDetails();
+    }
+
+    private void getBorrowerDetails() {
+        borrowersQueries.retrieveSingleBorrowers(borrowerId)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            borrowersTable = task.getResult().toObject(BorrowersTable.class);
+                            borrowersTable.setBorrowersId(task.getResult().getId());
+
+                            saveBorrowerToLocal(borrowersTable);
+                            getSupportActionBar().setTitle(borrowersTable.getLastName() + " " + borrowersTable.getFirstName());
+                            getAllSavings();
+
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void saveBorrowerToLocal(BorrowersTable borrowersTable) {
+        BorrowersTable borrowersTable1 = borrowersTableQueries.loadSingleBorrower(borrowersTable.getBorrowersId());
+        if(borrowersTable1 == null) borrowersTableQueries.insertBorrowersToStorage(borrowersTable);
     }
 
     public Boolean doesSavingsTableExistInLocalStorage(){
@@ -215,18 +249,50 @@ public class SavingsUnderABorrower extends AppCompatActivity {
             savingsDetails.setBorrowersTable(borrowersTable);
             savingsDetails.setSavingsTable(table);
 
+            boolean dataAvailable = true;
+
             if(table.getSavingsPlanTypeId() == null) savingsDetails.setSavingsPlanTypeTable(null);
             else{
                 SavingsPlanTypeTable savingsPlanTypeTable = savingsPlanTypeTableQueries.loadSingleSavingsPlanType(table.getSavingsPlanTypeId());
-                savingsDetails.setSavingsPlanTypeTable(savingsPlanTypeTable);
+                if(savingsPlanTypeTable != null) savingsDetails.setSavingsPlanTypeTable(savingsPlanTypeTable);
+                else {
+                    dataAvailable = false;
+                    getSinglePlanType(savingsDetails, table.getSavingsPlanTypeId());
+                }
             }
 
-            savingsDetailsList.add(savingsDetails);
-            secondCount++;
-            savingsRecyclerAdapter.notifyDataSetChanged();
+            if(dataAvailable) {
+                savingsDetailsList.add(savingsDetails);
+                secondCount++;
+                savingsRecyclerAdapter.notifyDataSetChanged();
+            }
         }
 
         if(secondCount == size) progressBar.setVisibility(View.GONE);
+    }
+
+    private void getSinglePlanType(final SavingsDetails savingsDetails, String savingsPlanTypeId) {
+        savingsPlanTypeQueries.retrieveSingleSavingsPlanType(savingsPlanTypeId)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            SavingsPlanTypeTable savingsPlanTypeTable = task.getResult().toObject(SavingsPlanTypeTable.class);
+                            savingsPlanTypeTable.setSavingsPlanTypeId(task.getResult().getId());
+
+                            saveTypeToLocal(savingsPlanTypeTable);
+                            savingsDetails.setSavingsPlanTypeTable(savingsPlanTypeTable);
+
+                            savingsDetailsList.add(savingsDetails);
+                            secondCount++;
+                            savingsRecyclerAdapter.notifyDataSetChanged();
+
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
     }
 
     /**
@@ -354,8 +420,8 @@ public class SavingsUnderABorrower extends AppCompatActivity {
         if(!doesSavingsTableExistInLocalStorage()){
             loadAllSavings();
         }else{
-            swipeRefreshLayout.setRefreshing(true);
             loadSavingsToUI();
+            swipeRefreshLayout.setRefreshing(true);
             loadAllSavingssAndCompareToLocal();
         }
     }

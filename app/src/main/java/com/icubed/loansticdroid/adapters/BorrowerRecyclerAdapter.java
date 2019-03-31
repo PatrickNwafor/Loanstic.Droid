@@ -12,6 +12,7 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,8 +26,10 @@ import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.activities.AllBorrowerLoan;
 import com.icubed.loansticdroid.activities.BorrowerActivity;
 import com.icubed.loansticdroid.activities.BorrowerDetailsSingle;
+import com.icubed.loansticdroid.activities.SavingsUnderABorrower;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 import com.icubed.loansticdroid.util.BitmapUtil;
@@ -76,6 +79,33 @@ public class BorrowerRecyclerAdapter extends RecyclerView.Adapter<BorrowerRecycl
                 context.startActivity(intent);
             }
         });
+
+        holder.savingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, SavingsUnderABorrower.class);
+
+                if(!((BorrowerActivity) context).isSearch) {
+                    intent.putExtra("borrower", borrowersTableList.get(position));
+                }else {
+                    intent.putExtra("borrowerId", borrowersTableList.get(position).getBorrowersId());
+                }
+                context.startActivity(intent);
+            }
+        });
+
+        holder.loanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, AllBorrowerLoan.class);
+                if(!((BorrowerActivity) context).isSearch) {
+                    intent.putExtra("borrower", borrowersTableList.get(position));
+                }else {
+                    intent.putExtra("borrowerId", borrowersTableList.get(position).getBorrowersId());
+                }
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -90,11 +120,14 @@ public class BorrowerRecyclerAdapter extends RecyclerView.Adapter<BorrowerRecycl
         public ImageView borrowerImageView;
         public TextView businessNameTextView;
         public FrameLayout borrowerFrame;
+        public Button savingsButton, loanButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             mView = itemView;
+            savingsButton = mView.findViewById(R.id.savings_button);
+            loanButton = mView.findViewById(R.id.loan_button);
         }
 
         public void setBorrowerName(String firstName, String lastName){

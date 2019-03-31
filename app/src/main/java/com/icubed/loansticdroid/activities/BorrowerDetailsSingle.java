@@ -64,7 +64,7 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
     private Toolbar toolbar;
     private BorrowersTable borrower;
     private CircleImageView profileImageView;
-    private Button savingsButton;
+    private Button savingsButton, loanButton;
     private ImageView statusIndicator, addGroupBtn;
     private TextView nameTextView, numberTextView, emailTextView, numberOfBizVerifTextView
             , businessNameTextView, businessLocationTextView, businessDescriptionTextView
@@ -156,8 +156,18 @@ public class BorrowerDetailsSingle extends AppCompatActivity {
         borrowerGroupRecyclerView = findViewById(R.id.groupsRecyclerView);
         groupCountTextView = findViewById(R.id.number_of_group);
         savingsButton = findViewById(R.id.savings_button);
+        loanButton = findViewById(R.id.loan_button);
 
         alert = new AlertDialog.Builder(this);
+
+        loanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), AllBorrowerLoan.class);
+                intent.putExtra("borrower", borrower);
+                startActivity(intent);
+            }
+        });
 
         savingsButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -25,11 +25,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
+import com.icubed.loansticdroid.cloudqueries.GroupBorrowerQueries;
 import com.icubed.loansticdroid.cloudqueries.LoanTypeQueries;
 import com.icubed.loansticdroid.cloudqueries.LoansQueries;
 import com.icubed.loansticdroid.cloudqueries.OtherLoanTypeQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
+import com.icubed.loansticdroid.localdatabase.GroupBorrowerTableQueries;
 import com.icubed.loansticdroid.localdatabase.LoanTableQueries;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTable;
 import com.icubed.loansticdroid.localdatabase.LoanTypeTableQueries;
@@ -59,9 +63,14 @@ public class AllBorrowerLoan extends AppCompatActivity {
     private LoanTypeTableQueries loanTypeTableQueries;
     private OtherLoanTypesTableQueries otherLoanTypesTableQueries;
     private BorrowersTable borrower;
+    private BorrowersQueries borrowersQueries;
+    private BorrowersTableQueries borrowersTableQueries;
     private GroupBorrowerTable group;
+    private GroupBorrowerQueries groupBorrowerQueries;
+    private GroupBorrowerTableQueries groupBorrowerTableQueries;
     private LoansQueries loansQueries;
     private LoanTableQueries loanTableQueries;
+    private String borrowerId, groupId;
     private boolean isGrey = true;
 
     @Override
@@ -85,9 +94,15 @@ public class AllBorrowerLoan extends AppCompatActivity {
         loanTypeTableQueries = new LoanTypeTableQueries(getApplication());
         otherLoanTypesTableQueries = new OtherLoanTypesTableQueries(getApplication());
         otherLoanTypeQueries = new OtherLoanTypeQueries();
+        borrowersQueries = new BorrowersQueries(getApplicationContext());
+        borrowersTableQueries = new BorrowersTableQueries(getApplication());
+        groupBorrowerQueries = new GroupBorrowerQueries();
+        groupBorrowerTableQueries = new GroupBorrowerTableQueries(getApplication());
 
         borrower = getIntent().getParcelableExtra("borrower");
         group = getIntent().getParcelableExtra("group");
+        borrowerId = getIntent().getStringExtra("borrowerId");
+        groupId = getIntent().getStringExtra("groupId");
 
         createTableHeader();
 
@@ -101,7 +116,7 @@ public class AllBorrowerLoan extends AppCompatActivity {
                 getLoanForBorrowerAndCompareToCloud(loansTables);
             }
         }
-        else {
+        else if(group != null) {
             List<LoansTable> loansTables = loanTableQueries.loadLoansForGroupOrderByCreationDate(group.getGroupId());
             if(loansTables.isEmpty()){
                 getLoanForGroup();
@@ -109,7 +124,72 @@ public class AllBorrowerLoan extends AppCompatActivity {
                 loadLoanFromStorage(loansTables);
                 getLoanForGroupAndCompareToCloud(loansTables);
             }
+        } else if (borrowerId != null){
+            getBorrower();
+        } else if(groupId != null){
+            getGroup();
         }
+    }
+
+    private void getGroup() {
+        groupBorrowerQueries.retrieveSingleBorrowerGroup(groupId)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            group = task.getResult().toObject(GroupBorrowerTable.class);
+                            group.setGroupId(task.getResult().getId());
+
+                            saveGroupToLocal(group);
+                            List<LoansTable> loansTables = loanTableQueries.loadLoansForGroupOrderByCreationDate(group.getGroupId());
+                            if(loansTables.isEmpty()){
+                                getLoanForGroup();
+                            }else{
+                                loadLoanFromStorage(loansTables);
+                                getLoanForGroupAndCompareToCloud(loansTables);
+                            }
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void saveGroupToLocal(GroupBorrowerTable group) {
+        GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(group.getGroupId());
+        if(groupBorrowerTable == null) groupBorrowerTableQueries.insertGroupToStorage(group);
+    }
+
+    private void getBorrower() {
+        borrowersQueries.retrieveSingleBorrowers(borrowerId)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            borrower = task.getResult().toObject(BorrowersTable.class);
+                            borrower.setBorrowersId(task.getResult().getId());
+
+                            saveBorrowerToLocal(borrower);
+                            setProfileImage();
+                            List<LoansTable> loansTables = loanTableQueries.loadLoansForBorrowerOrderByCreationDate(borrower.getBorrowersId());
+                            if(loansTables.isEmpty()){
+                                getLoanForBorrower();
+                            }else{
+                                loadLoanFromStorage(loansTables);
+                                getLoanForBorrowerAndCompareToCloud(loansTables);
+                            }
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void saveBorrowerToLocal(BorrowersTable borrower) {
+        BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(borrower.getBorrowersId());
+        if(borrowersTable == null) borrowersTableQueries.insertBorrowersToStorage(borrower);
     }
 
     private void getLoanForGroupAndCompareToCloud(final List<LoansTable> loansTables) {
