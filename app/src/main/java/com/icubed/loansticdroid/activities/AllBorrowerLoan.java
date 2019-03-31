@@ -56,7 +56,7 @@ public class AllBorrowerLoan extends AppCompatActivity {
     private Toolbar toolbar;
     private TableLayout tableLayout;
     private CircleImageView profileImage;
-    Button ProfileButton;
+    Button profileButton, savingsButton;
 
     private LoanTypeQueries loanTypeQueries;
     private OtherLoanTypeQueries otherLoanTypeQueries;
@@ -82,7 +82,8 @@ public class AllBorrowerLoan extends AppCompatActivity {
         tableLayout = findViewById(R.id.table);
         profileImage = findViewById(R.id.profile_Image);
 
-        ProfileButton = findViewById(R.id.profile_button);
+        profileButton = findViewById(R.id.profile_button);
+        savingsButton = findViewById(R.id.savings_button);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("All Loans");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -105,6 +106,32 @@ public class AllBorrowerLoan extends AppCompatActivity {
         groupId = getIntent().getStringExtra("groupId");
 
         createTableHeader();
+
+        if(borrower == null && borrowerId == null)savingsButton.setVisibility(View.GONE);
+
+        savingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SavingsUnderABorrower.class);
+                intent.putExtra("borrower", borrower);
+                startActivity(intent);
+            }
+        });
+
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(borrower != null){
+                    Intent intent = new Intent(getApplicationContext(), BorrowerDetailsSingle.class);
+                    intent.putExtra("borrower", borrower);
+                    startActivity(intent);
+                }else if(group != null){
+                    Intent intent = new Intent(getApplicationContext(), BorrowerDetailsGroup.class);
+                    intent.putExtra("group", group);
+                    startActivity(intent);
+                }
+            }
+        });
 
         if(borrower != null){
             setProfileImage();
@@ -661,16 +688,5 @@ public class AllBorrowerLoan extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    public void viewProfile(View view) {
-        Intent i = new Intent(AllBorrowerLoan.this, BorrowerDetailsSingle.class);
-
-
-        Button sharedView = ProfileButton;
-        String transitionName = getString(R.string.blue_name);
-
-        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(AllBorrowerLoan.this, sharedView, transitionName);
-        startActivity(i, transitionActivityOptions.toBundle());
     }
 }
