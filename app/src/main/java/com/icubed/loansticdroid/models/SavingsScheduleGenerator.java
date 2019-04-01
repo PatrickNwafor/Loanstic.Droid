@@ -87,7 +87,7 @@ public class SavingsScheduleGenerator {
             objectMap.put("lastUpdatedAt", collectionTable.getLastUpdatedAt());
             objectMap.put("timestamp", collectionTable.getTimestamp());
             objectMap.put("isSavingsCollected", collectionTable.getIsSavingsCollected());
-            objectMap.put("collectionState", collectionTable.getSavingsCollectionState());
+            objectMap.put("collectionState", collectionTable.getCollectionState());
             objectMap.put("amountPaid", 0.0);
 
             savingsPlanCollectionQueries.createSavingsScheduleCollection(objectMap)
@@ -156,7 +156,7 @@ public class SavingsScheduleGenerator {
             collectionTable.setSavingsCollectionNumber(count);
             collectionTable.setSavingsId(savings.getSavingsId());
             collectionTable.setAmountPaid(0.0);
-            collectionTable.setSavingsCollectionState(COLLECTION_STATE_NO);
+            collectionTable.setCollectionState(COLLECTION_STATE_NO);
 
             savingsPlanCollectionTable.add(collectionTable);
             totalPeriodicAmount = totalPeriodicAmount + savings.getDepositAmount();
@@ -185,7 +185,7 @@ public class SavingsScheduleGenerator {
             collectionTable.setSavingsCollectionNumber(count);
             collectionTable.setSavingsId(savings.getSavingsId());
             collectionTable.setAmountPaid(0.0);
-            collectionTable.setSavingsCollectionState(COLLECTION_STATE_NO);
+            collectionTable.setCollectionState(COLLECTION_STATE_NO);
 
             savingsPlanCollectionTable.add(collectionTable);
             totalPeriodicAmount = totalPeriodicAmount + savings.getDepositAmount();
@@ -215,7 +215,7 @@ public class SavingsScheduleGenerator {
             collectionTable.setSavingsCollectionNumber(count);
             collectionTable.setSavingsId(savings.getSavingsId());
             collectionTable.setAmountPaid(0.0);
-            collectionTable.setSavingsCollectionState(COLLECTION_STATE_NO);
+            collectionTable.setCollectionState(COLLECTION_STATE_NO);
 
             savingsPlanCollectionTable.add(collectionTable);
             totalPeriodicAmount = totalPeriodicAmount + savings.getDepositAmount();
@@ -253,7 +253,7 @@ public class SavingsScheduleGenerator {
             collectionTable.setSavingsCollectionNumber(i);
             collectionTable.setSavingsId(savings.getSavingsId());
             collectionTable.setAmountPaid(0.0);
-            collectionTable.setSavingsCollectionState(COLLECTION_STATE_NO);
+            collectionTable.setCollectionState(COLLECTION_STATE_NO);
 
             savingsPlanCollectionTable.add(collectionTable);
 
@@ -285,7 +285,7 @@ public class SavingsScheduleGenerator {
             collectionTable.setSavingsCollectionNumber(i);
             collectionTable.setSavingsId(savings.getSavingsId());
             collectionTable.setAmountPaid(0.0);
-            collectionTable.setSavingsCollectionState(COLLECTION_STATE_NO);
+            collectionTable.setCollectionState(COLLECTION_STATE_NO);
 
             savingsPlanCollectionTable.add(collectionTable);
 
@@ -321,7 +321,7 @@ public class SavingsScheduleGenerator {
             collectionTable.setSavingsCollectionNumber(i);
             collectionTable.setSavingsId(savings.getSavingsId());
             collectionTable.setAmountPaid(0.0);
-            collectionTable.setSavingsCollectionState(COLLECTION_STATE_NO);
+            collectionTable.setCollectionState(COLLECTION_STATE_NO);
 
             savingsPlanCollectionTable.add(collectionTable);
 

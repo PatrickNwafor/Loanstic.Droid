@@ -1,21 +1,44 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.cloudqueries.TransactionQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.localdatabase.PaymentModeTable;
+import com.icubed.loansticdroid.localdatabase.PaymentModeTableQueries;
+import com.icubed.loansticdroid.localdatabase.TransactionTable;
+import com.icubed.loansticdroid.localdatabase.TransactionTableQueries;
 import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTable;
 import com.icubed.loansticdroid.localdatabase.SavingsTable;
 import com.icubed.loansticdroid.util.DateUtil;
-import com.icubed.loansticdroid.util.KeyboardUtil;
+
+import java.util.List;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class SavingsDetailsActivity extends AppCompatActivity {
 
@@ -26,6 +49,14 @@ public class SavingsDetailsActivity extends AppCompatActivity {
     private SavingsTable savingsTable;
     private BorrowersTable borrowersTable;
     private SavingsPlanTypeTable savingsPlanTypeTable;
+
+    private TableLayout tableLayout;
+    private TransactionQueries transactionQueries;
+    private TransactionTableQueries transactionTableQueries;
+    private boolean isGrey = true;
+    private ProgressBar scheduleProgressBar;
+    int count = 1;
+    private LinearLayout emptyLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +84,23 @@ public class SavingsDetailsActivity extends AppCompatActivity {
         goalTypeTextView = findViewById(R.id.goal_type_value);
         goalPurposeTextView = findViewById(R.id.goal_purpose_value);
         repaymentTextView = findViewById(R.id.payment_value);
+
+        tableLayout = findViewById(R.id.table);
+        scheduleProgressBar = findViewById(R.id.progressBar);
+        emptyLayout = findViewById(R.id.search_empty_layout);
+
+        transactionQueries = new TransactionQueries();
+        transactionTableQueries = new TransactionTableQueries(getApplication());
+
+        createTableHeader();
+        List<TransactionTable> collectionTableList = transactionTableQueries.loadAllTransactions(savingsTable.getSavingsId());
+
+        if(collectionTableList == null || collectionTableList.isEmpty()){
+            getCollectionFromCloud();
+        }else{
+            loadCollectionsToUI(collectionTableList);
+            getNewCollectionAndCompareToCloud(collectionTableList);
+        }
 
         fillUIWithSummary();
     }
@@ -146,8 +194,226 @@ public class SavingsDetailsActivity extends AppCompatActivity {
         }
     }
 
+    private void getNewCollectionAndCompareToCloud(final List<TransactionTable> collectionTableList) {
+        transactionQueries.retrieveAllSavingsTransactionsForSavings(savingsTable.getSavingsId())
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            if(!task.getResult().isEmpty()){
+
+                                for(DocumentSnapshot doc : task.getResult()){
+                                    TransactionTable collectionTable = doc.toObject(TransactionTable.class);
+                                    collectionTable.setTransactionId(doc.getId());
+
+                                    boolean newData = true;
+                                    Log.d(TAG, "onComplete: "+collectionTable.toString());
+                                    for (TransactionTable table : collectionTableList) {
+                                        if(table.getTransactionId().equals(collectionTable.getTransactionId())){
+                                            newData = false;
+                                            break;
+                                        }
+                                    }
+
+                                    if(newData) saveCollectionToLocalStorage(collectionTable);
+                                    updateCollection(collectionTable);
+                                }
+
+                                loadAllCollections();
+
+                                scheduleProgressBar.setVisibility(View.GONE);
+                            }else {
+                                scheduleProgressBar.setVisibility(View.GONE);
+                                Toast.makeText(getApplicationContext(), "DueCollection is empty", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            scheduleProgressBar.setVisibility(View.GONE);
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void updateCollection(TransactionTable collectionTable) {
+
+        TransactionTable currentlySaved = transactionTableQueries.loadSingleTransaction(collectionTable.getTransactionId());
+        collectionTable.setId(currentlySaved.getId());
+
+        if(collectionTable.getLastUpdatedAt().getTime() != currentlySaved.getLastUpdatedAt().getTime()){
+
+            transactionTableQueries.updateTransaction(collectionTable);
+            Log.d("Savings Collection", "Detailed updated");
+
+        }
+    }
+
+    private void loadAllCollections() {
+        count = 1;
+        tableLayout.removeAllViews();
+        createTableHeader();
+
+        List<TransactionTable> collectionTableList = transactionTableQueries.loadAllTransactions(savingsTable.getSavingsId());
+
+        for (TransactionTable collectionTable : collectionTableList) {
+            createTableBody(collectionTable);
+        }
+
+    }
+
+    private void loadCollectionsToUI(List<TransactionTable> collectionTableList) {
+        for (TransactionTable collectionTable : collectionTableList) {
+            createTableBody(collectionTable);
+        }
+
+        scheduleProgressBar.setVisibility(View.GONE);
+    }
+
+    private void getCollectionFromCloud() {
+        transactionQueries.retrieveAllSavingsTransactionsForSavings(savingsTable.getSavingsId())
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            if(!task.getResult().isEmpty()){
+                                for(DocumentSnapshot doc : task.getResult()){
+                                    TransactionTable collectionTable = doc.toObject(TransactionTable.class);
+                                    collectionTable.setTransactionId(doc.getId());
+
+                                    Log.d(TAG, "onComplete: "+collectionTable.toString());
+                                    saveCollectionToLocalStorage(collectionTable);
+                                    createTableBody(collectionTable);
+                                }
+
+                                scheduleProgressBar.setVisibility(View.GONE);
+                            }else {
+                                tableLayout.removeAllViews();
+                                emptyLayout.setVisibility(View.VISIBLE);
+                                scheduleProgressBar.setVisibility(View.GONE);
+                                Toast.makeText(getApplicationContext(), "No transaction made yet", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            scheduleProgressBar.setVisibility(View.GONE);
+                            Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void saveCollectionToLocalStorage(TransactionTable collectionTable) {
+        TransactionTable collectionTable1 = transactionTableQueries.loadSingleTransaction(collectionTable.getTransactionId());
+        if(collectionTable1 == null) transactionTableQueries.insertTransactionToStorage(collectionTable);
+    }
+
+    private void createTableBody(final TransactionTable collectionTable) {
+        TableRow row = new TableRow(getApplicationContext());
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+        row.setLayoutParams(lp);
+
+        //row color alternates between grey and white
+        if(isGrey) {
+            row.setBackgroundColor(Color.GRAY);
+            isGrey = false;
+        }
+        else {
+            row.setBackgroundColor(Color.WHITE);
+            isGrey = true;
+        }
+
+        TextView transactionNumberHeader, transactionDateHeader, transactionTypeHeader, transactionAmountHeader, paymentModeHeader;
+
+        transactionNumberHeader = new TextView(getApplicationContext());
+        transactionDateHeader = new TextView(getApplicationContext());
+        transactionTypeHeader = new TextView(getApplicationContext());
+        transactionAmountHeader = new TextView(getApplicationContext());
+        paymentModeHeader = new TextView(getApplicationContext());
+
+        transactionNumberHeader.setText(String.valueOf(count));
+        transactionNumberHeader.setGravity(Gravity.CENTER);
+        transactionNumberHeader.setPadding(10,10,10,10);
+        transactionDateHeader.setText(DateUtil.dateString(collectionTable.getTransactionTime()));
+        transactionDateHeader.setGravity(Gravity.CENTER);
+        transactionDateHeader.setPadding(10,10,10,10);
+        transactionTypeHeader.setText(String.valueOf(collectionTable.getTransactionType()));
+        transactionTypeHeader.setGravity(Gravity.CENTER);
+        transactionTypeHeader.setPadding(10,10,10,10);
+
+        transactionAmountHeader.setText(String.valueOf(collectionTable.getTransactionAmount()));
+        transactionAmountHeader.setGravity(Gravity.CENTER);
+        transactionAmountHeader.setPadding(10,10,10,10);
+
+        if(collectionTable.getPaymentModeId() == null) paymentModeHeader.setText(String.valueOf(collectionTable.getPaymentMode()));
+        else{
+            PaymentModeTableQueries paymentModeTableQueries = new PaymentModeTableQueries(getApplication());
+            PaymentModeTable paymentModeTable = paymentModeTableQueries.loadSinglePaymentMode(collectionTable.getPaymentModeId());
+            paymentModeHeader.setText(paymentModeTable.getPaymentMode());
+        }
+        paymentModeHeader.setGravity(Gravity.CENTER);
+        paymentModeHeader.setPadding(10,10,10,10);
+
+        row.addView(transactionNumberHeader);
+        row.addView(transactionDateHeader);
+        row.addView(transactionTypeHeader);
+        row.addView(transactionAmountHeader);
+        row.addView(paymentModeHeader);
+
+        tableLayout.addView(row);
+        addHorizontalSeparator(tableLayout);
+    }
+
+    private void createTableHeader(){
+        TableRow row = new TableRow(getApplicationContext());
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+        row.setLayoutParams(lp);
+        TextView transactionNumberHeader, transactionDateHeader, transactionTypeHeader, transactionAmountHeader, paymentModeHeader;
+
+        transactionNumberHeader = new TextView(getApplicationContext());
+        transactionDateHeader = new TextView(getApplicationContext());
+        transactionTypeHeader = new TextView(getApplicationContext());
+        transactionAmountHeader = new TextView(getApplicationContext());
+        paymentModeHeader = new TextView(getApplicationContext());
+
+        transactionNumberHeader.setText("S/N");
+        transactionNumberHeader.setGravity(Gravity.CENTER);
+        transactionNumberHeader.setTextColor(Color.RED);
+        transactionNumberHeader.setPadding(10,10,10,10);
+        transactionDateHeader.setText("Date");
+        transactionDateHeader.setGravity(Gravity.CENTER);
+        transactionDateHeader.setTextColor(Color.RED);
+        transactionDateHeader.setPadding(10,10,10,10);
+        transactionTypeHeader.setText("Type");
+        transactionTypeHeader.setGravity(Gravity.CENTER);
+        transactionTypeHeader.setTextColor(Color.RED);
+        transactionTypeHeader.setPadding(10,10,10,10);
+        transactionAmountHeader.setText("Amount");
+        transactionAmountHeader.setGravity(Gravity.CENTER);
+        transactionAmountHeader.setTextColor(Color.RED);
+        transactionAmountHeader.setPadding(10,10,10,10);
+        paymentModeHeader.setText("Mode of Payment");
+        paymentModeHeader.setGravity(Gravity.CENTER);
+        paymentModeHeader.setTextColor(Color.RED);
+        paymentModeHeader.setPadding(10,10,10,10);
+
+        row.addView(transactionNumberHeader);
+        row.addView(transactionDateHeader);
+        row.addView(transactionTypeHeader);
+        row.addView(transactionAmountHeader);
+        row.addView(paymentModeHeader);
+
+        tableLayout.addView(row);
+        addHorizontalSeparator(tableLayout);
+    }
+
+    private void addHorizontalSeparator(TableLayout tableLayout){
+        // Added Horizontal line as
+        View view = new View(getApplicationContext());
+        view.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 1));
+        view.setBackgroundColor(Color.rgb(50, 50, 50));
+        tableLayout.addView(view);
+    }
+
     private void startAnotherActivity(Class newActivity){
         Intent newActivityIntent = new Intent(this, newActivity);
+        newActivityIntent.putExtra("savings", savingsTable);
         startActivity(newActivityIntent);
     }
 

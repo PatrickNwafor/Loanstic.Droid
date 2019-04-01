@@ -40,20 +40,20 @@ public class SavingsPlanCollectionQueries {
     }
 
     /*****************Retrieve SavingsPlanCollectionTable for loan*******************/
-    public Task<QuerySnapshot> retrieveSavingsSchedulesCollectionDataForALoanAcending(String savingsScheduleId){
+    public Task<QuerySnapshot> retrieveSavingsSchedulesCollectionDataForASavingsAcending(String savingsId){
 
         return firebaseFirestore.collection("Savings_Plan_Collection")
-                .whereEqualTo("loanId", savingsScheduleId)
-                .orderBy("collectionNumber", Query.Direction.ASCENDING)
+                .whereEqualTo("savingsId", savingsId)
+                .orderBy("savingsCollectionNumber", Query.Direction.ASCENDING)
                 .get();
 
     }
 
     /*****************Retrieve SavingsPlanCollectionTable for loan*******************/
-    public Task<QuerySnapshot> retrieveSavingsSchedulesCollectionDataForALoan(String savingsScheduleId){
+    public Task<QuerySnapshot> retrieveSavingsPlanCollectionDataForSavings(String savingsId){
 
         return firebaseFirestore.collection("Savings_Plan_Collection")
-                .whereEqualTo("loanId", savingsScheduleId)
+                .whereEqualTo("savingsId", savingsId)
                 .get();
 
     }

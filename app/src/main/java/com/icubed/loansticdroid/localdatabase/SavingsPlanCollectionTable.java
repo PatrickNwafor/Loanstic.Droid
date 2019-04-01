@@ -37,7 +37,7 @@ public class SavingsPlanCollectionTable implements Parcelable {
     private Date lastUpdatedAt;
     private Date timestamp;
     private double amountPaid;
-    private String savingsCollectionState;
+    private String collectionState;
 
     private Boolean isSavingsCollected;
 
@@ -49,19 +49,14 @@ public class SavingsPlanCollectionTable implements Parcelable {
         this.id = in.readLong();
         this.savingsCollectionAmount = in.readDouble();
         this.amountPaid = in.readDouble();
-        this.savingsCollectionState = in.readString();
         this.isSavingsCollected = Boolean.valueOf(in.readString());
         this.savingsCollectionDueDate = new Date(in.readLong());
         this.lastUpdatedAt = new Date(in.readLong());
         this.timestamp = new Date(in.readLong());
     }
 
-    @Generated(hash = 1211818170)
-    public SavingsPlanCollectionTable(String savingsPlanCollectionId,
-            String savingsId, int savingsCollectionNumber, Long id,
-            Double savingsCollectionAmount, Date savingsCollectionDueDate,
-            Date lastUpdatedAt, Date timestamp, double amountPaid,
-            String savingsCollectionState, Boolean isSavingsCollected) {
+    @Generated(hash = 792024406)
+    public SavingsPlanCollectionTable(String savingsPlanCollectionId, String savingsId, int savingsCollectionNumber, Long id, Double savingsCollectionAmount, Date savingsCollectionDueDate, Date lastUpdatedAt, Date timestamp, double amountPaid, String collectionState, Boolean isSavingsCollected) {
         this.savingsPlanCollectionId = savingsPlanCollectionId;
         this.savingsId = savingsId;
         this.savingsCollectionNumber = savingsCollectionNumber;
@@ -71,7 +66,7 @@ public class SavingsPlanCollectionTable implements Parcelable {
         this.lastUpdatedAt = lastUpdatedAt;
         this.timestamp = timestamp;
         this.amountPaid = amountPaid;
-        this.savingsCollectionState = savingsCollectionState;
+        this.collectionState = collectionState;
         this.isSavingsCollected = isSavingsCollected;
     }
 
@@ -92,11 +87,16 @@ public class SavingsPlanCollectionTable implements Parcelable {
         dest.writeLong(this.id);
         dest.writeDouble(this.savingsCollectionAmount);
         dest.writeDouble(this.amountPaid);
-        dest.writeString(this.savingsCollectionState);
+        dest.writeString(this.collectionState);
         dest.writeString(String.valueOf(this.isSavingsCollected));
         dest.writeLong(this.savingsCollectionDueDate.getTime());
         dest.writeLong(this.lastUpdatedAt.getTime());
         dest.writeLong(this.timestamp.getTime());
+    }
+
+    @Override
+    public String toString() {
+        return "SavingsPlanCollectionTable{" + "savingsPlanCollectionId='" + savingsPlanCollectionId + '\'' + ", savingsId='" + savingsId + '\'' + ", savingsCollectionNumber=" + savingsCollectionNumber + ", id=" + id + ", savingsCollectionAmount=" + savingsCollectionAmount + ", savingsCollectionDueDate=" + savingsCollectionDueDate + ", lastUpdatedAt=" + lastUpdatedAt + ", timestamp=" + timestamp + ", amountPaid=" + amountPaid + ", collectionState='" + collectionState + '\'' + ", isSavingsCollected=" + isSavingsCollected + '}';
     }
 
     public String getSavingsPlanCollectionId() {
@@ -171,12 +171,12 @@ public class SavingsPlanCollectionTable implements Parcelable {
         this.amountPaid = amountPaid;
     }
 
-    public String getSavingsCollectionState() {
-        return this.savingsCollectionState;
+    public String getCollectionState() {
+        return this.collectionState;
     }
 
-    public void setSavingsCollectionState(String savingsCollectionState) {
-        this.savingsCollectionState = savingsCollectionState;
+    public void setCollectionState(String collectionState) {
+        this.collectionState = collectionState;
     }
 
     public Boolean getIsSavingsCollected() {
@@ -185,11 +185,6 @@ public class SavingsPlanCollectionTable implements Parcelable {
 
     public void setIsSavingsCollected(Boolean isSavingsCollected) {
         this.isSavingsCollected = isSavingsCollected;
-    }
-
-    @Override
-    public String toString() {
-        return "SavingsPlanCollectionTable{" + "savingsPlanCollectionId='" + savingsPlanCollectionId + '\'' + ", savingsId='" + savingsId + '\'' + ", savingsCollectionNumber=" + savingsCollectionNumber + ", id=" + id + ", savingsCollectionAmount=" + savingsCollectionAmount + ", savingsCollectionDueDate=" + savingsCollectionDueDate + ", lastUpdatedAt=" + lastUpdatedAt + ", timestamp=" + timestamp + ", amountPaid=" + amountPaid + ", savingsCollectionState='" + savingsCollectionState + '\'' + ", isSavingsCollected=" + isSavingsCollected + '}';
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
