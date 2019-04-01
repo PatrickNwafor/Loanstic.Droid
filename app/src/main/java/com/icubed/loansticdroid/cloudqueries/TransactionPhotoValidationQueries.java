@@ -15,14 +15,13 @@ import com.icubed.loansticdroid.util.BitmapUtil;
 import java.util.Map;
 import java.util.UUID;
 
-public class DepositPhotoValidationQueries {
-
+public class TransactionPhotoValidationQueries {
     private FirebaseFirestore firebaseFirestore;
     private StorageReference paymentImageStorageRef;
     private StorageReference paymentImageThumbStorageRef;
     private String uniqueID;
 
-    public DepositPhotoValidationQueries(){
+    public TransactionPhotoValidationQueries(){
         firebaseFirestore = FirebaseFirestore.getInstance();
     }
 
@@ -30,7 +29,7 @@ public class DepositPhotoValidationQueries {
     public UploadTask uploadImage(Bitmap bitmap){
         uniqueID = UUID.randomUUID().toString();
         paymentImageStorageRef = FirebaseStorage.getInstance()
-                .getReference("Deposit_Photo_Verification/")
+                .getReference("Savings_Transaction_Photo_Verification/")
                 .child(uniqueID+".jpg");
 
         byte[] data = BitmapUtil.getBytesFromBitmapInJPG(bitmap, 100);
@@ -41,7 +40,7 @@ public class DepositPhotoValidationQueries {
     public UploadTask uploadImageThumb(Bitmap bitmap){
 
         paymentImageThumbStorageRef = FirebaseStorage.getInstance()
-                .getReference("Deposit_Photo_Verification/thumb/")
+                .getReference("Savings_Transaction_Photo_Verification/thumb/")
                 .child(uniqueID+".jpg");
 
         byte[] data = BitmapUtil.getBytesFromBitmapInJPG(bitmap, 10);
@@ -49,24 +48,24 @@ public class DepositPhotoValidationQueries {
     }
 
     /**********Save image Uri on firestore database**************/
-    public Task<DocumentReference> saveDepositPhotoUriToCloud(Map<String, Object> photoVerifMap) {
+    public Task<DocumentReference> savePhotoUriToCloud(Map<String, Object> photoVerifMap) {
 
-        return firebaseFirestore.collection("Deposit_Photo_Verification")
+        return firebaseFirestore.collection("Savings_Transaction_Photo_Verification")
                 .add(photoVerifMap);
 
     }
 
     /********************Retrieve Single PaymentQueries Details**************/
-    public Task<DocumentSnapshot> retieveSingleDepositVerifPhoto(String photoVerifId){
-        return firebaseFirestore.collection("Deposit_Photo_Verification")
+    public Task<DocumentSnapshot> retieveSingleVerifPhoto(String photoVerifId){
+        return firebaseFirestore.collection("Savings_Transaction_Photo_Verification")
                 .document(photoVerifId)
                 .get();
     }
 
     /***************Retrieve All Payments Details******************/
-    public Task<QuerySnapshot> retrieveAllPhotoVerifForDeposit(String depositId){
-        return firebaseFirestore.collection("Deposit_Photo_Verification")
-                .whereEqualTo("depositId", depositId)
+    public Task<QuerySnapshot> retrieveAllPhotoVerif(String transactionId){
+        return firebaseFirestore.collection("Savings_Transaction_Photo_Verification")
+                .whereEqualTo("withdrawalId", transactionId)
                 .get();
     }
 }

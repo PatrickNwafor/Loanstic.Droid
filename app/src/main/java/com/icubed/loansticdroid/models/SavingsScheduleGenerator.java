@@ -145,8 +145,6 @@ public class SavingsScheduleGenerator {
         List<SavingsPlanCollectionTable> savingsPlanCollectionTable = new ArrayList<>();
         int count = 1;
 
-        now.set(Calendar.MONTH, now.get(Calendar.MONTH) + savings.getSavingsDuration());
-
         while (now.getTime().before(savings.getMaturityDate())){
 
             SavingsPlanCollectionTable collectionTable = new SavingsPlanCollectionTable();
@@ -175,8 +173,6 @@ public class SavingsScheduleGenerator {
 
         List<SavingsPlanCollectionTable> savingsPlanCollectionTable = new ArrayList<>();
         int count = 1;
-
-        now.set(Calendar.DAY_OF_YEAR, now.get(Calendar.DAY_OF_YEAR) + savings.getSavingsDuration());
 
         while (now.getTime().before(savings.getMaturityDate())){
 
@@ -207,8 +203,6 @@ public class SavingsScheduleGenerator {
 
         List<SavingsPlanCollectionTable> savingsPlanCollectionTable = new ArrayList<>();
         int count = 1;
-
-        now.set(Calendar.DAY_OF_YEAR, now.get(Calendar.DAY_OF_YEAR) + savings.getSavingsDuration());
 
         while (now.getTime().before(savings.getMaturityDate())){
 
@@ -302,10 +296,7 @@ public class SavingsScheduleGenerator {
     }
 
     private double generateInterest(){
-        if(savings.getIsThereInterest()) {
-            double totalPayment = (1 + savings.getSavingsInterestRate() / 100) * savings.getAmountTarget();
-            return totalPayment;
-        } else return savings.getAmountTarget();
+        return savings.getAmountTarget();
     }
 
     private List<SavingsPlanCollectionTable> generateRepaymentPerDay(double repaymentAmount) {

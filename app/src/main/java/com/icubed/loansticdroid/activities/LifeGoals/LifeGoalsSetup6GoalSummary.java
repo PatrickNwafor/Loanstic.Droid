@@ -218,7 +218,8 @@ public class LifeGoalsSetup6GoalSummary extends AppCompatActivity {
         objectMap.put("startDate", savingsTable.getStartDate());
         objectMap.put("maturityDate", savingsTable.getMaturityDate());
         objectMap.put("savingsNumber", savingsTable.getSavingsNumber());
-        objectMap.put("amountSaved", savingsTable.getAmountSaved());
+        if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_FIXED)) objectMap.put("amountSaved", savingsTable.getFixedAmount());
+        else objectMap.put("amountSaved", savingsTable.getAmountSaved());
         objectMap.put("borrowerId", savingsTable.getBorrowerId());
         objectMap.put("isThereInterest", savingsTable.getIsThereInterest());
         objectMap.put("amountTarget", savingsTable.getAmountTarget());
