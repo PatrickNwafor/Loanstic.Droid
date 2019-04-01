@@ -1,10 +1,13 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.icubed.loansticdroid.R;
@@ -12,6 +15,7 @@ import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTable;
 import com.icubed.loansticdroid.localdatabase.SavingsTable;
 import com.icubed.loansticdroid.util.DateUtil;
+import com.icubed.loansticdroid.util.KeyboardUtil;
 
 public class SavingsDetailsActivity extends AppCompatActivity {
 
@@ -113,13 +117,46 @@ public class SavingsDetailsActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.savings_details_menu, menu);
+
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(item.getItemId() == android.R.id.home){
-            finish();
-            return true;
-        }
 
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+
+
+            case R.id.view_schedule:
+                startAnotherActivity(SavingsSchedule.class);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
+
+    private void startAnotherActivity(Class newActivity){
+        Intent newActivityIntent = new Intent(this, newActivity);
+        startActivity(newActivityIntent);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+
+        super.onBackPressed();
+    }
+
+
 }

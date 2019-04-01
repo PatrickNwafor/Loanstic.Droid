@@ -117,7 +117,8 @@
         <activity android:name=".activities.LifeGoals.SavingsGoalFixedAmount" />
         <activity android:name=".activities.SavingsUnderABorrower" />
         <activity android:name=".activities.SavingsDetailsActivity" />
-        <activity android:name=".activities.SearchSavingsActivity"></activity>
+        <activity android:name=".activities.SearchSavingsActivity" />
+        <activity android:name=".activities.SavingsSchedule"></activity>
     </application>
 
 </manifest>

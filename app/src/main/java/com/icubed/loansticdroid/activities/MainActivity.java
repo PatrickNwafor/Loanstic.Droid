@@ -188,6 +188,8 @@ public class MainActivity extends AppCompatActivity {
                 startAnotherActivity(BorrowerActivity.class);
                 return true;
 
+
+
             case R.id.nav_branches:
                 startAnotherActivity(BranchesActivity.class);
                 return true;
