@@ -40,6 +40,7 @@ import com.icubed.loansticdroid.localdatabase.SavingsTable;
 import com.icubed.loansticdroid.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.support.constraint.Constraints.TAG;
@@ -145,18 +146,40 @@ public class SavingsDetailsActivity extends AppCompatActivity {
         withdraw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(savingsTable.getAmountSaved() > 0) {
-                    Intent intent = new Intent(getApplicationContext(), SavingsTransactionsWithdrawalPayment.class);
-                    intent.putExtra("savings", savingsTable);
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(SavingsDetailsActivity.this, "You do not have money saved in your account to withdraw", Toast.LENGTH_SHORT).show();
+                if(savingsTable.getTargetType() == null){
+                    withdrawTask();
+                }else if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_FIXED)){
+                    Date now = new Date();
+                    if(now.after(savingsTable.getMaturityDate())){
+                        withdrawTask();
+                    } else
+                        Toast.makeText(SavingsDetailsActivity.this, "Savings has not matured yet for withdrawal", Toast.LENGTH_SHORT).show();
+                }else if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_TIME)){
+                    if(savingsTable.getAmountSaved() == savingsTable.getTotalExpectedPeriodicAmount()){
+                        withdrawTask();
+                    } else
+                        Toast.makeText(SavingsDetailsActivity.this, "Savings has not matured yet for withdrawal", Toast.LENGTH_SHORT).show();
+                }else if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)){
+                    if(savingsTable.getAmountSaved() == savingsTable.getAmountTarget()){
+                        withdrawTask();
+                    } else
+                        Toast.makeText(SavingsDetailsActivity.this, "Savings has not matured yet for withdrawal", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
         fillUIWithSummary();
         loadAllSavingssAndCompareToLocal();
+    }
+
+    private void withdrawTask(){
+        if(savingsTable.getAmountSaved() > 0) {
+            Intent intent = new Intent(getApplicationContext(), SavingsTransactionsWithdrawalPayment.class);
+            intent.putExtra("savings", savingsTable);
+            startActivity(intent);
+        }else{
+            Toast.makeText(SavingsDetailsActivity.this, "You do not have money saved in your account to withdraw", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void fillUIWithSummary() {
