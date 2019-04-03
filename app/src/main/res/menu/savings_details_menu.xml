@@ -2,12 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+  
     <item
-        android:id="@+id/view_schedule"
-        android:icon="@drawable/savings_schedule"
-        android:tooltipText="Collection Schedules"
-        android:title="View Schedule"
-        app:showAsAction="always"/>
+        android:title=""
+        android:id="@+id/overlyingItem"
 
+        android:icon="@drawable/ic_menu_action_bar"
+        app:showAsAction="always"
+        >
+
+        <menu>
+            <item
+                android:id="@+id/view_schedule"
+
+                android:title="Deposit" />
+            <item
+                android:id="@+id/nav_make_withdrawal"
+
+                android:title="Withdrawal" />
+        </menu>
+    </item>
 
 </menu>

@@ -118,7 +118,9 @@
         <activity android:name=".activities.SavingsUnderABorrower" />
         <activity android:name=".activities.SavingsDetailsActivity" />
         <activity android:name=".activities.SearchSavingsActivity" />
-        <activity android:name=".activities.SavingsSchedule"></activity>
+        <activity android:name=".activities.SavingsSchedule" />
+        <activity android:name=".activities.SavingsTransactionDepositPayment" />
+        <activity android:name=".activities.SavingsTransactionsWithdrawalPayment"></activity>
     </application>
 
 </manifest>

@@ -1,10 +1,8 @@
 package com.icubed.loansticdroid.activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -183,7 +181,9 @@ public class SavingsDetailsActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
 
-
+            case R.id.nav_make_withdrawal:
+                startAnotherActivity(SavingsTransactionDepositPayment.class);
+                return true;
 
             case R.id.view_schedule:
                 startAnotherActivity(SavingsSchedule.class);

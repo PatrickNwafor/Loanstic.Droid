@@ -353,8 +353,8 @@
                 android:layout_marginTop="8dp"
                 android:text="Payment Cycle"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/interest_value"
-                app:layout_constraintHorizontal_bias="0.034"
+                app:layout_constraintEnd_toStartOf="@+id/payment_value"
+                app:layout_constraintHorizontal_bias="0.051"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
