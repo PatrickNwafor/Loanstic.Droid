@@ -64,6 +64,8 @@ public class DueCollection {
     private GroupBorrowerQueries groupBorrowerQueries;
     private int collectionSize;
     private int count;
+    private int loadCount = 0;
+    private int loadSize;
 
     private Boolean isDueCollectionSingle;
 
@@ -355,8 +357,11 @@ public class DueCollection {
         fragment.collectionTableList.clear();
         drawCollectionMarker(collectionTables);
 
+        loadCount = 0;
+
         if(!collectionTables.isEmpty()) {
 
+            loadSize = collectionTables.size();
             if(fragment != null) fragment.emptyCollection.setVisibility(View.GONE);
 
             for (CollectionTable collectionTable : collectionTables) {
@@ -372,39 +377,217 @@ public class DueCollection {
 
                 LoansTable loan = loanTableQueries.loadSingleLoan(collectionTable.getLoanId());
 
-                if(loan.getBorrowerId() != null) {
-                    BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
-                    dueCollectionDetails.setFirstName(borrowersTable.getFirstName());
-                    dueCollectionDetails.setLastName(borrowersTable.getLastName());
-                    dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
-                    dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
-                    dueCollectionDetails.setImageUri(borrowersTable.getProfileImageUri());
-                    dueCollectionDetails.setImageUriThumb(borrowersTable.getProfileImageThumbUri());
-                    dueCollectionDetails.setImageByteArray(borrowersTable.getBorrowerImageByteArray());
-                    dueCollectionDetails.setLatitude(borrowersTable.getBorrowerLocationLatitude());
-                    dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
-                }else{
-                    GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
-                    dueCollectionDetails.setGroupName(groupBorrowerTable.getGroupName());
-                    dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
-                    dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
-                    dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
-                }
+                if(loan != null) {
 
-                if(fragment != null) {
-                    fragment.dueCollectionList.add(dueCollectionDetails);
-                    fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
-                }
+                    if (loan.getBorrowerId() != null) {
+                        BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
+
+                        if(borrowersTable != null) {
+                            dueCollectionDetails.setFirstName(borrowersTable.getFirstName());
+                            dueCollectionDetails.setLastName(borrowersTable.getLastName());
+                            dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
+                            dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
+                            dueCollectionDetails.setImageUri(borrowersTable.getProfileImageUri());
+                            dueCollectionDetails.setImageUriThumb(borrowersTable.getProfileImageThumbUri());
+                            dueCollectionDetails.setImageByteArray(borrowersTable.getBorrowerImageByteArray());
+                            dueCollectionDetails.setLatitude(borrowersTable.getBorrowerLocationLatitude());
+                            dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
+
+                            loadCount++;
+                            if (fragment != null) {
+                                fragment.dueCollectionList.add(dueCollectionDetails);
+                                fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+
+                                if(loadCount == loadSize){
+                                    hideProgressBar();
+                                    removeRefresher();
+                                }
+                            }
+                        } else getSingleBorrower(loan.getBorrowerId(), dueCollectionDetails);
+
+                    } else {
+                        GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
+
+                        if(groupBorrowerTable != null) {
+                            dueCollectionDetails.setGroupName(groupBorrowerTable.getGroupName());
+                            dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
+                            dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
+                            dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
+
+                            loadCount++;
+                            if (fragment != null) {
+                                fragment.dueCollectionList.add(dueCollectionDetails);
+                                fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+
+                                if(loadCount == loadSize){
+                                    hideProgressBar();
+                                    removeRefresher();
+                                }
+                            }
+                        } getSingleGroup(loan.getGroupId(), dueCollectionDetails);
+                    }
+
+                } else getSingleLoan(collectionTable.getLoanId(), dueCollectionDetails);
             }
         }else{
             if(fragment != null)
             fragment.emptyCollection.setVisibility(View.VISIBLE);
         }
 
-        if(fragment != null)
-        hideProgressBar();
-        removeRefresher();
+    }
 
+    private void getSingleLoan(String loanId, final DueCollectionDetails dueCollectionDetails) {
+        loansQueries.retrieveSingleLoan(loanId)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "onComplete: Loan retrieved");
+                            if (task.getResult().exists()) {
+
+                                LoansTable loansTable = task.getResult().toObject(LoansTable.class);
+                                loansTable.setLoanId(task.getResult().getId());
+
+                                saveLoanToLocalStorage(loansTable);
+                                if (loansTable.getBorrowerId() != null) {
+                                    BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loansTable.getBorrowerId());
+
+                                    if(borrowersTable != null) {
+                                        dueCollectionDetails.setFirstName(borrowersTable.getFirstName());
+                                        dueCollectionDetails.setLastName(borrowersTable.getLastName());
+                                        dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
+                                        dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
+                                        dueCollectionDetails.setImageUri(borrowersTable.getProfileImageUri());
+                                        dueCollectionDetails.setImageUriThumb(borrowersTable.getProfileImageThumbUri());
+                                        dueCollectionDetails.setImageByteArray(borrowersTable.getBorrowerImageByteArray());
+                                        dueCollectionDetails.setLatitude(borrowersTable.getBorrowerLocationLatitude());
+                                        dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
+
+                                        loadCount++;
+                                        if (fragment != null) {
+                                            fragment.dueCollectionList.add(dueCollectionDetails);
+                                            fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+
+                                            if(loadCount == loadSize){
+                                                hideProgressBar();
+                                                removeRefresher();
+                                            }
+                                        }
+                                    } else getSingleBorrower(loansTable.getBorrowerId(), dueCollectionDetails);
+
+                                } else {
+                                    GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loansTable.getGroupId());
+
+                                    if(groupBorrowerTable != null) {
+                                        dueCollectionDetails.setGroupName(groupBorrowerTable.getGroupName());
+                                        dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
+                                        dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
+                                        dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
+
+                                        loadCount++;
+                                        if (fragment != null) {
+                                            fragment.dueCollectionList.add(dueCollectionDetails);
+                                            fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+
+                                            if(loadCount == loadSize){
+                                                hideProgressBar();
+                                                removeRefresher();
+                                            }
+                                        }
+                                    } getSingleGroup(loansTable.getGroupId(), dueCollectionDetails);
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "onComplete: Loan retrieved Failed");
+                        }
+                    }
+                });
+    }
+
+    private void getSingleGroup(final String groupId, final DueCollectionDetails dueCollectionDetails) {
+        groupBorrowerQueries.retrieveSingleBorrowerGroup(groupId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    count++;
+                    GroupBorrowerTable groupBorrowerTable = task.getResult().toObject(GroupBorrowerTable.class);
+                    groupBorrowerTable.setGroupId(task.getResult().getId());
+
+                    saveSingleNewGroupLocal(groupBorrowerTable);
+                    dueCollectionDetails.setGroupName(groupBorrowerTable.getGroupName());
+                    dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
+                    dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
+                    dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
+
+                    loadCount++;
+                    if (fragment != null) {
+                        fragment.dueCollectionList.add(dueCollectionDetails);
+                        fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+                        if(loadCount == loadSize){
+                            hideProgressBar();
+                            removeRefresher();
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "onComplete: " + task.getException().getMessage());
+                }
+            }
+        });
+    }
+
+    private void saveSingleNewGroupLocal(GroupBorrowerTable groupBorrowerTable) {
+        GroupBorrowerTable allGroups = groupBorrowerTableQueries.loadSingleBorrowerGroup(groupBorrowerTable.getGroupId());
+
+        if(allGroups == null){
+            groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
+        }
+    }
+
+    private void getSingleBorrower(String borrowerId, final DueCollectionDetails dueCollectionDetails) {
+        borrowersQueries.retrieveSingleBorrowers(borrowerId)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "onComplete: BorrowersQueries retrieved");
+                            if (task.getResult().exists()) {
+                                count++;
+                                //Set local storage table
+                                BorrowersTable borrowersTable = task.getResult().toObject(BorrowersTable.class);
+                                borrowersTable.setBorrowersId(task.getResult().getId());
+
+                                saveSingleNewBorrowerToLocal(borrowersTable);
+                                getBorrowerImage(borrowersTable);
+                                dueCollectionDetails.setFirstName(borrowersTable.getFirstName());
+                                dueCollectionDetails.setLastName(borrowersTable.getLastName());
+                                dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
+                                dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
+                                dueCollectionDetails.setImageUri(borrowersTable.getProfileImageUri());
+                                dueCollectionDetails.setImageUriThumb(borrowersTable.getProfileImageThumbUri());
+                                dueCollectionDetails.setImageByteArray(borrowersTable.getBorrowerImageByteArray());
+                                dueCollectionDetails.setLatitude(borrowersTable.getBorrowerLocationLatitude());
+                                dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
+
+                                loadCount++;
+                                if (fragment != null) {
+                                    fragment.dueCollectionList.add(dueCollectionDetails);
+                                    fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
+                                    if(loadCount == loadSize){
+                                        hideProgressBar();
+                                        removeRefresher();
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "onComplete: BorrowersQueries retrieved Failed");
+                        }
+                    }
+                });
+    }
+
+    private void saveSingleNewBorrowerToLocal(BorrowersTable borrowersTable) {
+        BorrowersTable allBorrowers = borrowersTableQueries.loadSingleBorrower(borrowersTable.getBorrowersId());
+        if(allBorrowers == null){borrowersTableQueries.insertBorrowersToStorage(borrowersTable);}
     }
 
     private void drawCollectionMarker(final List<CollectionTable> collectionTable) {
