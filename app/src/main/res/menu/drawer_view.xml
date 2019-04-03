@@ -15,25 +15,12 @@
             android:id="@+id/nav_loans"
             android:icon="@drawable/ic_menu_wallet"
             android:title="@string/loan" />
-
-    </group>
-    <group
-        android:id="@+id/savings"
-        android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_withdrawals"
-            android:icon="@drawable/ic_menu_wallet"
-            android:title="@string/withdrawals" />
-        <item
-            android:id="@+id/nav_deopsits"
-            android:icon="@drawable/ic_menu_wallet"
-            android:title="@string/deposits" />
         <item
             android:id="@+id/nav_savings"
             android:icon="@drawable/ic_menu_wallet"
             android:title="@string/savings" />
-
     </group>
+
     <group
         android:id="@+id/borrower"
         android:checkableBehavior="single">
