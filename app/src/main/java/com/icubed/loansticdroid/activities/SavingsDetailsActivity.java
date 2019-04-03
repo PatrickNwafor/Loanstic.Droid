@@ -1,8 +1,10 @@
 package com.icubed.loansticdroid.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +14,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -24,16 +27,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
+import com.icubed.loansticdroid.cloudqueries.SavingsQueries;
 import com.icubed.loansticdroid.cloudqueries.TransactionQueries;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.PaymentModeTable;
 import com.icubed.loansticdroid.localdatabase.PaymentModeTableQueries;
+import com.icubed.loansticdroid.localdatabase.SavingsTableQueries;
 import com.icubed.loansticdroid.localdatabase.TransactionTable;
 import com.icubed.loansticdroid.localdatabase.TransactionTableQueries;
 import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTable;
 import com.icubed.loansticdroid.localdatabase.SavingsTable;
 import com.icubed.loansticdroid.util.DateUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.support.constraint.Constraints.TAG;
@@ -54,12 +60,18 @@ public class SavingsDetailsActivity extends AppCompatActivity {
     private boolean isGrey = true;
     private ProgressBar scheduleProgressBar;
     int count = 1;
-    private LinearLayout emptyLayout;
+    private LinearLayout emptyLayout, trans;
+    private Button withdraw, deposit;
+    private SavingsTableQueries savingsTableQueries;
+    private SavingsQueries savingsQueries;
+    boolean shouldExecuteOnResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_savings_details);
+
+        shouldExecuteOnResume = false;
 
         savingsTable = getIntent().getParcelableExtra("savings");
         borrowersTable = getIntent().getParcelableExtra("borrower");
@@ -86,21 +98,65 @@ public class SavingsDetailsActivity extends AppCompatActivity {
         tableLayout = findViewById(R.id.table);
         scheduleProgressBar = findViewById(R.id.progressBar);
         emptyLayout = findViewById(R.id.search_empty_layout);
+        deposit = findViewById(R.id.deposit);
+        withdraw = findViewById(R.id.withdraw);
+        trans = findViewById(R.id.trans);
 
         transactionQueries = new TransactionQueries();
         transactionTableQueries = new TransactionTableQueries(getApplication());
+        savingsTableQueries = new SavingsTableQueries(getApplication());
+        savingsQueries = new SavingsQueries();
+
+        if(savingsTable.getTargetType() == null) {
+            deposit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), SavingsTransactionDepositPayment.class);
+                    intent.putExtra("savings", savingsTable);
+                    startActivity(intent);
+                }
+            });
+        }else if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_FIXED)) {
+            deposit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext(), "No extra deposit can be made for a fixed plan", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            deposit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext(), "Please view plan deposit schedule to make a deposit", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         createTableHeader();
         List<TransactionTable> collectionTableList = transactionTableQueries.loadAllTransactions(savingsTable.getSavingsId());
 
         if(collectionTableList == null || collectionTableList.isEmpty()){
-            getCollectionFromCloud();
+            getTransactionFromCloud();
         }else{
-            loadCollectionsToUI(collectionTableList);
-            getNewCollectionAndCompareToCloud(collectionTableList);
+            loadTransactionsToUI(collectionTableList);
+            getNewTransactionAndCompareToCloud(collectionTableList);
         }
 
+        withdraw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(savingsTable.getAmountSaved() > 0) {
+                    Intent intent = new Intent(getApplicationContext(), SavingsTransactionsWithdrawalPayment.class);
+                    intent.putExtra("savings", savingsTable);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(SavingsDetailsActivity.this, "You do not have money saved in your account to withdraw", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         fillUIWithSummary();
+        loadAllSavingssAndCompareToLocal();
     }
 
     private void fillUIWithSummary() {
@@ -181,9 +237,7 @@ public class SavingsDetailsActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
 
-            case R.id.nav_make_withdrawal:
-                startAnotherActivity(SavingsTransactionDepositPayment.class);
-                return true;
+
 
             case R.id.view_schedule:
                 startAnotherActivity(SavingsSchedule.class);
@@ -194,7 +248,7 @@ public class SavingsDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void getNewCollectionAndCompareToCloud(final List<TransactionTable> collectionTableList) {
+    private void getNewTransactionAndCompareToCloud(final List<TransactionTable> collectionTableList) {
         transactionQueries.retrieveAllSavingsTransactionsForSavings(savingsTable.getSavingsId())
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -260,7 +314,7 @@ public class SavingsDetailsActivity extends AppCompatActivity {
 
     }
 
-    private void loadCollectionsToUI(List<TransactionTable> collectionTableList) {
+    private void loadTransactionsToUI(List<TransactionTable> collectionTableList) {
         for (TransactionTable collectionTable : collectionTableList) {
             createTableBody(collectionTable);
         }
@@ -268,7 +322,7 @@ public class SavingsDetailsActivity extends AppCompatActivity {
         scheduleProgressBar.setVisibility(View.GONE);
     }
 
-    private void getCollectionFromCloud() {
+    private void getTransactionFromCloud() {
         transactionQueries.retrieveAllSavingsTransactionsForSavings(savingsTable.getSavingsId())
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -302,6 +356,37 @@ public class SavingsDetailsActivity extends AppCompatActivity {
     private void saveCollectionToLocalStorage(TransactionTable collectionTable) {
         TransactionTable collectionTable1 = transactionTableQueries.loadSingleTransaction(collectionTable.getTransactionId());
         if(collectionTable1 == null) transactionTableQueries.insertTransactionToStorage(collectionTable);
+    }
+
+    public void loadAllSavingssAndCompareToLocal() {
+
+        savingsTable = savingsTableQueries.loadSingleSavings(savingsTable.getSavingsId());
+
+        savingsQueries.retrieveSingleSavings(savingsTable.getSavingsId())
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            if(task.getResult().exists()){
+                                
+                                SavingsTable savings = task.getResult().toObject(SavingsTable.class);
+                                savings.setSavingsId(task.getResult().getId());
+                                
+                                if(savings.getLastUpdatedAt().getTime() != savingsTable.getLastUpdatedAt().getTime()){
+                                    savings.setId(savingsTable.getId());
+                                    savingsTableQueries.updateSavingsDetails(savings);
+                                    savingsTable = savings;
+                                    fillUIWithSummary();
+                                }
+                                
+                            }else{
+                                Toast.makeText(getApplicationContext(), "Document is empty", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Log.d("Savings", "onComplete: "+task.getException().getMessage());
+                        }
+                    }
+                });
     }
 
     private void createTableBody(final TransactionTable collectionTable) {
@@ -357,6 +442,7 @@ public class SavingsDetailsActivity extends AppCompatActivity {
         row.addView(paymentModeHeader);
 
         tableLayout.addView(row);
+        count++;
         addHorizontalSeparator(tableLayout);
     }
 
@@ -418,11 +504,26 @@ public class SavingsDetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onResume() {
+        super.onResume();
 
+        if(shouldExecuteOnResume){
 
-        super.onBackPressed();
+            loadAllSavingssAndCompareToLocal();
+
+            List<TransactionTable> collectionTableList = transactionTableQueries.loadAllTransactions(savingsTable.getSavingsId());
+
+            count = 0;
+
+            emptyLayout.setVisibility(View.GONE);
+            if(collectionTableList == null || collectionTableList.isEmpty()){
+                getTransactionFromCloud();
+            }else{
+                getNewTransactionAndCompareToCloud(collectionTableList);
+            }
+        } else{
+            shouldExecuteOnResume = true;
+        }
+
     }
-
-
 }

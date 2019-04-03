@@ -32,6 +32,7 @@ import com.icubed.loansticdroid.localdatabase.LoansTable;
 import com.icubed.loansticdroid.localdatabase.SavingsPlanCollectionTable;
 import com.icubed.loansticdroid.localdatabase.SavingsPlanCollectionTableQueries;
 import com.icubed.loansticdroid.localdatabase.SavingsTable;
+import com.icubed.loansticdroid.localdatabase.TransactionTable;
 import com.icubed.loansticdroid.models.PaymentScheduleGenerator;
 import com.icubed.loansticdroid.models.SavingsScheduleGenerator;
 import com.icubed.loansticdroid.util.DateUtil;
@@ -50,11 +51,14 @@ public class SavingsSchedule extends AppCompatActivity {
     private ProgressBar scheduleProgressBar;
     private AlertDialog.Builder builder;
     private LinearLayout emptyLayout;
+    boolean shouldExecuteOnResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_savings_schedule);
+
+        shouldExecuteOnResume = false;
 
         savingsTable = getIntent().getParcelableExtra("savings");
 
@@ -195,7 +199,7 @@ public class SavingsSchedule extends AppCompatActivity {
 
     private void createTableBody(final SavingsPlanCollectionTable collectionTable) {
         TableRow row = new TableRow(getApplicationContext());
-        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT);
         row.setLayoutParams(lp);
 
         if(!collectionTable.getIsSavingsCollected() && !collectionTable.getIsSavingsCollected().equals(SavingsScheduleGenerator.COLLECTION_STATE_FULL)) {
@@ -206,13 +210,10 @@ public class SavingsSchedule extends AppCompatActivity {
                             .setMessage("Do you want to make payment for collection number " + collectionTable.getSavingsCollectionNumber())
                             .setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, final int id) {
-//                            Intent intent = new Intent(getApplicationContext(), LoanRepayment.class);
-//                            intent.putExtra("collection", collectionTable);
-//                            intent.putExtra("lastUpdatedAt", collectionTable.getLastUpdatedAt());
-//                            intent.putExtra("dueDate", collectionTable.getCollectionDueDate());
-//                            intent.putExtra("timestamp", collectionTable.getTimestamp());
-//                            startActivity(intent);
-                            Toast.makeText(SavingsSchedule.this, "Your body too hot, wait make i create the payment page first", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(getApplicationContext(), SavingsTransactionDepositPayment.class);
+                            intent.putExtra("collection", collectionTable);
+                            intent.putExtra("savings", savingsTable);
+                            startActivity(intent);
                         }
                     }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, final int id) {
@@ -278,7 +279,7 @@ public class SavingsSchedule extends AppCompatActivity {
 
     private void createTableHeader(){
         TableRow row = new TableRow(getApplicationContext());
-        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT);
         row.setLayoutParams(lp);
         TextView collectionNumberHeader, collectionDateHeader, dueAmountHeader, amountPaidHeader, balanceHeader, collectionStateHeader;
 
@@ -344,6 +345,25 @@ public class SavingsSchedule extends AppCompatActivity {
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(shouldExecuteOnResume){
+
+            List<SavingsPlanCollectionTable> collectionTableList = savingsPlanCollectionTableQueries.loadCollectionsForSavingsSchedule(savingsTable.getSavingsId());
+
+            emptyLayout.setVisibility(View.GONE);
+            if(collectionTableList == null || collectionTableList.isEmpty()){
+                getCollectionFromCloud();
+            }else{
+                getNewCollectionAndCompareToCloud(collectionTableList);
+            }
+        } else{
+            shouldExecuteOnResume = true;
         }
     }
 }

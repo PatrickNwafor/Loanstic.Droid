@@ -73,6 +73,9 @@ public class DueCollection {
     private DueCollectionFragment fragment;
     private MapFragment mapFragment;
     private PaymentDialogBox paymentDialogBox;
+    private int newCol;
+    private int counter;
+
 
     private static final String TAG = ".DueCollection";
 
@@ -607,74 +610,74 @@ public class DueCollection {
                     if (!collectionTable.isEmpty()) {
                         for (final CollectionTable table : collectionTable) {
                             LoansTable loan = loanTableQueries.loadSingleLoan(table.getLoanId());
-                            if (loan.getBorrowerId() != null) {
-                                BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
-                                String markerTitle = borrowersTable.getLastName() + " " + borrowersTable.getFirstName();
-                                LatLng latLng = new LatLng(borrowersTable.getBorrowerLocationLatitude(), borrowersTable.getBorrowerLocationLongitude());
 
-                                MarkerOptions markerOptions = new MarkerOptions();
+                            if(loan != null) {
+                                if (loan.getBorrowerId() != null) {
+                                    BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
+                                    String markerTitle = borrowersTable.getLastName() + " " + borrowersTable.getFirstName();
+                                    LatLng latLng = new LatLng(borrowersTable.getBorrowerLocationLatitude(), borrowersTable.getBorrowerLocationLongitude());
 
-                                //adding markerOptions properties for driver
-                                markerOptions.position(latLng);
-                                markerOptions.title(markerTitle);
-                                markerOptions.anchor(0.5f, 0.5f);
-                                // sorting marker icon
-                                if (borrowersTable.getBorrowerImageByteArray() == null) circleImageView.setImageResource(R.drawable.new_borrower);
-                                else circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
-                                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
-                                Marker mark = mapFragment.mGoogleMap.addMarker(markerOptions);
+                                    MarkerOptions markerOptions = new MarkerOptions();
 
-                                //custom info window collection button click listener
-                                OnInfoWindowElemTouchListener infoButtonListener = new OnInfoWindowElemTouchListener(mapFragment.colBtn,
-                                        mapFragment.getResources().getDrawable(R.color.whiteEnd),
-                                        mapFragment.getResources().getDrawable(R.color.darkGrey)) {
-                                    @Override
-                                    protected void onClickConfirmed(View v, Marker marker) {
-                                        // Here we can perform some action triggered after clicking the button
-                                        newPayment(table);
-                                    }
-                                };
+                                    //adding markerOptions properties for driver
+                                    markerOptions.position(latLng);
+                                    markerOptions.title(markerTitle);
+                                    markerOptions.anchor(0.5f, 0.5f);
+                                    // sorting marker icon
+                                    if (borrowersTable.getBorrowerImageByteArray() == null)
+                                        circleImageView.setImageResource(R.drawable.new_borrower);
+                                    else circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
+                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
+                                    Marker mark = mapFragment.mGoogleMap.addMarker(markerOptions);
 
-                                mapFragment.colBtn.setOnTouchListener(infoButtonListener);
-                                mapFragment.colTitle.setText("Collection Number: "+table.getCollectionNumber());
-                                infoButtonListener.setMarker(mark);
+                                    //custom info window collection button click listener
+                                    OnInfoWindowElemTouchListener infoButtonListener = new OnInfoWindowElemTouchListener(mapFragment.colBtn, mapFragment.getResources().getDrawable(R.color.whiteEnd), mapFragment.getResources().getDrawable(R.color.darkGrey)) {
+                                        @Override
+                                        protected void onClickConfirmed(View v, Marker marker) {
+                                            // Here we can perform some action triggered after clicking the button
+                                            newPayment(table);
+                                        }
+                                    };
 
-                                //adding marker to map
-                                markers.add(mark);
+                                    mapFragment.colBtn.setOnTouchListener(infoButtonListener);
+                                    mapFragment.colTitle.setText("Collection Number: " + table.getCollectionNumber());
+                                    infoButtonListener.setMarker(mark);
 
-                            } else {
-                                GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
-                                String markerTitle = groupBorrowerTable.getGroupName();
-                                LatLng latLng = new LatLng(groupBorrowerTable.getGroupLocationLatitude(), groupBorrowerTable.getGroupLocationLongitude());
-                                //markers.clear();
+                                    //adding marker to map
+                                    markers.add(mark);
 
-                                MarkerOptions markerOptions = new MarkerOptions();
+                                } else {
+                                    GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
+                                    String markerTitle = groupBorrowerTable.getGroupName();
+                                    LatLng latLng = new LatLng(groupBorrowerTable.getGroupLocationLatitude(), groupBorrowerTable.getGroupLocationLongitude());
+                                    //markers.clear();
 
-                                //adding markerOptions properties for driver
-                                markerOptions.position(latLng);
-                                markerOptions.title(markerTitle);
-                                markerOptions.anchor(0.5f, 0.5f);
-                                circleImageView.setImageResource(R.drawable.new_group);
-                                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
+                                    MarkerOptions markerOptions = new MarkerOptions();
 
-                                Marker mark = mapFragment.mGoogleMap.addMarker(markerOptions);
+                                    //adding markerOptions properties for driver
+                                    markerOptions.position(latLng);
+                                    markerOptions.title(markerTitle);
+                                    markerOptions.anchor(0.5f, 0.5f);
+                                    circleImageView.setImageResource(R.drawable.new_group);
+                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
 
-                                //custom info window collection button click listener
-                                OnInfoWindowElemTouchListener infoButtonListener = new OnInfoWindowElemTouchListener(mapFragment.colBtn,
-                                        mapFragment.getResources().getDrawable(R.color.whiteEnd),
-                                        mapFragment.getResources().getDrawable(R.color.darkGrey)) {
-                                    @Override
-                                    protected void onClickConfirmed(View v, Marker marker) {
-                                        // Here we can perform some action triggered after clicking the button
-                                        newPayment(table);
-                                    }
-                                };
+                                    Marker mark = mapFragment.mGoogleMap.addMarker(markerOptions);
 
-                                mapFragment.colBtn.setOnTouchListener(infoButtonListener);
-                                mapFragment.colTitle.setText("Collection Number: "+table.getCollectionNumber());
-                                infoButtonListener.setMarker(mark);
+                                    //custom info window collection button click listener
+                                    OnInfoWindowElemTouchListener infoButtonListener = new OnInfoWindowElemTouchListener(mapFragment.colBtn, mapFragment.getResources().getDrawable(R.color.whiteEnd), mapFragment.getResources().getDrawable(R.color.darkGrey)) {
+                                        @Override
+                                        protected void onClickConfirmed(View v, Marker marker) {
+                                            // Here we can perform some action triggered after clicking the button
+                                            newPayment(table);
+                                        }
+                                    };
 
-                                markers.add(mark);
+                                    mapFragment.colBtn.setOnTouchListener(infoButtonListener);
+                                    mapFragment.colTitle.setText("Collection Number: " + table.getCollectionNumber());
+                                    infoButtonListener.setMarker(mark);
+
+                                    markers.add(mark);
+                                }
                             }
                         }
 
@@ -711,7 +714,8 @@ public class DueCollection {
 
         //draw markers
         List<CollectionTable> collectionTables = collectionTableQueries.loadAllDueCollections();
-        drawCollectionMarker(collectionTables);
+
+        if(newCol == counter) drawCollectionMarker(collectionTables);
 
         DueCollectionDetails dueCollectionDetails = new DueCollectionDetails();
         dueCollectionDetails.setDueAmount(collectionTable.getCollectionDueAmount());
@@ -755,6 +759,8 @@ public class DueCollection {
     public void retrieveDueCollectionToLocalStorageAndCompareToCloud(){
         final List<CollectionTable> localCollection = retrieveCollectionToLocalStorage();
 
+        newCol = 0;
+
         collectionQueries.retrieveAllCollection()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -762,6 +768,8 @@ public class DueCollection {
                         if(task.isSuccessful()){
                             Log.d(TAG, "onComplete: Success in retrieving data from server");
                             if(!task.getResult().isEmpty()){
+
+                                counter = task.getResult().size();
 
                                 for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
 
@@ -787,6 +795,7 @@ public class DueCollection {
                                             getLoansData(collectionTable.getLoanId(), collectionTable.getCollectionId());
                                         }
                                     }else {
+                                        counter--;
                                         updateTable(documentSnapshot);
                                     }
                                 }

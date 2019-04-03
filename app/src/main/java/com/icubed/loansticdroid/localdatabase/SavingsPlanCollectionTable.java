@@ -49,6 +49,7 @@ public class SavingsPlanCollectionTable implements Parcelable {
         this.id = in.readLong();
         this.savingsCollectionAmount = in.readDouble();
         this.amountPaid = in.readDouble();
+        this.collectionState = in.readString();
         this.isSavingsCollected = Boolean.valueOf(in.readString());
         this.savingsCollectionDueDate = new Date(in.readLong());
         this.lastUpdatedAt = new Date(in.readLong());

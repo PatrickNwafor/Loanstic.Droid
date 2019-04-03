@@ -47,107 +47,6 @@
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
-                        <TextView
-                            android:id="@+id/collection_number_header"
-                            android:layout_width="170dp"
-                            android:layout_height="40dp"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center_vertical"
-                            android:ems="10"
-                            android:text="Transaction Type"
-                            android:inputType="number|numberDecimal"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.818" />
-
-                        <TextView
-                            android:id="@+id/collection_number_value"
-                            android:layout_width="140dp"
-                            android:layout_height="40dp"
-                            android:text="Withdrawal"
-                            android:layout_marginBottom="6dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:background="@drawable/text_field_background"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="1.0"
-                            app:layout_constraintStart_toEndOf="@+id/collection_number_header"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.818" />
-
-
-                    </android.support.constraint.ConstraintLayout>
-                </android.support.v7.widget.CardView>
-
-
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_margin="10dp"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="4dp">
-
-                    <android.support.constraint.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/collection_date_header"
-                            android:layout_width="170dp"
-                            android:layout_height="40dp"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center_vertical"
-                            android:ems="10"
-                            android:inputType="number|numberDecimal"
-                            android:text="Payment Date"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.818" />
-
-                        <TextView
-                            android:id="@+id/collection_date_value"
-                            android:layout_width="140dp"
-                            android:layout_height="40dp"
-                            android:layout_marginBottom="6dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:background="@drawable/text_field_background"
-                            android:text="12/11/2019"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="1.0"
-                            app:layout_constraintStart_toEndOf="@+id/collection_date_header"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.818" />
-
-
-                    </android.support.constraint.ConstraintLayout>
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="4dp"
-                    android:layout_margin="10dp"
-                    android:layout_height="50dp">
-                    <android.support.constraint.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/collection_amount_header"
@@ -169,15 +68,15 @@
                             app:layout_constraintVertical_bias="0.818" />
 
                         <TextView
-                            android:id="@+id/collection_amount_value"
+                            android:id="@+id/balance_amount"
                             android:layout_width="140dp"
                             android:layout_height="40dp"
-                            android:text="1000"
                             android:layout_marginBottom="6dp"
                             android:layout_marginEnd="8dp"
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
                             android:background="@drawable/text_field_background"
+                            android:text="1000"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="1.0"
@@ -200,6 +99,7 @@
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
+
                         <TextView
                             android:id="@+id/amount_due_header"
                             android:layout_width="170dp"
@@ -208,10 +108,10 @@
                             android:layout_marginEnd="8dp"
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
-                            android:gravity="center_vertical"
                             android:ems="10"
-                            android:text="Amount Withdrawn"
+                            android:gravity="center_vertical"
                             android:inputType="number|numberDecimal"
+                            android:text="Amount to withdraw"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
@@ -219,8 +119,8 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintVertical_bias="0.818" />
 
-                        <TextView
-                            android:id="@+id/amount_due_value"
+                        <EditText
+                            android:id="@+id/withdraw_amount"
                             android:layout_width="140dp"
                             android:layout_height="40dp"
                             android:layout_marginBottom="6dp"
@@ -240,55 +140,6 @@
                     </android.support.constraint.ConstraintLayout>
                 </android.support.v7.widget.CardView>
 
-
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="4dp"
-                    android:layout_margin="10dp"
-                    android:layout_height="50dp">
-                    <android.support.constraint.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                        <TextView
-                            android:id="@+id/Payment_mode_header"
-                            android:layout_width="170dp"
-                            android:layout_height="40dp"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center_vertical"
-                            android:ems="10"
-                            android:text="Current Balance"
-                            android:inputType="number|numberDecimal"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.818" />
-
-                        <TextView
-                            android:id="@+id/payment_mode_value"
-                            android:layout_width="140dp"
-                            android:layout_height="40dp"
-                            android:layout_marginBottom="6dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:background="@drawable/text_field_background"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="1.0"
-                            app:layout_constraintStart_toEndOf="@+id/Payment_mode_header"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.818" />
-
-
-
-                    </android.support.constraint.ConstraintLayout>
-                </android.support.v7.widget.CardView>
 
                 <LinearLayout
                     android:id="@+id/linearLayout6"
@@ -325,6 +176,20 @@
 
 
                 </LinearLayout>
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/camera"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    app:lottie_autoPlay="true"
+                    android:layout_margin="10dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:background="@drawable/circle_background"
+                    android:elevation="4dp"
+                    app:lottie_fileName="camera.json"
+                    app:lottie_loop="false" />
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
