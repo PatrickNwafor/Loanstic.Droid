@@ -6,6 +6,7 @@
     android:layout_height="192dp"
     android:background="@color/whiteEnd"
     android:clickable="true"
+    android:elevation="16dp"
     android:foreground="?attr/selectableItemBackground"
     android:gravity="center|bottom"
     android:orientation="vertical"

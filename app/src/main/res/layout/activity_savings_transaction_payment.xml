@@ -59,6 +59,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
                             android:ems="10"
+                            android:textColor="@color/Black"
                             android:gravity="center_vertical"
                             android:inputType="number|numberDecimal"
                             android:text="Collection Number"
@@ -111,6 +112,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
                             android:ems="10"
+                            android:textColor="@color/Black"
                             android:gravity="center_vertical"
                             android:inputType="number|numberDecimal"
                             android:text="Payment Date"
@@ -163,6 +165,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
                             android:ems="10"
+                            android:textColor="@color/Black"
                             android:gravity="center_vertical"
                             android:inputType="number|numberDecimal"
                             android:text="Collection Amount"
@@ -239,6 +242,7 @@
                             android:layout_marginTop="8dp"
                             android:gravity="center_vertical"
                             android:ems="10"
+                            android:textColor="@color/Black"
                             android:inputType="number|numberDecimal"
                             android:text="Amount Paid"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -288,6 +292,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
                             android:ems="10"
+                            android:textColor="@color/Black"
                             android:gravity="center_vertical"
                             android:inputType="number|numberDecimal"
                             android:text="Amount Due"
@@ -339,6 +344,7 @@
                             android:layout_marginTop="8dp"
                             android:gravity="center_vertical"
                             android:ems="10"
+                            android:textColor="@color/Black"
                             android:text="Payment Mode"
                             android:inputType="number|numberDecimal"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -405,21 +411,33 @@
 
                 </LinearLayout>
 
-                <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/camera"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    app:lottie_autoPlay="true"
-                    android:layout_margin="10dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:background="@drawable/circle_background"
-                    android:elevation="4dp"
-                    app:lottie_fileName="camera.json"
-                    app:lottie_loop="false" />
+
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
+
     </LinearLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/camera"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circle_background"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="camera.json"
+        app:lottie_loop="false" />
 </android.support.constraint.ConstraintLayout>

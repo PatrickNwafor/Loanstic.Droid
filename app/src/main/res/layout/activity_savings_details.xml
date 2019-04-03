@@ -15,7 +15,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:elevation="2dp">
 
         <LinearLayout
             android:id="@+id/trans"
@@ -23,7 +24,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:orientation="horizontal"
-            android:visibility="visible"
+            android:visibility="gone"
             android:weightSum="10">
 
             <Button
@@ -68,6 +69,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,11 +84,13 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Goal Type"
+            android:textColor="@color/Black"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/target_amount_value"
-            app:layout_constraintHorizontal_bias="0.059"
+            app:layout_constraintEnd_toStartOf="@+id/goal_type_value"
+            app:layout_constraintHorizontal_bias="0.043"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/goal_type_value"
@@ -102,7 +106,9 @@
 
 
     </android.support.constraint.ConstraintLayout>
-
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -117,11 +123,13 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Goal Purpose"
+                android:textColor="@color/Black"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/target_amount_value"
-                app:layout_constraintHorizontal_bias="0.059"
+                app:layout_constraintEnd_toStartOf="@+id/goal_purpose_value"
+                app:layout_constraintHorizontal_bias="0.055"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/goal_purpose_value"
@@ -137,7 +145,9 @@
 
 
         </android.support.constraint.ConstraintLayout>
-
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -152,6 +162,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Target Amount"
+                android:textColor="@color/Black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/target_amount_value"
                 app:layout_constraintHorizontal_bias="0.059"
@@ -172,7 +183,9 @@
 
 
         </android.support.constraint.ConstraintLayout>
-
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -187,6 +200,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Fixed Amount"
+            android:textColor="@color/Black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/fix_amount_value"
             app:layout_constraintHorizontal_bias="0.056"
@@ -208,7 +222,9 @@
 
 
     </android.support.constraint.ConstraintLayout>
-
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -223,6 +239,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Deposit Amount"
+            android:textColor="@color/Black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/deposit_amount_value"
             app:layout_constraintHorizontal_bias="0.063"
@@ -244,7 +261,9 @@
 
 
     </android.support.constraint.ConstraintLayout>
-
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -259,6 +278,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Current Total Amount"
+            android:textColor="@color/Black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/current_total_amount_value"
             app:layout_constraintHorizontal_bias="0.101"
@@ -281,7 +301,9 @@
 
     </android.support.constraint.ConstraintLayout>
 
-
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -296,6 +318,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Start Date"
+            android:textColor="@color/Black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/start_date_value"
             app:layout_constraintHorizontal_bias="0.037"
@@ -317,7 +340,9 @@
 
 
     </android.support.constraint.ConstraintLayout>
-
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -332,6 +357,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Maturity Date"
+            android:textColor="@color/Black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/maturity_date_value"
             app:layout_constraintHorizontal_bias="0.041"
@@ -353,7 +379,9 @@
 
 
     </android.support.constraint.ConstraintLayout>
-
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -368,6 +396,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Interest Rate"
+            android:textColor="@color/Black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/interest_value"
             app:layout_constraintHorizontal_bias="0.034"
@@ -389,7 +418,9 @@
 
 
     </android.support.constraint.ConstraintLayout>
-
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -404,6 +435,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Payment Cycle"
+                android:textColor="@color/Black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/payment_value"
                 app:layout_constraintHorizontal_bias="0.051"
@@ -425,7 +457,12 @@
 
 
         </android.support.constraint.ConstraintLayout>
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
     </LinearLayout>
+
 
     <TextView
         android:layout_width="match_parent"
