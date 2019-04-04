@@ -8,19 +8,28 @@
         android:icon="@drawable/savings_schedule"
         android:tooltipText="Collection Schedules"
         android:title="View Schedule"
+        app:showAsAction="always"
         android:visible="false"
         />
+    <item
+        android:title=""
+        android:id="@+id/overlyingItem"
 
-    <menu>
-        <item
-            android:id="@+id/nav_make_deposit"
+        android:icon="@drawable/ic_menu_action_bar"
+        app:showAsAction="always"
+        >
+        <menu>
+            <item
+                android:id="@+id/nav_make_deposit"
+                android:icon="@drawable/deposit_ic"
+
+                android:title="Deposit" />
+            <item
+                android:id="@+id/nav_make_withdrawal"
+                android:icon="@drawable/withdrawal_icon"
 
 
-            android:title="Deposit" />
-        <item
-            android:id="@+id/nav_make_withdrawal"
-
-
-            android:title="Withdrawal" />
-    </menu>
+                android:title="Withdrawal" />
+        </menu>
+    </item>
 </menu>

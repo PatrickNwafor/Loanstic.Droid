@@ -260,8 +260,12 @@ public class SavingsDetailsActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
 
-
-
+           /* case R.id.nav_make_withdrawal:
+                startAnotherActivity(SavingsSchedule.class);
+                return true;
+            case R.id.nav_make_deposit:
+                startAnotherActivity(SavingsSchedule.class);
+                return true;*/
             case R.id.view_schedule:
                 startAnotherActivity(SavingsSchedule.class);
                 return true;
