@@ -297,6 +297,7 @@ android:layout_marginEnd="60dp"
                 android:text="Save As You Earn"
                 android:textSize="18sp"
                 android:textStyle="bold"
+
                 android:transitionName="@string/blue_name"
                 app:layout_constraintStart_toEndOf="@+id/loan_type_image3"
                 app:layout_constraintTop_toTopOf="parent" />
