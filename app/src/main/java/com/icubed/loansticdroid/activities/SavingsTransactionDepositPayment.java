@@ -52,6 +52,7 @@ import com.icubed.loansticdroid.localdatabase.SavingsPlanCollectionTable;
 import com.icubed.loansticdroid.localdatabase.SavingsTable;
 import com.icubed.loansticdroid.localdatabase.TransactionTable;
 import com.icubed.loansticdroid.models.PaymentScheduleGenerator;
+import com.icubed.loansticdroid.models.Savings;
 import com.icubed.loansticdroid.util.CustomDialogBox.PaymentDialogBox;
 import com.icubed.loansticdroid.util.DateUtil;
 import com.icubed.loansticdroid.util.FormUtil;
@@ -395,8 +396,26 @@ public class SavingsTransactionDepositPayment extends AppCompatActivity {
                         if(task.isSuccessful()){
                             SavingsTable savingsTable = task.getResult().toObject(SavingsTable.class);
 
+                            double totalRepayed = savingsTable.getSchedulePaid() + Double.parseDouble(amountPaidTextView.getText().toString());
+
                             objectMap.put("amountSaved", savingsTable.getAmountSaved()+Double.parseDouble(amountPaidTextView.getText().toString()));
                             objectMap.put("lastUpdatedAt", new Date());
+                            if(savingsTable.getTargetType() != null){
+                                if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)
+                                        || savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_TIME)){
+                                    objectMap.put("schedulePaid", totalRepayed);
+                                }
+
+                                if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_TIME)
+                                        && savingsTable.getTotalExpectedPeriodicAmount() == totalRepayed){
+                                    objectMap.put("isSavingsPlanCompleted", true);
+                                }
+
+                                if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)
+                                        && savingsTable.getAmountTarget() == totalRepayed){
+                                    objectMap.put("isSavingsPlanCompleted", true);
+                                }
+                            }
 
                             savingsQueries.updateSavingsDetails(objectMap, task.getResult().getId());
 

@@ -99,39 +99,11 @@ public class SavingsDetailsActivity extends AppCompatActivity {
         tableLayout = findViewById(R.id.table);
         scheduleProgressBar = findViewById(R.id.progressBar);
         emptyLayout = findViewById(R.id.search_empty_layout);
-        deposit = findViewById(R.id.deposit);
-        withdraw = findViewById(R.id.withdraw);
-        trans = findViewById(R.id.trans);
 
         transactionQueries = new TransactionQueries();
         transactionTableQueries = new TransactionTableQueries(getApplication());
         savingsTableQueries = new SavingsTableQueries(getApplication());
         savingsQueries = new SavingsQueries();
-
-        if(savingsTable.getTargetType() == null) {
-            deposit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), SavingsTransactionDepositPayment.class);
-                    intent.putExtra("savings", savingsTable);
-                    startActivity(intent);
-                }
-            });
-        }else if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_FIXED)) {
-            deposit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "No extra deposit can be made for a fixed plan", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }else{
-            deposit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "Please view plan deposit schedule to make a deposit", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
 
         createTableHeader();
         List<TransactionTable> collectionTableList = transactionTableQueries.loadAllTransactions(savingsTable.getSavingsId());
@@ -143,40 +115,46 @@ public class SavingsDetailsActivity extends AppCompatActivity {
             getNewTransactionAndCompareToCloud(collectionTableList);
         }
 
-        withdraw.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(savingsTable.getTargetType() == null){
-                    withdrawTask();
-                }else if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_FIXED)){
-                    Date now = new Date();
-                    if(now.after(savingsTable.getMaturityDate())){
-                        withdrawTask();
-                    } else
-                        Toast.makeText(SavingsDetailsActivity.this, "Savings has not matured yet for withdrawal", Toast.LENGTH_SHORT).show();
-                }else if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_TIME)){
-                    if(savingsTable.getAmountSaved() == savingsTable.getTotalExpectedPeriodicAmount()){
-                        withdrawTask();
-                    } else
-                        Toast.makeText(SavingsDetailsActivity.this, "Savings has not matured yet for withdrawal", Toast.LENGTH_SHORT).show();
-                }else if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)){
-                    if(savingsTable.getAmountSaved() == savingsTable.getAmountTarget()){
-                        withdrawTask();
-                    } else
-                        Toast.makeText(SavingsDetailsActivity.this, "Savings has not matured yet for withdrawal", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
         fillUIWithSummary();
         loadAllSavingssAndCompareToLocal();
     }
 
+    private void withdraw(){
+        if(savingsTable.getTargetType() == null){
+            withdrawTask();
+        }else if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_FIXED)){
+            Date now = new Date();
+            if(now.after(savingsTable.getMaturityDate())){
+                withdrawTask();
+            } else
+                Toast.makeText(SavingsDetailsActivity.this, "Savings has not matured yet for withdrawal", Toast.LENGTH_SHORT).show();
+        }else if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_TIME)){
+            Date now = new Date();
+            if(now.after(savingsTable.getMinimumMaturityDate())){
+                withdrawTask();
+            } else
+                Toast.makeText(SavingsDetailsActivity.this, "Savings has not matured yet for withdrawal", Toast.LENGTH_SHORT).show();
+        }else if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_MONEY)){
+            if(savingsTable.getAmountSaved() == savingsTable.getAmountTarget()){
+                withdrawTask();
+            } else
+                Toast.makeText(SavingsDetailsActivity.this, "Savings has not matured yet for withdrawal", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void deposit(){
+        if(savingsTable.getTargetType() == null) {
+            startAnotherActivity(SavingsTransactionDepositPayment.class);
+        }else if(savingsTable.getTargetType().equals(SavingsTable.TARGET_TYPE_FIXED)) {
+            Toast.makeText(getApplicationContext(), "No extra deposit can be made for a fixed plan", Toast.LENGTH_SHORT).show();
+        }else{
+            startAnotherActivity(SavingsSchedule.class);
+        }
+    }
+
     private void withdrawTask(){
         if(savingsTable.getAmountSaved() > 0) {
-            Intent intent = new Intent(getApplicationContext(), SavingsTransactionsWithdrawalPayment.class);
-            intent.putExtra("savings", savingsTable);
-            startActivity(intent);
+            startAnotherActivity(SavingsTransactionsWithdrawalPayment.class);
         }else{
             Toast.makeText(SavingsDetailsActivity.this, "You do not have money saved in your account to withdraw", Toast.LENGTH_SHORT).show();
         }
@@ -260,14 +238,11 @@ public class SavingsDetailsActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
 
-           /* case R.id.nav_make_withdrawal:
-                startAnotherActivity(SavingsSchedule.class);
+            case R.id.nav_make_withdrawal:
+                withdraw();
                 return true;
             case R.id.nav_make_deposit:
-                startAnotherActivity(SavingsSchedule.class);
-                return true;*/
-            case R.id.view_schedule:
-                startAnotherActivity(SavingsSchedule.class);
+                deposit();
                 return true;
 
             default:

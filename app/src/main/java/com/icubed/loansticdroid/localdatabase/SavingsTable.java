@@ -28,11 +28,13 @@ public class SavingsTable implements Parcelable {
     @Id(autoincrement = true)
     private Long id;
 
-    private Date createdAt, lastUpdatedAt, startDate, maturityDate;
+    private Date createdAt, lastUpdatedAt, startDate, maturityDate, minimumMaturityDate;
     private String savingsNumber;
     private double amountSaved;
     private String borrowerId;
     private boolean isThereInterest;
+    private boolean isSavingsPlanCompleted;
+    private double schedulePaid;
 
     private double amountTarget, fixedAmount, depositAmount, totalExpectedPeriodicAmount;
     private String targetType, savingsPlanName, savingsPlanTypeId;
@@ -65,20 +67,26 @@ public class SavingsTable implements Parcelable {
         this.maturityDate = new Date(in.readLong());
         this.isThereInterest = Boolean.parseBoolean(in.readString());
         this.totalExpectedPeriodicAmount = in.readDouble();
+        this.minimumMaturityDate = new Date(in.readLong());
+        this.isSavingsPlanCompleted = Boolean.parseBoolean(in.readString());
+        this.schedulePaid = in.readDouble();
     }
 
-    @Generated(hash = 1214456740)
-    public SavingsTable(String savingsId, Long id, Date createdAt, Date lastUpdatedAt, Date startDate, Date maturityDate, String savingsNumber, double amountSaved, String borrowerId, boolean isThereInterest, double amountTarget, double fixedAmount, double depositAmount, double totalExpectedPeriodicAmount, String targetType, String savingsPlanName, String savingsPlanTypeId, double savingsInterestRate, int savingsDuration, String loanOfficerId, String savingsInterestRateUnit, String savingsPlanPurpose, String savingsDurationUnit) {
+    @Generated(hash = 2083113382)
+    public SavingsTable(String savingsId, Long id, Date createdAt, Date lastUpdatedAt, Date startDate, Date maturityDate, Date minimumMaturityDate, String savingsNumber, double amountSaved, String borrowerId, boolean isThereInterest, boolean isSavingsPlanCompleted, double schedulePaid, double amountTarget, double fixedAmount, double depositAmount, double totalExpectedPeriodicAmount, String targetType, String savingsPlanName, String savingsPlanTypeId, double savingsInterestRate, int savingsDuration, String loanOfficerId, String savingsInterestRateUnit, String savingsPlanPurpose, String savingsDurationUnit) {
         this.savingsId = savingsId;
         this.id = id;
         this.createdAt = createdAt;
         this.lastUpdatedAt = lastUpdatedAt;
         this.startDate = startDate;
         this.maturityDate = maturityDate;
+        this.minimumMaturityDate = minimumMaturityDate;
         this.savingsNumber = savingsNumber;
         this.amountSaved = amountSaved;
         this.borrowerId = borrowerId;
         this.isThereInterest = isThereInterest;
+        this.isSavingsPlanCompleted = isSavingsPlanCompleted;
+        this.schedulePaid = schedulePaid;
         this.amountTarget = amountTarget;
         this.fixedAmount = fixedAmount;
         this.depositAmount = depositAmount;
@@ -127,6 +135,9 @@ public class SavingsTable implements Parcelable {
         dest.writeLong(this.maturityDate.getTime());
         dest.writeString(String.valueOf(this.isThereInterest));
         dest.writeDouble(this.totalExpectedPeriodicAmount);
+        dest.writeLong(this.minimumMaturityDate.getTime());
+        dest.writeString(String.valueOf(this.isSavingsPlanCompleted));
+        dest.writeDouble(this.schedulePaid);
     }
 
     @Override
@@ -316,6 +327,30 @@ public class SavingsTable implements Parcelable {
 
     public void setTotalExpectedPeriodicAmount(double totalExpectedPeriodicAmount) {
         this.totalExpectedPeriodicAmount = totalExpectedPeriodicAmount;
+    }
+
+    public Date getMinimumMaturityDate() {
+        return this.minimumMaturityDate;
+    }
+
+    public void setMinimumMaturityDate(Date minimumMaturityDate) {
+        this.minimumMaturityDate = minimumMaturityDate;
+    }
+
+    public boolean getIsSavingsPlanCompleted() {
+        return this.isSavingsPlanCompleted;
+    }
+
+    public void setIsSavingsPlanCompleted(boolean isSavingsPlanCompleted) {
+        this.isSavingsPlanCompleted = isSavingsPlanCompleted;
+    }
+
+    public double getSchedulePaid() {
+        return this.schedulePaid;
+    }
+
+    public void setSchedulePaid(double schedulePaid) {
+        this.schedulePaid = schedulePaid;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

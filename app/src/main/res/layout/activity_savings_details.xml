@@ -106,7 +106,7 @@
 
 
     </android.support.constraint.ConstraintLayout>
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
         <android.support.constraint.ConstraintLayout
@@ -145,7 +145,7 @@
 
 
         </android.support.constraint.ConstraintLayout>
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
         <android.support.constraint.ConstraintLayout
@@ -183,7 +183,7 @@
 
 
         </android.support.constraint.ConstraintLayout>
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
     <android.support.constraint.ConstraintLayout
@@ -222,7 +222,7 @@
 
 
     </android.support.constraint.ConstraintLayout>
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
     <android.support.constraint.ConstraintLayout
@@ -261,7 +261,7 @@
 
 
     </android.support.constraint.ConstraintLayout>
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
     <android.support.constraint.ConstraintLayout
@@ -301,7 +301,7 @@
 
     </android.support.constraint.ConstraintLayout>
 
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
     <android.support.constraint.ConstraintLayout
@@ -340,7 +340,7 @@
 
 
     </android.support.constraint.ConstraintLayout>
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
     <android.support.constraint.ConstraintLayout
@@ -379,7 +379,7 @@
 
 
     </android.support.constraint.ConstraintLayout>
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
     <android.support.constraint.ConstraintLayout
@@ -418,7 +418,7 @@
 
 
     </android.support.constraint.ConstraintLayout>
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
         <android.support.constraint.ConstraintLayout
@@ -457,7 +457,7 @@
 
 
         </android.support.constraint.ConstraintLayout>
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
 

@@ -234,6 +234,9 @@ public class LifeGoalsSetup6GoalSummary extends AppCompatActivity {
         objectMap.put("savingsInterestRateUnit", savingsTable.getSavingsInterestRateUnit());
         objectMap.put("savingsPlanPurpose", savingsTable.getSavingsPlanPurpose());
         objectMap.put("savingsDurationUnit", savingsTable.getSavingsDurationUnit());
+        objectMap.put("schedulePaid", 0);
+        objectMap.put("isSavingsPlanCompleted", false);
+        objectMap.put("minimumMaturityDate", new Date());
 
         savingsQueries.createSavings(objectMap)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {

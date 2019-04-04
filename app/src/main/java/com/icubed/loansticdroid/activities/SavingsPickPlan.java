@@ -182,6 +182,7 @@ public class SavingsPickPlan extends AppCompatActivity {
         savingsTable.setStartDate(new Date());
         savingsTable.setMaturityDate(new Date());
         savingsTable.setBorrowerId(borrower.getBorrowersId());
+        savingsTable.setMinimumMaturityDate(new Date());
 
         Intent newActivityIntent = new Intent(this, newActivity);
         newActivityIntent.putExtra("savings", savingsTable);
