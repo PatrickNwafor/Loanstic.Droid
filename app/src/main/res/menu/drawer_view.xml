@@ -42,7 +42,8 @@
             android:title="@string/settings" />
         <item
             android:id="@+id/nav_signout"
-            android:icon="@drawable/ic_menu_sign_out"
+            android:icon="@drawable/exit_app"
+
             android:title="@string/sign_out" />
     </group>
 </menu>
