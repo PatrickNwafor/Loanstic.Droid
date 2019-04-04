@@ -530,7 +530,7 @@ public class SavingsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        getMenuInflater().inflate(R.menu.loans_menu, menu);
+        getMenuInflater().inflate(R.menu.savings_menu, menu);
 
         return true;
     }
