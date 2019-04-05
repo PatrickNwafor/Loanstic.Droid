@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -37,6 +38,8 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -103,6 +106,13 @@ public class MainActivity extends AppCompatActivity {
                 return navActions(item);
             }
         });
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView nav_email = headerView.findViewById(R.id.nav_email);
+        TextView nav_username= headerView.findViewById(R.id.nav_username);
+        CircleImageView nav_image = headerView.findViewById(R.id.nav_image);
+
+        nav_email.setText(account.getCurrentUser().getEmail());
 
         //To bring out Navigation drawer
         menuBtn.setOnClickListener(new View.OnClickListener() {
