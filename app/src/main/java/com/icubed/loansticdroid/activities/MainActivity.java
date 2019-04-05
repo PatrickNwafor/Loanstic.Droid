@@ -112,7 +112,10 @@ public class MainActivity extends AppCompatActivity {
         TextView nav_username= headerView.findViewById(R.id.nav_username);
         CircleImageView nav_image = headerView.findViewById(R.id.nav_image);
 
-        nav_email.setText(account.getCurrentUser().getEmail());
+        if (account.getCurrentUser() != null){
+            nav_email.setText(account.getCurrentUser().getEmail());
+        }
+
 
         //To bring out Navigation drawer
         menuBtn.setOnClickListener(new View.OnClickListener() {
