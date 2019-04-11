@@ -316,8 +316,9 @@ public class OverdueSavingsCollection {
     }
 
     /**********************Sae new collections to storage************/
-    public void saveNewCollectionToLocalStorage(SavingsPlanCollectionTable savingsPlanCollectionTable) {
-        savingsPlanCollectionTableQueries.insertCollectionToStorage(savingsPlanCollectionTable);
+    public void saveNewCollectionToLocalStorage(SavingsPlanCollectionTable collectionTable) {
+        SavingsPlanCollectionTable collectionTable1 = savingsPlanCollectionTableQueries.loadSingleCollection(collectionTable.getSavingsPlanCollectionId());
+        if (collectionTable1 == null) savingsPlanCollectionTableQueries.insertCollectionToStorage(collectionTable);
     }
 
     /*******************retrieve all collections in storage*************/

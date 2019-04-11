@@ -315,7 +315,8 @@ public class DueCollection {
 
     /**********************Sae new collections to storage************/
     public void saveNewCollectionToLocalStorage(CollectionTable collectionTable) {
-        collectionTableQueries.insertCollectionToStorage(collectionTable);
+        CollectionTable collectionTable1 = collectionTableQueries.loadSingleCollection(collectionTable.getCollectionId());
+        if (collectionTable1 == null) collectionTableQueries.insertCollectionToStorage(collectionTable);
     }
 
     /*******************retrieve all collections in storage*************/
