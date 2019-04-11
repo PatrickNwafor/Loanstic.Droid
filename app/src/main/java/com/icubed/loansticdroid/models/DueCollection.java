@@ -654,6 +654,7 @@ public class DueCollection {
                         }
 
                         mapFragment.myMarker = mapFragment.mGoogleMap.addMarker(mapFragment.markerOptions);
+                        mapFragment.myMarker.setTag(null);
                         markers.add(mapFragment.myMarker);
                         mapFragment.moveCamera(markers, null);
 
@@ -730,7 +731,7 @@ public class DueCollection {
 
                 infoTitle.setText(marker.getTitle());
                 CollectionTable collectionTable = (CollectionTable) marker.getTag();
-                colTitle.setText("Collection Number: " + collectionTable.getCollectionNumber());
+                if(collectionTable != null) colTitle.setText("Collection Number: " + collectionTable.getCollectionNumber());
                 infoButtonListener.setMarker(marker);
                 infoButtonListener2.setMarker(marker);
                 // We must call this to set the current marker and infoWindow references
@@ -794,13 +795,13 @@ public class DueCollection {
 
                                 collectionSize = newCol.size();
 
-                                //to get only due collections size
+                                //to get only over due collections size
                                 for (CollectionTable collectionTable : newCol) {
-                                    if ((!DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date())))) {
-                                        if(collectionTable.getIsDueCollected()){
+                                    if(!collectionTable.getIsDueCollected()){
+                                        if ((!DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date())))) {
                                             collectionSize--;
                                         }
-                                    }
+                                    }else collectionSize--;
                                 }
 
                                 if(collectionSize == 0){

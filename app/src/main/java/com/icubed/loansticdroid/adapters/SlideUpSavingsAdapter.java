@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.CollectionDetailsActivity;
 import com.icubed.loansticdroid.activities.LoanRepayment;
+import com.icubed.loansticdroid.activities.SavingsTransactionDepositPayment;
 import com.icubed.loansticdroid.fragments.HomeFragments.DashboardFragment;
 import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
@@ -182,7 +183,7 @@ public class SlideUpSavingsAdapter extends RecyclerView.Adapter<SlideUpSavingsAd
             protected void onClickConfirmed(View v, Marker marker) {
                 // Here we can perform some action triggered after clicking the button
                 SavingsDetails savingsDetails = (SavingsDetails) marker.getTag();
-                makePayment(savingsDetails.getSavingsPlanCollectionTable());
+                makePayment(savingsDetails);
             }
         };
         colBtn.setOnTouchListener(infoButtonListener2);
@@ -220,15 +221,13 @@ public class SlideUpSavingsAdapter extends RecyclerView.Adapter<SlideUpSavingsAd
         });
     }
 
-    private void makePayment(final SavingsPlanCollectionTable collectionTable) {
+    private void makePayment(final SavingsDetails collectionTable) {
         paymentDialogBox.setOnYesClicked(new PaymentDialogBox.OnButtonClick() {
             @Override
             public void onYesButtonClick() {
-                Intent intent = new Intent(fragment.getContext(), LoanRepayment.class);
-                intent.putExtra("collection", collectionTable);
-                intent.putExtra("lastUpdatedAt", collectionTable.getLastUpdatedAt());
-                intent.putExtra("dueDate", collectionTable.getSavingsCollectionDueDate());
-                intent.putExtra("timestamp", collectionTable.getTimestamp());
+                Intent intent = new Intent(fragment.getContext(), SavingsTransactionDepositPayment.class);
+                intent.putExtra("collection", collectionTable.getSavingsPlanCollectionTable());
+                intent.putExtra("savings", collectionTable.getSavingsTable());
                 fragment.startActivity(intent);
             }
         });

@@ -46,13 +46,16 @@
 
             <TextView
                 android:id="@+id/collectionNameTextView"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:ellipsize="end"
                 android:text="Collection 1"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/amountTextView"
                 app:layout_constraintStart_toEndOf="@+id/circleImageView"
                 app:layout_constraintTop_toTopOf="parent" />
 

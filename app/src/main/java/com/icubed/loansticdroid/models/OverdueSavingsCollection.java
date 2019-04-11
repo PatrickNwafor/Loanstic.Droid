@@ -113,7 +113,7 @@ public class OverdueSavingsCollection {
 
     /***********check if collection exist in storage********/
     public boolean doesCollectionExistInLocalStorage(){
-        List<SavingsPlanCollectionTable> listOfcollections = savingsPlanCollectionTableQueries.loadAllOverDueCollection();
+        List<SavingsPlanCollectionTable> listOfcollections = savingsPlanCollectionTableQueries.loadAllCollections();
 
         if(listOfcollections.isEmpty()){
             return false;

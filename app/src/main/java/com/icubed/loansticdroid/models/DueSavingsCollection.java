@@ -30,6 +30,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.SavingsRepayment;
+import com.icubed.loansticdroid.activities.SavingsTransactionDepositPayment;
 import com.icubed.loansticdroid.cloudqueries.BorrowersQueries;
 import com.icubed.loansticdroid.cloudqueries.SavingsPlanCollectionQueries;
 import com.icubed.loansticdroid.cloudqueries.GroupBorrowerQueries;
@@ -91,7 +92,7 @@ public class DueSavingsCollection {
     private static final String TAG = ".DueCollection";
 
     public DueSavingsCollection(Application application, FragmentActivity activity){
-        
+
         savingsTableQueries = new SavingsTableQueries(application);
         savingsQueries = new SavingsQueries();
         savingsPlanCollectionQueries = new SavingsPlanCollectionQueries();
@@ -111,7 +112,7 @@ public class DueSavingsCollection {
 
     /***********check if collection exist in storage********/
     public boolean doesCollectionExistInLocalStorage(){
-        List<SavingsPlanCollectionTable> listOfcollections = savingsPlanCollectionTableQueries.loadAllDueCollections();
+        List<SavingsPlanCollectionTable> listOfcollections = savingsPlanCollectionTableQueries.loadAllCollections();
 
         if(listOfcollections.isEmpty()){
             return false;
@@ -210,25 +211,25 @@ public class DueSavingsCollection {
         if(savings.getSavingsPlanTypeId() != null){
             SavingsPlanTypeTable savingsPlanTypeTable = savingsPlanTypeTableQueries.loadSingleSavingsPlanType(savings.getSavingsPlanTypeId());
             if(savingsPlanTypeTable == null){
-                
+
                 savingsPlanTypeQueries.retrieveSingleSavingsPlanType(savings.getSavingsPlanTypeId())
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if(task.isSuccessful()){
-                                    
+
                                     SavingsPlanTypeTable savingsPlanTypeTable1 = task.getResult().toObject(SavingsPlanTypeTable.class);
                                     savingsPlanTypeTable1.setSavingsPlanTypeId(task.getResult().getId());
-                                    
+
                                     savePlanTypeToLocal(savingsPlanTypeTable1);
                                     getBorrowersDetails(savings.getBorrowerId(), collectionId);
-                                    
+
                                 }else {
                                     Log.d(TAG, "onComplete: "+task.getException().getMessage());
                                 }
                             }
                         });
-                
+
             }else getBorrowersDetails(savings.getBorrowerId(), collectionId);
 
         }else getBorrowersDetails(savings.getBorrowerId(), collectionId);
@@ -378,8 +379,8 @@ public class DueSavingsCollection {
                 } else getSingleSavings(savingsPlanCollectionTable.getSavingsId(), savingsDetails, collectionTables);
             }
         }else{
-            if(fragment != null)
-                fragment.emptyCollection.setVisibility(View.VISIBLE);
+            if(fragment != null) fragment.emptyCollection.setVisibility(View.VISIBLE);
+            hideProgressBar();
         }
 
     }
@@ -496,6 +497,11 @@ public class DueSavingsCollection {
                                 markerOptions.title(markerTitle);
                                 markerOptions.anchor(0.5f, 0.5f);
 
+                                SavingsDetails savingsDetails = new SavingsDetails();
+                                savingsDetails.setBorrowersTable(borrowersTable);
+                                savingsDetails.setSavingsPlanCollectionTable(table);
+                                savingsDetails.setSavingsTable(savings);
+
                                 // sorting marker icon
                                 if (borrowersTable.getBorrowerImageByteArray() == null){
                                     RequestOptions placeholderOption = new RequestOptions();
@@ -509,7 +515,7 @@ public class DueSavingsCollection {
                                 } else circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
                                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
                                 Marker mark = dashboardFragment.mGoogleMap.addMarker(markerOptions);
-                                mark.setTag(table);
+                                mark.setTag(savingsDetails);
 
                                 customInfoWindowInit(dashboardFragment.mGoogleMap);
 
@@ -519,6 +525,7 @@ public class DueSavingsCollection {
                         }
 
                         dashboardFragment.myMarker = dashboardFragment.mGoogleMap.addMarker(dashboardFragment.markerOptions);
+                        dashboardFragment.myMarker.setTag(null);
                         markers.add(dashboardFragment.myMarker);
                         dashboardFragment.moveCamera(markers, null);
 
@@ -567,8 +574,8 @@ public class DueSavingsCollection {
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
                 // Here we can perform some action triggered after clicking the button
-                SavingsPlanCollectionTable savingsPlanCollectionTable = (SavingsPlanCollectionTable) marker.getTag();
-                newPayment(savingsPlanCollectionTable);
+                SavingsDetails savingsDetails = (SavingsDetails) marker.getTag();
+                newPayment(savingsDetails);
             }
         };
         colBtn.setOnTouchListener(infoButtonListener2);
@@ -594,8 +601,8 @@ public class DueSavingsCollection {
                 }
 
                 infoTitle.setText(marker.getTitle());
-                SavingsPlanCollectionTable savingsPlanCollectionTable = (SavingsPlanCollectionTable) marker.getTag();
-                colTitle.setText("Collection Number: " + savingsPlanCollectionTable.getSavingsCollectionNumber());
+                SavingsDetails savingsDetails = (SavingsDetails) marker.getTag();
+                if(savingsDetails != null) colTitle.setText("Collection Number: " + savingsDetails.getSavingsPlanCollectionTable().getSavingsCollectionNumber());
                 infoButtonListener.setMarker(marker);
                 infoButtonListener2.setMarker(marker);
                 // We must call this to set the current marker and infoWindow references
@@ -606,15 +613,13 @@ public class DueSavingsCollection {
         });
     }
 
-    private void newPayment(final SavingsPlanCollectionTable savingsPlanCollectionTable){
+    private void newPayment(final SavingsDetails savingsDetails){
         paymentDialogBox.setOnYesClicked(new PaymentDialogBox.OnButtonClick() {
             @Override
             public void onYesButtonClick() {
-                Intent intent = new Intent(dashboardFragment.getContext(), SavingsRepayment.class);
-                intent.putExtra("collection", savingsPlanCollectionTable);
-                intent.putExtra("lastUpdatedAt", savingsPlanCollectionTable.getLastUpdatedAt());
-                intent.putExtra("dueDate", savingsPlanCollectionTable.getSavingsCollectionDueDate());
-                intent.putExtra("timestamp", savingsPlanCollectionTable.getTimestamp());
+                Intent intent = new Intent(dashboardFragment.getContext(), SavingsTransactionDepositPayment.class);
+                intent.putExtra("collection", savingsDetails.getSavingsPlanCollectionTable());
+                intent.putExtra("savings", savingsDetails.getSavingsTable());
                 dashboardFragment.startActivity(intent);
             }
         });
@@ -659,13 +664,13 @@ public class DueSavingsCollection {
 
                                 collectionSize = newCol.size();
 
-                                //to get only due collections size
-                                for (SavingsPlanCollectionTable savingsPlanCollectionTable : newCol) {
-                                    if ((!DateUtil.dateString(savingsPlanCollectionTable.getSavingsCollectionDueDate()).equals(DateUtil.dateString(new Date())))) {
-                                        if(savingsPlanCollectionTable.getIsSavingsCollected()){
+                                //to get only over due collections size
+                                for (SavingsPlanCollectionTable collectionTable : newCol) {
+                                    if(!collectionTable.getIsSavingsCollected()){
+                                        if ((!DateUtil.dateString(collectionTable.getSavingsCollectionDueDate()).equals(DateUtil.dateString(new Date())))) {
                                             collectionSize--;
                                         }
-                                    }
+                                    }else collectionSize--;
                                 }
 
                                 if(collectionSize == 0){
@@ -720,5 +725,5 @@ public class DueSavingsCollection {
 
         }
     }
-    
+
 }
