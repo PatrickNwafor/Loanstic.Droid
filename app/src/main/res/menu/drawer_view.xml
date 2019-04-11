@@ -6,6 +6,10 @@
             android:id="@+id/bank"
             android:checkableBehavior="single">
             <item
+                android:id="@+id/nav_dashboard"
+                android:icon="@drawable/dashboard"
+                android:title="Dashboard" />
+            <item
                 android:id="@+id/nav_collections"
                 android:icon="@drawable/ic_menu_collection"
                 android:title="@string/collections" />

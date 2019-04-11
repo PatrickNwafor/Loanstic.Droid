@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    sothree:umanoDragView="@+id/dragView"
+    android:id="@+id/sliding_layout"
+    sothree:umanoOverlay="true"
+    android:gravity="bottom"
+    android:clickable="true"
+    android:focusable="true"
+    sothree:umanoScrollableView="@id/content"
+    sothree:umanoPanelHeight="60dp"
+    sothree:umanoShadowHeight="4dp"
+    tools:context=".fragments.HomeFragments.MapFragment">
+
+    <!-- MAIN CONTENT -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.icubed.loansticdroid.util.MapInfoWindow.MapWrapperLayout
+            android:id="@+id/map_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.icubed.loansticdroid.util.MapInfoWindow.MapWrapperLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@drawable/headerbackground"/>
+
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="4dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="70dp"
+            android:background="@drawable/searchtextstyle"
+
+
+            android:drawablePadding="40dp"
+            android:drawableLeft="@drawable/ic_fiber_manual_record_black_24dp"
+            android:hint="Search Due Deposits?"
+            android:ems="10"
+            android:imeOptions="actionSearch"
+            android:inputType="text" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/btn_show1"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="52dp"
+                android:clickable="true"
+                android:elevation="10dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:padding="10dp"
+                android:src="@drawable/ic_expand_less_black_24dp" />
+
+            <ImageView
+                android:id="@+id/btn_show"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="62dp"
+                android:clickable="true"
+                android:elevation="10dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:padding="10dp"
+                android:src="@drawable/ic_expand_less_black_24dp" />
+
+
+
+            <TextView
+                android:id="@+id/slideUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="67dp"
+                android:elevation="4dp"
+                android:text="Slide Up"
+                android:visibility="gone"
+                android:textColor="@color/colorPrimary" />
+
+        </RelativeLayout>
+    </FrameLayout>
+
+    <!-- SLIDING LAYOUT PARENT-->
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="#ffffff">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/dragView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:elevation="4dp"
+
+                sothree:layout_constraintEnd_toEndOf="parent"
+                sothree:layout_constraintStart_toStartOf="parent"
+                sothree:layout_constraintTop_toTopOf="parent" >
+                <ImageView
+                    android:id="@+id/collection_image"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/collect_icon"
+                    android:layout_marginLeft="16dp"
+                    />
+
+                <TextView
+                    android:gravity="center_vertical"
+                    android:text="Collections"
+                    android:layout_marginStart="70dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:layout_width="match_parent"
+                    android:textColor="@color/colorPrimary"
+
+                    android:layout_height="match_parent" />
+            </android.support.v7.widget.CardView>
+
+            <co.ceryle.segmentedbutton.SegmentedButtonGroup
+                android:id="@+id/segmentedButtonGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+
+                android:layout_marginTop="8dp"
+                sothree:layout_constraintEnd_toEndOf="parent"
+                sothree:layout_constraintStart_toStartOf="parent"
+                sothree:layout_constraintTop_toBottomOf="@+id/dragView"
+                sothree:sbg_animateSelector="bounce"
+                sothree:sbg_backgroundColor="@color/whiteEnd"
+                sothree:sbg_dividerColor="@color/colorPrimary"
+                sothree:sbg_dividerPadding="10dp"
+                sothree:sbg_dividerSize="1dp"
+                sothree:sbg_position="0"
+                sothree:sbg_radius="2dp"
+                sothree:sbg_ripple="true"
+                sothree:sbg_rippleColor="@color/colorPrimary"
+                sothree:sbg_selectorColor="@color/colorPrimary"
+                sothree:sbg_selectorTextColor="@color/whiteEnd"
+                sothree:sbg_shadow="true"
+                sothree:sbg_shadowElevation="3dp"
+                sothree:sbg_shadowMargin="4dp">
+
+                <Button
+                    android:id="@+id/dueCollectionsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="10dp"
+                    android:text="Due Collections"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/overdueCollectionsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="10dp"
+                    android:text="Overdue Collections"
+                    android:textAllCaps="false" />
+
+
+            </co.ceryle.segmentedbutton.SegmentedButtonGroup>
+
+
+            <FrameLayout
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                sothree:layout_constraintBottom_toBottomOf="parent"
+                sothree:layout_constraintEnd_toEndOf="parent"
+                sothree:layout_constraintStart_toStartOf="parent"
+                sothree:layout_constraintTop_toBottomOf="@+id/segmentedButtonGroup"/>
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

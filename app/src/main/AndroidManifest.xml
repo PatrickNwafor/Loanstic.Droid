@@ -120,7 +120,8 @@
         <activity android:name=".activities.SearchSavingsActivity" />
         <activity android:name=".activities.SavingsSchedule" />
         <activity android:name=".activities.SavingsTransactionDepositPayment" />
-        <activity android:name=".activities.SavingsTransactionsWithdrawalPayment"></activity>
+        <activity android:name=".activities.SavingsTransactionsWithdrawalPayment" />
+        <activity android:name=".activities.Dashboard"></activity>
     </application>
 
 </manifest>

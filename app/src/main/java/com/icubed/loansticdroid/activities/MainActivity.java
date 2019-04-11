@@ -181,6 +181,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_collections:
                 startAnotherActivity(CollectionActivity.class);
                 return true;
+            case R.id.nav_dashboard:
+                startAnotherActivity(Dashboard.class);
+                return true;
 
             case R.id.nav_payment:
                 startAnotherActivity(RepaymentActivity.class);
