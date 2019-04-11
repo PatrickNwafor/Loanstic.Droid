@@ -3,6 +3,7 @@ package com.icubed.loansticdroid.adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -12,8 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -31,6 +34,9 @@ import com.icubed.loansticdroid.util.MapInfoWindow.OnInfoWindowElemTouchListener
 import java.util.ArrayList;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPanelRecyclerAdapter.ViewHolder> {
 
@@ -122,19 +128,11 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
                 fragment.hidePanel();
                 Marker mark = fragment.mGoogleMap.addMarker(markerOptions);
 
-                //custom info window collection button click listener
-                OnInfoWindowElemTouchListener infoButtonListener = new OnInfoWindowElemTouchListener(fragment.colBtn,
-                        fragment.getResources().getDrawable(R.color.whiteEnd),
-                        fragment.getResources().getDrawable(R.color.darkGrey)) {
-                    @Override
-                    protected void onClickConfirmed(View v, Marker marker) {
-                        // Here we can perform some action triggered after clicking the button
-                        makePayment(collections.get(position));
-                    }
-                };
-                fragment.colBtn.setOnTouchListener(infoButtonListener);
-                infoButtonListener.setMarker(mark);
+                mark.setTag(collections.get(position));
 
+                customInfoWindowInit(fragment.mGoogleMap);
+
+                //adding marker to map
                 markers.add(mark);
 
                 fragment.myMarker = fragment.mGoogleMap.addMarker(fragment.markerOptions);
@@ -142,6 +140,81 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
 
                 fragment.getRoute(fragment.markerOptions.getPosition(), markerOptions.getPosition(), markers);
                 fragment.selectedUserLatLng = latLng;
+            }
+        });
+    }
+
+    public static int getPixelsFromDp(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int)(dp * scale + 0.5f);
+    }
+
+    private void customInfoWindowInit(GoogleMap map) {
+        fragment.mapWrapperLayout.init(map, getPixelsFromDp(fragment.getContext(), 39 + 20));
+
+        // We want to reuse the info window for all the markers,
+        // so let's create only one class member instance
+        final View infoWindow = fragmentActivity.getLayoutInflater().inflate(R.layout.custom_info_layout, null);
+        final TextView infoTitle = infoWindow.findViewById(R.id.title);
+        final TextView colTitle = infoWindow.findViewById(R.id.title1);
+        final ImageButton navBtn = infoWindow.findViewById(R.id.nav);
+        final ImageButton colBtn = infoWindow.findViewById(R.id.col);
+
+        // Setting custom OnTouchListener which deals with the pressed state
+        // so it shows up
+        final OnInfoWindowElemTouchListener infoButtonListener = new OnInfoWindowElemTouchListener(navBtn,
+                fragment.getResources().getDrawable(R.color.whiteEnd),
+                fragment.getResources().getDrawable(R.color.darkGrey))
+        {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) {
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?daddr="+marker.getPosition().latitude+","+marker.getPosition().longitude+""));
+                fragment.getActivity().startActivity(intent);
+            }
+        };
+        navBtn.setOnTouchListener(infoButtonListener);
+
+        //custom info window collection button click listener
+        final OnInfoWindowElemTouchListener infoButtonListener2 = new OnInfoWindowElemTouchListener(colBtn, fragment.getResources().getDrawable(R.color.whiteEnd), fragment.getResources().getDrawable(R.color.darkGrey)) {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) {
+                // Here we can perform some action triggered after clicking the button
+                CollectionTable collectionTable = (CollectionTable) marker.getTag();
+                makePayment(collectionTable);
+            }
+        };
+        colBtn.setOnTouchListener(infoButtonListener2);
+
+
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                // Setting up the infoWindow with current's marker info
+                if(marker.getTitle().equals("Your Location")){
+                    navBtn.setVisibility(GONE);
+                    colBtn.setVisibility(GONE);
+                    colTitle.setVisibility(GONE);
+                }else {
+                    navBtn.setVisibility(VISIBLE);
+                    colBtn.setVisibility(VISIBLE);
+                    colTitle.setVisibility(VISIBLE);
+                }
+
+                infoTitle.setText(marker.getTitle());
+                CollectionTable collectionTable = (CollectionTable) marker.getTag();
+                colTitle.setText("Collection Number: " + collectionTable.getCollectionNumber());
+                infoButtonListener.setMarker(marker);
+                infoButtonListener2.setMarker(marker);
+                // We must call this to set the current marker and infoWindow references
+                // to the MapWrapperLayout
+                fragment.mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+                return infoWindow;
             }
         });
     }

@@ -1,19 +1,22 @@
 package com.icubed.loansticdroid.models;
 
 import android.app.Application;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.maps.GoogleMap;
@@ -52,6 +55,10 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static java.security.AccessController.getContext;
+
 public class DueCollection {
 
     private LoanTableQueries loanTableQueries;
@@ -67,14 +74,10 @@ public class DueCollection {
     private int loadCount = 0;
     private int loadSize;
 
-    private Boolean isDueCollectionSingle;
-
     private FragmentActivity fragmentActivity;
     private DueCollectionFragment fragment;
     private MapFragment mapFragment;
     private PaymentDialogBox paymentDialogBox;
-    private int newCol;
-    private int counter;
 
 
     private static final String TAG = ".DueCollection";
@@ -88,8 +91,6 @@ public class DueCollection {
         borrowersQueries = new BorrowersQueries(activity.getApplicationContext());
         groupBorrowerTableQueries = new GroupBorrowerTableQueries(application);
         groupBorrowerQueries = new GroupBorrowerQueries();
-
-        isDueCollectionSingle = false;
 
         fragmentActivity = activity;
         //Updates UI
@@ -122,6 +123,25 @@ public class DueCollection {
                                 count = 0;
                                 collectionSize = task.getResult().size();
 
+                                //to know the size of due collections today
+                                for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
+                                    CollectionTable collectionTable = documentSnapshot.toObject(CollectionTable.class);
+                                    collectionTable.setCollectionId(documentSnapshot.getId());
+
+                                    if ((!DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date())))) {
+                                        collectionSize--;
+                                    }
+                                }
+
+                                //to check is due collection size is zero
+                                if(collectionSize == 0){
+                                    if(fragment != null) fragment.emptyCollection.setVisibility(View.VISIBLE);
+                                    hideProgressBar();
+                                    removeRefresher();
+                                    Log.d(TAG, "onComplete: No due collections for today");
+                                    return;
+                                }
+
                                 for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
                                     CollectionTable collectionTable = documentSnapshot.toObject(CollectionTable.class);
                                     collectionTable.setCollectionId(documentSnapshot.getId());
@@ -131,13 +151,6 @@ public class DueCollection {
                                         Log.d(TAG, "onComplete: "+collectionTable.toString());
                                         getLoansData(collectionTable.getLoanId(), collectionTable.getCollectionId());
                                         saveNewCollectionToLocalStorage(collectionTable);
-                                    }else collectionSize--;
-
-                                    if(collectionSize == 0){
-                                        if(fragment != null) fragment.emptyCollection.setVisibility(View.VISIBLE);
-                                        hideProgressBar();
-                                        removeRefresher();
-                                        Log.d(TAG, "onComplete: No due collections for today");
                                     }
                                 }
 
@@ -191,11 +204,7 @@ public class DueCollection {
 
         if(group != null){
             count++;
-            if (!isDueCollectionSingle) {
-                saveGroupToLocalStorage(group);
-            } else {
-                saveSingleGroupToLocalStorage(group, collectionId);
-            }
+            saveGroupToLocalStorage(group);
         }else {
             groupBorrowerQueries.retrieveSingleBorrowerGroup(groupId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -205,11 +214,7 @@ public class DueCollection {
                         GroupBorrowerTable groupBorrowerTable = task.getResult().toObject(GroupBorrowerTable.class);
                         groupBorrowerTable.setGroupId(groupId);
 
-                        if (!isDueCollectionSingle) {
-                            saveGroupToLocalStorage(groupBorrowerTable);
-                        } else {
-                            saveSingleGroupToLocalStorage(groupBorrowerTable, collectionId);
-                        }
+                        saveGroupToLocalStorage(groupBorrowerTable);
                     } else {
                         hideProgressBar();
                         removeRefresher();
@@ -223,18 +228,6 @@ public class DueCollection {
     private void hideProgressBar(){
         if(fragment != null)
             fragment.hideProgressBar();
-    }
-
-    private void saveSingleGroupToLocalStorage(GroupBorrowerTable groupBorrowerTable, String collectionId) {
-
-        GroupBorrowerTable allGroups = groupBorrowerTableQueries.loadSingleBorrowerGroup(groupBorrowerTable.getGroupId());
-
-        if(allGroups == null){
-            groupBorrowerTableQueries.insertGroupToStorage(groupBorrowerTable);
-        }
-
-        getSingleDueCollectionData(collectionId);
-        isDueCollectionSingle = false;
     }
 
     private void saveGroupToLocalStorage(GroupBorrowerTable groupBorrowerTable) {
@@ -256,11 +249,7 @@ public class DueCollection {
 
         if(borrower != null){
             count++;
-            if (!isDueCollectionSingle) {
-                saveBorrowerToLocalStorage(borrower);
-            } else {
-                saveSingleBorrowerToLocalStorage(borrower, collectionId);
-            }
+            saveBorrowerToLocalStorage(borrower);
         }else {
             borrowersQueries.retrieveSingleBorrowers(borrowerId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -273,11 +262,7 @@ public class DueCollection {
                             BorrowersTable borrowersTable = task.getResult().toObject(BorrowersTable.class);
                             borrowersTable.setBorrowersId(task.getResult().getId());
 
-                            if (!isDueCollectionSingle) {
-                                saveBorrowerToLocalStorage(borrowersTable);
-                            } else {
-                                saveSingleBorrowerToLocalStorage(borrowersTable, collectionId);
-                            }
+                            saveBorrowerToLocalStorage(borrowersTable);
                             getBorrowerImage(borrowersTable);
                         }
                     } else {
@@ -319,15 +304,6 @@ public class DueCollection {
         }
     }
 
-    public void saveSingleBorrowerToLocalStorage(BorrowersTable borrowersTable, String collectionId){
-        BorrowersTable allBorrowers = borrowersTableQueries.loadSingleBorrower(borrowersTable.getBorrowersId());
-
-        if(allBorrowers == null){borrowersTableQueries.insertBorrowersToStorage(borrowersTable);}
-
-        getSingleDueCollectionData(collectionId);
-        isDueCollectionSingle = false;
-    }
-
     /****************Save loansQueries to storage************************/
     public void saveLoanToLocalStorage(LoansTable loansTable) {
         LoansTable loansTables = loanTableQueries.loadSingleLoan(loansTable.getLoanId());
@@ -355,10 +331,10 @@ public class DueCollection {
     public void getDueCollectionData(){
         List<CollectionTable> collectionTables = collectionTableQueries.loadAllDueCollections();
 
-        if(fragment != null)
-        fragment.dueCollectionList.clear();
-        fragment.collectionTableList.clear();
-        drawCollectionMarker(collectionTables);
+        if(fragment != null) {
+            fragment.dueCollectionList.clear();
+            fragment.collectionTableList.clear();
+        }
 
         loadCount = 0;
 
@@ -404,9 +380,10 @@ public class DueCollection {
                                 if(loadCount == loadSize){
                                     hideProgressBar();
                                     removeRefresher();
+                                    drawCollectionMarker(collectionTables);
                                 }
                             }
-                        } else getSingleBorrower(loan.getBorrowerId(), dueCollectionDetails);
+                        } else getSingleBorrower(loan.getBorrowerId(), dueCollectionDetails, collectionTables);
 
                     } else {
                         GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
@@ -425,12 +402,13 @@ public class DueCollection {
                                 if(loadCount == loadSize){
                                     hideProgressBar();
                                     removeRefresher();
+                                    drawCollectionMarker(collectionTables);
                                 }
                             }
-                        } getSingleGroup(loan.getGroupId(), dueCollectionDetails);
+                        } getSingleGroup(loan.getGroupId(), dueCollectionDetails, collectionTables);
                     }
 
-                } else getSingleLoan(collectionTable.getLoanId(), dueCollectionDetails);
+                } else getSingleLoan(collectionTable.getLoanId(), dueCollectionDetails, collectionTables);
             }
         }else{
             if(fragment != null)
@@ -439,7 +417,7 @@ public class DueCollection {
 
     }
 
-    private void getSingleLoan(String loanId, final DueCollectionDetails dueCollectionDetails) {
+    private void getSingleLoan(String loanId, final DueCollectionDetails dueCollectionDetails, final List<CollectionTable> collectionTables) {
         loansQueries.retrieveSingleLoan(loanId)
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -474,9 +452,10 @@ public class DueCollection {
                                             if(loadCount == loadSize){
                                                 hideProgressBar();
                                                 removeRefresher();
+                                                drawCollectionMarker(collectionTables);
                                             }
                                         }
-                                    } else getSingleBorrower(loansTable.getBorrowerId(), dueCollectionDetails);
+                                    } else getSingleBorrower(loansTable.getBorrowerId(), dueCollectionDetails, collectionTables);
 
                                 } else {
                                     GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loansTable.getGroupId());
@@ -495,9 +474,10 @@ public class DueCollection {
                                             if(loadCount == loadSize){
                                                 hideProgressBar();
                                                 removeRefresher();
+                                                drawCollectionMarker(collectionTables);
                                             }
                                         }
-                                    } getSingleGroup(loansTable.getGroupId(), dueCollectionDetails);
+                                    } getSingleGroup(loansTable.getGroupId(), dueCollectionDetails, collectionTables);
                                 }
                             }
                         } else {
@@ -507,7 +487,7 @@ public class DueCollection {
                 });
     }
 
-    private void getSingleGroup(final String groupId, final DueCollectionDetails dueCollectionDetails) {
+    private void getSingleGroup(final String groupId, final DueCollectionDetails dueCollectionDetails, final List<CollectionTable> collectionTables) {
         groupBorrowerQueries.retrieveSingleBorrowerGroup(groupId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -529,6 +509,7 @@ public class DueCollection {
                         if(loadCount == loadSize){
                             hideProgressBar();
                             removeRefresher();
+                            drawCollectionMarker(collectionTables);
                         }
                     }
                 } else {
@@ -546,7 +527,7 @@ public class DueCollection {
         }
     }
 
-    private void getSingleBorrower(String borrowerId, final DueCollectionDetails dueCollectionDetails) {
+    private void getSingleBorrower(String borrowerId, final DueCollectionDetails dueCollectionDetails, final List<CollectionTable> collectionTables) {
         borrowersQueries.retrieveSingleBorrowers(borrowerId)
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -578,6 +559,7 @@ public class DueCollection {
                                     if(loadCount == loadSize){
                                         hideProgressBar();
                                         removeRefresher();
+                                        drawCollectionMarker(collectionTables);
                                     }
                                 }
                             }
@@ -623,25 +605,23 @@ public class DueCollection {
                                     markerOptions.position(latLng);
                                     markerOptions.title(markerTitle);
                                     markerOptions.anchor(0.5f, 0.5f);
+
                                     // sorting marker icon
-                                    if (borrowersTable.getBorrowerImageByteArray() == null)
-                                        circleImageView.setImageResource(R.drawable.new_borrower);
-                                    else circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
+                                    if (borrowersTable.getBorrowerImageByteArray() == null){
+                                        RequestOptions placeholderOption = new RequestOptions();
+                                        placeholderOption.placeholder(R.drawable.new_borrower);
+                                        BitmapUtil.getImageAndThumbnailWithRequestOptionsGlide(
+                                                fragment.getContext(),
+                                                borrowersTable.getProfileImageUri(),
+                                                borrowersTable.getProfileImageThumbUri(),
+                                                placeholderOption)
+                                                .into(circleImageView);
+                                    } else circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(borrowersTable.getBorrowerImageByteArray()));
                                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
                                     Marker mark = mapFragment.mGoogleMap.addMarker(markerOptions);
+                                    mark.setTag(table);
 
-                                    //custom info window collection button click listener
-                                    OnInfoWindowElemTouchListener infoButtonListener = new OnInfoWindowElemTouchListener(mapFragment.colBtn, mapFragment.getResources().getDrawable(R.color.whiteEnd), mapFragment.getResources().getDrawable(R.color.darkGrey)) {
-                                        @Override
-                                        protected void onClickConfirmed(View v, Marker marker) {
-                                            // Here we can perform some action triggered after clicking the button
-                                            newPayment(table);
-                                        }
-                                    };
-
-                                    mapFragment.colBtn.setOnTouchListener(infoButtonListener);
-                                    mapFragment.colTitle.setText("Collection Number: " + table.getCollectionNumber());
-                                    infoButtonListener.setMarker(mark);
+                                    customInfoWindowInit(mapFragment.mGoogleMap);
 
                                     //adding marker to map
                                     markers.add(mark);
@@ -662,20 +642,11 @@ public class DueCollection {
                                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
 
                                     Marker mark = mapFragment.mGoogleMap.addMarker(markerOptions);
+                                    mark.setTag(table);
 
-                                    //custom info window collection button click listener
-                                    OnInfoWindowElemTouchListener infoButtonListener = new OnInfoWindowElemTouchListener(mapFragment.colBtn, mapFragment.getResources().getDrawable(R.color.whiteEnd), mapFragment.getResources().getDrawable(R.color.darkGrey)) {
-                                        @Override
-                                        protected void onClickConfirmed(View v, Marker marker) {
-                                            // Here we can perform some action triggered after clicking the button
-                                            newPayment(table);
-                                        }
-                                    };
+                                    customInfoWindowInit(mapFragment.mGoogleMap);
 
-                                    mapFragment.colBtn.setOnTouchListener(infoButtonListener);
-                                    mapFragment.colTitle.setText("Collection Number: " + table.getCollectionNumber());
-                                    infoButtonListener.setMarker(mark);
-
+                                    //adding marker to map
                                     markers.add(mark);
                                 }
                             }
@@ -694,6 +665,81 @@ public class DueCollection {
         }
     }
 
+    public static int getPixelsFromDp(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int)(dp * scale + 0.5f);
+    }
+
+    private void customInfoWindowInit(GoogleMap map) {
+        mapFragment.mapWrapperLayout.init(map, getPixelsFromDp(mapFragment.getContext(), 39 + 20));
+
+        // We want to reuse the info window for all the markers,
+        // so let's create only one class member instance
+        final View infoWindow = fragmentActivity.getLayoutInflater().inflate(R.layout.custom_info_layout, null);
+        final TextView infoTitle = infoWindow.findViewById(R.id.title);
+        final TextView colTitle = infoWindow.findViewById(R.id.title1);
+        final ImageButton navBtn = infoWindow.findViewById(R.id.nav);
+        final ImageButton colBtn = infoWindow.findViewById(R.id.col);
+
+        // Setting custom OnTouchListener which deals with the pressed state
+        // so it shows up
+        final OnInfoWindowElemTouchListener infoButtonListener = new OnInfoWindowElemTouchListener(navBtn,
+                mapFragment.getResources().getDrawable(R.color.whiteEnd),
+                mapFragment.getResources().getDrawable(R.color.darkGrey))
+        {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) {
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?daddr="+marker.getPosition().latitude+","+marker.getPosition().longitude+""));
+                mapFragment.getActivity().startActivity(intent);
+            }
+        };
+        navBtn.setOnTouchListener(infoButtonListener);
+
+        //custom info window collection button click listener
+        final OnInfoWindowElemTouchListener infoButtonListener2 = new OnInfoWindowElemTouchListener(colBtn, mapFragment.getResources().getDrawable(R.color.whiteEnd), mapFragment.getResources().getDrawable(R.color.darkGrey)) {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) {
+                // Here we can perform some action triggered after clicking the button
+                CollectionTable collectionTable = (CollectionTable) marker.getTag();
+                newPayment(collectionTable);
+            }
+        };
+        colBtn.setOnTouchListener(infoButtonListener2);
+
+
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                // Setting up the infoWindow with current's marker info
+                if(marker.getTitle().equals("Your Location")){
+                    navBtn.setVisibility(GONE);
+                    colBtn.setVisibility(GONE);
+                    colTitle.setVisibility(GONE);
+                }else {
+                    navBtn.setVisibility(VISIBLE);
+                    colBtn.setVisibility(VISIBLE);
+                    colTitle.setVisibility(VISIBLE);
+                }
+
+                infoTitle.setText(marker.getTitle());
+                CollectionTable collectionTable = (CollectionTable) marker.getTag();
+                colTitle.setText("Collection Number: " + collectionTable.getCollectionNumber());
+                infoButtonListener.setMarker(marker);
+                infoButtonListener2.setMarker(marker);
+                // We must call this to set the current marker and infoWindow references
+                // to the MapWrapperLayout
+                mapFragment.mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+                return infoWindow;
+            }
+        });
+    }
+
     private void newPayment(final CollectionTable collectionTable){
         paymentDialogBox.setOnYesClicked(new PaymentDialogBox.OnButtonClick() {
             @Override
@@ -709,57 +755,11 @@ public class DueCollection {
         paymentDialogBox.show();
     }
 
-    public void getSingleDueCollectionData(String collectionId){
-        CollectionTable collectionTable = collectionTableQueries.loadSingleCollection(collectionId);
-
-        //draw markers
-        List<CollectionTable> collectionTables = collectionTableQueries.loadAllDueCollections();
-
-        if(newCol == counter) drawCollectionMarker(collectionTables);
-
-        DueCollectionDetails dueCollectionDetails = new DueCollectionDetails();
-        dueCollectionDetails.setDueAmount(collectionTable.getCollectionDueAmount());
-        dueCollectionDetails.setCollectionNumber(collectionTable.getCollectionNumber());
-        dueCollectionDetails.setDueCollectionDate(DateUtil.dateString(collectionTable.getCollectionDueDate()));
-        dueCollectionDetails.setIsDueCollected(collectionTable.getIsDueCollected());
-        dueCollectionDetails.setCollectionTable(collectionTable);
-        dueCollectionDetails.setAmountPaid(collectionTable.getAmountPaid());
-        fragment.collectionTableList.add(collectionTable);
-
-        LoansTable loan = loanTableQueries.loadSingleLoan(collectionTable.getLoanId());
-
-        if(loan.getBorrowerId() != null) {
-            BorrowersTable borrowersTable = borrowersTableQueries.loadSingleBorrower(loan.getBorrowerId());
-            dueCollectionDetails.setFirstName(borrowersTable.getFirstName());
-            dueCollectionDetails.setLastName(borrowersTable.getLastName());
-            dueCollectionDetails.setWorkAddress(borrowersTable.getWorkAddress());
-            dueCollectionDetails.setBusinessName(borrowersTable.getBusinessName());
-            dueCollectionDetails.setImageUri(borrowersTable.getProfileImageUri());
-            dueCollectionDetails.setImageUriThumb(borrowersTable.getProfileImageThumbUri());
-            dueCollectionDetails.setImageByteArray(borrowersTable.getBorrowerImageByteArray());
-            dueCollectionDetails.setLatitude(borrowersTable.getBorrowerLocationLatitude());
-            dueCollectionDetails.setLongitude(borrowersTable.getBorrowerLocationLongitude());
-        }else{
-            GroupBorrowerTable groupBorrowerTable = groupBorrowerTableQueries.loadSingleBorrowerGroup(loan.getGroupId());
-            dueCollectionDetails.setGroupName(groupBorrowerTable.getGroupName());
-            dueCollectionDetails.setLatitude(groupBorrowerTable.getGroupLocationLatitude());
-            dueCollectionDetails.setLongitude(groupBorrowerTable.getGroupLocationLongitude());
-            dueCollectionDetails.setWorkAddress(groupBorrowerTable.getMeetingLocation());
-        }
-
-        if(fragment != null) {
-            removeRefresher();
-            fragment.emptyCollection.setVisibility(View.GONE);
-            fragment.dueCollectionList.add(dueCollectionDetails);
-            fragment.slideUpPanelRecyclerAdapter.notifyDataSetChanged();
-        }
-    }
-
     /***********************retrieve all collection and comparing to local***********/
     public void retrieveDueCollectionToLocalStorageAndCompareToCloud(){
         final List<CollectionTable> localCollection = retrieveCollectionToLocalStorage();
 
-        newCol = 0;
+        count = 0;
 
         collectionQueries.retrieveAllCollection()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -769,37 +769,58 @@ public class DueCollection {
                             Log.d(TAG, "onComplete: Success in retrieving data from server");
                             if(!task.getResult().isEmpty()){
 
-                                counter = task.getResult().size();
+                                List<CollectionTable> newCol = new ArrayList<>();
+                                List<CollectionTable> oldCol = new ArrayList<>();
 
+                                //to separate old collections from new ones
                                 for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
 
-                                    Boolean doesDataExist = false;
+                                    CollectionTable collectionTable = documentSnapshot.toObject(CollectionTable.class);
+                                    collectionTable.setCollectionId(documentSnapshot.getId());
+
+                                    boolean newData = true;
                                     for(CollectionTable colTab : localCollection){
+
                                         if(colTab.getCollectionId().equals(documentSnapshot.getId())){
-                                            doesDataExist = true;
-                                            Log.d(TAG, "onComplete: collection id of "+documentSnapshot.getId()+" already exist");
+                                            newData = false;
                                             break;
                                         }
                                     }
 
-                                    if(!doesDataExist) {
-                                        Log.d(TAG, "onComplete: collection id of "+documentSnapshot.getId()+" does not exist");
+                                    if(newData) newCol.add(collectionTable);
+                                    else oldCol.add(collectionTable);
+                                }
 
-                                        isDueCollectionSingle = true;
-                                        CollectionTable collectionTable = documentSnapshot.toObject(CollectionTable.class);
-                                        collectionTable.setCollectionId(documentSnapshot.getId());
+                                collectionSize = newCol.size();
 
-                                        if((DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date())) &&
-                                                !collectionTable.getIsDueCollected())) {
-                                            saveNewCollectionToLocalStorage(collectionTable);
-                                            getLoansData(collectionTable.getLoanId(), collectionTable.getCollectionId());
-                                        }
-                                    }else {
-                                        counter--;
-                                        updateTable(documentSnapshot);
+                                //to get only due collections size
+                                for (CollectionTable collectionTable : newCol) {
+                                    if ((!DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date())))) {
+                                        collectionSize--;
                                     }
                                 }
-                                getDueCollectionData();
+
+                                if(collectionSize == 0){
+                                    removeRefresher();
+                                    Toast.makeText(fragmentActivity, "No new due collection", Toast.LENGTH_SHORT).show();
+
+                                }
+
+
+                                //dealing with new collection
+                                for (CollectionTable collectionTable : newCol) {
+                                    if((DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date())) &&
+                                            !collectionTable.getIsDueCollected())) {
+                                        getLoansData(collectionTable.getLoanId(), collectionTable.getCollectionId());
+                                        saveNewCollectionToLocalStorage(collectionTable);
+                                    }
+                                }
+
+                                //checking old collections for update
+                                for (CollectionTable collectionTable : oldCol) {
+                                    updateTable(collectionTable);
+                                }
+
                             }else{
                                 removeRefresher();
                                 Log.d(TAG, "onComplete: No New due collections for today");
@@ -820,11 +841,9 @@ public class DueCollection {
         }
     }
 
-    private void updateTable(DocumentSnapshot doc) {
-        CollectionTable collectionTable = doc.toObject(CollectionTable.class);
-        collectionTable.setCollectionId(doc.getId());
+    private void updateTable(CollectionTable collectionTable) {
 
-        CollectionTable currentlySaved = collectionTableQueries.loadSingleCollection(doc.getId());
+        CollectionTable currentlySaved = collectionTableQueries.loadSingleCollection(collectionTable.getCollectionId());
         collectionTable.setId(currentlySaved.getId());
 
         if(collectionTable.getLastUpdatedAt().getTime() != currentlySaved.getLastUpdatedAt().getTime()){

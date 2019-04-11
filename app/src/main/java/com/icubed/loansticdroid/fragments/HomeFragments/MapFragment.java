@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -108,6 +109,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private OnInfoWindowElemTouchListener infoButtonListener;
     public MapWrapperLayout mapWrapperLayout;
     private boolean fromMarkerClick = false;
+    private boolean firstLaunch;
 
     public MapFragment() {
         // Required empty public constructor
@@ -125,6 +127,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
 
+        firstLaunch = false;
 
         collectionImage = v.findViewById(R.id.collection_image);
 
@@ -230,69 +233,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
         int height = getResources().getDisplayMetrics().heightPixels;
         mGoogleMap.setPadding(0, (int) (0.2*height), 0, (int) (0.15*height));
-        customInfoWindowInit(mGoogleMap);
         onMapReadyFeatures();
-    }
-
-    private void customInfoWindowInit(GoogleMap map) {
-        mapWrapperLayout.init(map, getPixelsFromDp(getContext(), 39 + 20));
-
-        // We want to reuse the info window for all the markers,
-        // so let's create only one class member instance
-        infoWindow = getLayoutInflater().inflate(R.layout.custom_info_layout, null);
-        infoTitle = infoWindow.findViewById(R.id.title);
-        colTitle = infoWindow.findViewById(R.id.title1);
-        navBtn = infoWindow.findViewById(R.id.nav);
-        colBtn = infoWindow.findViewById(R.id.col);
-
-        // Setting custom OnTouchListener which deals with the pressed state
-        // so it shows up
-        infoButtonListener = new OnInfoWindowElemTouchListener(navBtn,
-                getResources().getDrawable(R.color.whiteEnd),
-                getResources().getDrawable(R.color.darkGrey))
-        {
-            @Override
-            protected void onClickConfirmed(View v, Marker marker) {
-                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                        Uri.parse("http://maps.google.com/maps?daddr="+marker.getPosition().latitude+","+marker.getPosition().longitude+""));
-                startActivity(intent);
-            }
-        };
-        navBtn.setOnTouchListener(infoButtonListener);
-
-
-        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                // Setting up the infoWindow with current's marker info
-                if(marker.getTitle().equals("Your Location")){
-                    navBtn.setVisibility(GONE);
-                    colBtn.setVisibility(GONE);
-                    colTitle.setVisibility(GONE);
-                }else {
-                    navBtn.setVisibility(VISIBLE);
-                    colBtn.setVisibility(VISIBLE);
-                    colTitle.setVisibility(VISIBLE);
-                }
-
-                infoTitle.setText(marker.getTitle());
-                infoButtonListener.setMarker(marker);
-                // We must call this to set the current marker and infoWindow references
-                // to the MapWrapperLayout
-                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
-                return infoWindow;
-            }
-        });
-    }
-
-    public static int getPixelsFromDp(Context context, float dp) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int)(dp * scale + 0.5f);
     }
 
     private void onMapReadyFeatures(){
@@ -315,7 +256,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             });
         }else {
             isLocationModeCheck = false;
-            AndroidUtils.changeLocationModeToHighAccuracy(getContext());
+
+            boolean isGPSEnabled = LocationProviderUtil.mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean isNetworkEnabled = LocationProviderUtil.mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (!(isGPSEnabled || isNetworkEnabled)) AndroidUtils.gpsDisabledMessage(getContext());
+            else AndroidUtils.changeLocationModeToHighAccuracy(getContext());
         }
     }
 
@@ -492,7 +438,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     //Initialize map
     private void initMap() {
-        if (playServiceUtil.isGooglePlayServicesAvailable()) {
+        if (playServiceUtil.isGooglePlayServicesAvailable() && checkIfLocationModeIsHighAccuracy()) {
             if (mGoogleMap != null) {
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                         ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -576,8 +522,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onResume() {
         super.onResume();
         mMapView.onResume();
-        if(!isLocationModeCheck) onMapReadyFeatures();
-        getCurrentLocation();
+        if(firstLaunch) {
+            if (!isLocationModeCheck) onMapReadyFeatures();
+            getCurrentLocation();
+        }
+
+        firstLaunch = true;
     }
 
     @Override
