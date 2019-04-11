@@ -1,6 +1,7 @@
 package com.icubed.loansticdroid.models;
 
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
+import com.icubed.loansticdroid.localdatabase.SavingsPlanCollectionTable;
 import com.icubed.loansticdroid.localdatabase.SavingsPlanTypeTable;
 import com.icubed.loansticdroid.localdatabase.SavingsTable;
 
@@ -9,14 +10,16 @@ public class SavingsDetails {
     private BorrowersTable borrowersTable;
     private SavingsTable savingsTable;
     private SavingsPlanTypeTable savingsPlanTypeTable;
+    private SavingsPlanCollectionTable savingsPlanCollectionTable;
 
     public SavingsDetails() {
     }
 
-    public SavingsDetails(BorrowersTable borrowersTable, SavingsTable savingsTable, SavingsPlanTypeTable savingsPlanTypeTable) {
+    public SavingsDetails(BorrowersTable borrowersTable, SavingsTable savingsTable, SavingsPlanTypeTable savingsPlanTypeTable, SavingsPlanCollectionTable savingsPlanCollectionTable) {
         this.borrowersTable = borrowersTable;
         this.savingsTable = savingsTable;
         this.savingsPlanTypeTable = savingsPlanTypeTable;
+        this.savingsPlanCollectionTable = savingsPlanCollectionTable;
     }
 
     public SavingsPlanTypeTable getSavingsPlanTypeTable() {
@@ -43,8 +46,16 @@ public class SavingsDetails {
         this.savingsTable = savingsTable;
     }
 
+    public SavingsPlanCollectionTable getSavingsPlanCollectionTable() {
+        return savingsPlanCollectionTable;
+    }
+
+    public void setSavingsPlanCollectionTable(SavingsPlanCollectionTable savingsPlanCollectionTable) {
+        this.savingsPlanCollectionTable = savingsPlanCollectionTable;
+    }
+
     @Override
     public String toString() {
-        return "SavingsDetailsActivity{" + "borrowersTable=" + borrowersTable + ", savingsTable=" + savingsTable + '}';
+        return "SavingsDetails{" + "borrowersTable=" + borrowersTable + ", savingsTable=" + savingsTable + ", savingsPlanTypeTable=" + savingsPlanTypeTable + ", savingsPlanCollectionTable=" + savingsPlanCollectionTable + '}';
     }
 }

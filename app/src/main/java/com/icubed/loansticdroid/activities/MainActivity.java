@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    startFragment(dashboardFragment, R.anim.enter_from_right, R.anim.exit_to_left, "home");
+                    startFragment(dashboardFragment, R.anim.enter_from_right, R.anim.exit_to_left, "dashboard");
                 }
                 else {
                     startFragment(mapFragment, R.anim.enter_from_left, R.anim.exit_to_right, "home");

@@ -796,7 +796,9 @@ public class DueCollection {
                                 //to get only due collections size
                                 for (CollectionTable collectionTable : newCol) {
                                     if ((!DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date())))) {
-                                        collectionSize--;
+                                        if(!collectionTable.getIsDueCollected()){
+                                            collectionSize--;
+                                        }
                                     }
                                 }
 

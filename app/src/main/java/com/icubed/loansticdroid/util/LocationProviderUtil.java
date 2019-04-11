@@ -121,6 +121,30 @@ public class LocationProviderUtil {
         }
     }
 
+    public Location getLastKnowLocation(){
+
+        Location local = null;
+
+        boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            getLocationPermission();
+            return null;
+        }
+
+        if (isNetworkEnabled) {
+            local = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
+
+        if(isGPSEnabled){
+            local = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+
+        return local;
+    }
+
     public static class GPSCoordinates {
         public Location getLocation;
 

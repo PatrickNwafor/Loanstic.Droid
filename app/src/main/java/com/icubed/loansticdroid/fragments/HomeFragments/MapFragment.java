@@ -96,17 +96,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private static final String TAG = "MapFragment";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
 
-    private LocationProviderUtil locationProviderUtil;
+    public LocationProviderUtil locationProviderUtil;
     private PlayServiceUtil playServiceUtil;
     public LatLng selectedUserLatLng = null;
     private DueCollectionFragment dueCollectionFragment;
     private OverDueCollectionFragment overDueCollectionFragment;
-    public View infoWindow;
-    private TextView infoTitle;
-    public TextView colTitle;
-    private ImageButton navBtn;
-    public ImageButton colBtn;
-    private OnInfoWindowElemTouchListener infoButtonListener;
     public MapWrapperLayout mapWrapperLayout;
     private boolean fromMarkerClick = false;
     private boolean firstLaunch;
@@ -233,6 +227,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
         int height = getResources().getDisplayMetrics().heightPixels;
         mGoogleMap.setPadding(0, (int) (0.2*height), 0, (int) (0.15*height));
+        //customInfoWindowInit(mGoogleMap);
         onMapReadyFeatures();
     }
 

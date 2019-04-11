@@ -1,7 +1,6 @@
 package com.icubed.loansticdroid.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -15,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,37 +25,40 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.icubed.loansticdroid.R;
 import com.icubed.loansticdroid.activities.CollectionDetailsActivity;
 import com.icubed.loansticdroid.activities.LoanRepayment;
+import com.icubed.loansticdroid.fragments.HomeFragments.DashboardFragment;
 import com.icubed.loansticdroid.fragments.HomeFragments.MapFragment;
+import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.CollectionTable;
+import com.icubed.loansticdroid.localdatabase.SavingsPlanCollectionTable;
 import com.icubed.loansticdroid.models.DueCollectionDetails;
+import com.icubed.loansticdroid.models.SavingsDetails;
 import com.icubed.loansticdroid.util.BitmapUtil;
 import com.icubed.loansticdroid.util.CustomDialogBox.PaymentDialogBox;
 import com.icubed.loansticdroid.util.MapInfoWindow.OnInfoWindowElemTouchListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPanelRecyclerAdapter.ViewHolder> {
+public class SlideUpSavingsAdapter extends RecyclerView.Adapter<SlideUpSavingsAdapter.ViewHolder> {
 
-    List<DueCollectionDetails> collectionList;
-    List<CollectionTable> collections;
+    List<SavingsDetails> savingsDetails;
     Context context;
-    MapFragment fragment;
+    DashboardFragment fragment;
     private AlertDialog.Builder builder;
     private PaymentDialogBox paymentDialogBox;
 
     private FragmentActivity fragmentActivity;
 
-    public SlideUpPanelRecyclerAdapter(List<DueCollectionDetails> collectionList, FragmentActivity activity, List<CollectionTable> collectionTable) {
-        this.collectionList = collectionList;
-        this.collections = collectionTable;
+    public SlideUpSavingsAdapter(List<SavingsDetails> savingsDetails, FragmentActivity activity) {
+        this.savingsDetails = savingsDetails;
         fragmentActivity = activity;
         FragmentManager fm = fragmentActivity.getSupportFragmentManager();
-        fragment = (MapFragment) fm.findFragmentByTag("home");
+        fragment = (DashboardFragment) fm.findFragmentByTag("dashboard");
         builder = new AlertDialog.Builder(fragmentActivity);
         paymentDialogBox = new PaymentDialogBox(fragmentActivity);
     }
@@ -75,24 +78,17 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
-        final String firstName = collectionList.get(position).getFirstName();
-        final String lastName = collectionList.get(position).getLastName();
-        final String groupName = collectionList.get(position).getGroupName();
-        holder.setCollectionName(firstName, lastName,groupName);
-        holder.setCollectionAmount(collectionList.get(position).getDueAmount(), collectionList.get(position).getAmountPaid());
-        holder.setBusiness(collectionList.get(position).getBusinessName(), groupName);
-        holder.setImage(collectionList.get(position));
+        final String firstName = savingsDetails.get(position).getBorrowersTable().getFirstName();
+        final String lastName = savingsDetails.get(position).getBorrowersTable().getLastName();
+        holder.setCollectionName(firstName, lastName);
+        holder.setCollectionAmount(savingsDetails.get(position).getSavingsPlanCollectionTable().getSavingsCollectionAmount(), savingsDetails.get(position).getSavingsPlanCollectionTable().getAmountPaid());
+        holder.setBusiness(savingsDetails.get(position).getBorrowersTable().getBusinessName());
+        holder.setImage(savingsDetails.get(position).getBorrowersTable());
 
         holder.detailsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, CollectionDetailsActivity.class);
-                intent.putExtra("dueCollectionDetails", collectionList.get(position));
-                intent.putExtra("collection", collectionList.get(position).getCollectionTable());
-                intent.putExtra("lastUpdatedAt", collectionList.get(position).getCollectionTable().getLastUpdatedAt());
-                intent.putExtra("dueDate", collectionList.get(position).getCollectionTable().getCollectionDueDate());
-                intent.putExtra("timestamp", collectionList.get(position).getCollectionTable().getTimestamp());
-                context.startActivity(intent);
+                Toast.makeText(context, "clicked me", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -109,35 +105,31 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
 
                 final MarkerOptions markerOptions = new MarkerOptions();
 
-                LatLng latLng = new LatLng(collectionList.get(position).getLatitude(), collectionList.get(position).getLongitude());
+                LatLng latLng = new LatLng(savingsDetails.get(position).getBorrowersTable().getBorrowerLocationLatitude(),
+                        savingsDetails.get(position).getBorrowersTable().getBorrowerLocationLongitude());
                 //adding markerOptions properties for driver
                 markerOptions.position(latLng);
                 markerOptions.anchor(0.5f, 0.5f);
-                if(collectionList.get(position).getGroupName() == null){
-                    markerOptions.title(lastName + " " + firstName);
-                    if(collectionList.get(position).getImageByteArray() == null){
-                        RequestOptions placeholderOption = new RequestOptions();
-                        placeholderOption.placeholder(R.drawable.new_borrower);
-                        BitmapUtil.getImageAndThumbnailWithRequestOptionsGlide(
-                                fragment.getContext(),
-                                collectionList.get(position).getImageUri(),
-                                collectionList.get(position).getImageUriThumb(),
-                                placeholderOption)
-                                .into(circleImageView);
-                    }
-                    else
-                        circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(collectionList.get(position).getImageByteArray()));
-                }else {
-                    markerOptions.title(groupName);
-                    circleImageView.setImageResource(R.drawable.new_group);
+
+                markerOptions.title(lastName + " " + firstName);
+                if(savingsDetails.get(position).getBorrowersTable().getBorrowerImageByteArray() == null){
+                    RequestOptions placeholderOption = new RequestOptions();
+                    placeholderOption.placeholder(R.drawable.new_borrower);
+                    BitmapUtil.getImageAndThumbnailWithRequestOptionsGlide(
+                            fragment.getContext(),
+                            savingsDetails.get(position).getBorrowersTable().getProfileImageUri(),
+                            savingsDetails.get(position).getBorrowersTable().getProfileImageThumbUri(),
+                            placeholderOption)
+                            .into(circleImageView);
                 }
+                else circleImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(savingsDetails.get(position).getBorrowersTable().getBorrowerImageByteArray()));
 
                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.convertViewsToBitmap(view)));
 
                 fragment.hidePanel();
                 Marker mark = fragment.mGoogleMap.addMarker(markerOptions);
 
-                mark.setTag(collections.get(position));
+                mark.setTag(savingsDetails.get(position));
 
                 customInfoWindowInit(fragment.mGoogleMap);
 
@@ -189,8 +181,8 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
                 // Here we can perform some action triggered after clicking the button
-                CollectionTable collectionTable = (CollectionTable) marker.getTag();
-                makePayment(collectionTable);
+                SavingsDetails savingsDetails = (SavingsDetails) marker.getTag();
+                makePayment(savingsDetails.getSavingsPlanCollectionTable());
             }
         };
         colBtn.setOnTouchListener(infoButtonListener2);
@@ -216,8 +208,8 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
                 }
 
                 infoTitle.setText(marker.getTitle());
-                CollectionTable collectionTable = (CollectionTable) marker.getTag();
-                colTitle.setText("Collection Number: " + collectionTable.getCollectionNumber());
+                SavingsDetails savingsDetails = (SavingsDetails) marker.getTag();
+                colTitle.setText("Collection Number: " + savingsDetails.getSavingsPlanCollectionTable().getSavingsCollectionNumber());
                 infoButtonListener.setMarker(marker);
                 infoButtonListener2.setMarker(marker);
                 // We must call this to set the current marker and infoWindow references
@@ -228,14 +220,14 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
         });
     }
 
-    private void makePayment(final CollectionTable collectionTable) {
+    private void makePayment(final SavingsPlanCollectionTable collectionTable) {
         paymentDialogBox.setOnYesClicked(new PaymentDialogBox.OnButtonClick() {
             @Override
             public void onYesButtonClick() {
                 Intent intent = new Intent(fragment.getContext(), LoanRepayment.class);
                 intent.putExtra("collection", collectionTable);
                 intent.putExtra("lastUpdatedAt", collectionTable.getLastUpdatedAt());
-                intent.putExtra("dueDate", collectionTable.getCollectionDueDate());
+                intent.putExtra("dueDate", collectionTable.getSavingsCollectionDueDate());
                 intent.putExtra("timestamp", collectionTable.getTimestamp());
                 fragment.startActivity(intent);
             }
@@ -245,7 +237,7 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
 
     @Override
     public int getItemCount() {
-        return collectionList.size();
+        return savingsDetails.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -271,32 +263,26 @@ public class SlideUpPanelRecyclerAdapter extends RecyclerView.Adapter<SlideUpPan
             frameLayout = mView.findViewById(R.id.frame);
         }
 
-        public void setCollectionName(String firstName, String lastName, String groupName){
-            if(groupName == null) collectionNameTextView.setText(lastName + " " + firstName);
-            else collectionNameTextView.setText(groupName);
+        public void setCollectionName(String firstName, String lastName){
+            collectionNameTextView.setText(lastName + " " + firstName);
         }
 
         public void setCollectionAmount(double collectionAmount, double amountPaid){
             amountTextView.setText(String.valueOf(collectionAmount-amountPaid));
         }
 
-        public void setBusiness(String businessName, String groupName) {
-            if(groupName == null) jobTextView.setText(businessName);
-            else jobTextView.setText("Group");
+        public void setBusiness(String businessName) {
+            jobTextView.setText(businessName);
         }
 
-        public void setImage(DueCollectionDetails dueCollectionDetails) {
+        public void setImage(BorrowersTable dueCollectionDetails) {
 
-            if(dueCollectionDetails.getGroupName() == null) {
-                if (dueCollectionDetails.getImageByteArray() == null) {
-                    BitmapUtil.getImageAndThumbnailWithGlide(mView.getContext(), dueCollectionDetails.getImageUri(), dueCollectionDetails.getImageUriThumb()).into(collectionImageView);
-                } else {
-                    collectionImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(dueCollectionDetails.getImageByteArray()));
-                }
-            }else{
-                collectionImageView.setImageResource(R.drawable.new_group);
+            if (dueCollectionDetails.getBorrowerImageByteArray() == null) {
+                BitmapUtil.getImageAndThumbnailWithGlide(mView.getContext(), dueCollectionDetails.getProfileImageUri(), dueCollectionDetails.getProfileImageThumbUri()).into(collectionImageView);
+            } else {
+                collectionImageView.setImageBitmap(BitmapUtil.getBitMapFromBytes(dueCollectionDetails.getBorrowerImageByteArray()));
             }
         }
     }
-
+    
 }
