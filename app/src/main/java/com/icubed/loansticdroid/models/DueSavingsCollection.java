@@ -662,7 +662,7 @@ public class DueSavingsCollection {
                                 //to get only due collections size
                                 for (SavingsPlanCollectionTable savingsPlanCollectionTable : newCol) {
                                     if ((!DateUtil.dateString(savingsPlanCollectionTable.getSavingsCollectionDueDate()).equals(DateUtil.dateString(new Date())))) {
-                                        if(!savingsPlanCollectionTable.getIsSavingsCollected()){
+                                        if(savingsPlanCollectionTable.getIsSavingsCollected()){
                                             collectionSize--;
                                         }
                                     }
@@ -671,7 +671,6 @@ public class DueSavingsCollection {
                                 if(collectionSize == 0){
                                     removeRefresher();
                                     Toast.makeText(fragmentActivity, "No new due collection", Toast.LENGTH_SHORT).show();
-
                                 }
 
 

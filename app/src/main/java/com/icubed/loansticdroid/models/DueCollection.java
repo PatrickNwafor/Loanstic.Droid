@@ -797,7 +797,7 @@ public class DueCollection {
                                 //to get only due collections size
                                 for (CollectionTable collectionTable : newCol) {
                                     if ((!DateUtil.dateString(collectionTable.getCollectionDueDate()).equals(DateUtil.dateString(new Date())))) {
-                                        if(!collectionTable.getIsDueCollected()){
+                                        if(collectionTable.getIsDueCollected()){
                                             collectionSize--;
                                         }
                                     }
@@ -806,7 +806,6 @@ public class DueCollection {
                                 if(collectionSize == 0){
                                     removeRefresher();
                                     Toast.makeText(fragmentActivity, "No new due collection", Toast.LENGTH_SHORT).show();
-
                                 }
 
 

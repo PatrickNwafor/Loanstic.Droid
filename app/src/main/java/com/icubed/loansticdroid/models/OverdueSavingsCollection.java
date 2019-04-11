@@ -44,6 +44,7 @@ import com.icubed.loansticdroid.fragments.SavingsCollectionFragments.DueSavingsC
 import com.icubed.loansticdroid.fragments.SavingsCollectionFragments.OverdueSavingsCollectionFragment;
 import com.icubed.loansticdroid.localdatabase.BorrowersTable;
 import com.icubed.loansticdroid.localdatabase.BorrowersTableQueries;
+import com.icubed.loansticdroid.localdatabase.CollectionTable;
 import com.icubed.loansticdroid.localdatabase.SavingsPlanCollectionTable;
 import com.icubed.loansticdroid.localdatabase.SavingsPlanCollectionTableQueries;
 import com.icubed.loansticdroid.localdatabase.GroupBorrowerTable;
@@ -505,12 +506,13 @@ public class OverdueSavingsCollection {
                                 collectionSize = newCol.size();
                                 Log.d(TAG, "onComplete: "+collectionSize);
 
-                                //to get only due collections size
+                                //to get only over due collections size
                                 for (SavingsPlanCollectionTable collectionTable : newCol) {
-                                    Log.d(TAG, "onComplete: "+collectionTable.toString());
-                                    if (!collectionTable.getSavingsCollectionDueDate().before(new Date())) {
-                                        collectionSize--;
-                                    }
+                                    if(!collectionTable.getIsSavingsCollected()){
+                                        if (!collectionTable.getSavingsCollectionDueDate().before(new Date())) {
+                                            collectionSize--;
+                                        }
+                                    }else collectionSize--;
                                 }
 
                                 Log.d(TAG, "onComplete: "+collectionSize);
@@ -518,7 +520,6 @@ public class OverdueSavingsCollection {
                                 if(collectionSize == 0){
                                     removeRefresher();
                                     Toast.makeText(fragmentActivity, "No new due collection", Toast.LENGTH_SHORT).show();
-
                                 }
 
 
