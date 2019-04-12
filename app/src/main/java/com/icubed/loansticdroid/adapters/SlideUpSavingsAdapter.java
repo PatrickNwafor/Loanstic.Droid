@@ -228,6 +228,7 @@ public class SlideUpSavingsAdapter extends RecyclerView.Adapter<SlideUpSavingsAd
                 Intent intent = new Intent(fragment.getContext(), SavingsTransactionDepositPayment.class);
                 intent.putExtra("collection", collectionTable.getSavingsPlanCollectionTable());
                 intent.putExtra("savings", collectionTable.getSavingsTable());
+                intent.putExtra("home", "home");
                 fragment.startActivity(intent);
             }
         });

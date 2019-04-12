@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean doubleBackToExitPressedOnce = false;
 
     private Account account;
+    private String main;
 
     //Navigation Drawer Layout
     private DrawerLayout mDrawerLayout;
@@ -76,7 +77,11 @@ public class MainActivity extends AppCompatActivity {
         //Replacing our frame layout with our map fragment
         mapFragment = new MapFragment();
         dashboardFragment = new DashboardFragment();
-        startFragment(mapFragment, "home");
+
+        main = getIntent().getStringExtra("main");
+
+        if(main == null) startFragment(mapFragment, "home");
+        else startFragment(dashboardFragment, "dashboard");
 
         viewSwitch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

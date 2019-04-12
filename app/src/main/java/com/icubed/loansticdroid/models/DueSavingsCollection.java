@@ -620,6 +620,7 @@ public class DueSavingsCollection {
                 Intent intent = new Intent(dashboardFragment.getContext(), SavingsTransactionDepositPayment.class);
                 intent.putExtra("collection", savingsDetails.getSavingsPlanCollectionTable());
                 intent.putExtra("savings", savingsDetails.getSavingsTable());
+                intent.putExtra("home", "home");
                 dashboardFragment.startActivity(intent);
             }
         });

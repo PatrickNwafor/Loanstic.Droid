@@ -381,6 +381,7 @@ public class OverdueSavingsCollection {
         }else{
             if(fragment != null)
                 fragment.emptyCollection.setVisibility(View.VISIBLE);
+            hideProgressBar();
         }
 
     }

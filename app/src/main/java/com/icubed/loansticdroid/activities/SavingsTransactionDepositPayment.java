@@ -98,6 +98,7 @@ public class SavingsTransactionDepositPayment extends AppCompatActivity {
     private CardView colNum, colAmount, colDue;
     private SavingsTable savingsTable;
     private RadioGroup radioGroup;
+    private String home;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +109,8 @@ public class SavingsTransactionDepositPayment extends AppCompatActivity {
         getSupportActionBar().setTitle("Deposit");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        home = getIntent().getStringExtra("home");
 
         paymentDrp = findViewById(R.id.payment_mode_value);
         collectionNumberTextView = findViewById(R.id.collection_number_value);
@@ -331,7 +334,13 @@ public class SavingsTransactionDepositPayment extends AppCompatActivity {
                                     .setCancelable(false)
                                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                         public void onClick(final DialogInterface dialog, final int id) {
-                                            finish();
+                                            if(home == null) finish();
+                                            else {
+                                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                intent.putExtra("main", "main");
+                                                startActivity(intent);
+                                                finish();
+                                            }
                                         }
                                     });
                             final AlertDialog alert = builder2.create();
