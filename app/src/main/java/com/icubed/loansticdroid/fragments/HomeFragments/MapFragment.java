@@ -231,24 +231,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         onMapReadyFeatures();
     }
 
+    private void loadCollections(){
+        startFragment(dueCollectionFragment, "due");
+        //segmented control
+        sbg.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition() {
+            @Override
+            public void onClickedButtonPosition(int position) {
+                if (position == 0) {
+
+                    startFragment(dueCollectionFragment, "due");
+                } else if (position == 1) {
+
+                    startFragment(overDueCollectionFragment, "overdue");
+                }
+            }
+        });
+    }
+
     private void onMapReadyFeatures(){
         if(checkIfLocationModeIsHighAccuracy()) {
             mapOnClickListener();
             initMap();
-            startFragment(dueCollectionFragment, "due");
-            //segmented control
-            sbg.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition() {
-                @Override
-                public void onClickedButtonPosition(int position) {
-                    if (position == 0) {
-
-                        startFragment(dueCollectionFragment, "due");
-                    } else if (position == 1) {
-
-                        startFragment(overDueCollectionFragment, "overdue");
-                    }
-                }
-            });
+            loadCollections();
         }else {
             isLocationModeCheck = false;
 
@@ -435,8 +439,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private void initMap() {
         if (playServiceUtil.isGooglePlayServicesAvailable() && checkIfLocationModeIsHighAccuracy()) {
             if (mGoogleMap != null) {
+
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                         ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    locationProviderUtil.getLocationPermission();
                     return;
                 }
 

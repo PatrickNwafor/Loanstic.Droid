@@ -438,6 +438,7 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback, G
             if (mGoogleMap != null) {
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                         ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    locationProviderUtil.getLocationPermission();
                     return;
                 }
 

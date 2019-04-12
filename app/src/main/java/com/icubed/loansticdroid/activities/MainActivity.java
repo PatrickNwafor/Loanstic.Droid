@@ -276,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
 
         //hides slide up panel if already up
         MapFragment fragment = (MapFragment) fm.findFragmentByTag("home");
+        DashboardFragment fragment1 = (DashboardFragment) fm.findFragmentByTag("dashboard");
 
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
@@ -291,7 +292,11 @@ public class MainActivity extends AppCompatActivity {
 
             fragment.hidePanel();
 
-        }else{
+        }else if(fragment1 != null && fragment1.getPanelState() != SlidingUpPanelLayout.PanelState.COLLAPSED){
+
+            fragment1.hidePanel();
+
+        } else{
             this.doubleBackToExitPressedOnce = true;
             Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
 
