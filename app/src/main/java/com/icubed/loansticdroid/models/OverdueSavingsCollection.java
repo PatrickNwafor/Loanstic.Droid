@@ -181,7 +181,7 @@ public class OverdueSavingsCollection {
     }
 
     private void getSavingsData(String savingsId, final String collectionId) {
-        final SavingsTable savings = savingsTableQueries.loadSingleSavings(savingsId);
+        SavingsTable savings = savingsTableQueries.loadSingleSavings(savingsId);
         if(savings != null){
             getSavingsType(savings, collectionId);
         }else {
@@ -196,7 +196,7 @@ public class OverdueSavingsCollection {
                             savingsTable.setSavingsId(task.getResult().getId());
 
                             saveSavingsToLocalStorage(savingsTable);
-                            getSavingsType(savings, collectionId);
+                            getSavingsType(savingsTable, collectionId);
                         }
                     } else {
                         hideProgressBar();
